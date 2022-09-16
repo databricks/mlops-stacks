@@ -46,8 +46,6 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "http://127.0.0.1:5000"},
             {"pattern": "https://adb-3214.67.azuredatabricks.net*"},
             {"pattern": "https://adb-345.89.azuredatabricks.net*"},
-            # TODO: Remove this pattern once the MLOps Stack repository is public to avoid 404.
-            {"pattern": "https://github.com/databricks/mlops-stack*"},
         ],
         "httpHeaders": [
             {
