@@ -1,0 +1,4 @@
+cookiecutter>=2.1.0
+pytest
+pytest-black
+git+https://github.com/mlflow/mlflow.git#egg=mlflow[pipelines]

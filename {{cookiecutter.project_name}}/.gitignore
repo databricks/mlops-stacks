@@ -1,0 +1,16 @@
+.DS_Store
+__pycache__/
+*.tfstate*
+.idea
+*.terraform
+*.hcl
+# Exclude locally-logged MLflow data from version control
+mlruns
+*.db
+.dbx
+# Exclude local environment directory
+venv
+# Exclude local distribution/packaging directories
+*.egg-info/
+build
+dist
