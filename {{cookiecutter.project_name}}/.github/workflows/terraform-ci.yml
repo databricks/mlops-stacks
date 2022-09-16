@@ -1,0 +1,175 @@
+# This GitHub workflow tests and validates Terraform config (ML resource config and more)
+# defined under databricks-config, when PRs are merged into the main branch
+name: Terraform Tests for {{cookiecutter.project_name}}
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    paths:
+      - 'databricks-config/**'
+
+defaults:
+  run:
+    working-directory: ./databricks-config
+
+# Code reference can be found at https://github.com/hashicorp/setup-terraform
+jobs:
+  staging:
+    concurrency: {{cookiecutter.project_name}}-staging-terraform-job
+    runs-on: ubuntu-20.04
+    env:
+      DATABRICKS_HOST: {{ cookiecutter.databricks_staging_workspace_host }}
+      {%- if cookiecutter.cloud == "aws" %}
+      {% raw %}DATABRICKS_TOKEN: ${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
+      {%- endif %}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+        {%- if cookiecutter.cloud == "azure" %}
+      - name: Generate AAD Token
+        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.STAGING_AZURE_SP_TENANT_ID }} ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }} ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {%- endif %}
+      - uses: hashicorp/setup-terraform@v1
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check -recursive -diff
+        continue-on-error: true
+      - name: Configure Terraform state backend authentication
+        run: |
+        {%- if cookiecutter.cloud == "azure" %}
+          # Below we assume you've run the setup scripts under the cicd-setup-scripts directory
+          # to create an Azure storage container and store its associated Azure ARM key as a Github Actions secret with
+          # name ARM_ACCESS_KEY. We set the ARM_ACCESS_KEY environment variable to authenticate to the azurerm
+          # backend as described in https://www.terraform.io/language/settings/backends/azurerm
+        {% raw %}  echo "ARM_ACCESS_KEY=${{secrets.ARM_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- elif cookiecutter.cloud == "aws" %}
+          # Below we assume you've run the setup scripts under the cicd-setup-scripts directory
+          # to create an AWS S3 bucket and IAM user with permission to access the bucket, and stored
+          # an access key for the IAM user as Github Actions secrets with
+          # name AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. We set corresponding environment variables to authenticate to
+          # the s3 backend as described in https://www.terraform.io/language/settings/backends/s3#credentials-and-shared-configuration
+        {% raw %}  echo "AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}" >> "$GITHUB_ENV"{% endraw %}
+        {% raw %}  echo "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- endif %}
+      - name: Terraform Init
+        id: init
+        run: terraform -chdir=staging init
+      - name: Terraform Validate
+        id: validate
+        run: terraform -chdir=staging validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=staging plan -no-color \
+          -var="git_repo_url={% raw %}${{ github.server_url }}/${{ github.repository }}{% endraw %}"
+      - name: Create Comment with Terraform Plan
+        uses: actions/github-script@v6
+        id: comment
+        env:
+          PLAN: "terraform\n{% raw %}${{ steps.plan.outputs.stdout }}{% endraw %}"
+        with:
+          github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          script: |
+            const output = `#### Terraform Staging Format and Style 🖌 \`{% raw %}${{ steps.fmt.outcome }}{% endraw %}\`
+            #### Terraform Staging Initialization ⚙️ \`{% raw %}${{ steps.init.outcome }}{% endraw %}\`
+            #### Terraform Staging Validation 🤖 \`{% raw %}${{ steps.validate.outcome }}{% endraw %}\`
+            <details><summary>Staging Validation Output</summary>
+
+            \`\`\`\n
+            {% raw %}${{ steps.validate.outputs.stdout }}{% endraw %}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Staging Plan 📖 \`{% raw %}${{ steps.plan.outcome }}{% endraw %}\`
+
+            <details><summary>Show Staging Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+  prod:
+    concurrency: {{cookiecutter.project_name}}-prod-terraform-job
+    runs-on: ubuntu-20.04
+    env:
+      DATABRICKS_HOST: {{ cookiecutter.databricks_prod_workspace_host }}
+      {% if cookiecutter.cloud == "aws" -%}
+      DATABRICKS_TOKEN: {% raw %}${{secrets.PROD_WORKSPACE_TOKEN}}{% endraw %}
+      {%- endif %}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+      {%- if cookiecutter.cloud == "azure" %}
+      - name: Generate AAD Token
+        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.PROD_AZURE_SP_TENANT_ID }} ${{ secrets.PROD_AZURE_SP_APPLICATION_ID }} ${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {%- endif %}
+      - uses: hashicorp/setup-terraform@v1
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check -recursive -diff
+        continue-on-error: true
+      - name: Configure Terraform state backend authentication
+        run: |
+        {%- if cookiecutter.cloud == "azure" %}
+        {% raw %}  echo "ARM_ACCESS_KEY=${{secrets.ARM_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- elif cookiecutter.cloud == "aws" %}
+        {% raw %}  echo "AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}" >> "$GITHUB_ENV"{% endraw %}
+        {% raw %}  echo "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- endif %}
+      - name: Terraform Init
+        id: init
+        run: terraform -chdir=prod init
+      - name: Terraform Validate
+        id: validate
+        run: terraform -chdir=prod validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform -chdir=prod plan -no-color \
+          -var="git_repo_url={% raw %}${{ github.server_url }}/${{ github.repository }}{% endraw %}"
+      - name: Create Comment with Terraform Plan
+        uses: actions/github-script@v6
+        id: comment
+        env:
+          PLAN: "terraform\n{% raw %}${{ steps.plan.outputs.stdout }}{% endraw %}"
+        with:
+          github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          script: |
+            const output = `#### Terraform Prod Format and Style 🖌 \`{% raw %}${{ steps.fmt.outcome }}{% endraw %}\`
+            #### Terraform Prod Initialization ⚙️ \`{% raw %}${{ steps.init.outcome }}{% endraw %}\`
+            #### Terraform Prod Validation 🤖 \`{% raw %}${{ steps.validate.outcome }}{% endraw %}\`
+            <details><summary>Prod Validation Output</summary>
+
+            \`\`\`\n
+            {% raw %}${{ steps.validate.outputs.stdout }}{% endraw %}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Prod Plan 📖 \`{% raw %}${{ steps.plan.outcome }}{% endraw %}\`
+
+            <details><summary>Show Prod Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })

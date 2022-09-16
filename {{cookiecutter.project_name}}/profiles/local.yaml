@@ -1,0 +1,24 @@
+experiment:
+  name: "/Shared/{{cookiecutter.project_name}}"
+  tracking_uri: "sqlite:///mlruns.db"
+  artifact_location: "./mlruns"
+
+# TODO: update this field to point to a local filesystem path containing e.g. a sample of your model training
+# dataset for local development.
+INGEST_DATA_LOCATION: "./data/sample.parquet"
+# TODO: Specify the format of the dataset
+# See https://github.com/mlflow/mlp-regression-template/blob/35f6f32c7a89dc655fbcfcf731cc1da4685a8ebb/pipeline.yaml#L15-L32
+# for details on supported formats
+INGEST_DATA_FORMAT: parquet
+# TODO: update this field to point to a local filesystem path containing e.g. a sample of your input dataset
+# for batch inference
+INGEST_SCORING_DATA_LOCATION: "./data/sample.parquet"
+# Use a larger section of the TLC Trip Record Dataset for the batch scoring feature
+# Specify the format of the dataset
+INGEST_SCORING_DATA_FORMAT: parquet
+# Override the default train / validation / test dataset split ratios
+SPLIT_RATIOS: [0.80, 0.10, 0.10]
+# Specify the output location of the batch scoring predict step
+SCORED_OUTPUT_DATA_LOCATION: "./data/sample_output.parquet"
+# Specify the output format of the batch scoring predict step
+SCORED_OUTPUT_DATA_FORMAT: parquet

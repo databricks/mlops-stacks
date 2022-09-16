@@ -1,0 +1,8 @@
+project_name={{cookiecutter.project_name}}
+cloud={{cookiecutter.cloud}}
+mlflow_experiment_parent_dir={{cookiecutter.mlflow_experiment_parent_dir}}
+databricks_staging_workspace_host={{cookiecutter.databricks_staging_workspace_host}}
+databricks_prod_workspace_host={{cookiecutter.databricks_prod_workspace_host}}
+default_branch={{cookiecutter.default_branch}}
+release_branch={{cookiecutter.release_branch}}
+read_user_group={{cookiecutter.read_user_group}}

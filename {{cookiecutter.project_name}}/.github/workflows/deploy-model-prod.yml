@@ -1,0 +1,41 @@
+# This GitHub workflow performs model deployment to production
+# The workflow contents are largely the same as deploy-model-staging.yml but
+# we split staging and prod model deployment into separate workflows to simplify
+# separately tracking and viewing staging and prod model deployments via GitHub UI and API
+#
+# This workflow is triggered in an automated manner by the model training job (see notebooks/TriggerModelDeploy.py)
+# after model training completes, to enable tracking and enforcing manual approval of model deployments in
+# CD, if desired.
+name: Prod Model Deployment for {{ cookiecutter.project_name}}
+
+on:
+  workflow_dispatch:
+    inputs:
+      modelUri:
+        type: string
+        description: 'URI of model to deploy, in the format models:/<model-name>/<version-id>'
+        required: true
+
+env:
+  DATABRICKS_HOST: {{cookiecutter.databricks_prod_workspace_host}}
+  NODE_TYPE_ID: {{ cookiecutter.cloud_specific_node_type_id}}
+  {% if cookiecutter.cloud == "aws" -%}
+  DATABRICKS_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
+  {%- endif %}
+jobs:
+  prod:
+    runs-on: ubuntu-20.04
+    environment: prod
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        {%- if cookiecutter.cloud == "azure" %}
+      - name: Generate AAD Token
+        {% raw %}run: ./.github/workflows/scripts/generate-aad-token.sh ${{ secrets.PROD_AZURE_SP_TENANT_ID }} ${{ secrets.PROD_AZURE_SP_APPLICATION_ID }} ${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {%- endif %}
+      - name: Deploy model
+        env:
+          MLFLOW_TRACKING_URI: databricks
+        run: |
+          pip install mlflow
+          python steps/deploy.py {% raw %}"${{ github.event.inputs.modelUri }}"{% endraw %} "prod"
