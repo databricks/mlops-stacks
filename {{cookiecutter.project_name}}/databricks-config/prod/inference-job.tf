@@ -27,7 +27,7 @@ resource "databricks_job" "batch_inference_job" {
       env = local.env
       # TODO: Specify input and output table names for batch inference here
       input_table_name  = ""
-      output_table_name = "{{cookiecutter.project_name}}_predictions"
+      output_table_name = "{{cookiecutter.project_name_alphanumeric}}_predictions"
     }
   }
 
