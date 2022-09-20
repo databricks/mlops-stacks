@@ -27,10 +27,6 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 
 # COMMAND ----------
 
-# MAGIC %pip install Jinja2==3.0.3
-
-# COMMAND ----------
-
 # MAGIC %pip install -r ../requirements.txt
 
 # COMMAND ----------
