@@ -27,14 +27,20 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 
 # COMMAND ----------
 
+# MAGIC %pip install Jinja2==3.0.3
+
+# COMMAND ----------
+
 # MAGIC %pip install -r ../requirements.txt
 
 # COMMAND ----------
+
 import sys
 
 sys.path.append("../steps")
 
 # COMMAND ----------
+
 # DBTITLE 1,Define input and output variables
 from utils import get_deployed_model_stage_for_env, get_model_name
 
