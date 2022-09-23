@@ -112,7 +112,7 @@ tooling for deploying and scheduling Databricks jobs, and [dlt-meta](https://git
 We recommend persisting your features in the [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store) which is integrated 
 with model training and serving.
 
-If you do want to extend the Databricks MLOps stakc for ETL and have questions or feature requests, please feel free to reach out as explained below.
+If you do want to extend the Databricks MLOps stack for ETL and have questions or feature requests, please reach out as explained below.
 
 ### How can I provide feedback?
 
