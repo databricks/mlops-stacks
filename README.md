@@ -106,7 +106,9 @@ for details on how to do this.
 ### Does the MLOps stack cover data (ETL) pipelines?
 While some components of the MLOps stack can be re-used and customized for ETL pipelines,
 the focus of the Databricks MLOps stack is on productionizing ML workflows (training, model deployment, batch inference, etc.).
-You might find the following resources more useful for data processing: [dbx](https://docs.databricks.com/dev-tools/dbx.html) 
+You might find the following resources useful for data processing:
+* [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html): a framework for declaring ETL pipelines on Databricks
+* [dlt-meta](https://github.com/databricks/dlt-meta): an example stack with CI/CD for [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html) pipelines
 tooling for deploying and scheduling Databricks jobs, and [dlt-meta](https://github.com/databricks/dlt-meta) is an example dbx-based deployment framework for [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html).
 
 We recommend persisting your features in the [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store) which is integrated 
