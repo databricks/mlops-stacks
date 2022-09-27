@@ -137,7 +137,7 @@ export AWS_REGION="us-east-1"
 python .mlops-setup-scripts/terraform/bootstrap.py
 ```
 
-Fill in vars and run the command below to bootstrap CI/CD.
+Then, fill in vars and run the command below to bootstrap CI/CD.
 ```
 python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- if cookiecutter.cloud == "azure" %}
