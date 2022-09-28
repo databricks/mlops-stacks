@@ -89,7 +89,7 @@ Run `mlp run --profile local` to trigger training locally. See the
 
 #### Inspect results in the UI
 To facilitate saving and sharing results from local iteration with collaborators, we recommend configuring your
-environment to log to a Databricks MLflow tracking server, as described in [this guide]({{ "applications/mlflow/access-hosted-tracking-server.html" | generate_doc_link(cookiecutter.cloud) }}).
+environment to log to a Databricks MLflow tracking server, as described in [this guide]({{ "mlflow/access-hosted-tracking-server.html" | generate_doc_link(cookiecutter.cloud) }}).
 Then, update `profiles/local.yaml` to use a Databricks tracking URI,
 e.g. `databricks://<profile-name>` instead of a local `sqlite://` URI. You can then easily view model training results in the Databricks UI.
 

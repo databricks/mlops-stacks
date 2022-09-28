@@ -2,7 +2,7 @@ from cookiecutter.utils import simple_filter
 import re
 from urllib.parse import urlparse
 
-AZURE_DOC_BASE = "https://docs.microsoft.com/azure/databricks"
+AZURE_DOC_BASE = "https://learn.microsoft.com/azure/databricks"
 AWS_DOC_BASE = "https://docs.databricks.com"
 
 
