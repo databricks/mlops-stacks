@@ -1,6 +1,10 @@
 variable "git_token" {
   type        = string
+  {% if cookiecutter.cicd_platform == "gitHub" -%}
   description = "Git token used to (1) checkout ML code to run during CI and (2) call back from Databricks -> GitHub Actions to trigger a model deployment CD workflow when automated model retraining completes. Must have read and write permissions on the Git repo containing the current ML project"
+  {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+  description = "Azure DevOps personal access token (PAT) used by the created service principal to create Azure DevOps Pipelines and checkout ML code to run during CI/CD. PAT must have read, write and manage permissions for Build and Code scopes on the Azure DevOps project. See the following on how to create and use PATs (https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)"
+  {% endif -%}
   sensitive   = true
   validation {
     condition     = length(var.git_token) > 0
@@ -11,6 +15,7 @@ variable "git_token" {
 variable "git_provider" {
   type        = string
   description = "Hosted Git provider, as described in {{ 'dev-tools/api/latest/gitcredentials.html#operation/create-git-credential' | generate_doc_link(cookiecutter.cloud) }}. For example, 'gitHub' if using GitHub."
+  default = "{{cookiecutter.cicd_platform}}"
 }
 
 variable "staging_profile" {
@@ -25,6 +30,7 @@ variable "prod_profile" {
   default     = "{{cookiecutter.project_name}}-prod"
 }
 
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 variable "github_repo_url" {
   type        = string
   description = "URL of the hosted git repo containing the current ML project, e.g. https://github.com/myorg/myrepo"
@@ -33,6 +39,7 @@ variable "github_repo_url" {
     error_message = "The github_repo_url variable cannot be empty"
   }
 }
+{% endif -%}
 
 {%- if cookiecutter.cloud == "azure" %}
 variable "azure_tenant_id" {
@@ -46,7 +53,6 @@ variable "azure_tenant_id" {
 {% endif -%}
 
 {%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-// Extra variables for Azure DevOps
 variable "azure_devops_org_url" {
   type        = string
   description = "Azure DevOps organization URL. Should be in the form https://dev.azure.com/<organization_name>"
