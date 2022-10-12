@@ -31,11 +31,10 @@ for cloud, paths in cloud_specific_paths.items():
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 cicd_specific_paths = {
     "gitHub": [
-        os.path.join(".github", "workflows"),
+        os.path.join(".github"),
     ],
     "azureDevOpsServices": [
-        os.path.join(".azure", "devops-pipelines", "terraform-cicd.yml"),
-        os.path.join(".azure", "devops-pipelines", "scripts", "generate-aad-token.sh"),
+        os.path.join(".azure"),
         os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
     ],
 }
