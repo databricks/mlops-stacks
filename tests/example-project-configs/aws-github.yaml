@@ -1,7 +1,8 @@
-# Example project config to use to preview stack changes for AWS
+# Example project config to use to preview stack changes for AWS, using GitHub for CICD
 default_context:
   project_name: "example-aws-project"
   cloud: "aws"
+  cicd_plaform: "gitHub"
   mlflow_experiment_parent_dir:  "/example-aws-project"
   databricks_staging_workspace_host: "https://your-staging-workspace.cloud.databricks.com"
   databricks_prod_workspace_host: "https://your-prod-workspace.cloud.databricks.com"
