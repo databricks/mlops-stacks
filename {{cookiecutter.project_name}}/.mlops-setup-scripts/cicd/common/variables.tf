@@ -6,7 +6,7 @@ variable "git_token" {
 
 variable "git_provider" {
   type        = string
-  description = "Hosted Git provider, as described in {{ 'dev-tools/api/latest/gitcredentials.html#operation/create-git-credential' | generate_doc_link(cookiecutter.cloud) }}. For example, 'gitHub' if using GitHub."
+  description = "Hosted Git provider, as described in {{ 'dev-tools/api/latest/gitcredentials.html#operation/create-git-credential' | generate_doc_link(cookiecutter.cloud) }}. For example, 'gitHub' if using GitHub, or 'azureDevOpsServices' if using Azure DevOps."
 }
 
 {%- if cookiecutter.cicd_platform == "gitHub" -%}
