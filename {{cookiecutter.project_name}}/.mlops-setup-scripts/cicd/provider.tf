@@ -10,6 +10,16 @@ terraform {
       version = ">= 2.15.0"
     }
 {%- endif %}
+{%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
+    azuredevops = {
+      source  = "microsoft/azuredevops"
+      version = ">= 0.2.1"
+    }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">=3.0.0"
+    }
+{%- endif %}
   }
   {% if cookiecutter.cloud == "azure" -%}
   // The `backend` block below configures the azurerm backend
@@ -53,4 +63,16 @@ provider "databricks" {
 
 {% if cookiecutter.cloud == "azure" -%}
 provider "azuread" {}
+{% endif -%}
+
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+// Additional providers for Azure DevOps
+provider "azuredevops" {
+  org_service_url       = var.azure_devops_org_url
+  personal_access_token = var.git_token
+}
+
+provider "azurerm" {
+  features {}
+}
 {% endif -%}
