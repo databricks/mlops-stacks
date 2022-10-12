@@ -10,7 +10,12 @@ def remove_filepath(filepath):
 
 
 project_name = "{{cookiecutter.project_name}}"
+print(f"project_name: {project_name}")
 current_cloud = "{{cookiecutter.cloud}}"
+print(f"current_cloud: {current_cloud}")
+cicd_platform = "{{cookiecutter.cicd_platform}}"
+print(f"cicd_platform: {cicd_platform}")
+
 cloud_specific_paths = {
     "azure": [
         os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
@@ -28,7 +33,7 @@ for cloud, paths in cloud_specific_paths.items():
         for path in paths:
             remove_filepath(path)
 
-cicd_platform = "{{cookiecutter.cicd_platform}}"
+
 cicd_specific_paths = {
     "gitHub": [
         os.path.join(".github"),
