@@ -1,6 +1,6 @@
 # Example project config to use to preview stack changes for AWS, using GitHub for CICD
 default_context:
-  project_name: "example-aws-project"
+  project_name: "example-aws-github-project"
   cloud: "aws"
   cicd_plaform: "gitHub"
   mlflow_experiment_parent_dir:  "/example-aws-project"

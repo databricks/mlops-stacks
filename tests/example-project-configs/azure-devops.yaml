@@ -1,6 +1,6 @@
 # Example project config to use to preview stack changes for Azure, using Azure DevOps for CICD
 default_context:
-  project_name: "example-azure-project"
+  project_name: "example-azure-devops-project"
   cloud: "azure"
   cicd_plaform: "azureDevOpsServices"
   mlflow_experiment_parent_dir:  "/example-azure-project"
