@@ -21,7 +21,7 @@ data "azuredevops_git_repository" "repo" {
 
 // Required that service principals have access to storage backend. Assign permissions
 resource "azurerm_role_definition" "role_definition" {
-  name               = "mlops-stack-ado-role-definition" # TODO: populate with cookiecutter from project name
+  name               = "{{cookiecutter.project_name}}-role-definition"
   scope              = data.azurerm_subscription.current.id
 
   permissions {
@@ -59,7 +59,7 @@ resource "azuredevops_variable_group" "cicd_vg" {
 
   variable {
     name  = "STAGING_DATABRICKS_HOST"
-    value = "https://adb-1047239036741209.9.azuredatabricks.net"
+    value = "{{cookiecutter.databricks_staging_workspace_host}}"
   }
 
   variable {
@@ -82,7 +82,7 @@ resource "azuredevops_variable_group" "cicd_vg" {
 
   variable {
     name  = "PROD_DATABRICKS_HOST"
-    value = "https://adb-4486529621354734.14.azuredatabricks.net"
+    value = "{{cookiecutter.databricks_prod_workspace_host}}"
   }
 
   variable {
@@ -153,7 +153,7 @@ resource "azuredevops_build_definition" "terraform-cicd" {
 }
 
 // PR validation is not enabled by default in Azure DevOps (see https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#pr-triggers).
-// In our CICD workflow we trigger our testing CI and terraform CI pipelines on PR to main.
+// In our CICD workflow we trigger our testing CI and terraform CI pipelines on PR to {{cookiecutter.default_branch}}.
 // To automate setup, we use Terraform to configure a Build validation policy for PRs to the default branch (for more info, https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation)
 resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validation" {
   project_id = data.azuredevops_project.project.project_id
