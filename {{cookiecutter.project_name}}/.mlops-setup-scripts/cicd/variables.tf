@@ -34,7 +34,7 @@ variable "github_repo_url" {
   }
 }
 
-{% if cookiecutter.cloud == "azure" %}
+{%- if cookiecutter.cloud == "azure" %}
 variable "azure_tenant_id" {
   type        = string
   description = "Azure tenant (directory) ID under which to create Service Principals for CI/CD. This should be the same Azure tenant as the one containing your Azure Databricks workspaces"
@@ -43,9 +43,9 @@ variable "azure_tenant_id" {
     error_message = "The azure_tenant_id variable cannot be empty"
   }
 }
-{% endif %}
+{% endif -%}
 
-{% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
+{%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
 // Extra variables for Azure DevOps
 variable "azure_devops_org_url" {
   type        = string
@@ -67,4 +67,4 @@ variable "arm_access_key" {
   description = "Azure resource manager key produced when initially bootstrapping Terraform. View this token by running $ vi ~/.mlops-stack-ado-cicd-terraform-secrets.json"
   sensitive = true
 }
-{% endif %}
+{% endif -%}
