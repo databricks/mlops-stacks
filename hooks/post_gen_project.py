@@ -1,4 +1,5 @@
 import os
+import shutil
 
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
@@ -18,6 +19,26 @@ for cloud, paths in cloud_specific_paths.items():
     if cloud != current_cloud:
         for path in paths:
             os.remove(path)
+
+cicd_platform = "{{cookiecutter.cicd_platform}}"
+cicd_specific_paths = {
+    "gitHub": [
+        os.path.join(".github", "workflows"),
+    ],
+    "azureDevOpsServices": [
+        os.path.join(".azure", "devops-pipelines"),
+    ],
+}
+
+for cicd, paths in cicd_specific_paths.items():
+    if cicd != cicd_platform:
+        for path in paths:
+            if os.path.isfile(path):
+                os.remove(path)
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                raise ValueError(f"{path} is not a file of a dir.")
 
 
 # Remove test files
