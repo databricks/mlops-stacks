@@ -46,8 +46,10 @@ module "staging_workspace_cicd" {
   }
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "staging"
+{% if cookiecutter.cicd_platform == "gitHub" -%}
+  github_repo_url = var.github_repo_url
+{% endif -%}
 }
 
 module "prod_workspace_cicd" {
@@ -57,8 +59,10 @@ module "prod_workspace_cicd" {
   }
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "prod"
+{% if cookiecutter.cicd_platform == "gitHub" -%}
+  github_repo_url = var.github_repo_url
+{% endif -%}
 }
 
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
