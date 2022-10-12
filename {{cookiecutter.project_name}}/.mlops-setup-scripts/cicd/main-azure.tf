@@ -60,9 +60,9 @@ module "prod_workspace_cicd" {
   git_provider    = var.git_provider
   git_token       = var.git_token
   env             = "prod"
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{%- if cookiecutter.cicd_platform == "gitHub" -%}
   github_repo_url = var.github_repo_url
-{% endif -%}
+{%- endif -%}
 }
 
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
