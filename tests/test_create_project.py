@@ -10,6 +10,7 @@ from utils import (
     paths,
     generated_project_dir,
     parametrize_by_cloud,
+    parametrize_by_cicd_platform,
 )
 from unittest import mock
 
@@ -71,6 +72,7 @@ def assert_no_disallowed_strings_in_files(
 
 
 @parametrize_by_cloud
+@parametrize_by_cicd_platform
 def test_no_template_strings_after_param_substitution(generated_project_dir):
     assert_no_disallowed_strings_in_files(
         file_paths=[
@@ -118,6 +120,7 @@ def test_no_databricks_doc_strings_before_project_generation():
 
 
 @parametrize_by_cloud
+@parametrize_by_cicd_platform
 def test_yaml_param_substitution(generated_project_dir, cloud):
     expected_node_type = "Standard_D3_v2" if cloud == "azure" else "i3.xlarge"
     vars_in_workflow = [
@@ -131,6 +134,7 @@ def test_yaml_param_substitution(generated_project_dir, cloud):
 
 @pytest.mark.large
 @parametrize_by_cloud
+@parametrize_by_cicd_platform
 def test_markdown_links(generated_project_dir):
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
@@ -248,7 +252,8 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
 
 
 @parametrize_by_cloud
-def test_generate_project_with_default_values(tmpdir, cloud):
+@parametrize_by_cicd_platform
+def test_generate_project_with_default_values(tmpdir, cloud, cicd_platform):
     """
     Asserts the default parameter values for the stack. The project name and experiment
     parent directory are excluded from this test as they covered in other tests. If this test fails
@@ -257,7 +262,7 @@ def test_generate_project_with_default_values(tmpdir, cloud):
     - The default param values in the substitution logic in the pre_gen_project.py hook are up to date.
     - The default param values in the help strings in cookiecutter.json are up to date.
     """
-    context = {"project_name": TEST_PROJECT_NAME, "cloud": cloud}
+    context = {"project_name": TEST_PROJECT_NAME, "cloud": cloud, "cicd_platform": cicd_platform}
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
@@ -282,7 +287,8 @@ def test_generate_project_with_default_values(tmpdir, cloud):
     ],
 )
 @parametrize_by_cloud
-def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
+@parametrize_by_cicd_platform
+def test_workspace_dir_strip_query_params(tmpdir, cloud, cicd_platform, workspace_url_suffix):
     workspace_host = {
         "aws": "https://dbc-my-aws-workspace.cloud.databricks.com",
         "azure": "https://adb-mycoolworkspace.11.azuredatabricks.net",
@@ -293,6 +299,7 @@ def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
         "databricks_staging_workspace_host": workspace_url,
         "databricks_prod_workspace_host": workspace_url,
         "cloud": cloud,
+        "cicd_platform": cicd_platform,
     }
     generate(tmpdir, context=context)
     test_file_contents = (
