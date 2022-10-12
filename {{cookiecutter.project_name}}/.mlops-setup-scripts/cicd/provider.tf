@@ -65,7 +65,7 @@ provider "databricks" {
 provider "azuread" {}
 {% endif -%}
 
-{% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
 // Additional providers for Azure DevOps
 provider "azuredevops" {
   org_service_url       = var.azure_devops_org_url
