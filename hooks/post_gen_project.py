@@ -2,7 +2,7 @@ import os
 import shutil
 
 
-def remove(filepath):
+def remove_filepath(filepath):
     if os.path.isfile(filepath):
         os.remove(filepath)
     elif os.path.isdir(filepath):
@@ -26,23 +26,23 @@ cloud_specific_paths = {
 for cloud, paths in cloud_specific_paths.items():
     if cloud != current_cloud:
         for path in paths:
-            remove(path)
+            remove_filepath(path)
 
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 cicd_specific_paths = {
     "gitHub": [
-        os.path.join(".github"),
+        os.path.join(os.getcwd(), ".github"),
     ],
     "azureDevOpsServices": [
-        os.path.join(".azure"),
-        os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
+        os.path.join(os.getcwd(), ".azure"),
+        os.path.join(os.getcwd(), ".mlops-setup-scripts", "cicd", "azure-devops.tf"),
     ],
 }
 
 for cicd, paths in cicd_specific_paths.items():
     if cicd != cicd_platform:
         for path in paths:
-            remove(path)
+            remove_filepath(path)
 
 # Remove test files
 test_paths = ["_params_testing_only.txt"]
