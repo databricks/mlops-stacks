@@ -21,6 +21,7 @@ cloud_specific_paths = {
         os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
         os.path.join(".mlops-setup-scripts", "cicd", "main-azure.tf"),
         os.path.join(".mlops-setup-scripts", "terraform", "main-azure.tf"),
+        os.path.join(".mlops-setup-scripts", "terraform", "variables.tf"),
     ],
     "aws": [
         os.path.join(".mlops-setup-scripts", "cicd", "main-aws.tf"),
