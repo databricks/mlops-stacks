@@ -1,6 +1,14 @@
 import os
 import shutil
 
+
+def remove(filepath):
+    if os.path.isfile(filepath):
+        os.remove(filepath)
+    elif os.path.isdir(filepath):
+        shutil.rmtree(filepath)
+
+
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cloud_specific_paths = {
@@ -18,7 +26,7 @@ cloud_specific_paths = {
 for cloud, paths in cloud_specific_paths.items():
     if cloud != current_cloud:
         for path in paths:
-            os.remove(path)
+            remove(path)
 
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 cicd_specific_paths = {
@@ -26,7 +34,8 @@ cicd_specific_paths = {
         os.path.join(".github", "workflows"),
     ],
     "azureDevOpsServices": [
-        os.path.join(".azure", "devops-pipelines"),
+        os.path.join(".azure", "devops-pipelines", "terraform-cicd.yml"),
+        os.path.join(".azure", "devops-pipelines", "scripts", "generate-aad-token.sh"),
         os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
     ],
 }
@@ -34,13 +43,7 @@ cicd_specific_paths = {
 for cicd, paths in cicd_specific_paths.items():
     if cicd != cicd_platform:
         for path in paths:
-            if os.path.isfile(path):
-                os.remove(path)
-            elif os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                raise ValueError(f"{path} is not a file of a dir.")
-
+            remove(path)
 
 # Remove test files
 test_paths = ["_params_testing_only.txt"]
