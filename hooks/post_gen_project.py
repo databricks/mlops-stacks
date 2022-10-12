@@ -12,7 +12,7 @@ def remove_filepath(filepath):
 project_name = "{{cookiecutter.project_name}}"
 print(f"project_name: {project_name}")
 current_cloud = "{{cookiecutter.cloud}}"
-print(f"current_cloud: {current_cloud}")
+print(f"cloud: {current_cloud}")
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 print(f"cicd_platform: {cicd_platform}")
 
