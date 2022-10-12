@@ -128,7 +128,7 @@ resource "azuredevops_build_definition" "testing-ci" {
     repo_type   = "TfsGit"
     repo_id     = data.azuredevops_git_repository.repo.id
     branch_name = data.azuredevops_git_repository.repo.default_branch
-    yml_path    = "./.azure/devops-pipelines/testing-ci.yml"
+    yml_path    = "./.azure/devops-pipelines/tests-ci.yml"
   }
 
   variable_groups = [azuredevops_variable_group.cicd_vg.id]

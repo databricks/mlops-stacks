@@ -19,8 +19,9 @@ for doing so via a pull request.
 
 ## Opening a pull request
 
-To push your updated ML code to production, [open a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
-against the remote Git repo containing the current project.
+To push your updated ML code to production, [open a pull request]({% if cookiecutter.cicd_platform == "gitHub" %} https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request 
+{% elif cookiecutter.cicd_platform == "AzureDevOpsServices" %} https://learn.microsoft.com/en-us/azure/devops/repos/git/pull-requests?view=azure-devops&tabs=browser#create-a-pull-request 
+{% endif %}) against the remote Git repo containing the current project.
 
 **NOTE**: the default tests provided in this repo require that you use a pull
 request branch on the Git repo for the current project, rather than opening a pull request from a fork
@@ -28,9 +29,14 @@ of the Git repo. Support for running tests against pull requests from repo forks
 is planned for the future.
 
 ## Viewing test status and debug logs
-Opening a pull request will trigger a [workflow](../.github/workflows/run-tests.yml) that runs unit and integration tests for the
-model training pipeline on Databricks against a test dataset. You can view test status
-and debug logs from the pull request UI, and push new commits to your pull request branch
+Opening a pull request will trigger a 
+{%- if cookiecutter.cicd_platform == "gitHub" -%} 
+[workflow](../.github/workflows/run-tests.yml) 
+{%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
+[Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
+{% endif %} 
+that runs unit and integration tests for the model training pipeline on Databricks against a test dataset. 
+You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
 to address any test failures.
 
 The integration test runs the model training notebook in the staging workspace, training, validating,
