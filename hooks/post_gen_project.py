@@ -27,6 +27,7 @@ cicd_specific_paths = {
     ],
     "azureDevOpsServices": [
         os.path.join(".azure", "devops-pipelines"),
+        os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
     ],
 }
 
