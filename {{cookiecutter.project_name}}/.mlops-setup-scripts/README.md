@@ -4,6 +4,7 @@
 This directory contains setup scripts intended to automate CI/CD and ML resource config setup
 for MLOps engineers.
 
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 The scripts set up CI/CD with GitHub Actions. If using another CI/CD provider, you can
 easily translate the provided CI/CD workflows (GitHub Actions YAML under `.github/workflows`)
 to other CI/CD providers by running the same shell commands, with a few caveats:
@@ -16,6 +17,21 @@ to other CI/CD providers by running the same shell commands, with a few caveats:
   hardcodes the API endpoint for triggering a GitHub Actions workflow. Update `notebooks/TriggerModelDeploy.py`
   to instead hit the appropriate REST API endpoint for triggering model deployment CD for your CI/CD provider.
 
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+The scripts set up CI/CD with Azure DevOps. During initial set up we do the following:
+1. Create an Azure Blob Storage container for storing ML resource config (job, MLflow experiment, etc) state for the
+   current ML project
+2. Create another Azure Blob Storage container for storing the state of CI/CD principals provisioned for the current
+   ML project
+3. Write credentials for accessing the container in (1) to a file
+4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
+   state in the Azure Blob Storage container created in (2).
+5. Create two Azure DevOps Pipelines:
+    * `testing_ci` - Unit tests and integration tests triggered upon PR to the main branch.
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to main and changes to `databricks-config`, 
+                         followed by continuous deployment of changes upon successfully merging into main.
+{% endif -%}
+      
 ## Prerequisites
 
 ### Install CLIs
@@ -112,6 +128,7 @@ on the current repo.
 This token is used to:
 1. Fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it
 during CI/CD).
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 2. Call back from
    Databricks -> GitHub Actions to trigger a model deployment deployment workflow when
    automated model retraining completes, i.e. perform step (2) in
@@ -119,6 +136,12 @@ during CI/CD).
 
 If using GitHub as your hosted Git provider, you can generate a Git token through the [token UI](https://github.com/settings/tokens/new);
 be sure to generate a token with "Repo" scope. If you have SSO enabled with your Git provider, be sure to authorize your token.
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+
+If using AzureDevOps as your CI/CD platform, you can generate a PAT token by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)
+
+**IMPORTANT**: in order to run Git commands from a build pipeline you must [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) to the build service.
+{% endif -%}
 
 ## Usage
 
@@ -136,16 +159,27 @@ export AWS_REGION="us-east-1"
 {% endif -%}
 python .mlops-setup-scripts/terraform/bootstrap.py
 ```
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+This initial bootstrap will produce an ARM access key. This key is required as a variable in the next step. To view this
+key locally and copy the key for this step you can do the following `vi ~/.mlops-stack-ado-cicd-terraform-secrets.json`.
+{% endif -%}
 
-Then, fill in vars and run the command below to bootstrap CI/CD.
+Then, run the following command providing the required vars to bootstrap CI/CD.
 ```
 python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- if cookiecutter.cloud == "azure" %}
   --var azure_tenant_id="$AZURE_TENANT_ID" \
 {%- endif %}
-  --var git_provider=gitHub \
+{%- if cookiecutter.cicd_platform == "gitHub" %}
   --var github_repo_url=https://github.com/<your-org>/<your-repo-name> \
   --var git_token=<your-git-token>
+{%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+  --var azure_devops_org_url=https://dev.azure.com/<your-org-name> \
+  --var azure_devops_project_name=<name-of-project> \
+  --var azure_devops_repo_name=<name-of-repo> \
+  --var git_token=<your-git-token> \
+  --var arm_access_key=<arm-access-key> 
+{%- endif %}
 ```
 
 Take care to run the Terraform bootstrap script before the CI/CD bootstrap script. This will:
@@ -158,6 +192,12 @@ Take care to run the Terraform bootstrap script before the CI/CD bootstrap scrip
 3. Write credentials for accessing the container in (1) to a file
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the Azure Blob Storage container created in (2).
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
+5. Create two Azure DevOps Pipelines:
+    * `testing_ci` - Unit tests and integration tests triggered upon PR to the main branch.
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to main and changes to `databricks-config`, 
+                         followed by continuous deployment of changes upon successfully merging into main.
+{% endif %}
 {% elif cookiecutter.cloud == "aws" %}
 1. Create an AWS S3 bucket and DynamoDB table for storing ML resource config (job, MLflow experiment, etc) state for the
    current ML project
@@ -173,6 +213,7 @@ to store for CI/CD. **Note the paths of these secrets files for subsequent steps
 fails or the generated resources are misconfigured (e.g. you supplied invalid Git credentials for CI/CD
 service principals when prompted), simply rerun and supply updated input values.
 
+{% if cookiecutter.cicd_platform == "gitHub" %}
 ### Store generated secrets in CI/CD
 Store each of the generated secrets in the output JSON files as
 [GitHub Actions Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository),
@@ -191,7 +232,9 @@ but you can also use
 [environment secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
 to restrict access to production secrets. You can also modify the workflows to read secrets from another
 secret provider.
+{% endif %}
 
+{% if cookiecutter.cicd_platform == "gitHub" %}
 ### Add GitHub workflows to hosted Git repo
 Create and push a PR branch adding the GitHub Actions workflows under `.github`:
 
@@ -205,6 +248,21 @@ git push upstream add-cicd-workflows
 Follow [GitHub docs](https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow#enabling-a-workflow)
 to enable workflows on your PR. Then, open and merge a pull request based on your PR branch to add the CI/CD workflows to your hosted Git Repo.
 
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+### Add Azure DevOps pipelines to hosted Git repo
+Create and push a PR branch adding the Azure DevOps Pipelines under `.azure`:
+
+```
+git checkout -b add-cicd-workflows
+git add .azure
+git commit -m "Add CI/CD workflows"
+git push upstream add-cicd-workflows
+```
+
+Follow [Azure DevOps docs](https://learn.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) 
+to learn how to create an Azure DevOps build pipeline. Then, open and merge a pull request based on your PR branch to add the CI/CD workflows to your hosted Git Repo.
+{% endif %}
+
 Note that the CI/CD workflows will fail
 until ML code is introduced to the repo in subsequent steps - you should
 merge the pull request anyways.
@@ -217,8 +275,13 @@ git checkout {{cookiecutter.default_branch}}
 git pull upstream {{cookiecutter.default_branch}}
 ```
 
+{% if cookiecutter.cicd_platform == "gitHub" %}
 Finally, [create environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#creating-an-environment)
 in your repo named "staging" and "prod"
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+Finally, [create environments](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops)
+in your repo named "staging" and "prod"
+{% endif %}
 
 ### Secret rotation
 The generated CI/CD
