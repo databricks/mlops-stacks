@@ -125,23 +125,26 @@ Then, grant the `{{cookiecutter.service_principal_group}}` group [token usage pe
 The setup script prompts a Git token with both read and write permissions
 on the current repo.
 
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 This token is used to:
 1. Fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it
 during CI/CD).
-{% if cookiecutter.cicd_platform == "gitHub" -%}
 2. Call back from
    Databricks -> GitHub Actions to trigger a model deployment deployment workflow when
    automated model retraining completes, i.e. perform step (2) in
    [this diagram](https://github.com/databricks/mlops-stack/blob/main/Pipeline.md#model-training-pipeline).
-
+   
 If using GitHub as your hosted Git provider, you can generate a Git token through the [token UI](https://github.com/settings/tokens/new);
 be sure to generate a token with "Repo" scope. If you have SSO enabled with your Git provider, be sure to authorize your token.
+
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+This token is used to fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it
+during CI/CD). You can generate a PAT token for Azure DevOps by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows).
 
-If using AzureDevOps as your CI/CD platform, you can generate a PAT by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)
-
-**IMPORTANT**: in order to run Git commands from a build pipeline you must [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) to the build service.
+### Grant version control permissions to CI/CD
+The provided CI/CD workflows attempt to run `git` commands to commit and modify files. To ensure the workflows can work properly, [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) within your hosted Azure DevOps repo.
 {% endif -%}
+
 
 ## Usage
 
