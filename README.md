@@ -176,12 +176,12 @@ of the example project:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure-devops.yaml" --no-input --overwrite-if-exists 
+cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.yaml" --no-input --overwrite-if-exists 
 ```
 
 To create an example AWS project, using GitHub Actions for CI/CD, run:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws-github.yaml" --no-input --overwrite-if-exists
+cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.yaml" --no-input --overwrite-if-exists
 ```
