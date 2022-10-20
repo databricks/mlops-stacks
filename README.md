@@ -170,7 +170,7 @@ project from your local checkout of the stack, and inspect its contents/run test
 the project. 
 
 We provide example project configs for Azure (using both GitHub and Azure DevOps) and AWS (using GitHub) under `tests/example-project-configs`.
-To create an example Azure project, using Azure DevOps as the CICD platform, run the following from the desired parent directory
+To create an example Azure project, using Azure DevOps as the CI/CD platform, run the following from the desired parent directory
 of the example project:
 
 ```
