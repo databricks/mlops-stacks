@@ -24,13 +24,13 @@ DEFAULT_PARAM_VALUES = {
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",
-    "cicd_provider": "azureDevOpsServices",
+    "cicd_provider": "Azure DevOps",
     "databricks_staging_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "databricks_prod_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
 }
 DEFAULT_PARAMS_AWS = {
     "cloud": "aws",
-    "cicd_provider": "gitHub",
+    "cicd_provider": "GitHub Actions",
     "databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
