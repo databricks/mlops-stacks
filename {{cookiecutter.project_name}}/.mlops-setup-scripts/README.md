@@ -164,7 +164,7 @@ This initial bootstrap will produce an ARM access key. This key is required as a
 key locally and copy the key for this step you can do the following `vi ~/.{{cookiecutter.project_name}}-cicd-terraform-secrets.json`.
 {% endif -%}
 
-Then, run the following command providing the required vars to bootstrap CI/CD.
+Then, run the following command, providing the required vars to bootstrap CI/CD.
 ```
 python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- if cookiecutter.cloud == "azure" %}
