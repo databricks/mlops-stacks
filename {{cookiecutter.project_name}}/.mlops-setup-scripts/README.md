@@ -138,7 +138,7 @@ If using GitHub as your hosted Git provider, you can generate a Git token throug
 be sure to generate a token with "Repo" scope. If you have SSO enabled with your Git provider, be sure to authorize your token.
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 
-If using AzureDevOps as your CI/CD platform, you can generate a PAT token by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)
+If using AzureDevOps as your CI/CD platform, you can generate a PAT by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)
 
 **IMPORTANT**: in order to run Git commands from a build pipeline you must [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) to the build service.
 {% endif -%}
