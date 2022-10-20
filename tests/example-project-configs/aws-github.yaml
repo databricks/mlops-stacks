@@ -1,4 +1,4 @@
-# Example project config to use to preview stack changes for AWS, using GitHub for CICD
+# Example project config to use to preview stack changes for AWS, using GitHub for CI/CD
 default_context:
   project_name: "example-aws-github-project"
   cloud: "aws"
