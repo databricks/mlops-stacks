@@ -161,7 +161,7 @@ python .mlops-setup-scripts/terraform/bootstrap.py
 ```
 {% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 This initial bootstrap will produce an ARM access key. This key is required as a variable in the next step. To view this
-key locally and copy the key for this step you can do the following `vi ~/.mlops-stack-ado-cicd-terraform-secrets.json`.
+key locally and copy the key for this step you can do the following `vi ~/.{{cookiecutter.project_name}}-cicd-terraform-secrets.json`.
 {% endif -%}
 
 Then, run the following command providing the required vars to bootstrap CI/CD.
