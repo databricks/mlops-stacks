@@ -1,4 +1,4 @@
-# Example project config to use to preview stack changes for Azure, using GitHub for CICD
+# Example project config to use to preview stack changes for Azure, using GitHub for CI/CD
 default_context:
   project_name: "example-azure-github-project"
   cloud: "azure"
