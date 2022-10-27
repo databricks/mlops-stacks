@@ -16,9 +16,10 @@ def parametrize_by_cloud(fn):
     return wrapper
 
 
-def parametrize_by_cicd_platform(fn):
-    @wraps(fn)
+def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize("cicd_platform", ["azureDevOpsServices", "gitHub"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @wraps(fn)
     def wrapper(*args, **kwargs):
         return fn(*args, **kwargs)
 

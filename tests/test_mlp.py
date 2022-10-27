@@ -1,4 +1,4 @@
-from utils import generated_project_dir, parametrize_by_cloud, parametrize_by_cicd_platform
+from utils import generated_project_dir, parametrize_by_project_generation_params
 import pytest
 import os
 import json
@@ -15,8 +15,7 @@ from mlflow.pipelines import Pipeline
         "local",
     ],
 )
-@parametrize_by_cloud
-@parametrize_by_cicd_platform
+@parametrize_by_project_generation_params
 def test_mlp_yaml_valid(generated_project_dir, profile):
     project_dir = generated_project_dir / "my-mlops-project"
     os.chdir(project_dir / "notebooks")

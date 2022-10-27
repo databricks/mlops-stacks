@@ -5,7 +5,11 @@ import os
 from collections import Counter
 import sys
 
-from utils import generated_project_dir, parametrize_by_cloud, parametrize_by_cicd_platform
+from utils import (
+    generated_project_dir,
+    parametrize_by_cloud,
+    parametrize_by_project_generation_params,
+)
 
 _TERRAFORM_DIRECTORIES = ["staging", "prod"]
 
@@ -21,8 +25,7 @@ def run_test_command(cmd, working_dir):
 
 
 @pytest.mark.parametrize("directory", _TERRAFORM_DIRECTORIES)
-@parametrize_by_cloud
-@parametrize_by_cicd_platform
+@parametrize_by_project_generation_params
 def test_can_run_terraform_for_ml_resources(generated_project_dir, directory):
     working_dir = (
         generated_project_dir / "my-mlops-project" / "databricks-config" / directory
@@ -39,8 +42,7 @@ def test_can_run_terraform_for_ml_resources(generated_project_dir, directory):
 
 @pytest.mark.large
 @pytest.mark.parametrize("subdirectory", ["terraform", "cicd"])
-@parametrize_by_cloud
-@parametrize_by_cicd_platform
+@parametrize_by_project_generation_params
 def test_can_run_terraform_for_cicd(generated_project_dir, subdirectory):
     run_test_command(
         """
@@ -65,8 +67,7 @@ def add_script_dir_to_pythonpath(generated_project_dir):
     sys.path.remove(module_parent_dir)
 
 
-@parametrize_by_cloud
-@parametrize_by_cicd_platform
+@parametrize_by_project_generation_params
 def test_can_parse_terraform_output_for_cicd(
     tmpdir, generated_project_dir, add_script_dir_to_pythonpath
 ):
