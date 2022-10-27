@@ -21,11 +21,11 @@ data "azuredevops_git_repository" "repo" {
 
 // Required that service principals have access to storage backend. Assign permissions
 resource "azurerm_role_definition" "role_definition" {
-  name               = "{{cookiecutter.project_name}}-role-definition"
-  scope              = data.azurerm_subscription.current.id
+  name  = "{{cookiecutter.project_name}}-role-definition"
+  scope = data.azurerm_subscription.current.id
 
   permissions {
-    actions     = ["Microsoft.Storage/storageAccounts/listkeys/action"]
+    actions = ["Microsoft.Storage/storageAccounts/listkeys/action"]
   }
 
 }
@@ -69,12 +69,12 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name          = "STAGING_AZURE_SP_CLIENT_SECRET"
-    secret_value  = module.azure_create_sp.staging_service_principal_client_secret
-    is_secret     = true
+    name         = "STAGING_AZURE_SP_CLIENT_SECRET"
+    secret_value = module.azure_create_sp.staging_service_principal_client_secret
+    is_secret    = true
   }
 
-  variable  {
+  variable {
     # NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
     name  = "STAGING_AZURE_SP_TENANT_ID"
     value = var.azure_tenant_id
@@ -92,24 +92,24 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name          = "PROD_AZURE_SP_CLIENT_SECRET"
-    secret_value  = module.azure_create_sp.prod_service_principal_client_secret
-    is_secret     = true
+    name         = "PROD_AZURE_SP_CLIENT_SECRET"
+    secret_value = module.azure_create_sp.prod_service_principal_client_secret
+    is_secret    = true
   }
 
-  variable  {
-    name  = "PROD_AZURE_SP_TENANT_ID"
+  variable {
+    name = "PROD_AZURE_SP_TENANT_ID"
     // NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
     value = var.azure_tenant_id
   }
 
-  variable  {
-    name  = "ARM_ACCESS_KEY"
-    value = var.arm_access_key
-    is_secret     = true
+  variable {
+    name      = "ARM_ACCESS_KEY"
+    value     = var.arm_access_key
+    is_secret = true
   }
 
-  variable  {
+  variable {
     name  = "ARM_SUBSCRIPTION_ID"
     value = data.azurerm_subscription.current.subscription_id
   }
@@ -173,7 +173,7 @@ resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validati
     }
 
     scope {
-      match_type     = "DefaultBranch"
+      match_type = "DefaultBranch"
     }
   }
 }
@@ -196,7 +196,7 @@ resource "azuredevops_branch_policy_build_validation" "terraform-cicd-build-vali
     }
 
     scope {
-      match_type     = "DefaultBranch"
+      match_type = "DefaultBranch"
     }
   }
 }

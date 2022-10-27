@@ -15,7 +15,7 @@ variable "git_token" {
 variable "git_provider" {
   type        = string
   description = "Hosted Git provider, as described in {{ 'dev-tools/api/latest/gitcredentials.html#operation/create-git-credential' | generate_doc_link(cookiecutter.cloud) }}. For example, 'gitHub' if using GitHub."
-  default = "{{cookiecutter.cicd_platform}}"
+  default     = "{{cookiecutter.cicd_platform}}"
 }
 
 variable "staging_profile" {
@@ -71,6 +71,6 @@ variable "azure_devops_repo_name" {
 variable "arm_access_key" {
   type        = string
   description = "Azure resource manager key produced when initially bootstrapping Terraform. View this token by running $ vi ~/.{{cookiecutter.project_name}}-cicd-terraform-secrets.json"
-  sensitive = true
+  sensitive   = true
 }
 {% endif -%}
