@@ -33,6 +33,7 @@ module "staging_workspace_cicd" {
   {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
+  env             = "staging"
   github_repo_url = var.github_repo_url
   {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   git_provider = var.git_provider
@@ -48,6 +49,7 @@ module "prod_workspace_cicd" {
   {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
+  env             = "prod"
   github_repo_url = var.github_repo_url
   {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   git_provider = var.git_provider
