@@ -70,7 +70,7 @@ variable "azure_devops_repo_name" {
 
 variable "arm_access_key" {
   type        = string
-  description = "Azure resource manager key produced when initially bootstrapping Terraform. View this token by running $ vi ~/.mlops-stack-ado-cicd-terraform-secrets.json"
+  description = "Azure resource manager key produced when initially bootstrapping Terraform. View this token by running $ vi ~/.{{cookiecutter.project_name}}-cicd-terraform-secrets.json"
   sensitive = true
 }
 {% endif -%}

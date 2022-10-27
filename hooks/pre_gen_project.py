@@ -15,6 +15,20 @@ import cookiecutter
         )}}
 {% endif %}
 
+{%- if cookiecutter.cicd_platform == "GitHub Actions" -%} 
+    {{ cookiecutter.update(
+        {
+            "cicd_platform": "gitHub"
+        }
+    )}} 
+{%- elif cookiecutter.cicd_platform == "Azure DevOps" -%}
+    {{ cookiecutter.update(
+            {
+                "cicd_platform": "azureDevOpsServices"
+            }
+        )}}
+{% endif %}
+
 {{ cookiecutter.update(
     {
         "model_name": cookiecutter.project_name + "-model",

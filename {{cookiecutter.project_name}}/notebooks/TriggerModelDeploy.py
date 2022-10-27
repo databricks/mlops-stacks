@@ -77,6 +77,8 @@ print(
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 # COMMAND ----------
 from deploy import deploy
+# TODO: Add any additional pre-deployment checks here to ensure model quality before calling
+# `deploy` to push the model to the desired environment.
 deploy(model_uri, env)
 
 # COMMAND ----------
