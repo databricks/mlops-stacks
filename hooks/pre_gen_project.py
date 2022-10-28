@@ -175,6 +175,14 @@ def validate_alphanumeric_project_name(project_name, alphanumeric_project_name):
         )
 
 
+def validate_cloud_cicd_platform(cloud, cicd_platform):
+    if cloud == "aws" and cicd_platform == "azureDevOpsServices":
+        raise RuntimeError(
+            "Azure DevOps is not supported as a cicd_platform option with cloud=aws. "
+            "If cloud=aws the currently supported cicd_platform is GitHub Actions."
+        )
+
+
 if __name__ == "__main__":
     validate_cookiecutter_version(cookiecutter.__version__)
     validate_mlflow_experiment_parent_dir(
@@ -199,3 +207,4 @@ if __name__ == "__main__":
     validate_alphanumeric_project_name(
         "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
     )
+    validate_cloud_cicd_platform("{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}")
