@@ -102,11 +102,15 @@ resource "azuread_service_principal" "prod_service_principal" {
 }
 {%- endif %}
 
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
 // extracting their values and storing them as secrets in your CI system
 //
 // If using GitHub Actions, you can create new repo secrets through Terraform as well
 // e.g. using https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+// Output values
+{%- endif %}
 output "STAGING_AZURE_SP_APPLICATION_ID" {
   value     = module.azure_create_sp.staging_service_principal_application_id
   sensitive = true
