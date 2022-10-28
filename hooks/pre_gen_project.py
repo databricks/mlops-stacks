@@ -207,4 +207,6 @@ if __name__ == "__main__":
     validate_alphanumeric_project_name(
         "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
     )
-    validate_cloud_cicd_platform("{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}")
+    validate_cloud_cicd_platform(
+        "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"
+    )
