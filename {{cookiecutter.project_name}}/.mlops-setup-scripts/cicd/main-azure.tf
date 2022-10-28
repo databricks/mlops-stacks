@@ -86,7 +86,6 @@ resource "azuread_service_principal" "staging_service_principal" {
 
   feature_tags {
     enterprise = true
-    gallery    = true
   }
 }
 
@@ -97,7 +96,6 @@ resource "azuread_service_principal" "prod_service_principal" {
 
   feature_tags {
     enterprise = true
-    gallery    = true
   }
 }
 {%- endif %}
