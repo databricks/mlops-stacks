@@ -143,6 +143,11 @@ during CI/CD). You can generate a PAT token for Azure DevOps by following the st
 
 ### Grant version control permissions to CI/CD
 The provided CI/CD workflows attempt to run `git` commands to commit and modify files. To ensure the workflows can work properly, [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) within your hosted Azure DevOps repo.
+The user `{{cookiecutter.project_name}} Build Service (<your-username>)` should be granted the following:
+- **Create branch:** Allow
+- **Contribute:** Allow
+- **Read:** Allow
+- **Create tag:** Allow
 {% endif -%}
 
 

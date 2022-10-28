@@ -30,24 +30,16 @@ resource "azurerm_role_definition" "role_definition" {
 
 }
 
-data "azuread_service_principal" "staging_service_principal" {
-  application_id = module.azure_create_sp.staging_service_principal_application_id
-}
-
 resource "azurerm_role_assignment" "staging_role_assignment" {
   scope              = data.azurerm_subscription.current.id
   role_definition_id = azurerm_role_definition.role_definition.role_definition_resource_id
-  principal_id       = data.azuread_service_principal.staging_service_principal.object_id
-}
-
-data "azuread_service_principal" "prod_service_principal" {
-  application_id = module.azure_create_sp.prod_service_principal_application_id
+  principal_id       = azuread_service_principal.staging_service_principal.object_id
 }
 
 resource "azurerm_role_assignment" "prod_role_assignment" {
   scope              = data.azurerm_subscription.current.id
   role_definition_id = azurerm_role_definition.role_definition.role_definition_resource_id
-  principal_id       = data.azuread_service_principal.prod_service_principal.object_id
+  principal_id       = azuread_service_principal.prod_service_principal.object_id
 }
 
 // Create variable group to be used by Azure DevOps Pipelines

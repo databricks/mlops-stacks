@@ -38,7 +38,6 @@ provider "databricks" {
   token = module.azure_create_sp.prod_service_principal_aad_token
 }
 
-
 module "staging_workspace_cicd" {
   source = "./common"
   providers = {
@@ -70,6 +69,38 @@ module "prod_workspace_cicd" {
   git_token    = var.git_token
   {%- endif %}
 }
+
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+// Additional steps for Azure DevOps. Create staging and prod service principals for an enterprise application.
+data "azuread_client_config" "current" {}
+
+resource "azuread_application" "{{cookiecutter.project_name}}-aad" {
+  display_name = "{{cookiecutter.project_name}}"
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "staging_service_principal" {
+  application_id               = module.azure_create_sp.staging_service_principal_application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+
+  feature_tags {
+    enterprise = true
+    gallery    = true
+  }
+}
+
+resource "azuread_service_principal" "prod_service_principal" {
+  application_id               = module.azure_create_sp.prod_service_principal_application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+
+  feature_tags {
+    enterprise = true
+    gallery    = true
+  }
+}
+{%- endif %}
 
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
 // extracting their values and storing them as secrets in your CI system
