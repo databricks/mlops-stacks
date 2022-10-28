@@ -13,7 +13,7 @@ This directory (`databricks-config`) includes Databricks ML resource configurati
 inference job, a training job, an MLflow experiment, and an MLflow model.
 Configurations are split into separate `staging` and `prod` subdirectories
 for separate environments (separate staging/prod Databricks workspaces), and are expressed in
-the [Terraform language](https://www.terraform.io/language#terraform-language-documentation).
+the [Terraform language](https://developer.hashicorp.com/terraform/language#terraform-language-documentation).
 
 Managed configs are not defined for dev, but you can manually test changes to staging/prod configs by
 creating identical resources in dev and verifying their behavior.
@@ -36,7 +36,7 @@ with the appropriate credentials to access remote state.
 #### More detail
 
 To track the state of deployed ML resources with Terraform, you must:
-1. Provision a [remote state backend](https://www.terraform.io/language/settings/backends) and
+1. Provision a [remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) and
 2. Configure Terraform to store state in the remote backend. 
 
 By default, this repo is configured to store resource state in a dedicated
@@ -49,7 +49,7 @@ run the scripts under [.mlops-setup-scripts](../.mlops-setup-scripts/README.md) 
 expected remote state backend and store credentials in CI/CD.
 
 Alternatively, you can follow
-[Terraform docs](https://www.terraform.io/language/settings/backends) to specify a custom remote state
+[Terraform docs](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) to specify a custom remote state
 backend in `staging/provider.tf` and `prod/provider.tf`, store credentials for accessing the backend in CI/CD,
 and configure the `.github/workflows/terraform-ci.yml` and `.github/workflows/terraform-cd.yml` workflows
 to authenticate to the remote backend. If using the Terraform Cloud backend, make sure your Terraform workspace is configured
@@ -132,7 +132,7 @@ size of a job cluster. You can also add or remove resource blocks to create or d
 
 ### See also
 * [Databricks Terraform Provider docs](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/job) for the supported fields and additional examples for Databricks resources
-* Official docs on [Terraform resource syntax](https://www.terraform.io/language/resources/syntax#resource-syntax)
+* Official docs on [Terraform resource syntax](https://developer.hashicorp.com/terraform/language/resources/syntax#resource-syntax)
 
 ## Deploy config changes
 
