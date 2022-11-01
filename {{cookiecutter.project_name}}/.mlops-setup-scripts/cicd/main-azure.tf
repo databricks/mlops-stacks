@@ -83,20 +83,12 @@ resource "azuread_service_principal" "staging_service_principal" {
   application_id               = module.azure_create_sp.staging_service_principal_application_id
   app_role_assignment_required = false
   owners                       = [data.azuread_client_config.current.object_id]
-
-  feature_tags {
-    enterprise = true
-  }
 }
 
 resource "azuread_service_principal" "prod_service_principal" {
   application_id               = module.azure_create_sp.prod_service_principal_application_id
   app_role_assignment_required = false
   owners                       = [data.azuread_client_config.current.object_id]
-
-  feature_tags {
-    enterprise = true
-  }
 }
 {%- endif %}
 
