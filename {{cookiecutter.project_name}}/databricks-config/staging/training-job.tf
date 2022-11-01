@@ -55,7 +55,7 @@ resource "databricks_job" "model_training_job" {
 
   git_source {
     url      = var.git_repo_url
-    provider = "gitHub"
+    provider = "{{cookiecutter.cicd_platform}}"
     branch   = "{{cookiecutter.default_branch}}"
   }
 

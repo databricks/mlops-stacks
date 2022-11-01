@@ -38,16 +38,20 @@ provider "databricks" {
   token = module.azure_create_sp.prod_service_principal_aad_token
 }
 
-
 module "staging_workspace_cicd" {
   source = "./common"
   providers = {
     databricks = databricks.staging_sp
   }
+  {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "staging"
+  github_repo_url = var.github_repo_url
+  {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+  git_provider = var.git_provider
+  git_token    = var.git_token
+  {%- endif %}
 }
 
 module "prod_workspace_cicd" {
@@ -55,17 +59,56 @@ module "prod_workspace_cicd" {
   providers = {
     databricks = databricks.prod_sp
   }
+  {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "prod"
+  github_repo_url = var.github_repo_url
+  {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+  git_provider = var.git_provider
+  git_token    = var.git_token
+  {%- endif %}
 }
 
+{% if cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+// Additional steps for Azure DevOps. Create staging and prod service principals for an enterprise application.
+data "azuread_client_config" "current" {}
+
+resource "azuread_application" "{{cookiecutter.project_name}}-aad" {
+  display_name = "{{cookiecutter.project_name}}"
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "staging_service_principal" {
+  application_id               = module.azure_create_sp.staging_service_principal_application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+
+  feature_tags {
+    enterprise = true
+  }
+}
+
+resource "azuread_service_principal" "prod_service_principal" {
+  application_id               = module.azure_create_sp.prod_service_principal_application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+
+  feature_tags {
+    enterprise = true
+  }
+}
+{%- endif %}
+
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
 // extracting their values and storing them as secrets in your CI system
 //
 // If using GitHub Actions, you can create new repo secrets through Terraform as well
 // e.g. using https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+// Output values
+{%- endif %}
 output "STAGING_AZURE_SP_APPLICATION_ID" {
   value     = module.azure_create_sp.staging_service_principal_application_id
   sensitive = true

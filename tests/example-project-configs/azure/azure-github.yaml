@@ -1,0 +1,10 @@
+# Example project config to use to preview stack changes for Azure, using GitHub for CI/CD
+default_context:
+  project_name: "example-azure-github-project"
+  cloud: "azure"
+  cicd_plaform: "GitHub Actions"
+  mlflow_experiment_parent_dir:  "/example-azure-project"
+  databricks_staging_workspace_host: "https://adb-your-staging-workspace.azuredatabricks.net"
+  databricks_prod_workspace_host: "https://adb-your-prod-workspace.azuredatabricks.net"
+  default_branch: "main"
+  release_branch: "release"

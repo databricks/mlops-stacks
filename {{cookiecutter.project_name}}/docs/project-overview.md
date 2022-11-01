@@ -19,7 +19,7 @@ This project contains the following components:
 |----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow pipelines](https://mlflow.org/docs/latest/pipelines.html)  |
 | ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) defined through [Terraform]({{ "dev-tools/terraform/index.html"   | generate_doc_link(cookiecutter.cloud) }}) |
-| CI/CD                      | [GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources                                                 |
+| CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %}                                                 |
 
 contained in the following files:
 
@@ -41,8 +41,13 @@ contained in the following files:
 │
 ├── tests              <- Unit tests for the modules under `steps`
 │
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 ├── .github            <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows run the notebooks
 │                         under `notebooks` to test and deploy model training code
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+├── .azure            <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows run the notebooks
+│                         under `notebooks` to test and deploy model training code
+{% endif -%}
 │
 ├── databricks-config  <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod
 │   ├── staging

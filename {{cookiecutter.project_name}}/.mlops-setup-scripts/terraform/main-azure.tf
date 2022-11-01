@@ -15,7 +15,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "tfstate" {
   // Azure resource names can be at most 24 characters
   name     = substr("{{cookiecutter.project_name_alphanumeric}}", 0, 24)
-  location = "East US"
+  location = var.azure_resource_group_location
 }
 
 resource "azurerm_storage_account" "tfstate" {
@@ -31,13 +31,13 @@ resource "azurerm_storage_account" "tfstate" {
 resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
   storage_account_name  = azurerm_storage_account.tfstate.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "cicd-setup-tfstate" {
   name                  = "cicd-setup-tfstate"
   storage_account_name  = azurerm_storage_account.tfstate.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 output "ARM_ACCESS_KEY" {

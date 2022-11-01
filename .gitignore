@@ -13,10 +13,3 @@ terraform.rc
 __pycache__/
 .cache
 *.pyc
-
-# Exclude local environment directory
-venv
-# Exclude local distribution/packaging directories
-*.egg-info/
-build
-dist

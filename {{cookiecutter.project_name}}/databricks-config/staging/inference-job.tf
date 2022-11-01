@@ -33,7 +33,7 @@ resource "databricks_job" "batch_inference_job" {
 
   git_source {
     url      = var.git_repo_url
-    provider = "gitHub"
+    provider = "{{cookiecutter.cicd_platform}}"
     branch   = "{{cookiecutter.default_branch}}"
   }
 

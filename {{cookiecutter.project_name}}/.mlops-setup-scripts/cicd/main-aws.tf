@@ -30,10 +30,15 @@ module "staging_workspace_cicd" {
   providers = {
     databricks = databricks.staging_sp
   }
+  {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "staging"
+  github_repo_url = var.github_repo_url
+  {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+  git_provider = var.git_provider
+  git_token    = var.git_token
+  {%- endif %}
 }
 
 module "prod_workspace_cicd" {
@@ -41,10 +46,15 @@ module "prod_workspace_cicd" {
   providers = {
     databricks = databricks.prod_sp
   }
+  {%- if cookiecutter.cicd_platform == "gitHub" %}
   git_provider    = var.git_provider
   git_token       = var.git_token
-  github_repo_url = var.github_repo_url
   env             = "prod"
+  github_repo_url = var.github_repo_url
+  {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
+  git_provider = var.git_provider
+  git_token    = var.git_token
+  {%- endif %}
 }
 
 // We produce the service principal API tokens as output, to enable

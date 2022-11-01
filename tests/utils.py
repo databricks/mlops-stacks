@@ -16,13 +16,30 @@ def parametrize_by_cloud(fn):
     return wrapper
 
 
+def parametrize_by_project_generation_params(fn):
+    @pytest.mark.parametrize(
+        "cloud,cicd_platform",
+        [
+            ("aws", "GitHub Actions"),
+            ("azure", "GitHub Actions"),
+            ("azure", "Azure DevOps"),
+        ],
+    )
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
 @pytest.fixture
-def generated_project_dir(tmpdir, cloud):
+def generated_project_dir(tmpdir, cloud, cicd_platform):
     generate(
         tmpdir,
         {
             "project_name": "my-mlops-project",
             "cloud": cloud,
+            "cicd_platform": cicd_platform,
             "mlflow_experiment_parent_dir": "/tmp",
             "databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
             "databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",

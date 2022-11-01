@@ -10,6 +10,7 @@ from utils import (
     paths,
     generated_project_dir,
     parametrize_by_cloud,
+    parametrize_by_project_generation_params,
 )
 from unittest import mock
 
@@ -68,7 +69,7 @@ def assert_no_disallowed_strings_in_files(
         assert_no_disallowed_strings(path)
 
 
-@parametrize_by_cloud
+@parametrize_by_project_generation_params
 def test_no_template_strings_after_param_substitution(generated_project_dir):
     assert_no_disallowed_strings_in_files(
         file_paths=[
@@ -115,20 +116,8 @@ def test_no_databricks_doc_strings_before_project_generation():
     )
 
 
-@parametrize_by_cloud
-def test_yaml_param_substitution(generated_project_dir, cloud):
-    expected_node_type = "Standard_D3_v2" if cloud == "azure" else "i3.xlarge"
-    vars_in_workflow = [
-        "DATABRICKS_HOST: https://adb-3214.67.azuredatabricks.net",
-        f"NODE_TYPE_ID: {expected_node_type}",
-    ]
-    actual_workflow_content = read_workflow(generated_project_dir)
-    for var in vars_in_workflow:
-        assert (var) in actual_workflow_content
-
-
 @pytest.mark.large
-@parametrize_by_cloud
+@parametrize_by_project_generation_params
 def test_markdown_links(generated_project_dir):
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
@@ -245,8 +234,8 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
 
-@parametrize_by_cloud
-def test_generate_project_with_default_values(tmpdir, cloud):
+@parametrize_by_project_generation_params
+def test_generate_project_with_default_values(tmpdir, cloud, cicd_platform):
     """
     Asserts the default parameter values for the stack. The project name and experiment
     parent directory are excluded from this test as they covered in other tests. If this test fails
@@ -255,7 +244,11 @@ def test_generate_project_with_default_values(tmpdir, cloud):
     - The default param values in the substitution logic in the pre_gen_project.py hook are up to date.
     - The default param values in the help strings in cookiecutter.json are up to date.
     """
-    context = {"project_name": TEST_PROJECT_NAME, "cloud": cloud}
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+    }
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)

@@ -1,6 +1,7 @@
 {
   "project_name": "my-mlops-project",
   "cloud": ["azure", "aws"],
+  "cicd_platform": ["GitHub Actions", "Azure DevOps"],
   "mlflow_experiment_parent_dir":  "Parent Databricks workspace directory under which MLflow experiment for the current project will be created. Default: `/{{cookiecutter.project_name}}`",
   "databricks_staging_workspace_host": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: `{%- if cookiecutter.cloud == 'azure' -%} https://adb-xxxx.xx.azuredatabricks.net {%- elif cookiecutter.cloud == 'aws' -%} https://your-staging-workspace.cloud.databricks.com {%- endif -%}`",
   "databricks_prod_workspace_host": "URL of production Databricks workspace. Default: `{%- if cookiecutter.cloud == 'azure' -%} https://adb-xxxx.xx.azuredatabricks.net {%- elif cookiecutter.cloud == 'aws' -%} https://your-prod-workspace.cloud.databricks.com {%- endif -%}`",

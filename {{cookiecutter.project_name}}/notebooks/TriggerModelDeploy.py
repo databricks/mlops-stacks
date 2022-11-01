@@ -4,8 +4,16 @@
 # after the Train.py notebook as part of a multi-task job, in order to trigger model
 # deployment after training completes.
 #
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 # NOTE: In general, you should not need to modify this notebook, unless you are using a CI/CD tool other than
 # GitHub Actions.
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+# Note that we deploy the model to the stage in MLflow Model Registry equivalent to the
+# environment in which the multi-task job is executed (e.g deploy the trained model to
+# stage=Production if triggered in the prod environment). In a practical setting,
+# we would recommend an intermediate step, such as compliance checks between
+# model training and automatically registering the model to the Production stage in prod.
+{% endif -%}
 #
 # This notebook has the following parameters:
 #
@@ -37,7 +45,7 @@ model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
 assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 
-
+{% if cookiecutter.cicd_platform == "gitHub" -%}
 github_repo = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_repo"
 )
@@ -65,3 +73,16 @@ print(
     f"Successfully triggered model CD deployment workflow for {model_uri}. See your CD provider to check the "
     f"status of model deployment"
 )
+
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
+# COMMAND ----------
+from deploy import deploy
+# TODO: Add any additional pre-deployment checks here to ensure model quality before calling
+# `deploy` to push the model to the desired environment.
+deploy(model_uri, env)
+
+# COMMAND ----------
+print(
+    f"Successfully triggered model deployment workflow for {model_uri}"
+)
+{% endif -%}
