@@ -1,4 +1,4 @@
-mlflow[pipelines]==1.29.0
+git+https://github.com/mlflow/mlflow.git@4b259e
 numpy>=1.23.0
 pandas>=1.4.3
 scikit-learn>=1.1.1

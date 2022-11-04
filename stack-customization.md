@@ -45,10 +45,10 @@ parameters substituted-in, and then copy the generated project contents back int
 ## Customize individual components
 
 ### Example ML code
-The default stack provides example ML code using [MLflow pipelines](https://mlflow.org/docs/latest/pipelines.html#).
+The default stack provides example ML code using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html#).
 You may want to customize the example code, e.g. further prune it down into a skeleton for data scientists
-to fill out, or remove and replace the use of MLflow Pipelines if you expect data scientists to work on problem
-types that are currently unsupported by MLflow Pipelines. 
+to fill out, or remove and replace the use of MLflow Recipes if you expect data scientists to work on problem
+types that are currently unsupported by MLflow Recipes. 
 
 If you customize this component, you can still use the CI/CD and ML resource components to build production ML pipelines, as long as you provide ML
 notebooks with the expected interface for model training and inference under

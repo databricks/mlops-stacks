@@ -45,10 +45,10 @@ current ML project.
 
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
-* [databricks-test.yaml](../profiles/databricks-test.yaml): specify pipeline configs to use in integration tests
-* [databricks-staging.yaml](../profiles/databricks-staging.yaml): specify pipeline configs to use in recurring model training and batch inference
+* [databricks-test.yaml](../profiles/databricks-test.yaml): specify recipe configs to use in integration tests
+* [databricks-staging.yaml](../profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
   jobs that run in the staging workspace
-* [databricks-prod.yaml](../profiles/databricks-prod.yaml) specify pipeline configs to use in recurring model training and batch inference
+* [databricks-prod.yaml](../profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
   jobs that run in the prod workspace
 
 ## Merge a PR with your initial ML code

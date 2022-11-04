@@ -2,7 +2,7 @@
 ##################################################################################
 # Model Training Notebook
 ##
-# This notebook runs the MLflow Regression Pipeline to train and registers an MLflow model in the model registry.
+# This notebook runs the MLflow Regression Recipe to train and registers an MLflow model in the model registry.
 #
 # It's run as part of CI (to integration-test model training logic) and by an automated model training job
 # defined under ``databricks-config``
@@ -11,7 +11,7 @@
 # and model training logic in Python modules under the `steps` directory.
 # Modifying this notebook can break model training CI/CD.
 #
-# However, if you do need to make changes (e.g. to remove the use of MLflow Pipelines APIs),
+# However, if you do need to make changes (e.g. to remove the use of MLflow Recipes APIs),
 # be sure to preserve the following interface expected by CI and the production model training job:
 #
 # Parameters:
@@ -33,9 +33,9 @@
 #              dbutils.notebook.exit() AND as a task value with key "model_uri" specified through
 #              dbutils.jobs.taskValues(...), for use by downstream notebooks.
 #
-# For details on MLflow Pipelines and the individual split, transform, train etc steps below, including usage examples,
-# see the Regression Pipeline overview documentation: https://mlflow.org/docs/latest/pipelines.html#regression-pipeline
-# and Regression Pipeline API documentation: https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline
+# For details on MLflow Recipes and the individual split, transform, train etc steps below, including usage examples,
+# see the Regression Recipe overview documentation: https://mlflow.org/docs/latest/pipelines.html#regression-pipeline
+# and Regression Recipes API documentation: https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline
 ##################################################################################
 
 # COMMAND ----------
@@ -58,9 +58,9 @@ profile = f"databricks-test" if test_mode else f"databricks-{env}"
 
 # COMMAND ----------
 
-from mlflow.pipelines import Pipeline
+from mlflow.recipes import Recipe
 
-p = Pipeline(profile=profile)
+p = Recipe(profile=profile)
 
 # COMMAND ----------
 
