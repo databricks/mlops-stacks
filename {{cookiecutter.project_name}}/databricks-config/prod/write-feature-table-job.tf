@@ -1,5 +1,5 @@
-resource "databricks_job" "model_training_job" {
-  name = "${local.env_prefix}{{cookiecutter.project_name}}-model-training-job"
+resource "databricks_job" "write_feature_table_job" {
+  name = "${local.env_prefix}{{cookiecutter.project_name}}-write-feature-table-job"
 
   # Optional validation: we include it here for convenience, to help ensure that the job references a notebook
   # that exists in the current repo. Note that Terraform >= 1.2 is required to use these validations
@@ -11,46 +11,48 @@ resource "databricks_job" "model_training_job" {
   }
 
   task {
-    task_key = "Train"
+    task_key = "PickupFeatures"
 
-    {% if cookiecutter.include_feature_store %}notebook_task {
-      notebook_path = "notebooks/TrainWithFeatureStore"
-      base_parameters = {
-        env                = local.env
-        training_data_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
-        experiment_name    = databricks_mlflow_experiment.experiment.name
-        model_name         = "${local.env_prefix}{{cookiecutter.model_name}}"
-      }
-    }
-    {%- else -%}notebook_task {
-      notebook_path = "notebooks/Train"
+    notebook_task {
+      notebook_path = "notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         env = local.env
+        # TODO modify these arguments to reflect your setup.
+        input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
+        # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.
+        input_start_date          = ""
+        input_end_date            = ""
+        timestamp_column          = "tpep_pickup_datetime"
+        output_table_name         = "feature_store_taxi_example.trip_pickup_features"
+        features_transform_module = "pickup_features"
+        primary_keys              = "zip"
       }
-    }{% endif %}
+    }
 
     new_cluster {
       num_workers   = 3
       spark_version = "11.0.x-cpu-ml-scala2.12"
       node_type_id  = "{{cookiecutter.cloud_specific_node_type_id}}"
-      # We set the job cluster to single user mode to enable your training job to access
-      # the Unity Catalog.
-      single_user_name   = data.databricks_current_user.service_principal.user_name
-      data_security_mode = "SINGLE_USER"
-      custom_tags        = { "clusterSource" = "mlops-stack/0.0" }
+      custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
     }
   }
 
   task {
-    task_key = "TriggerModelDeploy"
-    depends_on {
-      task_key = "Train"
-    }
+    task_key = "DropoffFeatures"
 
     notebook_task {
-      notebook_path = "notebooks/TriggerModelDeploy"
+      notebook_path = "notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         env = local.env
+        # TODO: modify these arguments to reflect your setup.
+        input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
+        # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.
+        input_start_date          = ""
+        input_end_date            = ""
+        timestamp_column          = "tpep_dropoff_datetime"
+        output_table_name         = "feature_store_taxi_example.trip_dropoff_features"
+        features_transform_module = "dropoff_features"
+        primary_keys              = "zip"
       }
     }
 
@@ -80,3 +82,4 @@ resource "databricks_job" "model_training_job" {
   #    on_failure: []
   #  }
 }
+

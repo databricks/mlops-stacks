@@ -12,6 +12,13 @@ def remove_filepath(filepath):
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
+include_feature_store = {{cookiecutter.include_feature_store}}
+
+mlp_paths = [
+    os.path.join("profiles"),
+    os.path.join("notebooks", "Train.py"),
+    os.path.join("pipeline.yaml")
+]
 
 cloud_specific_paths = {
     "azure": [
@@ -53,6 +60,10 @@ if project_name != "27896cf3-bb3e-476e-8129-96df0406d5c7":
     for path in test_paths:
         os.remove(path)
 
+# Remove MLP code in cases of Feature Store (they are not used).
+if include_feature_store:
+    for path in mlp_paths:
+        os.remove(path)
 
 readme_path = os.path.join(os.getcwd(), "README.md")
 print(
