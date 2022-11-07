@@ -7,10 +7,10 @@ on:
 
 env:
   DATABRICKS_HOST: {{cookiecutter.databricks_staging_workspace_host}}
-  NODE_TYPE_ID: {{ cookiecutter.cloud_specific_node_type_id}}
-  {%- if cookiecutter.cloud == "aws" -%}
+  NODE_TYPE_ID: {{cookiecutter.cloud_specific_node_type_id}}
+  {% if cookiecutter.cloud == "aws" -%}
   DATABRICKS_TOKEN: {% raw %}${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
-  {%- endif -%}
+  {%- endif %}
 
 concurrency: {{cookiecutter.project_name}}-feature-training-integration-test-staging
 
