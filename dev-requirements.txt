@@ -1,4 +1,4 @@
-cookiecutter>=2.2.0
+cookiecutter>=2.1.0
 pytest
 pytest-black
 mlflow[pipelines]>=1.29.0
