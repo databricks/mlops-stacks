@@ -1,5 +1,8 @@
 # Databricks MLOps Stack
 
+> **_NOTE:_**  This feature is in [private preview](https://docs.databricks.com/release-notes/release-types.html). The interface/APIs may change and no formal support is available during the preview. However, you can still create new production-grade ML projects using the stack.
+If interested in trying it out, please fill out this [form](https://docs.google.com/forms/d/e/1FAIpQLSfHXCmkbsEURjQQvtUGObgh2D5q1eD4YRHnUxZ0M4Hu0W63WA/viewform) and you’ll be contacted by a Databricks representative.
+
 This repo provides a customizable stack for starting new ML projects
 on Databricks that follow production best-practices out of the box.
 
