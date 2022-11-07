@@ -60,52 +60,52 @@ profile = f"databricks-test" if test_mode else f"databricks-{env}"
 
 from mlflow.recipes import Recipe
 
-p = Recipe(profile=profile)
+r = Recipe(profile=profile)
 
 # COMMAND ----------
 
-p.clean()
+r.clean()
 
 # COMMAND ----------
 
-p.inspect()
+r.inspect()
 
 # COMMAND ----------
 
-p.run("ingest")
+r.run("ingest")
 
 # COMMAND ----------
 
-p.run("split")
+r.run("split")
 
 # COMMAND ----------
 
-p.run("transform")
+r.run("transform")
 
 # COMMAND ----------
 
-p.run("train")
+r.run("train")
 
 # COMMAND ----------
 
-p.run("evaluate")
+r.run("evaluate")
 
 # COMMAND ----------
 
-p.run("register")
+r.run("register")
 
 # COMMAND ----------
 
-p.inspect("train")
+r.inspect("train")
 
 # COMMAND ----------
 
-test_data = p.get_artifact("test_data")
+test_data = r.get_artifact("test_data")
 test_data.describe()
 
 # COMMAND ----------
 
-model_version = p.get_artifact("registered_model_version")
+model_version = r.get_artifact("registered_model_version")
 model_uri = f"models:/{model_version.name}/{model_version.version}"
 dbutils.jobs.taskValues.set("model_uri", model_uri)
 dbutils.notebook.exit(model_uri)
