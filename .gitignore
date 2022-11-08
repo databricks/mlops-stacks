@@ -13,3 +13,4 @@ terraform.rc
 __pycache__/
 .cache
 *.pyc
+mlops-stack.iml

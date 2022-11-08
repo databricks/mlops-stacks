@@ -1,16 +1,16 @@
-# `pipeline.yaml` is the main configuration file for an MLflow Pipeline.
-# Required pipeline parameters should be defined in this file with either concrete values or
+# `recipe.yaml` is the main configuration file for an MLflow Recipe.
+# Required recipe parameters should be defined in this file with either concrete values or
 # variables such as {%raw-%}{{ INGEST_DATA_LOCATION }}.{%endraw%}
 
 # Variables must be dereferenced in a profile YAML file, located under `profiles/`.
 # See `profiles/local.yaml` for example usage. One may switch among profiles quickly by
-# providing a profile name such as `local` in the Pipeline object constructor:
-# `p = Pipeline(profile="local")`
+# providing a profile name such as `local` in the Recipe object constructor:
+# `r = Recipe(profile="local")`
 #
 # NOTE: YAML does not support tabs for indentation. Please use spaces and ensure that all YAML
 # files are properly formatted.
 
-template: "regression/v1"
+recipe: "regression/v1"
 # Specifies the dataset to use for model development
 data:
   # Dataset locations on the local filesystem are supported, as well as HTTP(S) URLs and
@@ -85,5 +85,5 @@ metrics:
       function: weighted_mean_squared_error
       greater_is_better: False
   # Sets the primary metric to use to evaluate model performance. This primary metric is used
-  # to sort MLflow Runs corresponding to the pipeline in the MLflow Tracking UI
+  # to sort MLflow Runs corresponding to the recipe in the MLflow Tracking UI
   primary: "root_mean_squared_error"

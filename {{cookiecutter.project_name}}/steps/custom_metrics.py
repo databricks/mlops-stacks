@@ -1,10 +1,10 @@
 """
 This module defines custom metric functions that are invoked during the 'train' and 'evaluate'
 steps to provide model performance insights. Custom metric functions defined in this module are
-referenced in the ``metrics`` section of ``pipeline.yaml``, for example:
+referenced in the ``metrics`` section of ``recipe.yaml``, for example:
 
 .. code-block:: yaml
-    :caption: Example custom metrics definition in ``pipeline.yaml``
+    :caption: Example custom metrics definition in ``recipe.yaml``
 
     metrics:
       custom:
