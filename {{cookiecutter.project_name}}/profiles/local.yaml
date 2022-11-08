@@ -15,11 +15,13 @@ INGEST_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#ingest-step
   using: parquet
   location: "./data/sample.parquet"
+  custom_loader_method: steps.ingest.load_file_as_dataframe
 
 INGEST_SCORING_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#batch-scoring
   using: parquet
   location: "./data/sample.parquet"
+  custom_loader_method: steps.ingest.load_file_as_dataframe
 
 PREDICT_OUTPUT_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#predict-step

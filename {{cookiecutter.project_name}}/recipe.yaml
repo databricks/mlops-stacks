@@ -55,5 +55,3 @@ custom_metrics:
       # Specifies the name of the function in `steps/custom_metrics.py` to use to compute the metric
       function: weighted_mean_squared_error
       greater_is_better: False
-
-

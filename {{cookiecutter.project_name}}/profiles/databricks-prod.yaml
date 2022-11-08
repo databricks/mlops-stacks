@@ -16,11 +16,13 @@ INGEST_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#ingest-step
   using: spark_sql
   sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+  custom_loader_method: steps.ingest.load_file_as_dataframe
 
 INGEST_SCORING_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#batch-scoring
   using: spark_sql
   sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+  custom_loader_method: steps.ingest.load_file_as_dataframe
 
 PREDICT_OUTPUT_CONFIG:
   # For different options please read: https://github.com/mlflow/mlp-regression-template#predict-step
