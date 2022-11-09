@@ -63,7 +63,19 @@ jobs:
                     "primary_keys": "zip"
                   }
                 },
-                "existing_cluster_id": "0729-223229-zfjw22fr"
+                "new_cluster": {
+                  "spark_version": "11.0.x-cpu-ml-scala2.12",
+                  {% raw %}"node_type_id": "${{ env.NODE_TYPE_ID }}",{% endraw %}
+                  "num_workers": 0,
+                  "spark_conf": {
+                    "spark.databricks.cluster.profile": "singleNode",
+                    "spark.master": "local[*, 4]"
+                  },
+                  "custom_tags": {
+                    "ResourceClass": "SingleNode",
+                    "clusterSource": "mlops-stack/0.0"
+                  }
+                }
               },
               {
                 "task_key": "dropoff-features",
@@ -79,7 +91,19 @@ jobs:
                     "primary_keys": "zip"
                   }
                 },
-                "existing_cluster_id": "0729-223229-zfjw22fr"
+                "new_cluster": {
+                  "spark_version": "11.0.x-cpu-ml-scala2.12",
+                  {% raw %}"node_type_id": "${{ env.NODE_TYPE_ID }}",{% endraw %}
+                  "num_workers": 0,
+                  "spark_conf": {
+                    "spark.databricks.cluster.profile": "singleNode",
+                    "spark.master": "local[*, 4]"
+                  },
+                  "custom_tags": {
+                    "ResourceClass": "SingleNode",
+                    "clusterSource": "mlops-stack/0.0"
+                  }
+                }
               },
               {
                 "task_key": "training",
@@ -101,7 +125,19 @@ jobs:
                     "model_name": "{{cookiecutter.model_name}}-test"
                   }
                 },
-                "existing_cluster_id": "0729-223229-zfjw22fr"
+                "new_cluster": {
+                  "spark_version": "11.0.x-cpu-ml-scala2.12",
+                  {% raw %}"node_type_id": "${{ env.NODE_TYPE_ID }}",{% endraw %}
+                  "num_workers": 0,
+                  "spark_conf": {
+                    "spark.databricks.cluster.profile": "singleNode",
+                    "spark.master": "local[*, 4]"
+                  },
+                  "custom_tags": {
+                    "ResourceClass": "SingleNode",
+                    "clusterSource": "mlops-stack/0.0"
+                  }
+                }
               }
             ],
             "git_source": {
