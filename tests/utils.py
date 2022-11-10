@@ -20,13 +20,13 @@ def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
         "cloud,cicd_platform,include_feature_store",
         [
-            ("aws", "GitHub Actions", False),
-            ("azure", "GitHub Actions", False),
-            ("azure", "Azure DevOps", False),
-            ("aws", "GitHub Actions", True),
-            ("azure", "GitHub Actions", True),
+            ("aws", "GitHub Actions", "no"),
+            ("azure", "GitHub Actions", "no"),
+            ("azure", "Azure DevOps", "no"),
+            ("aws", "GitHub Actions", "yes"),
+            ("azure", "GitHub Actions", "yes"),
             #  ADO + Feature Store is not supported yet.
-            # ("azure", "Azure DevOps", True),
+            # ("azure", "Azure DevOps", "yes""),
         ],
     )
     @wraps(fn)

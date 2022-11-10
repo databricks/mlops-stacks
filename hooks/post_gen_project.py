@@ -12,7 +12,7 @@ def remove_filepath(filepath):
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
-include_feature_store = {{cookiecutter.include_feature_store}}
+include_feature_store = "{{cookiecutter.include_feature_store}}"
 
 mlp_paths = [
     os.path.join("profiles"),
@@ -74,7 +74,7 @@ if project_name != "27896cf3-bb3e-476e-8129-96df0406d5c7":
         os.remove(path)
 
 # Remove MLP code in cases of Feature Store (they are not used).
-if include_feature_store:
+if include_feature_store == "yes":
     for path in mlp_paths:
         remove_filepath(path)
 # Remove Feature Store code if not selected.

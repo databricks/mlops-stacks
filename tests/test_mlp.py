@@ -19,7 +19,7 @@ from mlflow.recipes import Recipe
 def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
     # There's no MLP YAML configs generated when feature store is added,
     # so skip test in that case.
-    if include_feature_store:
+    if include_feature_store == "yes":
         return
     project_dir = generated_project_dir / "my-mlops-project"
     os.chdir(project_dir / "notebooks")

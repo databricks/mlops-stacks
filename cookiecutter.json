@@ -8,6 +8,6 @@
   "default_branch": "Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default: `main`",
   "release_branch": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default: `release`",
   "read_user_group": "Display name of the user group to give read permissions to the ML jobs, integration test job runs, and machine learning resources created for this project. A group with this name must exist in both the staging and prod workspaces. Default: `users`",
-  "include_feature_store": false,
+  "include_feature_store": ["no", "yes"],
   "_extensions": ["local_extensions.generate_doc_link", "local_extensions.regex_replace", "local_extensions.get_host"]
 }

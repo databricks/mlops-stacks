@@ -16,7 +16,7 @@ resource "databricks_permissions" "training_job_permissions" {
   }
 }
 
-{% if cookiecutter.include_feature_store %}
+{% if cookiecutter.include_feature_store == "yes" %}
 resource "databricks_permissions" "feature_job_permissions" {
   job_id = databricks_job.write_feature_table_job.id
 

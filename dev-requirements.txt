@@ -1,4 +1,4 @@
-cookiecutter>=2.2.0
+cookiecutter>=2.1.0
 pytest
 pytest-black
 git+https://github.com/mlflow/mlflow.git@4b259e

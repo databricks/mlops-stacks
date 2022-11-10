@@ -24,7 +24,7 @@ This project contains the following components:
 contained in the following files:
 
 ```
-{% if cookiecutter.include_feature_store -%}
+{% if cookiecutter.include_feature_store == "yes" -%}
 ├── features              <- Feature computation code (Python modules) that implements the feature transforms. 
 │                         The output of these transforms get persisted as Feature Store tables. Most development
 │                         work happens here.
