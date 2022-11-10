@@ -44,6 +44,7 @@ jobs:
         uses: actions/github-script@v6
         id: integration-test-content
         with:
+          # TODO update the tasks and notebook parameters below to match your integration test setup.
           script: |
             const output = `
                     {
@@ -52,7 +53,7 @@ jobs:
               {
                 "task_key": "pickup-features",
                 "notebook_task": {
-                  "notebook_path": "notebooks/GenerateAndWriteFeatures",
+                  "notebook_path": "notebooks/GenerateAndWriteFeatures", 
                   "base_parameters": {
                     "env": "staging",
                     "test_mode": "True",
@@ -81,7 +82,7 @@ jobs:
                 "task_key": "dropoff-features",
                 "notebook_task": {
                   "notebook_path": "notebooks/GenerateAndWriteFeatures",
-                  "base_parameters": {
+                  "base_parameters": {                    
                     "env": "staging",
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",

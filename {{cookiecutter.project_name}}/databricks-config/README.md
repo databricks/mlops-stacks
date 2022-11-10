@@ -76,7 +76,7 @@ batch inference job.
 ### Setting up batch inference job
 The batch inference job expects an input Delta table that with a schema that your registered model accepts. To use the batch
 inference job, set up such a Delta table in both your staging and prod workspace.
-Then, resolve the TODOS in `staging/inference-job.tf` and `prod/inference-job.tf`, passing
+Then, resolve the TODOs in `staging/inference-job.tf` and `prod/inference-job.tf`, passing
 the name of the input Delta table and the name of the output Delta table to which to write
 batch predictions as job parameters.
 
