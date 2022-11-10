@@ -1,26 +1,30 @@
 experiment:
   name: {% raw -%}{{ ('../databricks-config/output/staging.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_experiment_name"]["value"]{% raw-%}}}{% endraw %}
 
-# TODO: update this field to point to the path to your model training dataset on your staging Databricks workspace,
-# to be used in the staging instance of your ML jobs. For example, you may want to create a downsampled version of your
-# full production dataset and specify its path here.
-INGEST_DATA_LOCATION: dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled
-# TODO: Specify the format of the dataset
-# See https://github.com/mlflow/mlp-regression-template/blob/35f6f32c7a89dc655fbcfcf731cc1da4685a8ebb/pipeline.yaml#L15-L32
-# for details on supported formats
-INGEST_DATA_FORMAT: spark_sql
+# Set the registry server URI. This property is especially useful if you have a registry
+# server that’s different from the tracking server.
+model_registry:
+  # The MLflow registered model name under which to register model versions
+  # In prod, we log to the model provisioned through ML configs under databricks-config
+  # See databricks-config/README.md for details
+  model_name: {% raw -%}{{ ('../databricks-config/output/staging.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_model_name"]["value"]{% raw-%}}}{% endraw %}
+
 # Override the default train / validation / test dataset split ratios
 SPLIT_RATIOS: [0.75, 0.125, 0.125]
 
-# TODO: Specify the name/path of the input table for batch inference in your staging workspace here
-INGEST_SCORING_DATA_LOCATION: dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled
-# TODO: Specify the format of the dataset
-INGEST_SCORING_DATA_FORMAT: spark_sql
-# TODO: Specify the name of the output table for batch inference in your prod workspace here
-SCORED_OUTPUT_DATA_LOCATION: "{{cookiecutter.project_name}}_batch_scoring"
-# Specify the output format of the batch scoring predict step
-SCORED_OUTPUT_DATA_FORMAT: table
-# The MLflow registered model name under which to register model versions
-# In prod, we log to the model provisioned through ML configs under databricks-config
-# See databricks-config/README.md for details
-MODEL_NAME: {% raw -%}{{ ('../databricks-config/output/staging.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_model_name"]["value"]{% raw-%}}}{% endraw %}
+INGEST_CONFIG:
+  # For different options please read: https://github.com/mlflow/mlp-regression-template#ingest-step
+  using: spark_sql
+  sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+  custom_loader_method: steps.ingest.load_file_as_dataframe
+
+INGEST_SCORING_CONFIG:
+  # For different options please read: https://github.com/mlflow/mlp-regression-template#batch-scoring
+  using: spark_sql
+  sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+  custom_loader_method: steps.ingest.load_file_as_dataframe
+
+PREDICT_OUTPUT_CONFIG:
+  # For different options please read: https://github.com/mlflow/mlp-regression-template#predict-step
+  using: table
+  location: "{{cookiecutter.project_name}}_batch_scoring"

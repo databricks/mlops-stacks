@@ -9,34 +9,34 @@
 
 ## Initial setup
 This project comes with example ML code to train a regression model to predict NYC taxi fares using
-[MLflow pipelines](https://mlflow.org/docs/latest/pipelines.html).
+[MLflow recipes](https://mlflow.org/docs/latest/pipelines.html).
 The subsequent sections explain how to adapt the example code to your ML problem and quickly get
 started iterating on model training code.
 
-**Note**: MLflow Pipelines currently supports regression problems, with support for other problem types (classification, etc)
-planned for the future. Usage of MLflow Pipelines is encouraged but not required: you can still use the provided
+**Note**: MLflow Recipes currently supports regression problems, with support for other problem types (classification, etc)
+planned for the future. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
 CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks for model training and inference under `notebooks`.
 See code comments in files under `notebooks/` for the expected interface & behavior of these notebooks.
 
-If you're not using MLflow Pipelines, you can still follow the docs below to develop your ML code, skipping sections
-that are targeted at MLflow Pipelines users. Then, when you're ready
+If you're not using MLflow Recipes, you can still follow the docs below to develop your ML code, skipping sections
+that are targeted at MLflow Recipes users. Then, when you're ready
 to productionize your ML project, ask your ops team to set up CI/CD and deploy
 production jobs per the [MLOps setup guide](./mlops-setup.md).
 
 ### Configure your ML pipeline
-**This section assumes use of MLflow Pipelines**.
+**This section assumes use of MLflow Recipes**.
 
-Address TODOs in the pipeline configs under `pipeline.yaml`, `profiles/databricks-dev.yaml`,
+Address TODOs in the recipe configs under `recipe.yaml`, `profiles/databricks-dev.yaml`,
 and `profiles/local.yaml`, specifying configs such as the training dataset path(s) to use when developing
 locally or on Databricks.
 
-For details on the meaning of pipeline configurations, see the comments in [this example pipeline.yaml](https://github.com/mlflow/mlp-regression-template/blob/main/pipeline.yaml).
-The purpose and behavior of the individual pipeline steps (`ingest`, `train`, etc) being configured are also
+For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/mlp-regression-template/blob/main/pipeline.yaml).
+The purpose and behavior of the individual recipe steps (`ingest`, `train`, etc) being configured are also
 described in detail in
-the [Regression Pipeline overview](https://mlflow.org/docs/latest/pipelines.html#regression-pipeline)
+the [Regression Recipe overview](https://mlflow.org/docs/latest/pipelines.html#regression-pipeline)
 and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline).
 
-After configuring your pipeline, you can iterate on and test ML code under ``steps``.
+After configuring your recipe, you can iterate on and test ML code under ``steps``.
 We expect most development to take place in the abovementioned YAML config files and
 `steps/train.py` (model training logic).
 
@@ -71,11 +71,11 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 You can iterate on ML code by running the provided `notebooks/Train.py` notebook on Databricks using
 [Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}). This notebook drives execution of
 the ML code defined under ``steps``. You can use multiple browser tabs to edit
-logic in `steps` and run the training pipeline in the `Train.py` notebook.
+logic in `steps` and run the training recipe in the `Train.py` notebook.
 
 
 ### Develop locally
-**Note: this section assumes use of MLflow Pipelines**.
+**Note: this section assumes use of MLflow Recipes**.
 
 You can also iterate on ML code locally.
 
@@ -85,7 +85,7 @@ You can also iterate on ML code locally.
 
 #### Trigger model training
 Run `mlp run --profile local` to trigger training locally. See the
-[MLflow pipelines CLI docs](https://mlflow.org/docs/latest/pipelines.html#pipelines-key-concept) for details.
+[MLflow recipes CLI docs](https://mlflow.org/docs/latest/pipelines.html#pipelines-key-concept) for details.
 
 #### Inspect results in the UI
 To facilitate saving and sharing results from local iteration with collaborators, we recommend configuring your

@@ -2,7 +2,7 @@ from utils import generated_project_dir, parametrize_by_project_generation_param
 import pytest
 import os
 import json
-from mlflow.pipelines import Pipeline
+from mlflow.recipes import Recipe
 
 
 @pytest.mark.parametrize(
@@ -37,4 +37,4 @@ def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
             },
         }
         tf_output_file.write_text(json.dumps(fake_terraform_output), encoding="utf-8")
-    Pipeline(profile)
+    Recipe(profile)

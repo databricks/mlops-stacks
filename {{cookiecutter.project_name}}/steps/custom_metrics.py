@@ -1,10 +1,10 @@
 """
 This module defines custom metric functions that are invoked during the 'train' and 'evaluate'
 steps to provide model performance insights. Custom metric functions defined in this module are
-referenced in the ``metrics`` section of ``pipeline.yaml``, for example:
+referenced in the ``metrics`` section of ``recipe.yaml``, for example:
 
 .. code-block:: yaml
-    :caption: Example custom metrics definition in ``pipeline.yaml``
+    :caption: Example custom metrics definition in ``recipe.yaml``
 
     metrics:
       custom:
@@ -22,7 +22,7 @@ from sklearn.metrics import mean_squared_error
 def weighted_mean_squared_error(
     eval_df: DataFrame,
     builtin_metrics: Dict[str, int],  # pylint: disable=unused-argument
-) -> Dict[str, int]:
+) -> int:
     """
     Computes the weighted mean squared error (MSE) metric.
 
@@ -40,10 +40,8 @@ def weighted_mean_squared_error(
              the value is the scalar metric value. Note that custom metric functions can return
              dictionaries with multiple metric entries as well.
     """
-    return {
-        "weighted_mean_squared_error": mean_squared_error(
-            eval_df["prediction"],
-            eval_df["target"],
-            sample_weight=1 / eval_df["prediction"].values,
-        )
-    }
+    return mean_squared_error(
+        eval_df["prediction"],
+        eval_df["target"],
+        sample_weight=1 / eval_df["prediction"].values,
+    )

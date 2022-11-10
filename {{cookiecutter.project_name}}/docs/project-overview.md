@@ -17,7 +17,7 @@ This project contains the following components:
 
 | Component                  | Description                                                                                                                                     |
 |----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow pipelines](https://mlflow.org/docs/latest/pipelines.html)  |
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html)  |
 | ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) defined through [Terraform]({{ "dev-tools/terraform/index.html"   | generate_doc_link(cookiecutter.cloud) }}) |
 | CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %}                                                 |
 
@@ -38,15 +38,15 @@ contained in the following files:
 ├── tests              <- Unit tests for the modules under `features`.
 │
 {% else -%}
-├── steps              <- MLflow pipeline steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
-│                         development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details.
+├── steps              <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
+│                         development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details
 │
-├── notebooks          <- Databricks notebooks that run the MLflow pipeline, i.e. run the logic in `steps`. Used to
+├── notebooks          <- Databricks notebooks that run the MLflow recipe, i.e. run the logic in `steps`. Used to
 │                         drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
 │                         these notebooks.
 │
-│── pipeline.yaml      <- The main pipeline configuration file that declaratively defines the attributes and behavior
-│                         of each pipeline step, such as the input dataset to use for training a model or the
+│── recipe.yaml      <- The main recipe configuration file that declaratively defines the attributes and behavior
+│                         of each recipe step, such as the input dataset to use for training a model or the
 │                         performance criteria for promoting a model to production.
 │
 ├── profiles           <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow pipeline execution.

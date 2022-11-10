@@ -1,5 +1,5 @@
 """
-This module defines the following routines used by the 'split' step of the regression pipeline:
+This module defines the following routines used by the 'split' step of the regression recipe:
 
 - ``process_splits``: Defines customizable logic for processing & cleaning the training, validation,
   and test datasets produced by the data splitting procedure.
