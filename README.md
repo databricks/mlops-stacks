@@ -10,13 +10,13 @@ The default stack in this repo includes three modular components:
 
 | Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html)                     | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
+| ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                     | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
 | ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
 | CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
 Your organization can use the default stack as is or customize it as needed, e.g. to add/remove components or
-adapt individual components to fit your organization's best practices. See the 
+adapt individual components to fit your organization's best practices. See the
 [stack customization guide](stack-customization.md) for more details.
 
 Using Databricks MLOps stacks, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
@@ -43,14 +43,14 @@ $ pip install 'cookiecutter>=2.1.0'
 
 ### Starting a new project
 
-To create a new project, run: 
+To create a new project, run:
 
     cookiecutter https://github.com/databricks/mlops-stack
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``project_name``: name of the current project
  * ``cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
- * ``cicd_platform`` : CI/CD platform of choice (azureDevOpsServices or gitHub) 
+ * ``cicd_platform`` : CI/CD platform of choice (azureDevOpsServices or gitHub)
 
 Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
 ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know
@@ -115,7 +115,7 @@ You might find the following resources useful for data processing:
 * [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html): a framework for declaring ETL pipelines on Databricks.
 * [dlt-meta](https://github.com/databricks/dlt-meta): an example stack with CI/CD for [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html) pipelines.
 
-We recommend persisting your features in the [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store) which is integrated 
+We recommend persisting your features in the [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store) which is integrated
 with model training and serving.
 
 If you do want to extend the Databricks MLOps stack for ETL and have questions or feature requests, please reach out as explained below.
@@ -155,7 +155,7 @@ pytest tests
 ```
 
 Run all tests (unit and slower integration tests):
-   
+
 ```
 pytest tests --large
 ```
@@ -170,7 +170,7 @@ pytest tests --large-only
 When making changes to the stack, it can be convenient to see how those changes affect
 an actual new ML project created from the stack. To do this, you can create an example
 project from your local checkout of the stack, and inspect its contents/run tests within
-the project. 
+the project.
 
 We provide example project configs for Azure (using both GitHub and Azure DevOps) and AWS (using GitHub) under `tests/example-project-configs`.
 To create an example Azure project, using Azure DevOps as the CI/CD platform, run the following from the desired parent directory
@@ -179,7 +179,7 @@ of the example project:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.yaml" --no-input --overwrite-if-exists 
+cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.yaml" --no-input --overwrite-if-exists
 ```
 
 To create an example AWS project, using GitHub Actions for CI/CD, run:
