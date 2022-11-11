@@ -21,7 +21,7 @@ DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",
     "read_user_group": "users",
-    "include_feature_store": "no"
+    "include_feature_store": "no",
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",
@@ -236,7 +236,9 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
 
 
 @parametrize_by_project_generation_params
-def test_generate_project_with_default_values(tmpdir, cloud, cicd_platform, include_feature_store):
+def test_generate_project_with_default_values(
+        tmpdir, cloud, cicd_platform, include_feature_store
+):
     """
     Asserts the default parameter values for the stack. The project name and experiment
     parent directory are excluded from this test as they covered in other tests. If this test fails
