@@ -40,7 +40,12 @@ jobs:
       - name: Generate AAD Token
         {% raw %}run: ./.github/workflows/scripts/generate-aad-token.sh ${{ secrets.STAGING_AZURE_SP_TENANT_ID }} ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }} ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
         {%- endif %}
-      - name: Fetch integration test
+      # This step populates a JSON Databricks job payload that will be submitted as an integration test run.
+      # It currently builds a one-off multi-task job that contains feature engineering tasks to populate Feature
+      # Store tables, and a training task that uses those tables. 
+      # You will need to modify the contents below to fit your pipelines (both # of tasks and input parameters for each
+      # task).
+      - name: Build JSON job payload for integration test
         uses: actions/github-script@v6
         id: integration-test-content
         with:
