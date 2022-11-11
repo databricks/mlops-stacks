@@ -237,7 +237,7 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
 
 @parametrize_by_project_generation_params
 def test_generate_project_with_default_values(
-        tmpdir, cloud, cicd_platform, include_feature_store
+    tmpdir, cloud, cicd_platform, include_feature_store
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
