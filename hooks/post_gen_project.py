@@ -22,7 +22,8 @@ mlp_paths = [
     os.path.join("tests", "split_test.py"),
     os.path.join("tests", "train_test.py"),
     os.path.join("tests", "test_sample.parquet"),
-    os.path.join("tests", "transform_test.py")
+    os.path.join("tests", "transform_test.py"),
+    os.path.join("docs", "ml-developer-guide.md"),
 ]
 
 feature_store_paths = [
@@ -30,7 +31,8 @@ feature_store_paths = [
     os.path.join("databricks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yaml"),
     os.path.join("databricks-config", "prod", "write-feature-table-job.tf"),
-    os.path.join("databricks-config", "staging", "write-feature-table-job.tf")
+    os.path.join("databricks-config", "staging", "write-feature-table-job.tf"),
+    os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 
 cloud_specific_paths = {
