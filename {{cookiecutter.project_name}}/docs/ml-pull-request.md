@@ -13,7 +13,10 @@ ML resources, per the [MLOps setup guide](./mlops-setup.md).
 * [Next steps](#next-steps)
 
 ## Intro
-After following the [ML developer guide](./ml-developer-guide.md) to iterate on ML code, the next step is to get
+After following the
+{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](./ml-developer-guide-fs.md).
+{% else %}[ML quickstart](./ml-developer-guide.md).{% endif %}
+to iterate on ML code, the next step is to get
 your updated code merged back into the repo for production use. This page walks you through the workflow
 for doing so via a pull request.
 

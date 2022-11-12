@@ -8,7 +8,7 @@
 * [Next steps](#next-steps)
 
 ## Initial setup
-This project comes with [sample ML code]({{ "_static/notebooks/machine-learning/feature-store-taxi-example.html" | generate_doc_link(cookiecutter.cloud) }})
+This project comes with [sample ML code]({{ "machine-learning/feature-store/workflow-overview-and-notebook.html#example-notebook" | generate_doc_link(cookiecutter.cloud) }})
 that illustrates the use of Feature Store to create a model that predicts NYC Yellow Taxi fares.
 
 The subsequent sections explain how to adapt the sample code to your ML problem and quickly get
