@@ -80,7 +80,7 @@ You can iterate on the feature transform modules locally in your favorite IDE be
 #### Prerequisites
 * Python 3.8+
 * Install feature engineering code and test dependencies via `pip install -I -r requirements.txt -r test-requirements.txt`.
-
+* The features transform code uses PySpark and brings up a local Spark instance for testing, so [Java (version 8 and later) is required](https://spark.apache.org/docs/latest/#downloading). 
 #### Run unit tests
 You can run unit tests for your ML code via `pytest tests`.
 
