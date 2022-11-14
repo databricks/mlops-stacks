@@ -64,7 +64,7 @@ jobs:
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_pickup_datetime",
-                    "output_table_name": "feature_store_taxi_example.trip_pickup_features-test",
+                    "output_table_name": "feature_store_taxi_example.trip_pickup_features_test",
                     "features_transform_module": "pickup_features",
                     "primary_keys": "zip"
                   }
@@ -92,7 +92,7 @@ jobs:
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_dropoff_datetime",
-                    "output_table_name": "feature_store_taxi_example.trip_dropoff_features-test",
+                    "output_table_name": "feature_store_taxi_example.trip_dropoff_features_test",
                     "features_transform_module": "dropoff_features",
                     "primary_keys": "zip"
                   }

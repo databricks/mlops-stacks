@@ -48,11 +48,11 @@ jobs:
         uses: databricks/run-notebook@v0
         id: train
         with:
-          {% if cookiecutter.include_feature_store == "yes" %}         
+          {%- if cookiecutter.include_feature_store == "yes" %}
           local-notebook-path: notebooks/TrainWithFeatureStore.py
-          {% else %}
+          {%- else %}
           local-notebook-path: notebooks/Train.py
-          {% endif %}
+          {%- endif %}
           {% raw %}git-commit: ${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
           new-cluster-json: >
             {
