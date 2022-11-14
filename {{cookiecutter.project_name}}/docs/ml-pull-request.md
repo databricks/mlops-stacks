@@ -22,8 +22,8 @@ for doing so via a pull request.
 
 ## Opening a pull request
 
-To push your updated ML code to production, [open a pull request]({% if cookiecutter.cicd_platform == "gitHub" %} https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request 
-{% elif cookiecutter.cicd_platform == "AzureDevOpsServices" %} https://learn.microsoft.com/en-us/azure/devops/repos/git/pull-requests?view=azure-devops&tabs=browser#create-a-pull-request 
+To push your updated ML code to production, [open a pull request]({% if cookiecutter.cicd_platform == "gitHub" %}https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request 
+{% elif cookiecutter.cicd_platform == "AzureDevOpsServices" %}https://learn.microsoft.com/en-us/azure/devops/repos/git/pull-requests?view=azure-devops&tabs=browser#create-a-pull-request 
 {% endif %}) against the remote Git repo containing the current project.
 
 **NOTE**: the default tests provided in this repo require that you use a pull
@@ -38,7 +38,7 @@ Opening a pull request will trigger a
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
 [Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
 {% endif %} 
-that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and {% endif %} model training pipeline on Databricks against a test dataset. 
+that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset. 
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
 to address any test failures.
 {% if cookiecutter.include_feature_store %}
