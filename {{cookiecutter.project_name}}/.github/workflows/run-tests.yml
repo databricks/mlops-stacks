@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: 3.8
        {%- if cookiecutter.include_feature_store == "yes" %}
+      # Feature store tests bring up a local Spark session, so Java is required.
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
