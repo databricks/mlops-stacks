@@ -3,10 +3,6 @@
 //  - Require that SP created in main-azure are Enterprise Applications
 //  - Role definitions of SPs are updated to allow access to the storage backend
 //  - Variable groups created to allow secrets generated to be passed through into CICD scripts
-data "azuredevops_project" "project_name" {
-  name = var.azure_devops_project_name
-}
-
 data "azurerm_subscription" "current" {
 }
 
