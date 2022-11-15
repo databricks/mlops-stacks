@@ -17,7 +17,7 @@ This project contains the following components:
 
 | Component                  | Description                                                                                                                                     |
 |----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html)  |
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)  |
 | ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) defined through [Terraform]({{ "dev-tools/terraform/index.html"   | generate_doc_link(cookiecutter.cloud) }}) |
 | CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %}                                                 |
 
@@ -39,7 +39,7 @@ contained in the following files:
 │
 {% else -%}
 ├── steps              <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
-│                         development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details
+│                         development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
 │
 ├── notebooks          <- Databricks notebooks that run the MLflow recipe, i.e. run the logic in `steps`. Used to
 │                         drive code execution on Databricks for CI/CD. In most cases, you do not need to modify

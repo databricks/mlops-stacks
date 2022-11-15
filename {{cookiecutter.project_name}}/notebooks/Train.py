@@ -34,8 +34,8 @@
 #              dbutils.jobs.taskValues(...), for use by downstream notebooks.
 #
 # For details on MLflow Recipes and the individual split, transform, train etc steps below, including usage examples,
-# see the Regression Recipe overview documentation: https://mlflow.org/docs/latest/pipelines.html#regression-pipeline
-# and Regression Recipes API documentation: https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline
+# see the Regression Template reference guide: https://github.com/mlflow/recipes-regression-template/blob/main/README.md
+# and Regression Recipe API documentation: https://mlflow.org/docs/latest/python_api/mlflow.recipes.html#mlflow-regression-recipe
 ##################################################################################
 
 # COMMAND ----------

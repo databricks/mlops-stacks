@@ -45,7 +45,7 @@ parameters substituted-in, and then copy the generated project contents back int
 ## Customize individual components
 
 ### Example ML code
-The default stack provides example ML code using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html#).
+The default stack provides example ML code using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html#).
 You may want to customize the example code, e.g. further prune it down into a skeleton for data scientists
 to fill out, or remove and replace the use of MLflow Recipes if you expect data scientists to work on problem
 types that are currently unsupported by MLflow Recipes. 

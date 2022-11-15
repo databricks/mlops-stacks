@@ -9,7 +9,7 @@
 
 ## Initial setup
 This project comes with example ML code to train a regression model to predict NYC taxi fares using
-[MLflow recipes](https://mlflow.org/docs/latest/pipelines.html).
+[MLflow recipes](https://mlflow.org/docs/latest/recipes.html).
 The subsequent sections explain how to adapt the example code to your ML problem and quickly get
 started iterating on model training code.
 
@@ -33,7 +33,7 @@ locally or on Databricks.
 For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/mlp-regression-template/blob/main/pipeline.yaml).
 The purpose and behavior of the individual recipe steps (`ingest`, `train`, etc) being configured are also
 described in detail in
-the [Regression Recipe overview](https://mlflow.org/docs/latest/pipelines.html#regression-pipeline)
+the [Regression Recipe overview](https://mlflow.org/docs/latest/recipes.html#regression-pipeline)
 and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline).
 
 After configuring your recipe, you can iterate on and test ML code under ``steps``.
@@ -85,7 +85,7 @@ You can also iterate on ML code locally.
 
 #### Trigger model training
 Run `mlp run --profile local` to trigger training locally. See the
-[MLflow recipes CLI docs](https://mlflow.org/docs/latest/pipelines.html#pipelines-key-concept) for details.
+[MLflow recipes CLI docs](https://mlflow.org/docs/latest/recipes.html#pipelines-key-concept) for details.
 
 #### Inspect results in the UI
 To facilitate saving and sharing results from local iteration with collaborators, we recommend configuring your
