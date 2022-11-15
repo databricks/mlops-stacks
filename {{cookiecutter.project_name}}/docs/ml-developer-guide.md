@@ -26,7 +26,7 @@ production jobs per the [MLOps setup guide](./mlops-setup.md).
 ### Configure your ML pipeline
 **This section assumes use of MLflow Recipes**.
 
-Address TODOS in the recipe configs under `recipe.yaml`, `profiles/databricks-dev.yaml`,
+Address TODOs in the recipe configs under `recipe.yaml`, `profiles/databricks-dev.yaml`,
 and `profiles/local.yaml`, specifying configs such as the training dataset path(s) to use when developing
 locally or on Databricks.
 

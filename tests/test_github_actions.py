@@ -8,6 +8,7 @@ from utils import (
 
 
 @pytest.mark.parametrize("cicd_platform", ["GitHub Actions"])
+@pytest.mark.parametrize("include_feature_store", ["yes", "no"])
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing
@@ -27,6 +28,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 
 @pytest.mark.large
 @pytest.mark.parametrize("cicd_platform", ["GitHub Actions"])
+@pytest.mark.parametrize("include_feature_store", ["yes", "no"])
 @parametrize_by_cloud
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
