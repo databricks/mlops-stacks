@@ -13,7 +13,7 @@ resource "databricks_job" "model_training_job" {
   task {
     task_key = "Train"
 
-    {% if cookiecutter.include_feature_store %}notebook_task {
+    {% if cookiecutter.include_feature_store == "yes" %}notebook_task {
       notebook_path = "notebooks/TrainWithFeatureStore"
       base_parameters = {
         env                = local.env

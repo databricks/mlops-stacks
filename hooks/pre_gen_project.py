@@ -1,25 +1,12 @@
 import cookiecutter
 
 """
-{%- if cookiecutter.include_feature_store == "yes" -%}
-    {{ cookiecutter.update(
-        {
-            "include_feature_store": True
-        }
-    )}}
-{%- else -%}
-    {{ cookiecutter.update(
-            {
-            "include_feature_store": False
-            }
-        )}}
-{% endif %}
-{%- if cookiecutter.cloud == "aws" -%}
+{%- if cookiecutter.cloud == "aws" -%} 
     {{ cookiecutter.update(
         {
             "cloud_specific_node_type_id": "i3.xlarge"
         }
-    )}}
+    )}} 
 {%- elif cookiecutter.cloud == "azure" -%}
     {{ cookiecutter.update(
             {
@@ -28,7 +15,7 @@ import cookiecutter
         )}}
 {% endif %}
 
-{%- if cookiecutter.cicd_platform == "GitHub Actions" -%}
+{%- if cookiecutter.cicd_platform == "GitHub Actions" -%} 
     {{ cookiecutter.update(
         {
             "cicd_platform": "gitHub"

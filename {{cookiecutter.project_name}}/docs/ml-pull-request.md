@@ -14,7 +14,7 @@ ML resources, per the [MLOps setup guide](./mlops-setup.md).
 
 ## Intro
 After following the
-{% if cookiecutter.include_feature_store %}[ML quickstart](./ml-developer-guide-fs.md).
+{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](./ml-developer-guide-fs.md).
 {% else %}[ML quickstart](./ml-developer-guide.md).{% endif %}
 to iterate on ML code, the next step is to get
 your updated code merged back into the repo for production use. This page walks you through the workflow
@@ -87,7 +87,7 @@ You can track the state of the ML pipelines for the current project from the MLf
 In both the staging and prod workspaces, the MLflow registered model contains links to:
 * The model versions produced through automated retraining
 * The Git repository containing the ML code run in the training and inference pipelines
-{% if cookiecutter.include_feature_store %} * The recurring Feature Store jobs that computes and writes features to Feature Store tables. {% endif %} 
+{% if cookiecutter.include_feature_store == "yes" %} * The recurring Feature Store jobs that computes and writes features to Feature Store tables. {% endif %} 
 * The recurring training job that produces new model versions using the latest ML code and data
 * The model deployment CD workflow that takes model versions produced by the training job and deploys them for inference
 * The recurring batch inference job that uses the currently-deployed model version to score a dataset

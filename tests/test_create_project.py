@@ -21,7 +21,7 @@ DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",
     "read_user_group": "users",
-    "include_feature_store": False,
+    "include_feature_store": "no",
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",

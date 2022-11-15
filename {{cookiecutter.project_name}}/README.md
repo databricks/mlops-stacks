@@ -13,7 +13,7 @@ The table below links to detailed docs explaining how to use this repo for diffe
 
 If you're a data scientist just getting started with this repo for a brand new ML project, we recommend starting with
 the [Project overview](./docs/project-overview.md) and
-{% if cookiecutter.include_feature_store %}[ML quickstart](./docs/ml-developer-guide-fs.md).
+{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](./docs/ml-developer-guide-fs.md).
 {% else %}[ML quickstart](./docs/ml-developer-guide.md).{% endif %}
 
 When you're satisfied with initial ML experimentation (e.g. validated that a model with reasonable performance can be
@@ -25,10 +25,10 @@ After that, follow the [ML pull request guide](./docs/ml-pull-request.md)
 and [ML resource config guide](databricks-config/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
 or pipeline resources (e.g. use a larger instance type for model training) via pull request.
 
-| Role                          | Goal                                                                          | Docs                                                                                                                                                             |
-|-------------------------------|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| First-time users of this repo | Understand the ML pipeline and code structure in this repo                    | [Project overview](./docs/project-overview.md)                                                                                                                   |
-| Data Scientist                | Get started writing ML code for a brand new project                           | {% if cookiecutter.include_feature_store %}[ML quickstart](./docs/ml-developer-guide-fs.md).{% else %}[ML quickstart](./docs/ml-developer-guide.md).{% endif %}  |
-| Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](./docs/ml-pull-request.md)                                                                                                               |
-| Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide](databricks-config/README.md)                                                                                                          |
-| MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](./docs/mlops-setup.md)                                                                                                                       |
+| Role                          | Goal                                                                          | Docs                                                                                                                                                                      |
+|-------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| First-time users of this repo | Understand the ML pipeline and code structure in this repo                    | [Project overview](./docs/project-overview.md)                                                                                                                            |
+| Data Scientist                | Get started writing ML code for a brand new project                           | {% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](./docs/ml-developer-guide-fs.md).{% else %}[ML quickstart](./docs/ml-developer-guide.md).{% endif %}  |
+| Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](./docs/ml-pull-request.md)                                                                                                                        |
+| Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide](databricks-config/README.md)                                                                                                                   |
+| MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](./docs/mlops-setup.md)                                                                                                                                |
