@@ -3,13 +3,13 @@
 [(back to main README)](../README.md)
 
 ## Table of contents
-* [Initial setup](#initial-setup): adapting the provided example code to your ML problem 
+* [Initial setup](#initial-setup): adapting the provided example code to your ML problem
 * [Iterating on ML code](#iterating-on-ml-code): making and testing ML code changes on Databricks or your local machine.
 * [Next steps](#next-steps)
 
 ## Initial setup
 This project comes with example ML code to train a regression model to predict NYC taxi fares using
-[MLflow recipes](https://mlflow.org/docs/latest/pipelines.html).
+[MLflow recipes](https://mlflow.org/docs/latest/recipes.html).
 The subsequent sections explain how to adapt the example code to your ML problem and quickly get
 started iterating on model training code.
 
@@ -30,11 +30,11 @@ Address TODOs in the recipe configs under `recipe.yaml`, `profiles/databricks-de
 and `profiles/local.yaml`, specifying configs such as the training dataset path(s) to use when developing
 locally or on Databricks.
 
-For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/mlp-regression-template/blob/main/pipeline.yaml).
+For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/recipes-regression-template/blob/main/recipe.yaml).
 The purpose and behavior of the individual recipe steps (`ingest`, `train`, etc) being configured are also
 described in detail in
-the [Regression Recipe overview](https://mlflow.org/docs/latest/pipelines.html#regression-pipeline)
-and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline).
+the [Recipe overview](https://mlflow.org/docs/latest/recipes.html)
+and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.recipes.html).
 
 After configuring your recipe, you can iterate on and test ML code under ``steps``.
 We expect most development to take place in the abovementioned YAML config files and
@@ -54,7 +54,7 @@ To use Repos, [set up git integration]({{ "repos/set-up-git-integration.html" | 
 
 If the current project has already been pushed to a hosted Git repo, follow the
 [UI workflow]({{ "repos/work-with-notebooks-other-files.html#clone-a-remote-git-repository" | generate_doc_link(cookiecutter.cloud) }})
-to clone it into your dev workspace and iterate. 
+to clone it into your dev workspace and iterate.
 
 Otherwise, e.g. if iterating on ML code for a new project, follow the steps below:
 * Follow the [UI workflow]({{ "repos/work-with-notebooks-other-files.html#clone-a-remote-git-repository" | generate_doc_link(cookiecutter.cloud) }})
@@ -85,7 +85,7 @@ You can also iterate on ML code locally.
 
 #### Trigger model training
 Run `mlp run --profile local` to trigger training locally. See the
-[MLflow recipes CLI docs](https://mlflow.org/docs/latest/pipelines.html#pipelines-key-concept) for details.
+[MLflow recipes CLI docs](https://mlflow.org/docs/latest/recipes.html#key-concepts) for details.
 
 #### Inspect results in the UI
 To facilitate saving and sharing results from local iteration with collaborators, we recommend configuring your
@@ -112,7 +112,7 @@ If you're iterating on ML code for an existing, already-deployed ML project, fol
 to submit your code for testing and production deployment.
 
 Otherwise, if exploring a new ML problem and satisfied with the results (e.g. you were able to train
-a model with reasonable performance on your dataset), you may be ready to productionize your ML pipeline.
+a model with reasonable performance on your dataset), you may be ready to productionize your ML recipe.
 To do this, ask your ops team to follow the [MLOps Setup Guide](./mlops-setup.md) to set up CI/CD and deploy
 production training/inference pipelines.
 
