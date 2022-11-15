@@ -17,7 +17,7 @@ This project contains the following components:
 
 | Component                  | Description                                                                                                                                     |
 |----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html)  |
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)  |
 | ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) defined through [Terraform]({{ "dev-tools/terraform/index.html"   | generate_doc_link(cookiecutter.cloud) }}) |
 | CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %}                                                 |
 
@@ -25,7 +25,7 @@ contained in the following files:
 
 ```
 {% if cookiecutter.include_feature_store == "yes" -%}
-├── features              <- Feature computation code (Python modules) that implements the feature transforms. 
+├── features              <- Feature computation code (Python modules) that implements the feature transforms.
 │                         The output of these transforms get persisted as Feature Store tables. Most development
 │                         work happens here.
 │
@@ -33,7 +33,7 @@ contained in the following files:
 │                         job that publishes to a Feature Store table. Used to drive code execution on Databricks for CI/CD.
 │                         In most cases, you do not need to modify these notebooks.
 │
-├── requirements.txt   <- Specifies Python dependencies for ML code (model training, batch inference, etc). 
+├── requirements.txt   <- Specifies Python dependencies for ML code (model training, batch inference, etc).
 │
 ├── tests              <- Unit tests for the modules under `features`.
 │
@@ -51,7 +51,7 @@ contained in the following files:
 │
 ├── profiles           <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow pipeline execution.
 │
-├── requirements.txt   <- Specifies Python dependencies for ML code (for example: model training, batch inference). 
+├── requirements.txt   <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │
 ├── tests              <- Unit tests for the modules under `steps`.
 {% endif -%}
@@ -69,4 +69,4 @@ contained in the following files:
 ```
 
 ## Next Steps
-See the [main README](../README.md#using-this-repo) for additional links on how to work with this repo. 
+See the [main README](../README.md#using-this-repo) for additional links on how to work with this repo.

@@ -14,7 +14,7 @@ However, in many cases you may need to customize the stack, for example if:
 
 **Note**: the development loop for your custom stack is the same as for iterating on the
 default stack. Before getting started, we encourage you to read
-the [contributor guide](README.md#contributing) to learn how to 
+the [contributor guide](README.md#contributing) to learn how to
 make, preview, and test changes to your custom stack.
 
 ### Fork the default stack repo
@@ -45,10 +45,10 @@ parameters substituted-in, and then copy the generated project contents back int
 ## Customize individual components
 
 ### Example ML code
-The default stack provides example ML code using [MLflow recipes](https://mlflow.org/docs/latest/pipelines.html#).
+The default stack provides example ML code using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html#).
 You may want to customize the example code, e.g. further prune it down into a skeleton for data scientists
 to fill out, or remove and replace the use of MLflow Recipes if you expect data scientists to work on problem
-types that are currently unsupported by MLflow Recipes. 
+types that are currently unsupported by MLflow Recipes.
 
 If you customize this component, you can still use the CI/CD and ML resource components to build production ML pipelines, as long as you provide ML
 notebooks with the expected interface for model training and inference under

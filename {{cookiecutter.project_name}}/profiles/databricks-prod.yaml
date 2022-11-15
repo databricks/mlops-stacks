@@ -13,18 +13,18 @@ model_registry:
 SPLIT_RATIOS: [0.75, 0.125, 0.125]
 
 INGEST_CONFIG:
-  # For different options please read: https://github.com/mlflow/mlp-regression-template#ingest-step
+  # For different options please read: https://github.com/mlflow/recipes-regression-template#ingest-step
   using: spark_sql
   sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
-  custom_loader_method: steps.ingest.load_file_as_dataframe
+  loader_method: load_file_as_dataframe
 
 INGEST_SCORING_CONFIG:
-  # For different options please read: https://github.com/mlflow/mlp-regression-template#batch-scoring
+  # For different options please read: https://github.com/mlflow/recipes-regression-template#batch-scoring
   using: spark_sql
   sql: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
-  custom_loader_method: steps.ingest.load_file_as_dataframe
+  loader_method: load_file_as_dataframe
 
 PREDICT_OUTPUT_CONFIG:
-  # For different options please read: https://github.com/mlflow/mlp-regression-template#predict-step
+  # For different options please read: https://github.com/mlflow/recipes-regression-template#predict-step
   using: table
   location: "{{cookiecutter.project_name}}_batch_scoring"
