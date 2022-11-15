@@ -43,7 +43,7 @@ configure and enable CI/CD for the hosted Git repo created in the previous step,
 set up a state storage backend for ML resources (jobs, experiments, etc) created for the
 current ML project.
 
-{%- if cookiecutter.include_feature_store == "no" %}
+{%- if not cookiecutter.include_feature_store %}
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
 * [databricks-test.yaml](../profiles/databricks-test.yaml): specify recipe configs to use in integration tests
