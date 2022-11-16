@@ -72,6 +72,7 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
     repo pull ML code from this branch.
  * ``read_user_group``: Display name of the user group to give read permissions to the ML jobs, integration test job runs, and machine learning resources created for this project. A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
+ * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, Terraform resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training. Note that the training code provided with this option will not be using MLflow recipes.    
 
 See the generated ``README.md`` for next steps!
 
@@ -109,14 +110,15 @@ best practices. See [the stack customization guide](stack-customization.md)
 for details on how to do this.
 
 ### Does the MLOps stack cover data (ETL) pipelines?
+
 While some components of the MLOps stack can be re-used and customized for ETL pipelines,
-the focus of the Databricks MLOps stack is on productionizing ML workflows: training, model deployment, batch inference, etc.
+the focus of the Databricks MLOps stack is on productionizing ML workflows: feature engineering, training, model deployment, batch inference, etc.
 You might find the following resources useful for data processing:
 * [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html): a framework for declaring ETL pipelines on Databricks.
 * [dlt-meta](https://github.com/databricks/dlt-meta): an example stack with CI/CD for [Delta Live Tables](https://docs.databricks.com/workflows/delta-live-tables/index.html) pipelines.
 
-We recommend persisting your features in the [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store) which is integrated
-with model training and serving.
+Note that the MLOps Stack supports [Databricks Feature Store](https://docs.databricks.com/applications/machine-learning/feature-store/index.html#why-use-databricks-feature-store),
+which is integrated with model training and serving. You can provision, manage and deploy feature engineering pipelines that create and write to Feature Store tables.
 
 If you do want to extend the Databricks MLOps stack for ETL and have questions or feature requests, please reach out as explained below.
 
