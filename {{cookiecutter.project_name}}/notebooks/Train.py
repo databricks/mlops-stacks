@@ -34,8 +34,8 @@
 #              dbutils.jobs.taskValues(...), for use by downstream notebooks.
 #
 # For details on MLflow Recipes and the individual split, transform, train etc steps below, including usage examples,
-# see the Regression Recipe overview documentation: https://mlflow.org/docs/latest/pipelines.html#regression-pipeline
-# and Regression Recipes API documentation: https://mlflow.org/docs/latest/python_api/mlflow.pipelines.html#module-mlflow.pipelines.regression.v1.pipeline
+# see the Regression Recipe overview documentation: https://mlflow.org/docs/latest/recipes.html
+# and Regression Recipes API documentation: https://mlflow.org/docs/latest/python_api/mlflow.recipes.html
 ##################################################################################
 
 # COMMAND ----------
@@ -48,7 +48,9 @@
 
 # COMMAND ----------
 
-dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
+from mlflow.recipes import Recipe
+dbutils.widgets.dropdown(
+    "env", "dev", ["dev", "staging", "prod"], "Environment Name")
 dbutils.widgets.dropdown("test_mode", "False", ["True", "False"], "Test Mode")
 
 env = dbutils.widgets.get("env")
@@ -58,7 +60,6 @@ profile = f"databricks-test" if test_mode else f"databricks-{env}"
 
 # COMMAND ----------
 
-from mlflow.recipes import Recipe
 
 r = Recipe(profile=profile)
 

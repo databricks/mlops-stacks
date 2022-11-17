@@ -16,6 +16,16 @@ resource "databricks_permissions" "training_job_permissions" {
   }
 }
 
+{% if cookiecutter.include_feature_store == "yes" %}
+resource "databricks_permissions" "feature_job_permissions" {
+  job_id = databricks_job.write_feature_table_job.id
+
+  access_control {
+    group_name       = local.read_user_group
+    permission_level = "CAN_VIEW"
+  }
+}{% endif %}
+
 resource "databricks_permissions" "mlflow_experiment_permissions" {
   experiment_id = databricks_mlflow_experiment.experiment.id
 
