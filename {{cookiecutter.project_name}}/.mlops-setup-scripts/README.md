@@ -18,18 +18,19 @@ to other CI/CD providers by running the same shell commands, with a few caveats:
   to instead hit the appropriate REST API endpoint for triggering model deployment CD for your CI/CD provider.
 
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
-The scripts set up CI/CD with Azure DevOps. During initial set up we do the following:
+The bootstrap steps use Terraform to set up the following in an automated manner:
 1. Create an Azure Blob Storage container for storing ML resource config (job, MLflow experiment, etc) state for the
-   current ML project
+   current ML project.
 2. Create another Azure Blob Storage container for storing the state of CI/CD principals provisioned for the current
-   ML project
-3. Write credentials for accessing the container in (1) to a file
+   ML project.
+3. Write credentials for accessing the container in (1) to a file.
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the Azure Blob Storage container created in (2).
-5. Create two Azure DevOps Pipelines:
+5. Create the two following Azure DevOps Pipelines along with required variable group:
     * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
     * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `databricks-config`, 
                          followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
+6. Create build validation policies defining requirements when PRs are submitted to the default branch of your repository.        
 {% endif -%}
       
 ## Prerequisites
@@ -203,27 +204,36 @@ python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- endif %}
 ```
 
-Take care to run the Terraform bootstrap script before the CI/CD bootstrap script. This will:
+Take care to run the Terraform bootstrap script before the CI/CD bootstrap script. 
+
+The first Terraform bootstrap script will:
 
 {% if cookiecutter.cloud == "azure" %}
 1. Create an Azure Blob Storage container for storing ML resource config (job, MLflow experiment, etc) state for the
    current ML project
 2. Create another Azure Blob Storage container for storing the state of CI/CD principals provisioned for the current
    ML project
+   
+The second CI/CD bootstrap script will:
 3. Write credentials for accessing the container in (1) to a file
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the Azure Blob Storage container created in (2).
 {% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-5. Create two Azure DevOps Pipelines:
+5. Create the two following Azure DevOps Pipelines along with required variable group:
     * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
     * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `databricks-config`, 
                          followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
+6. Create build validation policies defining requirements when PRs are submitted to the default branch of your repository.        
 {% endif %}
+   
 {% elif cookiecutter.cloud == "aws" %}
 1. Create an AWS S3 bucket and DynamoDB table for storing ML resource config (job, MLflow experiment, etc) state for the
    current ML project
 2. Create another AWS S3 bucket and DynamoDB table for storing the state of CI/CD principals provisioned for the current
    ML project. 
+   
+The second CI/CD bootstrap script will:
+
 3. Write credentials for accessing the S3 bucket and Dynamo DB table in (1) to a file.
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the S3 bucket and DynamoDB table created in (2). 
