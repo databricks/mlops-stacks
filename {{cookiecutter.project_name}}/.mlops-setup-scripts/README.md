@@ -27,9 +27,9 @@ The scripts set up CI/CD with Azure DevOps. During initial set up we do the foll
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the Azure Blob Storage container created in (2).
 5. Create two Azure DevOps Pipelines:
-    * `testing_ci` - Unit tests and integration tests triggered upon PR to the main branch.
-    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to main and changes to `databricks-config`, 
-                         followed by continuous deployment of changes upon successfully merging into main.
+    * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `databricks-config`, 
+                         followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
 {% endif -%}
       
 ## Prerequisites
@@ -151,9 +151,12 @@ Ensure your PAT (at a minimum) has the following permissions:
 - **Tokens**: Read & manage
 - **Work Items**: Read
 
-### Grant version control permissions to CI/CD
-The provided CI/CD workflows attempt to run `git` commands to commit and modify files. To ensure the workflows can work properly, [grant version control permissions](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml#grant-version-control-permissions-to-the-build-service) within your hosted Azure DevOps repo.
-The user `{{cookiecutter.project_name}} Build Service (<your-username>)` should be granted the following:
+### Update permissions for the build service
+In our CI/CD workflow, upon successfully merging a PR with changes to `databricks-config/**` the CD step will trigger the
+Terraform deploy stage of our pipeline. As part of this pipeline we run `git` commands to commit and modify Terraform output files. 
+To enable this workflow we must update the permissions of our build service. Within your **Project Settings**, select **Repostiories**.
+Go to the name of your repository and select **Security**. For the user `{{cookiecutter.project_name}} Build Service (<your-username>)` grant the following:
+- **Bypass policies when completing pull requests**: Allow
 - **Create branch:** Allow
 - **Contribute:** Allow
 - **Read:** Allow
@@ -212,9 +215,9 @@ Take care to run the Terraform bootstrap script before the CI/CD bootstrap scrip
    state in the Azure Blob Storage container created in (2).
 {% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
 5. Create two Azure DevOps Pipelines:
-    * `testing_ci` - Unit tests and integration tests triggered upon PR to the main branch.
-    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to main and changes to `databricks-config`, 
-                         followed by continuous deployment of changes upon successfully merging into main.
+    * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `databricks-config`, 
+                         followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
 {% endif %}
 {% elif cookiecutter.cloud == "aws" %}
 1. Create an AWS S3 bucket and DynamoDB table for storing ML resource config (job, MLflow experiment, etc) state for the
