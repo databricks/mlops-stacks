@@ -46,7 +46,7 @@ resource "azuredevops_variable_group" "cicd_vg" {
   allow_access = true
 
   variable {
-    name  = "STAGING_DATABRICKS_HOST"
+    name  = "stagingDatabricksHost"
     value = "{{cookiecutter.databricks_staging_workspace_host}}"
   }
 
@@ -69,7 +69,7 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name  = "PROD_DATABRICKS_HOST"
+    name  = "prodDatabricksHost"
     value = "{{cookiecutter.databricks_prod_workspace_host}}"
   }
 
@@ -92,13 +92,13 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name      = "ARM_ACCESS_KEY"
+    name      = "armAccessKey"
     value     = var.arm_access_key
     is_secret = true
   }
 
   variable {
-    name  = "ARM_SUBSCRIPTION_ID"
+    name  = "armSubscriptionId"
     value = data.azurerm_subscription.current.subscription_id
   }
 
