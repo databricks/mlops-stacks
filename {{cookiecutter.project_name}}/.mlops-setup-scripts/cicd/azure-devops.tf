@@ -51,20 +51,20 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name         = "STAGING_AZURE_SP_APPLICATION_ID"
+    name         = "stagingAzureSpApplicationId"
     secret_value = module.azure_create_sp.staging_service_principal_application_id
     is_secret    = true
   }
 
   variable {
-    name         = "STAGING_AZURE_SP_CLIENT_SECRET"
+    name         = "stagingAzureSpClientSecret"
     secret_value = module.azure_create_sp.staging_service_principal_client_secret
     is_secret    = true
   }
 
   variable {
     # NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
-    name  = "STAGING_AZURE_SP_TENANT_ID"
+    name  = "stagingAzureSpTenantId"
     value = var.azure_tenant_id
   }
 
@@ -74,19 +74,19 @@ resource "azuredevops_variable_group" "cicd_vg" {
   }
 
   variable {
-    name         = "PROD_AZURE_SP_APPLICATION_ID"
+    name         = "prodAzureSpApplicationId"
     secret_value = module.azure_create_sp.prod_service_principal_application_id
     is_secret    = true
   }
 
   variable {
-    name         = "PROD_AZURE_SP_CLIENT_SECRET"
+    name         = "prodAzureSpClientSecret"
     secret_value = module.azure_create_sp.prod_service_principal_client_secret
     is_secret    = true
   }
 
   variable {
-    name = "PROD_AZURE_SP_TENANT_ID"
+    name = "prodAzureSpTenantId"
     // NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
     value = var.azure_tenant_id
   }

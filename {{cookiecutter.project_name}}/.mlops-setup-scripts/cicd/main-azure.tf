@@ -101,32 +101,32 @@ resource "azuread_service_principal" "prod_service_principal" {
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 // Output values
 {%- endif %}
-output "STAGING_AZURE_SP_APPLICATION_ID" {
+output "stagingAzureSpApplicationId" {
   value     = module.azure_create_sp.staging_service_principal_application_id
   sensitive = true
 }
 
-output "STAGING_AZURE_SP_CLIENT_SECRET" {
+output "stagingAzureSpClientSecret" {
   value     = module.azure_create_sp.staging_service_principal_client_secret
   sensitive = true
 }
 
-output "STAGING_AZURE_SP_TENANT_ID" {
+output "stagingAzureSpTenantId" {
   value     = var.azure_tenant_id
   sensitive = true
 }
 
-output "PROD_AZURE_SP_APPLICATION_ID" {
+output "prodAzureSpApplicationId" {
   value     = module.azure_create_sp.prod_service_principal_application_id
   sensitive = true
 }
 
-output "PROD_AZURE_SP_CLIENT_SECRET" {
+output "prodAzureSpClientSecret" {
   value     = module.azure_create_sp.prod_service_principal_client_secret
   sensitive = true
 }
 
-output "PROD_AZURE_SP_TENANT_ID" {
+output "prodAzureSpTenantId" {
   value     = var.azure_tenant_id
   sensitive = true
 }

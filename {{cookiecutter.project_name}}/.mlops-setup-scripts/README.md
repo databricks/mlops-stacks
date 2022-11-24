@@ -250,7 +250,7 @@ Store each of the generated secrets in the output JSON files as
 [GitHub Actions Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository),
 where the JSON key
 {% if cookiecutter.cloud == "azure" -%}
-(e.g. `PROD_AZURE_SP_APPLICATION_ID`)
+(e.g. `prodAzureSpApplicationId`)
 {% elif cookiecutter.cloud == "aws" -%}
 (e.g. `PROD_WORKSPACE_TOKEN`)
 {% endif -%} 

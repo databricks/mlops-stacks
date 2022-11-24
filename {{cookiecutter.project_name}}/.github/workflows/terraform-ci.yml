@@ -28,7 +28,7 @@ jobs:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
         {%- if cookiecutter.cloud == "azure" %}
       - name: Generate AAD Token
-        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.STAGING_AZURE_SP_TENANT_ID }} ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }} ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.stagingAzureSpTenantId }} ${{ secrets.stagingAzureSpApplicationId }} ${{ secrets.stagingAzureSpClientSecret }}{% endraw %}
         {%- endif %}
       - uses: hashicorp/setup-terraform@v1
       - name: Terraform fmt
@@ -112,7 +112,7 @@ jobs:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
       {%- if cookiecutter.cloud == "azure" %}
       - name: Generate AAD Token
-        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.PROD_AZURE_SP_TENANT_ID }} ${{ secrets.PROD_AZURE_SP_APPLICATION_ID }} ${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.prodAzureSpTenantId }} ${{ secrets.prodAzureSpApplicationId }} ${{ secrets.prodAzureSpClientSecret }}{% endraw %}
         {%- endif %}
       - uses: hashicorp/setup-terraform@v1
       - name: Terraform fmt
