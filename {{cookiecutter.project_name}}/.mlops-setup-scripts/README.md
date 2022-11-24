@@ -36,9 +36,12 @@ The scripts set up CI/CD with Azure DevOps. During initial set up we do the foll
 
 ### Install CLIs
 * Install the [Terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+  * Requirement: `terraform >=1.2.7`
 * Install the [Databricks CLI](https://github.com/databricks/databricks-cli): ``pip install databricks-cli``
+    * Requirement: `databricks-cli >= 0.17`
 {% if cookiecutter.cloud == "azure" -%}
 * Install Azure CLI: ``pip install azure-cli``
+    * Requirement: `azure-cli >= 2.39.0`
 {% elif cookiecutter.cloud == "aws" -%}
 * Install AWS CLI: ``pip install awscli``
 {%- endif %}
