@@ -145,11 +145,12 @@ be sure to generate a token with "Repo" scope. If you have SSO enabled with your
 This token is used to fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it
 during CI/CD). You can generate a PAT token for Azure DevOps by following the steps described [here](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows).
 Ensure your PAT (at a minimum) has the following permissions:
-- **Variable Groups**: Read, Create, & Manage
 - **Build**: Read & execute
+- **Code**: Read, write & manage
 - **Project and Team**: Read
 - **Token Administration**: Read & manage
 - **Tokens**: Read & manage
+- **Variable Groups**: Read, Create, & Manage
 - **Work Items**: Read
 
 ### Update permissions for the build service
