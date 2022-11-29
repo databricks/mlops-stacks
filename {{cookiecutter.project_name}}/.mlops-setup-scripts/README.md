@@ -154,8 +154,8 @@ Ensure your PAT (at a minimum) has the following permissions:
 
 ### Update permissions for the build service
 In our CI/CD workflow, upon successfully merging a PR with changes to `databricks-config/**` the CD step will trigger the
-Terraform deploy stage of our pipeline. As part of this pipeline we run `git` commands to commit and modify Terraform output files. 
-To enable this workflow we must update the permissions of our build service. Within your **Project Settings**, select **Repostiories**.
+Terraform deploy stage of our pipeline. Within this pipeline `git` commands are run to commit and modify Terraform output files. 
+To enable this workflow you must update the permissions of our build service. Within your **Project Settings**, select **Repostiories**.
 Go to the name of your repository and select **Security**. For the user `{{cookiecutter.project_name}} Build Service (<your-username>)` grant the following:
 - **Bypass policies when completing pull requests**: Allow
 - **Create branch:** Allow
