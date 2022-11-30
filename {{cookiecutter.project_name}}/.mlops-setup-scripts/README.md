@@ -159,10 +159,12 @@ Terraform deploy stage of our pipeline. Within this pipeline `git` commands are 
 To enable this workflow you must update the permissions of our build service. Within your **Project Settings**, select **Repostiories**.
 Go to the name of your repository and select **Security**. For the user `{{cookiecutter.project_name}} Build Service (<your-username>)` grant the following:
 - **Bypass policies when completing pull requests**: Allow
-- **Create branch:** Allow
+- **Bypass policies when pushing**: Allow
 - **Contribute:** Allow
-- **Read:** Allow
+- **Create branch:** Allow
 - **Create tag:** Allow
+- **Read:** Allow
+
 {% endif -%}
 
 
