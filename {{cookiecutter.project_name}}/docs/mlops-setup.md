@@ -43,16 +43,6 @@ configure and enable CI/CD for the hosted Git repo created in the previous step,
 set up a state storage backend for ML resources (jobs, experiments, etc) created for the
 current ML project.
 
-{%- if cookiecutter.include_feature_store == "no" %}
-## Configure profiles for tests, staging, and prod
-Address the TODOs in the following files:
-* [databricks-test.yaml](../profiles/databricks-test.yaml): specify recipe configs to use in integration tests
-* [databricks-staging.yaml](../profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
-  jobs that run in the staging workspace
-* [databricks-prod.yaml](../profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
-  jobs that run in the prod workspace
-{%- endif %}
-
 ## Merge a PR with your initial ML code
 Create and push a PR branch adding the ML code to the repository.
 We recommend including all files outside of `databricks-config` in this PR:
