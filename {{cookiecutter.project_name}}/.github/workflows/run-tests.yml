@@ -81,4 +81,5 @@ jobs:
             {
               "env": "staging",
               "test_mode": "True"
-            }            
+            }
+          pr-comment-github-token: ${{ secrets.GITHUB_TOKEN }}
