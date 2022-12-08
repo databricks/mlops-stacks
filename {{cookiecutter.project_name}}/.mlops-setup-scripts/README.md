@@ -218,6 +218,7 @@ The first Terraform bootstrap script will:
    ML project
    
 The second CI/CD bootstrap script will:
+
 3. Write credentials for accessing the container in (1) to a file
 4. Create Databricks service principals configured for CI/CD, write their credentials to a file, and store their
    state in the Azure Blob Storage container created in (2).
