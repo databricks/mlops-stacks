@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
         {%- if cookiecutter.cloud == "azure" %}
       - name: Generate AAD Token
-        {% raw %}run: ./.github/workflows/scripts/generate-aad-token.sh ${{ secrets.STAGING_AZURE_SP_TENANT_ID }} ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }} ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+        {% raw %}run: ./.github/workflows/scripts/generate-aad-token.sh ${{ secrets.stagingAzureSpTenantId }} ${{ secrets.stagingAzureSpApplicationId }} ${{ secrets.stagingAzureSpClientSecret }}{% endraw %}
         {%- endif %}
       # This step populates a JSON Databricks job payload that will be submitted as an integration test run.
       # It currently builds a one-off multi-task job that contains feature engineering tasks to populate Feature

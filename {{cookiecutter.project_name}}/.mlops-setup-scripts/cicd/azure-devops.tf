@@ -3,10 +3,6 @@
 //  - Require that SP created in main-azure are Enterprise Applications
 //  - Role definitions of SPs are updated to allow access to the storage backend
 //  - Variable groups created to allow secrets generated to be passed through into CICD scripts
-data "azuredevops_project" "project_name" {
-  name = var.azure_devops_project_name
-}
-
 data "azurerm_subscription" "current" {
 }
 
@@ -50,59 +46,59 @@ resource "azuredevops_variable_group" "cicd_vg" {
   allow_access = true
 
   variable {
-    name  = "STAGING_DATABRICKS_HOST"
+    name  = "stagingDatabricksHost"
     value = "{{cookiecutter.databricks_staging_workspace_host}}"
   }
 
   variable {
-    name         = "STAGING_AZURE_SP_APPLICATION_ID"
+    name         = "stagingAzureSpApplicationId"
     secret_value = module.azure_create_sp.staging_service_principal_application_id
     is_secret    = true
   }
 
   variable {
-    name         = "STAGING_AZURE_SP_CLIENT_SECRET"
+    name         = "stagingAzureSpClientSecret"
     secret_value = module.azure_create_sp.staging_service_principal_client_secret
     is_secret    = true
   }
 
   variable {
     # NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
-    name  = "STAGING_AZURE_SP_TENANT_ID"
+    name  = "stagingAzureSpTenantId"
     value = var.azure_tenant_id
   }
 
   variable {
-    name  = "PROD_DATABRICKS_HOST"
+    name  = "prodDatabricksHost"
     value = "{{cookiecutter.databricks_prod_workspace_host}}"
   }
 
   variable {
-    name         = "PROD_AZURE_SP_APPLICATION_ID"
+    name         = "prodAzureSpApplicationId"
     secret_value = module.azure_create_sp.prod_service_principal_application_id
     is_secret    = true
   }
 
   variable {
-    name         = "PROD_AZURE_SP_CLIENT_SECRET"
+    name         = "prodAzureSpClientSecret"
     secret_value = module.azure_create_sp.prod_service_principal_client_secret
     is_secret    = true
   }
 
   variable {
-    name = "PROD_AZURE_SP_TENANT_ID"
+    name = "prodAzureSpTenantId"
     // NOTE: assumes staging and prod Databricks workspaces are under the same Azure tenant
     value = var.azure_tenant_id
   }
 
   variable {
-    name      = "ARM_ACCESS_KEY"
+    name      = "armAccessKey"
     value     = var.arm_access_key
     is_secret = true
   }
 
   variable {
-    name  = "ARM_SUBSCRIPTION_ID"
+    name  = "armSubscriptionId"
     value = data.azurerm_subscription.current.subscription_id
   }
 
@@ -157,6 +153,7 @@ resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validati
     display_name        = "Testing CI build validation policy"
     build_definition_id = azuredevops_build_definition.testing-ci.id
     valid_duration      = 720
+    filename_patterns   = ["*", "!/databricks-config/**"]
 
     scope {
       repository_id  = data.azuredevops_git_repository.repo.id
@@ -180,6 +177,7 @@ resource "azuredevops_branch_policy_build_validation" "terraform-cicd-build-vali
     display_name        = "Terraform CICD build validation policy"
     build_definition_id = azuredevops_build_definition.terraform-cicd.id
     valid_duration      = 720
+    filename_patterns   = ["/databricks-config/**"]
 
     scope {
       repository_id  = data.azuredevops_git_repository.repo.id
