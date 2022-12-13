@@ -41,7 +41,7 @@ resource "azurerm_role_assignment" "prod_role_assignment" {
 // Create variable group to be used by Azure DevOps Pipelines
 resource "azuredevops_variable_group" "cicd_vg" {
   project_id   = data.azuredevops_project.project.project_id
-  name         = "CICD Variable Group"
+  name         = "CICD Variable Group (${data.azuredevops_git_repository.repo.name})"
   description  = "Variable group for CICD pipelines"
   allow_access = true
 
@@ -106,7 +106,7 @@ resource "azuredevops_variable_group" "cicd_vg" {
 
 resource "azuredevops_build_definition" "testing-ci" {
   project_id = data.azuredevops_project.project.project_id
-  name       = "testing_ci"
+  name       = "Testing CI (${data.azuredevops_git_repository.repo.name})"
 
   ci_trigger {
     use_yaml = true
@@ -124,7 +124,7 @@ resource "azuredevops_build_definition" "testing-ci" {
 
 resource "azuredevops_build_definition" "terraform-cicd" {
   project_id = data.azuredevops_project.project.project_id
-  name       = "terraform_cicd"
+  name       = "Terraform CICD (${data.azuredevops_git_repository.repo.name})"
 
   ci_trigger {
     use_yaml = true
@@ -150,7 +150,7 @@ resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validati
   blocking = true
 
   settings {
-    display_name        = "Testing CI build validation policy"
+    display_name        = "Testing CI build validation policy (${data.azuredevops_git_repository.repo.name})"
     build_definition_id = azuredevops_build_definition.testing-ci.id
     valid_duration      = 720
     filename_patterns   = ["*", "!/databricks-config/**"]
@@ -159,10 +159,6 @@ resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validati
       repository_id  = data.azuredevops_git_repository.repo.id
       repository_ref = data.azuredevops_git_repository.repo.default_branch
       match_type     = "Exact"
-    }
-
-    scope {
-      match_type = "DefaultBranch"
     }
   }
 }
@@ -174,7 +170,7 @@ resource "azuredevops_branch_policy_build_validation" "terraform-cicd-build-vali
   blocking = true
 
   settings {
-    display_name        = "Terraform CICD build validation policy"
+    display_name        = "Terraform CICD build validation policy (${data.azuredevops_git_repository.repo.name})"
     build_definition_id = azuredevops_build_definition.terraform-cicd.id
     valid_duration      = 720
     filename_patterns   = ["/databricks-config/**"]
@@ -183,10 +179,6 @@ resource "azuredevops_branch_policy_build_validation" "terraform-cicd-build-vali
       repository_id  = data.azuredevops_git_repository.repo.id
       repository_ref = data.azuredevops_git_repository.repo.default_branch
       match_type     = "Exact"
-    }
-
-    scope {
-      match_type = "DefaultBranch"
     }
   }
 }
