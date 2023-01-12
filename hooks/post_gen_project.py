@@ -46,6 +46,12 @@ cloud_specific_paths = {
         os.path.join(".mlops-setup-scripts", "cicd", "main-aws.tf"),
         os.path.join(".mlops-setup-scripts", "terraform", "main-aws.tf"),
     ],
+    "gcp": [
+        os.path.join(".mlops-setup-scripts", "cicd", "main-gcp.tf"),
+        os.path.join(".mlops-setup-scripts", "cicd", "terraform-databricks-mlops-gcp-project-with-sp-creation"),
+        os.path.join(".mlops-setup-scripts", "terraform", "main-gcp.tf"),
+        os.path.join(".mlops-setup-scripts", "terraform", "variables-gcp.tf")
+    ],
 }
 
 for cloud, paths in cloud_specific_paths.items():

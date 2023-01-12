@@ -33,6 +33,11 @@ DEFAULT_PARAMS_AWS = {
     "databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
+DEFAULT_PARAMS_GCP = {
+    "cloud": "gcp",
+    "databricks_staging_workspace_host": "https://xxx.x.gcp.databricks.com",
+    "databricks_prod_workspace_host": "https://xxx.x.gcp.databricks.com",
+}
 
 
 def assert_no_disallowed_strings_in_files(
@@ -262,6 +267,8 @@ def test_generate_project_with_default_values(
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AZURE}
     elif cloud == "aws":
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AWS}
+    elif cloud == "gcp":
+        params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_GCP}
     for param, value in params.items():
         assert f"{param}={value}" in test_file_contents
 
@@ -280,6 +287,7 @@ def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
     workspace_host = {
         "aws": "https://dbc-my-aws-workspace.cloud.databricks.com",
         "azure": "https://adb-mycoolworkspace.11.azuredatabricks.net",
+        "gcp": "https://1234567890.1.gcp.databricks.com",
     }[cloud]
     workspace_url = f"{workspace_host}{workspace_url_suffix}"
     context = {

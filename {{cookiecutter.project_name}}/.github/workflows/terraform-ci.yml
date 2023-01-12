@@ -22,14 +22,29 @@ jobs:
       {%- if cookiecutter.cloud == "aws" %}
       {% raw %}DATABRICKS_TOKEN: ${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
       {%- endif %}
+      {%- if cookiecutter.cloud == "gcp" %}
+      {% raw %}DATABRICKS_TOKEN: ${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
+      {%- endif %}
+    permissions:
+      contents: read
+      id-token: write
+      issues: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
         with:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
         {%- if cookiecutter.cloud == "azure" %}
       - name: Generate AAD Token
-        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.stagingAzureSpTenantId }} ${{ secrets.stagingAzureSpApplicationId }} ${{ secrets.stagingAzureSpClientSecret }}{% endraw %}
+        {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.STAGING_AZURE_SP_TENANT_ID }} ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }} ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
         {%- endif %}
+        {%- if cookiecutter.cloud == "gcp" %}{% raw %}
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_CLOUD_WORKLOAD_IDENTITY_PROVIDER}}
+          service_account: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT}}
+        {% endraw %}{%- endif %}
       - uses: hashicorp/setup-terraform@v1
       - name: Terraform fmt
         id: fmt
@@ -51,6 +66,8 @@ jobs:
           # the s3 backend as described in https://www.terraform.io/language/settings/backends/s3#credentials-and-shared-configuration
         {% raw %}  echo "AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}" >> "$GITHUB_ENV"{% endraw %}
         {% raw %}  echo "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- elif cookiecutter.cloud == "gcp" %}
+        {% raw %}  echo "Workload Identity has been configured" {% endraw %}
         {%- endif %}
       - name: Terraform Init
         id: init
@@ -106,10 +123,25 @@ jobs:
       {% if cookiecutter.cloud == "aws" -%}
       DATABRICKS_TOKEN: {% raw %}${{secrets.PROD_WORKSPACE_TOKEN}}{% endraw %}
       {%- endif %}
+      {%- if cookiecutter.cloud == "gcp" %}
+      {% raw %}DATABRICKS_TOKEN: ${{secrets.PROD_WORKSPACE_TOKEN}}{% endraw %}
+      {%- endif %}
+    permissions:
+      contents: read
+      id-token: write
+      issues: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
         with:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+        {%- if cookiecutter.cloud == "gcp" %}{% raw %}
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_CLOUD_WORKLOAD_IDENTITY_PROVIDER}}
+          service_account: ${{ secrets.GOOGLE_CLOUD_SERVICE_ACCOUNT}}
+        {% endraw %}{%- endif %}
       {%- if cookiecutter.cloud == "azure" %}
       - name: Generate AAD Token
         {% raw %}run: ../.github/workflows/scripts/generate-aad-token.sh ${{ secrets.prodAzureSpTenantId }} ${{ secrets.prodAzureSpApplicationId }} ${{ secrets.prodAzureSpClientSecret }}{% endraw %}
@@ -126,6 +158,8 @@ jobs:
         {%- elif cookiecutter.cloud == "aws" %}
         {% raw %}  echo "AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}" >> "$GITHUB_ENV"{% endraw %}
         {% raw %}  echo "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" >> "$GITHUB_ENV"{% endraw %}
+        {%- elif cookiecutter.cloud == "gcp" %}
+          echo "Workload Identity has been configured"
         {%- endif %}
       - name: Terraform Init
         id: init

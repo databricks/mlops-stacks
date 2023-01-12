@@ -48,7 +48,16 @@ terraform {
     dynamodb_table = "{{cookiecutter.project_name}}-cicd-setup-tfstate-lock"
     key            = "cicd-setup.terraform.tfstate"
   }
-{%- endif %}
+{% elif cookiecutter.cloud == "gcp" -%}
+  // The `backend` block below configures the s3 backend
+  // (docs: https://www.terraform.io/language/settings/backends/s3)
+  // for storing Terraform state in an AWS S3 bucket. You can run the setup scripts in mlops-setup-scripts/terraform to
+  // provision the S3 bucket referenced below and store appropriate credentials for accessing the bucket from CI/CD.
+  backend "gcs" {
+    bucket = "{{cookiecutter.project_name}}-tfstate"
+    prefix = "terraform/cicd-setup-state"
+  }
+{% endif -%}
 }
 
 provider "databricks" {

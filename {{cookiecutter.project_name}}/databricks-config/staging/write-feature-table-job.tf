@@ -33,7 +33,11 @@ resource "databricks_job" "write_feature_table_job" {
       num_workers   = 3
       spark_version = "11.0.x-cpu-ml-scala2.12"
       node_type_id  = "{{cookiecutter.cloud_specific_node_type_id}}"
+      {%- if cookiecutter.cloud == "gcp" %}
+      custom_tags   = { "clusterSource" = "mlops-stack-0-0" }
+      {%- else %}
       custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
+      {%- endif %}
     }
   }
 
@@ -59,7 +63,11 @@ resource "databricks_job" "write_feature_table_job" {
       num_workers   = 3
       spark_version = "11.0.x-cpu-ml-scala2.12"
       node_type_id  = "{{cookiecutter.cloud_specific_node_type_id}}"
-      custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
+      {%- if cookiecutter.cloud == "gcp" %}
+      {% raw %}custom_tags   = { "clusterSource" = "mlops-stack-0-0" }{% endraw %}
+      {%- else %}
+      {% raw %}custom_tags   = { "clusterSource" = "mlops-stack/0.0" }{% endraw %}
+      {%- endif %}
     }
   }
 

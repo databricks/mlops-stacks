@@ -33,7 +33,11 @@ resource "databricks_job" "model_training_job" {
       num_workers   = 3
       spark_version = "11.0.x-cpu-ml-scala2.12"
       node_type_id  = "{{cookiecutter.cloud_specific_node_type_id}}"
+      {%- if cookiecutter.cloud == "gcp" %}
+      custom_tags   = { "clusterSource" = "mlops-stack-0-0" }
+      {%- else %}
       custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
+      {%- endif %}
     }
   }
 
@@ -58,7 +62,11 @@ resource "databricks_job" "model_training_job" {
       # the Unity Catalog.
       single_user_name   = data.databricks_current_user.service_principal.user_name
       data_security_mode = "SINGLE_USER"
+      {%- if cookiecutter.cloud == "gcp" %}
+      custom_tags        = { "clusterSource" = "mlops-stack-0-0" }
+      {%- else %}
       custom_tags        = { "clusterSource" = "mlops-stack/0.0" }
+      {%- endif %}
     }
   }
 

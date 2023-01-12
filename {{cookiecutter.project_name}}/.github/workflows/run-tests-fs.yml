@@ -11,6 +11,9 @@ env:
   {% if cookiecutter.cloud == "aws" -%}
   DATABRICKS_TOKEN: {% raw %}${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
   {%- endif %}
+  {% if cookiecutter.cloud == "gcp" -%}
+  DATABRICKS_TOKEN: {% raw %}${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
+  {%- endif %}
 
 concurrency: {{cookiecutter.project_name}}-feature-training-integration-test-staging
 
@@ -79,7 +82,11 @@ jobs:
                   },
                   "custom_tags": {
                     "ResourceClass": "SingleNode",
-                    "clusterSource": "mlops-stack/0.0"
+                    {%- if cookiecutter.cloud == "gcp" %}
+                    {% raw %}"clusterSource": "mlops-stack-0-0"{% endraw %}
+                    {%- else %}
+                    {% raw %}"clusterSource": "mlops-stack/0.0"{% endraw %}
+                    {%- endif %}
                   }
                 }
               },
@@ -107,7 +114,11 @@ jobs:
                   },
                   "custom_tags": {
                     "ResourceClass": "SingleNode",
-                    "clusterSource": "mlops-stack/0.0"
+                    {%- if cookiecutter.cloud == "gcp" %}
+                    {% raw %}"clusterSource": "mlops-stack-0-0"{% endraw %}
+                    {%- else %}
+                    {% raw %}"clusterSource": "mlops-stack/0.0"{% endraw %}
+                    {%- endif %}
                   }
                 }
               },
@@ -141,7 +152,11 @@ jobs:
                   },
                   "custom_tags": {
                     "ResourceClass": "SingleNode",
-                    "clusterSource": "mlops-stack/0.0"
+                    {%- if cookiecutter.cloud == "gcp" %}
+                    {% raw %}"clusterSource": "mlops-stack-0-0"{% endraw %}
+                    {%- else %}
+                    {% raw %}"clusterSource": "mlops-stack/0.0"{% endraw %}
+                    {%- endif %}
                   }
                 }
               }

@@ -18,7 +18,11 @@ resource "databricks_job" "batch_inference_job" {
     # the Unity Catalog.
     single_user_name   = data.databricks_current_user.service_principal.user_name
     data_security_mode = "SINGLE_USER"
+    {%- if cookiecutter.cloud == "gcp" %}
+    custom_tags        = { "clusterSource" = "mlops-stack-0-0" }
+    {%- else %}
     custom_tags        = { "clusterSource" = "mlops-stack/0.0" }
+    {%- endif %}
   }
 
   notebook_task {

@@ -41,6 +41,13 @@ variable "github_repo_url" {
 }
 {% endif -%}
 
+{%- if cookiecutter.cloud == "gcp" %}
+variable "gcp-project-id" {
+  type        = string
+  description = "GCP Project ID."
+}
+{% endif -%}
+
 {%- if cookiecutter.cloud == "azure" %}
 variable "azure_tenant_id" {
   type        = string

@@ -89,6 +89,10 @@ To use the scripts, you must:
 * Have permission to manage AWS IAM users and attached IAM policies (`"iam:*"` permissions) in the current AWS account.
   If you lack sufficient permissions, you'll see an error message describing any missing permissions when you
   run the setup scripts below. If that occurs, contact your AWS account admin to request any missing permissions.
+  {% elif cookiecutter.cloud == "gcp" -%}
+* Have permission to manage AWS IAM users and attached IAM policies (`"iam:*"` permissions) in the current AWS account.
+  If you lack sufficient permissions, you'll see an error message describing any missing permissions when you
+  run the setup scripts below. If that occurs, contact your AWS account admin to request any missing permissions.
 {%- endif %}
 
 {% if cookiecutter.cloud == "azure" -%}
@@ -103,6 +107,10 @@ To use the scripts, you must:
 * Run `aws configure --profile {{cookiecutter.project_name}}` to configure an AWS CLI profile, passing the access key ID and secret access key from the previous step
 * Run `export AWS_PROFILE={{cookiecutter.project_name}}` to indicate to Terraform that it should use the newly-created AWS CLI profile
   to authenticate to AWS
+{% elif cookiecutter.cloud == "gcp" -%}
+### Configure GCP auth
+* Run `gcloud auth login` to configure an GCP CLI profile.
+* Run `gcloud config set project $PROJECT_ID` to configure default GCP project.
 {%- endif %}
 
 ### Configure Databricks auth
@@ -117,6 +125,15 @@ To use the scripts, you must:
   and paste the value into the prompt
 
 {% if cookiecutter.cloud == "aws" -%}
+### Set up service principal user group
+Ensure a group named `{{cookiecutter.service_principal_group}}` exists in the staging and prod workspace, e.g.
+by checking for the group in the [staging workspace admin console]({{cookiecutter.databricks_staging_workspace_host}}#setting/accounts/groups) and
+[prod workspace admin console]({{cookiecutter.databricks_prod_workspace_host}}#setting/accounts/groups).
+Create the group in staging and/or prod as needed.
+Then, grant the `{{cookiecutter.service_principal_group}}` group [token usage permissions]({{ "administration-guide/access-control/tokens.html#manage-token-permissions-using-the-admin-console" | generate_doc_link(cookiecutter.cloud) }})
+{% endif -%}
+
+{% if cookiecutter.cloud == "gcp" -%}
 ### Set up service principal user group
 Ensure a group named `{{cookiecutter.service_principal_group}}` exists in the staging and prod workspace, e.g.
 by checking for the group in the [staging workspace admin console]({{cookiecutter.databricks_staging_workspace_host}}#setting/accounts/groups) and
@@ -257,6 +274,9 @@ where the JSON key
 (e.g. `prodAzureSpApplicationId`)
 {% elif cookiecutter.cloud == "aws" -%}
 (e.g. `PROD_WORKSPACE_TOKEN`)
+{% elif cookiecutter.cloud == "gcp" -%}
+(e.g. `PROD_WORKSPACE_TOKEN`)
+{% endif -%} 
 {% endif -%} 
 is the expected name of the secret in GitHub Actions and the JSON value
 (without the surrounding `"` double-quotes) is the value of the secret. 
@@ -267,7 +287,6 @@ but you can also use
 [environment secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-an-environment)
 to restrict access to production secrets. You can also modify the workflows to read secrets from another
 secret provider.
-{% endif %}
 
 {% if cookiecutter.cicd_platform == "gitHub" %}
 ### Add GitHub workflows to hosted Git repo
@@ -321,6 +340,8 @@ in your repo named "staging" and "prod"
 ### Secret rotation
 The generated CI/CD
 {% if cookiecutter.cloud == "aws" -%}
+Databricks service principal REST API tokens have an [expiry of 100 days](https://github.com/databricks/terraform-databricks-mlops-aws-project#mlops-aws-project-module)
+{% elif cookiecutter.cloud == "gcp" -%}
 Databricks service principal REST API tokens have an [expiry of 100 days](https://github.com/databricks/terraform-databricks-mlops-aws-project#mlops-aws-project-module)
 {% elif cookiecutter.cloud == "azure" -%}
 Azure application client secrets have an expiry of [2 years](https://github.com/databricks/terraform-databricks-mlops-azure-project-with-sp-creation#outputs)

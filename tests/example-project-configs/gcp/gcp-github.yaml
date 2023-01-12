@@ -1,0 +1,10 @@
+# Example project config to use to preview stack changes for AWS, using GitHub for CI/CD
+default_context:
+  project_name: "example-gcp-github-project"
+  cloud: "gcp"
+  cicd_plaform: "Github Actions"
+  mlflow_experiment_parent_dir:  "/example-gcp-project"
+  databricks_staging_workspace_host: "https://xxx.x.gcp.databricks.com"
+  databricks_prod_workspace_host: "https://xxx.x.gcp.databricks.com"
+  default_branch: "main"
+  release_branch: "release"

@@ -22,6 +22,9 @@ env:
   {% if cookiecutter.cloud == "aws" -%}
   DATABRICKS_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
   {%- endif %}
+  {% if cookiecutter.cloud == "gcp" -%}
+  DATABRICKS_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
+  {%- endif %}
 jobs:
   prod:
     runs-on: ubuntu-20.04

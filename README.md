@@ -50,7 +50,7 @@ To create a new project, run:
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``project_name``: name of the current project
  * ``cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
- * ``cicd_platform`` : CI/CD platform of choice (GitHub Actions or Azure DevOps)
+ * ``cicd_platform`` : CI/CD platform of choice (azureDevOpsServices or gitHub)
 
 Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
 ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know
@@ -60,7 +60,7 @@ ready to productionize a model. We recommend specifying any known parameters upf
    current project will be created. The service principals used for CI/CD must have "Can Manage" permissions
    ([AWS](https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions) |
    [Azure](https://docs.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
-   [GCP](https://docs.gcp.databricks.com/security/access-control/workspace-acl.html#folder-permissions)) on this directory.
+   [GCP](https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions)) on this directory.
    We recommend using a dedicated directory for the current project, e.g. `/MLOps/<project_name>`, to isolate resources
    created for different projects.
  * ``databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.

@@ -28,10 +28,10 @@ dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment 
 dbutils.widgets.text("training_data_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Path to the training data")
 
 # MLflow experiment name.
-dbutils.widgets.text("experiment_name", "/mlops-azure-cuj/mlops-azure-cuj-experiment-test", label="MLflow experiment name")
+dbutils.widgets.text("experiment_name", "/{{cookiecutter.project_name}}/{{cookiecutter.project_name}}-experiment-test", label="MLflow experiment name")
 
 # MLflow registered model name to use for the trained mode..
-dbutils.widgets.text("model_name", "mlops-azure-cuj-model-test", label="Model Name")
+dbutils.widgets.text("model_name", "{{cookiecutter.project_name}}-model-test", label="Model Name")
 
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
@@ -119,8 +119,8 @@ display(taxi_data)
 from databricks.feature_store import FeatureLookup
 import mlflow
 
-pickup_features_table = "feature_store_taxi_example.trip_pickup_features"
-dropoff_features_table = "feature_store_taxi_example.trip_dropoff_features"
+pickup_features_table = "feature_store_taxi_example.trip_pickup_features_staging"
+dropoff_features_table = "feature_store_taxi_example.trip_dropoff_features_staging"
 
 pickup_feature_lookups = [
     FeatureLookup(
@@ -223,10 +223,7 @@ fs.log_model(
 )
 
 # Build out the MLflow model registry URL for this model version.
-workspace_url = spark.conf.get("spark.databricks.workspaceUrl")
 model_version = get_latest_model_version(model_name)
-model_registry_url = "https://{workspace_url}/#mlflow/models/{model_name}/versions/{model_version}"\
-    .format(workspace_url=workspace_url, model_name=model_name, model_version=model_version)
 
 # The returned model URI is needed by the model deployment notebook.
 model_uri = f"models:/{model_name}/{model_version}"
