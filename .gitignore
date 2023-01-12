@@ -14,5 +14,3 @@ __pycache__/
 .cache
 *.pyc
 mlops-stack.iml
-
-*.log
