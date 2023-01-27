@@ -109,4 +109,6 @@ test_data.describe()
 model_version = r.get_artifact("registered_model_version")
 model_uri = f"models:/{model_version.name}/{model_version.version}"
 dbutils.jobs.taskValues.set("model_uri", model_uri)
+dbutils.jobs.taskValues.set("model_name", model_version.name)
+dbutils.jobs.taskValues.set("model_version", model_version.version)
 dbutils.notebook.exit(model_uri)

@@ -38,9 +38,36 @@ resource "databricks_job" "model_training_job" {
   }
 
   task {
-    task_key = "TriggerModelDeploy"
+    task_key = "ModelValidation"
     depends_on {
       task_key = "Train"
+    }
+
+    notebook_task {
+      notebook_path = "notebooks/ModelValidation"
+      base_parameters = {
+        env = local.env
+        # Run mode for model validation. Possible values are :
+        #   Disabled : do not run the model validation notebook
+        #   Dry Run  : Run the model validation notebook. Fail the job if there are compling errors. Ignore failed model validation rules.
+        #   Enabled  : Run the model validation notebook. Return success only if all model validation rules are passing.
+        # Please complete the TODO sessions in notebooks/ModelValidation before enabling model validation
+        run_mode = "Disabled"
+      }
+    }
+
+    new_cluster {
+      num_workers   = 3
+      spark_version = "11.0.x-cpu-ml-scala2.12"
+      node_type_id  = "Standard_D3_v2"
+      custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
+    }
+  }
+
+  task {
+    task_key = "TriggerModelDeploy"
+    depends_on {
+      task_key = "ModelValidation"
     }
 
     notebook_task {
