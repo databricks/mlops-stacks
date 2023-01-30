@@ -48,9 +48,9 @@ resource "databricks_job" "model_training_job" {
       base_parameters = {
         env = local.env
         # Run mode for model validation. Possible values are :
-        #   Disabled : do not run the model validation notebook
-        #   Dry Run  : Run the model validation notebook. Fail the job if there are compling errors. Ignore failed model validation rules.
-        #   Enabled  : Run the model validation notebook. Return success only if all model validation rules are passing.
+        #   Disabled : Do not run the model validation notebook.
+        #   Dry Run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
+        #   Enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
         # Please complete the TODO sessions in notebooks/ModelValidation before enabling model validation
         run_mode = "Disabled"
       }
