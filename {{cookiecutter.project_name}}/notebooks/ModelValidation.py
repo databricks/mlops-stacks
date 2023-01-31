@@ -14,14 +14,14 @@
 # * env (optional): Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
 #                   You can add environment-specific logic to this notebook based on the value of this parameter,
 #                   e.g. read validation data from different tables or data sources across environments.
-# * run_mode (optional): The model validation run mode. Default to Disabled. Possible values are Disabled, Dry Run, Enabled.
-#                       Disabled : do not run the model validation notebook
-#                       Dry Run  : Run the model validation notebook. Fail the job if there are compling errors. Ignore failed model validation rules.
-#                       Enabled  : Run the model validation notebook. Return success only if all model validation rules are passing.
+# * run_mode (optional): The model validation run mode. Defaults to Disabled. Possible values are Disabled, Dry Run, Enabled.
+#                       Disabled : Do not run the model validation notebook.
+#                       Dry Run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
+#                       Enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
 #
 #
 #
-# For details on mlflow evalute API, see doc https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+# For details on mlflow evaluate API, see doc https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # For details and examples about performing model validation, see the Model Validation documentation https://mlflow.org/docs/latest/models.html#model-validation
 #
 ##################################################################################
@@ -107,7 +107,7 @@ mlflow.set_experiment(experiment_name)
 # exist for the model.
 # Baseline model is a requirement for relative change and absolute change validation rules.
 # TODO(required) : enable_baseline_comparison
-enable_baseline_comparison = True
+enable_baseline_comparison = False
 
 # model validation data input for staging or prod workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
 # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
