@@ -92,7 +92,7 @@ assert model_version != "", "model_version notebook parameter must be specified"
 
 # set experiment
 with open("../databricks-config/output/prod.json", "r") as f:
-    experiment_name = json.load(f)["mlops-azure-cuj_experiment_name"]["value"]
+    experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"]["value"]
 mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
