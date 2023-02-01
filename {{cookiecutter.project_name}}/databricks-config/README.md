@@ -97,9 +97,9 @@ The model validation job is implemented in `notebooks/ModelValidation`. The mode
 
 To enable the model validation stack, resolve the TODOs in `notebooks/ModelValidation` to complete the model validation implementation.
 Then update `run_mode` in `staging/training-job.tf` and `prod/training-job.tf`. `run_mode` has three possible values:
-* `Disabled` : Do not run the model validation notebook.
-* `Dry Run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
-* `Enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing. 
+* `disabled` : Do not run the model validation notebook.
+* `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
+* `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
 
 Once model validation is in enabled or dry run mode, the model validation result will be logged to the registered model version.
 ## Develop and test config changes

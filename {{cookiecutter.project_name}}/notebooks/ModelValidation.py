@@ -14,10 +14,10 @@
 # * env (optional): Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
 #                   You can add environment-specific logic to this notebook based on the value of this parameter,
 #                   e.g. read validation data from different tables or data sources across environments.
-# * run_mode (optional): The model validation run mode. Defaults to Disabled. Possible values are Disabled, Dry Run, Enabled.
-#                       Disabled : Do not run the model validation notebook.
-#                       Dry Run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
-#                       Enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
+# * run_mode (optional): The model validation run mode. Defaults to Disabled. Possible values are disabled, dry_run, enabled.
+#                       disabled : Do not run the model validation notebook.
+#                       dry_run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
+#                       enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
 #
 #
 #
@@ -38,7 +38,7 @@
 # COMMAND ----------
 
 dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment Name")
-dbutils.widgets.dropdown("run_mode", "Disabled", ["Disabled", "Dry Run", "Enabled"], "Run Mode")
+dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 
 # COMMAND ----------
 
@@ -62,7 +62,7 @@ env = dbutils.widgets.get("env")
 _run_mode = dbutils.widgets.get("run_mode")
 if _run_mode.lower() == "disabled":
     dbutils.notebook.exit(0)
-dry_run = _run_mode.lower() == "dry run"
+dry_run = _run_mode.lower() == "dry_run"
 
 def get_model_type_from_recipe():
     recipe_config = get_recipe_config("../", f"databricks-{env}")
