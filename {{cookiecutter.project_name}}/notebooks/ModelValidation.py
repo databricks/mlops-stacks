@@ -106,7 +106,7 @@ mlflow.set_experiment(experiment_name)
 # Whether to load the current registered "Production" stage model as baseline. A version with "Production" stage must 
 # exist for the model.
 # Baseline model is a requirement for relative change and absolute change validation rules.
-# TODO(required) : enable_baseline_comparison
+# TODO(optional) : enable_baseline_comparison
 enable_baseline_comparison = False
 
 # model validation data input for staging or prod workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
