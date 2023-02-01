@@ -167,7 +167,7 @@ def log_to_model_description(run, success):
         description += """
             ---
         """.replace(" ", "")
-    description += "Model validation status: {0}\nValidation Details: {1}".format(status, run_link)
+    description += "Model Validation Status: {0}\nValidation Details: {1}".format(status, run_link)
     client.update_model_version(
         name=model_name,
         version=model_version,
