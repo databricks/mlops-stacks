@@ -162,17 +162,12 @@ def log_to_model_description(run, success):
     run_info = run.info
     run_link = "#mlflow/experiments/{0}/runs/{1}".format(run_info.experiment_id, run_info.run_id)
     description = client.get_model_version(model_name, model_version).description
-    if success:
-        status = "succeeded"
-        emoji = ":white_check_mark:"
-    else:
-        status = "failed"
-        emoji = ":x:"
+    status = "SUCCESS" if success else "FAILURE"
     if description != "":
         description += """
             ---
         """.replace(" ", "")
-    description += "### {0}Model validation {1}. Refer to [model validation run]({2}) for details\n".format(emoji, status, run_link)
+    description += "Model validation status: {0}\nValidation Details: {1}".format(status, run_link)
     client.update_model_version(
         name=model_name,
         version=model_version,
