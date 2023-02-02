@@ -23,7 +23,8 @@ resource "databricks_job" "model_training_job" {
     }
     {%- else -%}notebook_task {
       notebook_path = "notebooks/Train"
-      base_parameters = {}
+      base_parameters = {
+      }
     }{% endif %}
 
     new_cluster {
@@ -42,7 +43,9 @@ resource "databricks_job" "model_training_job" {
 
     notebook_task {
       notebook_path = "notebooks/TriggerModelDeploy"
-      base_parameters = {}
+      base_parameters = {
+        env = local.env
+      }
     }
 
     new_cluster {
