@@ -16,7 +16,6 @@ resource "databricks_job" "write_feature_table_job" {
     notebook_task {
       notebook_path = "notebooks/GenerateAndWriteFeatures"
       base_parameters = {
-        env = local.env
         # TODO modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.
@@ -43,7 +42,6 @@ resource "databricks_job" "write_feature_table_job" {
     notebook_task {
       notebook_path = "notebooks/GenerateAndWriteFeatures"
       base_parameters = {
-        env = local.env
         # TODO: modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.

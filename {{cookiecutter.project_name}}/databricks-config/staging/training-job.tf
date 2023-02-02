@@ -16,7 +16,6 @@ resource "databricks_job" "model_training_job" {
     {% if cookiecutter.include_feature_store == "yes" %}notebook_task {
       notebook_path = "notebooks/TrainWithFeatureStore"
       base_parameters = {
-        env                = local.env
         training_data_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         experiment_name    = databricks_mlflow_experiment.experiment.name
         model_name         = "${local.env_prefix}{{cookiecutter.model_name}}"
@@ -24,9 +23,7 @@ resource "databricks_job" "model_training_job" {
     }
     {%- else -%}notebook_task {
       notebook_path = "notebooks/Train"
-      base_parameters = {
-        env = local.env
-      }
+      base_parameters = {}
     }{% endif %}
 
     new_cluster {
@@ -45,9 +42,7 @@ resource "databricks_job" "model_training_job" {
 
     notebook_task {
       notebook_path = "notebooks/TriggerModelDeploy"
-      base_parameters = {
-        env = local.env
-      }
+      base_parameters = {}
     }
 
     new_cluster {
