@@ -77,7 +77,7 @@ jobs:
               }
             ]
           run-name: {{ cookiecutter.project_name}} Integration Test
-          {%- if cookiecutter.include_feature_store != "yes" %}
+          {%- if cookiecutter.include_feature_store == "no" %}
           notebook-params-json: >
             {
               "env": "staging",
