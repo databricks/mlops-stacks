@@ -80,7 +80,6 @@ jobs:
           {%- if cookiecutter.include_feature_store == "yes" %}
           notebook-params-json: >
             {
-              "test_mode": "True"
             }
           {%- else %}
           notebook-params-json: >
