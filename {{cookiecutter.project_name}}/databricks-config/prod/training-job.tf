@@ -24,6 +24,7 @@ resource "databricks_job" "model_training_job" {
     {%- else -%}notebook_task {
       notebook_path = "notebooks/Train"
       base_parameters = {
+        env = local.env
       }
     }{% endif %}
 
