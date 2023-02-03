@@ -59,7 +59,7 @@ resource "databricks_job" "model_training_job" {
     new_cluster {
       num_workers   = 3
       spark_version = "11.0.x-cpu-ml-scala2.12"
-      node_type_id  = "Standard_D3_v2"
+      node_type_id  = "{{cookiecutter.cloud_specific_node_type_id}}"
       custom_tags   = { "clusterSource" = "mlops-stack/0.0" }
     }
   }
