@@ -89,19 +89,20 @@ principal corresponding to a particular environment has permissions to read the 
 
 ### Setting up model validation
 The model validation stack focuses on building a plug-and-play stack component for continuous deployment (CD) of models 
-in staging and prod. Its central purpose is to evaluate a registered model and validate its quality before moving it to 
-Production stage in model registry.
+in staging and prod.
+Its central purpose is to evaluate a registered model and validate its quality before deploying the model to Production/Staging.
 
 The model validation job is implemented in `notebooks/ModelValidation`. The model validation stack is defined in 
 `staging/training-job.tf` and `prod/training-job.tf`.
+As part of the workflow, model validation runs after training and before the deployment.
 
 To enable the model validation stack, resolve the TODOs in `notebooks/ModelValidation` to complete the model validation implementation.
-Then update `run_mode` in `staging/training-job.tf` and `prod/training-job.tf`. `run_mode` has three possible values:
+Then update `run_mode` in `staging/training-job.tf` and `prod/training-job.tf`. `run_mode` can be one of the three values:
 * `disabled` : Do not run the model validation notebook.
 * `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
 * `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
 
-Once model validation is in enabled or dry run mode, the model validation result will be logged to the registered model version.
+Once model validation is in enabled or dry run mode, the model validation result will be logged to the description of the registered model version.
 ## Develop and test config changes
 To get started, open `staging/inference-job.tf`.  The file contains the ML resource definition of
 a batch inference job, like:
