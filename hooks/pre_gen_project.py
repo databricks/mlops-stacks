@@ -21,6 +21,12 @@ import cookiecutter
             "cicd_platform": "gitHub"
         }
     )}} 
+{%- elif cookiecutter.cicd_platform == "GitHub Enterprise Actions" -%}
+    {{ cookiecutter.update(
+            {
+                "cicd_platform": "gitHubEnterprise"
+            }
+        )}}
 {%- elif cookiecutter.cicd_platform == "Azure DevOps" -%}
     {{ cookiecutter.update(
             {
