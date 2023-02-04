@@ -58,6 +58,9 @@ cicd_specific_paths = {
     "gitHub": [
         os.path.join(".github"),
     ],
+    "gitHubEnterprise": [
+        os.path.join(".github"),
+    ],
     "azureDevOpsServices": [
         os.path.join(".azure"),
         os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),

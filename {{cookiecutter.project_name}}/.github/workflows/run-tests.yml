@@ -55,6 +55,7 @@ jobs:
           local-notebook-path: notebooks/Train.py
           {%- endif %}
           {% raw %}git-commit: ${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+          git-provider: {{ cookiecutter.cicd_platform }}
           new-cluster-json: >
             {
               "spark_version": "11.0.x-cpu-ml-scala2.12",
