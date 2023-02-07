@@ -5,7 +5,9 @@ This directory contains setup scripts intended to automate CI/CD and ML resource
 for MLOps engineers.
 
 {% if cookiecutter.cicd_platform == "gitHub" -%}
-The scripts set up CI/CD with GitHub Actions. If using another CI/CD provider, you can
+The scripts set up CI/CD with GitHub Actions. 
+{% if cookiecutter.cicd_platform == "gitHubEnterprise" -%}
+The scripts set up CI/CD with GitHub Actions for GitHub Enterprise. If using another CI/CD provider, you can
 easily translate the provided CI/CD workflows (GitHub Actions YAML under `.github/workflows`)
 to other CI/CD providers by running the same shell commands, with a few caveats:
 
@@ -198,6 +200,9 @@ python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- if cookiecutter.cicd_platform == "gitHub" %}
   --var github_repo_url=https://github.com/<your-org>/<your-repo-name> \
   --var git_token=<your-git-token>
+{%- if cookiecutter.cicd_platform == "gitHubEnterprise" %}
+   -- var github_repo_url=<your-enterprise-github-URL>/<your-org>/<your-repo-name> \
+   -- var git_token=<your-git-token>
 {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   --var azure_devops_org_url=https://dev.azure.com/<your-org-name> \
   --var azure_devops_project_name=<name-of-project> \
