@@ -7,7 +7,6 @@
 #
 # Parameters:
 #
-# * env (optional)  - String name of the current environment (dev, staging, or prod). Defaults to "dev".
 # * input_table_path (required)   - Path to input data.
 # * output_table_name (required)  - Fully qualified schema + Delta table name for the feature table where the features
 # *                                 will be written to. Note that this will create the Feature table if it does not
@@ -26,8 +25,6 @@
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 #
-# Name of the current environment.
-dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 # A Hive-registered Delta table containing the input data.
 dbutils.widgets.text("input_table_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Input Table Name")
 # Input start date. 
@@ -56,7 +53,6 @@ sys.path.append("../features")
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
 
-env = dbutils.widgets.get("env")
 input_table_path = dbutils.widgets.get("input_table_path")
 output_table_name = dbutils.widgets.get("output_table_name")
 input_start_date = dbutils.widgets.get("input_start_date")

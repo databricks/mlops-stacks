@@ -77,9 +77,12 @@ jobs:
               }
             ]
           run-name: {{ cookiecutter.project_name}} Integration Test
+          {%- if cookiecutter.include_feature_store == "no" %}
           notebook-params-json: >
             {
               "env": "staging",
               "test_mode": "True"
             }
+          {%- endif %}
+          
           {% raw %}pr-comment-github-token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}

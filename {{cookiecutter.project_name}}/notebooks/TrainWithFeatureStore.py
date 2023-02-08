@@ -7,7 +7,6 @@
 #
 # Parameters:
 #
-# * env (optional)  - String name of the current environment (dev, staging, or prod). Defaults to "dev".
 # * training_data_path (required)   - Path to the training data.
 # * experiment_name (required)      - MLflow experiment name for the training runs. Will be created if it doesn't exist.
 # * model_name (required)           - MLflow registered model name to use for the trained model. Will be created if it
@@ -20,9 +19,6 @@
 
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
-#
-# Name of the current environment.
-dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 
 # Path to the Hive-registered Delta table containing the training data.
 dbutils.widgets.text("training_data_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Path to the training data")
@@ -36,7 +32,6 @@ dbutils.widgets.text("model_name", "mlops-azure-cuj-model-test", label="Model Na
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
 
-env = dbutils.widgets.get("env")
 input_table_path = dbutils.widgets.get("training_data_path")
 experiment_name = dbutils.widgets.get("experiment_name")
 model_name = dbutils.widgets.get("model_name")

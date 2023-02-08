@@ -60,7 +60,6 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "notebooks/GenerateAndWriteFeatures", 
                   "base_parameters": {
-                    "env": "staging",
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_pickup_datetime",
@@ -88,7 +87,6 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "notebooks/GenerateAndWriteFeatures",
                   "base_parameters": {                    
-                    "env": "staging",
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_dropoff_datetime",
@@ -124,7 +122,6 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "notebooks/TrainWithFeatureStore",
                   "base_parameters": {
-                    "env": "staging",
                     "test_mode": "True",
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
