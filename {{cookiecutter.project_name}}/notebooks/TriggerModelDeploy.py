@@ -46,14 +46,23 @@ assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 
 {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
+github_server = dbutils.secrets.get(
+    f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_server"
+)
 github_repo = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_repo"
 )
 token = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "token"
 )
-cd_trigger_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/deploy-model-{env}.yml/dispatches"
+if github_server == "https://github.com" or github_server == "github.com":
+    github_server = "https://api.github.com"
+else:
+    # URL for github Enterprise Server: https://docs.github.com/en/enterprise-server@3.8/rest/actions/workflows
+    github_server = f"{github_server}/api/v3"
+cd_trigger_url = f"{github_server}/repos/{github_repo}/actions/workflows/deploy-model-{env}.yml/dispatches"
 authorization = f"token {token}"
+print(cd_trigger_url)
 
 # COMMAND ----------
 import requests

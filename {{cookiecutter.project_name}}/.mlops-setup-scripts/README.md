@@ -130,7 +130,7 @@ Then, grant the `{{cookiecutter.service_principal_group}}` group [token usage pe
 ### Obtain a git token for use in CI/CD
 The setup script prompts a Git token with both read and write permissions
 on the current repo.
-
+ 
 {% if cookiecutter.cicd_platform == "gitHub" -%}
 This token is used to:
 1. Fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it
@@ -201,7 +201,7 @@ python .mlops-setup-scripts/cicd/bootstrap.py \
   --var github_repo_url=https://github.com/<your-org>/<your-repo-name> \
   --var git_token=<your-git-token>
 {%- elif cookiecutter.cicd_platform == "gitHubEnterprise" %}
-   -- var github_repo_url=<your-enterprise-github-URL>/<your-org>/<your-repo-name> \
+   -- var github_repo_url=<your-enterprise-github-server>/<your-org>/<your-repo-name> \
    -- var git_token=<your-git-token>
 {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   --var azure_devops_org_url=https://dev.azure.com/<your-org-name> \
