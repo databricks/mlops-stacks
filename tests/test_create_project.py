@@ -56,6 +56,7 @@ def assert_no_disallowed_strings_in_files(
 
     def assert_no_disallowed_strings(filepath):
         with open(filepath, "r") as f:
+            print(filepath)
             data = f.read()
         for s in disallowed_strings:
             assert s not in data

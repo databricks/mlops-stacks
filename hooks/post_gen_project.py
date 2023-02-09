@@ -55,10 +55,7 @@ for cloud, paths in cloud_specific_paths.items():
 
 
 cicd_specific_paths = {
-    "gitHub": [
-        os.path.join(".github"),
-    ],
-    "gitHubEnterprise": [
+    "git": [
         os.path.join(".github"),
     ],
     "azureDevOpsServices": [
@@ -68,7 +65,7 @@ cicd_specific_paths = {
 }
 
 for cicd, paths in cicd_specific_paths.items():
-    if cicd != cicd_platform:
+    if cicd != cicd_platform[:len(cicd)]:
         for path in paths:
             remove_filepath(path)
 
