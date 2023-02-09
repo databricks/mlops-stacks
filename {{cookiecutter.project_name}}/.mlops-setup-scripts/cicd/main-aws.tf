@@ -30,7 +30,7 @@ module "staging_workspace_cicd" {
   providers = {
     databricks = databricks.staging_sp
   }
-  {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"]%}
+  {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
   git_provider    = var.git_provider
   git_token       = var.git_token
   env             = "staging"
@@ -46,7 +46,7 @@ module "prod_workspace_cicd" {
   providers = {
     databricks = databricks.prod_sp
   }
-  {%- if cookiecutter.cicd_platform == "gitHub" %}
+  {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
   git_provider    = var.git_provider
   git_token       = var.git_token
   env             = "prod"

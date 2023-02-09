@@ -9,7 +9,7 @@ variable "git_provider" {
   description = "Hosted Git provider, as described in {{ 'dev-tools/api/latest/gitcredentials.html#operation/create-git-credential' | generate_doc_link(cookiecutter.cloud) }}. For example, 'gitHub' if using GitHub, or 'azureDevOpsServices' if using Azure DevOps."
 }
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 variable "github_repo_url" {
   type        = string
   description = "URL of the hosted git repo containing the current ML project, e.g. https://github.com/myorg/myrepo"

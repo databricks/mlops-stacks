@@ -130,7 +130,7 @@ Then, grant the `{{cookiecutter.service_principal_group}}` group [token usage pe
 ### Obtain a git token for use in CI/CD
 The setup script prompts a Git token with both read and write permissions
 on the current repo.
- 
+
 {% if cookiecutter.cicd_platform == "gitHub" -%}
 This token is used to:
 1. Fetch ML code from the current repo to run on Databricks for CI/CD (e.g. to check out code from a PR branch and run it

@@ -30,7 +30,7 @@ variable "prod_profile" {
   default     = "{{cookiecutter.project_name}}-prod"
 }
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 variable "github_repo_url" {
   type        = string
   description = "URL of the hosted git repo containing the current ML project, e.g. https://github.com/myorg/myrepo"

@@ -43,7 +43,7 @@ module "staging_workspace_cicd" {
   providers = {
     databricks = databricks.staging_sp
   }
-  {%- if cookiecutter.cicd_platform == "gitHub" %}
+  {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
   git_provider    = var.git_provider
   git_token       = var.git_token
   env             = "staging"
@@ -59,7 +59,7 @@ module "prod_workspace_cicd" {
   providers = {
     databricks = databricks.prod_sp
   }
-  {%- if cookiecutter.cicd_platform == "gitHub" %}
+  {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
   git_provider    = var.git_provider
   git_token       = var.git_token
   env             = "prod"
@@ -92,7 +92,7 @@ resource "azuread_service_principal" "prod_service_principal" {
 }
 {%- endif %}
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 // We produce the service princpal's application ID, client secret, and tenant ID as output, to enable
 // extracting their values and storing them as secrets in your CI system
 //
