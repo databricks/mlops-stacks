@@ -21,7 +21,7 @@ creating identical resources in dev and verifying their behavior.
 This project ships with CI/CD workflows for developing and deploying ML resource config. You can open a PR (pull request) to modify configs in staging and prod,
 which will be unit-tested and then deployed after the PR is merged:
 
-![ML resource config diagram](../{{cookiecutter.project_name}}/docs/images/mlops-resource-config.png)
+![ML resource config diagram](../docs/images/mlops-resource-config.png)
 
 ## Prerequisites
 

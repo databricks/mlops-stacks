@@ -1,6 +1,6 @@
 # ML Developer Guide
 
-[(back to main README)](../README.md)
+[(back to main README)](../{{cookiecutter.project_name}}/README.md)
 
 ## Table of contents
 * [Initial setup](#initial-setup): adapting the provided example code to your ML problem
@@ -116,4 +116,4 @@ a model with reasonable performance on your dataset), you may be ready to produc
 To do this, ask your ops team to follow the [MLOps Setup Guide](mlops-setup.md) to set up CI/CD and deploy
 production training/inference pipelines.
 
-[(back to main README)](../README.md)
+[(back to main README)](../{{cookiecutter.project_name}}/README.md)

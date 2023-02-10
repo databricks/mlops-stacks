@@ -1,5 +1,5 @@
 # MLOps Setup Scripts
-[(back to MLOps setup guide)](../../{{cookiecutter.project_name}}/docs/mlops-setup.md)
+[(back to MLOps setup guide)](../../docs/mlops-setup.md)
 
 This directory contains setup scripts intended to automate CI/CD and ML resource config setup
 for MLOps engineers.
@@ -331,4 +331,4 @@ with updated inputs, after configuring auth as described in the prerequisites.
 ## Next steps
 In this project, interactions with the staging and prod workspace are driven through CI/CD. After you've configured
 CI/CD and ML resource state storage, you can productionize your ML project by testing and deploying ML code, deploying model training and
-inference jobs, and more. See the [MLOps setup guide](../../{{cookiecutter.project_name}}/docs/mlops-setup.md) for details.
+inference jobs, and more. See the [MLOps setup guide](../../docs/mlops-setup.md) for details.

@@ -1,6 +1,6 @@
 # Updating ML code in production
 
-[(back to main README)](../README.md)
+[(back to main README)](../{{cookiecutter.project_name}}/README.md)
 
 **NOTE**: This page assumes that your MLOps team has already configured CI/CD and deployed initial
 ML resources, per the [MLOps setup guide](mlops-setup.md).
@@ -34,9 +34,9 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a 
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
-[workflow](../../.github/workflows/run-tests.yml) 
+[workflow](../.github/workflows/run-tests.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
-[Azure DevOps Pipeline](../../.azure/devops-pipelines/tests-ci.yml)
+[Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
 {% endif %} 
 that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch

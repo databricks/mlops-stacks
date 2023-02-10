@@ -1,6 +1,6 @@
 # Project Overview
 
-[(back to main README)](../README.md)
+[(back to main README)](../{{cookiecutter.project_name}}/README.md)
 
 ## ML pipeline structure
 This project defines an ML pipeline for automated retraining and batch inference of an ML model
@@ -69,4 +69,4 @@ contained in the following files:
 ```
 
 ## Next Steps
-See the [main README](../README.md#using-this-repo) for additional links on how to work with this repo.
+See the [main README](../{{cookiecutter.project_name}}/README.md#using-this-repo) for additional links on how to work with this repo.
