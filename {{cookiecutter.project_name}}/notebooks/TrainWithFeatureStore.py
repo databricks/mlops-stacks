@@ -24,10 +24,10 @@
 dbutils.widgets.text("training_data_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Path to the training data")
 
 # MLflow experiment name.
-dbutils.widgets.text("experiment_name", "/mlops-azure-cuj/mlops-azure-cuj-experiment-test", label="MLflow experiment name")
+dbutils.widgets.text("experiment_name", "/{{cookiecutter.project_name}}/{{cookiecutter.experiment_base_name}}-test", label="MLflow experiment name")
 
 # MLflow registered model name to use for the trained mode..
-dbutils.widgets.text("model_name", "mlops-azure-cuj-model-test", label="Model Name")
+dbutils.widgets.text("model_name", "{{cookiecutter.model_name}}-test", label="Model Name")
 
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
