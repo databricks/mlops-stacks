@@ -46,8 +46,8 @@ dbutils.widgets.text("primary_keys", "zip", label="Primary keys columns for the 
 # COMMAND ----------
 import sys
 
-sys.path.append("../steps")
-sys.path.append("../features")
+sys.path.append("../../training/steps")
+sys.path.append("..")
 
 
 # COMMAND ----------

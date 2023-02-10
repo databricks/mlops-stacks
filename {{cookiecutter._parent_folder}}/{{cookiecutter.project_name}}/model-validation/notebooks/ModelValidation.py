@@ -65,7 +65,7 @@ if _run_mode.lower() == "disabled":
 dry_run = _run_mode.lower() == "dry_run"
 
 def get_model_type_from_recipe():
-    recipe_config = get_recipe_config("../", f"databricks-{env}")
+    recipe_config = get_recipe_config("../../", f"databricks-{env}")
     problem_type = recipe_config.get("recipe").split("/")[0]
     if problem_type.lower() == "regression":
         return "regressor"
@@ -75,7 +75,7 @@ def get_model_type_from_recipe():
         raise Exception(f"Unsupported recipe {recipe_config}")
 
 def get_targets_from_recipe():
-    recipe_config = get_recipe_config("../", f"databricks-{env}")
+    recipe_config = get_recipe_config("../../", f"databricks-{env}")
     return recipe_config.get("target_col")
 
 # set model evaluation parameters that can be inferred from the job

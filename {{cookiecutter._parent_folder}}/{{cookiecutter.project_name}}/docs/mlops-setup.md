@@ -16,8 +16,8 @@
 This page explains how to productionize the current project, setting up CI/CD and
 ML resource deployment, and deploying ML training and inference jobs.
 
-After following this guide, data scientists can follow the [ML Pull Request](./ml-pull-request.md) and 
-[ML Config](../databricks-config/README.md) guides to make changes to ML code or deployed jobs.
+After following this guide, data scientists can follow the [ML Pull Request](ml-pull-request.md) and 
+[ML Config](../../mlops-stacks-config/README.md) guides to make changes to ML code or deployed jobs.
 
 ## Create a hosted Git repo
 Create a hosted Git repo to store project code, if you haven't already done so. From within the project
@@ -38,7 +38,7 @@ git push upstream {{cookiecutter.default_branch}}
 ```
 
 ## Configure CI/CD and ML resource state storage
-Follow the guide in [.mlops-setup-scripts/README.md](../.mlops-setup-scripts/README.md) to
+Follow the guide in [.mlops-setup-scripts/README.md](../../mlops-stacks-config/.mlops-setup-scripts/README.md) to
 configure and enable CI/CD for the hosted Git repo created in the previous step, as well as
 set up a state storage backend for ML resources (jobs, experiments, etc) created for the
 current ML project.
@@ -46,10 +46,10 @@ current ML project.
 {%- if cookiecutter.include_feature_store == "no" %}
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
-* [databricks-test.yaml](../profiles/databricks-test.yaml): specify recipe configs to use in integration tests
-* [databricks-staging.yaml](../profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
+* [databricks-test.yaml](../training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests
+* [databricks-staging.yaml](../training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
   jobs that run in the staging workspace
-* [databricks-prod.yaml](../profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
+* [databricks-prod.yaml](../training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
   jobs that run in the prod workspace
 {%- endif %}
 
@@ -89,11 +89,11 @@ For future ML code changes, iterate against the `{{cookiecutter.default_branch}}
 {% endif -%}
 
 ## Deploy ML resources and enable production jobs
-Follow the instructions in [databricks-config/README.md](../databricks-config/README.md) to deploy ML resources
+Follow the instructions in [databricks-config/README.md](../../mlops-stacks-config/README.md) to deploy ML resources
 and production jobs.
 
 ## Next steps
 After you configure CI/CD and deploy training & inference pipelines, notify data scientists working
 on the current project. They should now be able to follow the
-[ML pull request guide](./ml-pull-request.md) and [ML resource config guide](../databricks-config/README.md) to propose, test, and deploy
+[ML pull request guide](ml-pull-request.md) and [ML resource config guide](../../mlops-stacks-config/README.md) to propose, test, and deploy
 ML code and pipeline changes to production.

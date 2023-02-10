@@ -3,7 +3,7 @@
 [(back to main README)](../README.md)
 
 **NOTE**: This page assumes that your MLOps team has already configured CI/CD and deployed initial
-ML resources, per the [MLOps setup guide](./mlops-setup.md).
+ML resources, per the [MLOps setup guide](mlops-setup.md).
 
 ## Table of contents
 * [Intro](#intro)
@@ -14,8 +14,8 @@ ML resources, per the [MLOps setup guide](./mlops-setup.md).
 
 ## Intro
 After following the
-{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](./ml-developer-guide-fs.md).
-{% else %}[ML quickstart](./ml-developer-guide.md).{% endif %}
+{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](ml-developer-guide-fs.md).
+{% else %}[ML quickstart](ml-developer-guide.md).{% endif %}
 to iterate on ML code, the next step is to get
 your updated code merged back into the repo for production use. This page walks you through the workflow
 for doing so via a pull request.
@@ -34,9 +34,9 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a 
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
-[workflow](../.github/workflows/run-tests.yml) 
+[workflow](../../.github/workflows/run-tests.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
-[Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
+[Azure DevOps Pipeline](../../.azure/devops-pipelines/tests-ci.yml)
 {% endif %} 
 that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
@@ -55,7 +55,7 @@ and registering a new model version in the model registry. The fitted model alon
 will also be logged to an MLflow run. To debug failed integration test runs, click into the Databricks job run
 URL printed in the test logs. The job run page will contain a link to the MLflow model training run:
 
-![Link to MLFlow Run](./images/MLFlowRunLink.png)
+![Link to MLFlow Run](images/MLFlowRunLink.png)
 
 Click the MLflow run link to view training metrics or fetch and debug the model as needed.
 

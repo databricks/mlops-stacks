@@ -15,7 +15,7 @@ The subsequent sections explain how to adapt the sample code to your ML problem 
 started iterating on feature engineering and model training code.
 
 When you're ready  to productionize your ML project, ask your ops team to set up CI/CD and deploy
-production jobs per the [MLOps setup guide](./mlops-setup.md).
+production jobs per the [MLOps setup guide](mlops-setup.md).
 
 ### Configure your ML pipeline
 
@@ -85,12 +85,12 @@ You can iterate on the feature transform modules locally in your favorite IDE be
 You can run unit tests for your ML code via `pytest tests`.
 
 ## Next Steps
-If you're iterating on ML code for an existing, already-deployed ML project, follow [Submitting a Pull Request](./ml-pull-request.md)
+If you're iterating on ML code for an existing, already-deployed ML project, follow [Submitting a Pull Request](ml-pull-request.md)
 to submit your code for testing and production deployment.
 
 Otherwise, if exploring a new ML problem and satisfied with the results (e.g. you were able to train
 a model with reasonable performance on your dataset), you may be ready to productionize your ML pipeline.
-To do this, ask your ops team to follow the [MLOps Setup Guide](./mlops-setup.md) to set up CI/CD and deploy
+To do this, ask your ops team to follow the [MLOps Setup Guide](mlops-setup.md) to set up CI/CD and deploy
 production training/inference pipelines.
 
 [(back to main README)](../README.md)

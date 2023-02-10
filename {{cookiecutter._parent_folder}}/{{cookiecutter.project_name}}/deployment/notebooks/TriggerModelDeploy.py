@@ -37,7 +37,7 @@ dbutils.widgets.dropdown("env", "None", ["None", "staging", "prod"], "Environmen
 # COMMAND ----------
 import sys
 
-sys.path.append("../steps")
+sys.path.append("../../training/steps")
 
 # COMMAND ----------
 env = dbutils.widgets.get("env")

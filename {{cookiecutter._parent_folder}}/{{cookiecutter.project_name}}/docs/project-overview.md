@@ -9,7 +9,7 @@ on tabular data.
 See the full pipeline structure below. The [stacks README](https://github.com/databricks/mlops-stack/blob/main/Pipeline.md)
 contains additional details on how ML pipelines are tested and deployed across each of the dev, staging, prod environments below.
 
-![MLOps Stacks diagram](./images/mlops-stack-summary.png)
+![MLOps Stacks diagram](images/mlops-stack-summary.png)
 
 
 ## Code structure
