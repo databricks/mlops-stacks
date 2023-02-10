@@ -5,7 +5,7 @@ resource "databricks_job" "write_feature_table_job" {
   # that exists in the current repo. Note that Terraform >= 1.2 is required to use these validations
   lifecycle {
     postcondition {
-      condition     = alltrue([for task in self.task : fileexists("../../${task.notebook_task[0].notebook_path}.py")])
+      condition     = alltrue([for task in self.task : fileexists("../../../${task.notebook_task[0].notebook_path}.py")])
       error_message = "Databricks job must reference a notebook at a relative path from the root of the repo, with file extension omitted. Could not find one or more notebooks in repo"
     }
   }
@@ -14,7 +14,7 @@ resource "databricks_job" "write_feature_table_job" {
     task_key = "PickupFeatures"
 
     notebook_task {
-      notebook_path = "notebooks/GenerateAndWriteFeatures"
+      notebook_path = "{{cookiecutter.project_name}}/feature-engineering/notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         # TODO modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
@@ -40,7 +40,7 @@ resource "databricks_job" "write_feature_table_job" {
     task_key = "DropoffFeatures"
 
     notebook_task {
-      notebook_path = "notebooks/GenerateAndWriteFeatures"
+      notebook_path = "{{cookiecutter.project_name}}/feature-engineering/notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         # TODO: modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"

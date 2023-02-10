@@ -5,7 +5,7 @@ resource "databricks_job" "model_training_job" {
   # that exists in the current repo. Note that Terraform >= 1.2 is required to use these validations
   lifecycle {
     postcondition {
-      condition     = alltrue([for task in self.task : fileexists("../../${task.notebook_task[0].notebook_path}.py")])
+      condition     = alltrue([for task in self.task : fileexists("../../../${task.notebook_task[0].notebook_path}.py")])
       error_message = "Databricks job must reference a notebook at a relative path from the root of the repo, with file extension omitted. Could not find one or more notebooks in repo"
     }
   }
@@ -14,7 +14,7 @@ resource "databricks_job" "model_training_job" {
     task_key = "Train"
 
     {% if cookiecutter.include_feature_store == "yes" %}notebook_task {
-      notebook_path = "notebooks/TrainWithFeatureStore"
+      notebook_path = "{{cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore"
       base_parameters = {
         training_data_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         experiment_name    = databricks_mlflow_experiment.experiment.name
@@ -22,7 +22,7 @@ resource "databricks_job" "model_training_job" {
       }
     }
     {%- else -%}notebook_task {
-      notebook_path = "notebooks/Train"
+      notebook_path = "{{cookiecutter.project_name}}/training/notebooks/Train"
       base_parameters = {
         env = local.env
       }
@@ -43,7 +43,7 @@ resource "databricks_job" "model_training_job" {
     }
 
     notebook_task {
-      notebook_path = "notebooks/ModelValidation"
+      notebook_path = "{{cookiecutter.project_name}}/model-validation/notebooks/ModelValidation"
       base_parameters = {
         env = local.env
         # Run mode for model validation. Possible values are :
@@ -70,7 +70,7 @@ resource "databricks_job" "model_training_job" {
     }
 
     notebook_task {
-      notebook_path = "notebooks/TriggerModelDeploy"
+      notebook_path = "{{cookiecutter.project_name}}/deployment/notebooks/TriggerModelDeploy"
       base_parameters = {
         env = local.env
       }

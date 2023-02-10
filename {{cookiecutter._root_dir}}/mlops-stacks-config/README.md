@@ -118,7 +118,7 @@ resource "databricks_job" "batch_inference_job" {
   }
 
   notebook_task {
-    notebook_path = "notebooks/BatchInference"
+    notebook_path = "{{cookiecutter.project_name}}/inference/notebooks/BatchInference"
   }
   ...
 }

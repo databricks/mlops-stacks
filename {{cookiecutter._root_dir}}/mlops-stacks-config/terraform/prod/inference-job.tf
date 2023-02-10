@@ -5,7 +5,7 @@ resource "databricks_job" "batch_inference_job" {
   # that exists in the current repo. Note that Terraform >= 1.2 is required to use these validations
   lifecycle {
     postcondition {
-      condition     = fileexists("../../${self.notebook_task[0].notebook_path}.py")
+      condition     = fileexists("../../../${self.notebook_task[0].notebook_path}.py")
       error_message = "Databricks job must reference a notebook at a relative path from the root of the repo, with file extension omitted. Could not find ${self.notebook_task[0].notebook_path}.py in repo"
     }
   }
@@ -22,7 +22,7 @@ resource "databricks_job" "batch_inference_job" {
   }
 
   notebook_task {
-    notebook_path = "notebooks/BatchInference"
+    notebook_path = "{{cookiecutter.project_name}}/inference/notebooks/BatchInference"
     base_parameters = {
       env = local.env
       # TODO: Specify input and output table names for batch inference here
