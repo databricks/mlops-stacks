@@ -213,7 +213,7 @@ python .mlops-setup-scripts/cicd/bootstrap.py \
   --var git_token=<your-git-token>
 {%- elif cookiecutter.cicd_platform == "gitHubEnterprise" %}
    --var github_repo_url=<your-enterprise-github-server>/<your-org>/<your-repo-name> \
-   --var git_token=<your-git-token>
+   --var git_token=<your-git-token> \
    --var github_server_url=<your-enterprise-github-server>
 {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   --var azure_devops_org_url=https://dev.azure.com/<your-org-name> \
