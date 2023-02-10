@@ -53,7 +53,7 @@ for cloud, paths in cloud_specific_paths.items():
         for path in paths:
             remove_filepath(path)
 
-if cicd_platform in ["gitHub", "gitHubeEnterprise"]:
+if cicd_platform in ["gitHub", "gitHubEnterprise"]:
     remove_filepath(os.path.join(".azure"))
     remove_filepath(os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"))
 elif cicd_platform == "azureDevOpsServices":
