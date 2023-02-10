@@ -21,7 +21,7 @@ import cookiecutter
             "cicd_platform": "gitHub"
         }
     )}} 
-{%- elif cookiecutter.cicd_platform == "GitHub Enterprise Actions" -%}
+{%- elif cookiecutter.cicd_platform == "Github Actions for Enterprises" -%}
     {{ cookiecutter.update(
             {
                 "cicd_platform": "gitHubEnterprise"
