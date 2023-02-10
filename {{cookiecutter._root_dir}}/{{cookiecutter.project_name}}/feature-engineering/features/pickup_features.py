@@ -23,37 +23,37 @@ def _filter_df_by_ts(df, ts_column, start_date, end_date):
 
 def compute_features_fn(input_df, timestamp_column, start_date, end_date):
     """
-     Contains logic to compute features.
- 
-     Given an input dataframe and time ranges, this function should compute features, populate an output dataframe and
-     return it. This method will be called from a  Feature Store pipeline job and the output dataframe will be written
-     to a Feature Store table. You should update this method with your own feature computation logic.
- 
-     The timestamp_column, start_date, end_date args are optional but strongly recommended for time-series based
-     features.
+    Contains logic to compute features.
 
-     :param input_df: Input dataframe.
-     :param timestamp_column: Column containing a timestamp. This column is used to limit the range of feature
-     computation. It is also used as the timestamp key column when populating the feature table, so it needs to be
-     returned in the output.
-     :param start_date: Start date of the feature computation interval.
-     :param end_date:  End date of the feature computation interval.
-     :return: Output dataframe containing computed features given the input arguments.
+    Given an input dataframe and time ranges, this function should compute features, populate an output dataframe and
+    return it. This method will be called from a  Feature Store pipeline job and the output dataframe will be written
+    to a Feature Store table. You should update this method with your own feature computation logic.
+
+    The timestamp_column, start_date, end_date args are optional but strongly recommended for time-series based
+    features.
+
+    :param input_df: Input dataframe.
+    :param timestamp_column: Column containing a timestamp. This column is used to limit the range of feature
+    computation. It is also used as the timestamp key column when populating the feature table, so it needs to be
+    returned in the output.
+    :param start_date: Start date of the feature computation interval.
+    :param end_date:  End date of the feature computation interval.
+    :return: Output dataframe containing computed features given the input arguments.
     """
-    df = _filter_df_by_ts(
-        input_df, timestamp_column, start_date, end_date
-    )
+    df = _filter_df_by_ts(input_df, timestamp_column, start_date, end_date)
     pickupzip_features = (
         df.groupBy(
             "pickup_zip", window(timestamp_column, "1 hour", "15 minutes")
         )  # 1 hour window, sliding every 15 minutes
-            .agg(
+        .agg(
             mean("fare_amount").alias("mean_fare_window_1h_pickup_zip"),
             count("*").alias("count_trips_window_1h_pickup_zip"),
         )
-            .select(
+        .select(
             col("pickup_zip").alias("zip"),
-            unix_timestamp(col("window.end")).alias(timestamp_column).cast(TimestampType()),
+            unix_timestamp(col("window.end"))
+            .alias(timestamp_column)
+            .cast(TimestampType()),
             _partition_id(to_timestamp(col("window.end"))).alias("yyyy_mm"),
             col("mean_fare_window_1h_pickup_zip").cast(FloatType()),
             col("count_trips_window_1h_pickup_zip").cast(IntegerType()),

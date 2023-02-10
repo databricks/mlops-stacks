@@ -28,7 +28,11 @@ def run_test_command(cmd, working_dir):
 @parametrize_by_project_generation_params
 def test_can_run_terraform_for_ml_resources(generated_project_dir, directory):
     working_dir = (
-        generated_project_dir / "databricks-mlops-stacks" / "mlops-stacks-config" / "terraform" / directory
+        generated_project_dir
+        / "databricks-mlops-stacks"
+        / "mlops-stacks-config"
+        / "terraform"
+        / directory
     )
     run_test_command(
         """
@@ -61,7 +65,11 @@ def test_can_run_terraform_for_cicd(generated_project_dir, subdirectory):
 @pytest.fixture()
 def add_script_dir_to_pythonpath(generated_project_dir):
     module_parent_dir = os.path.join(
-        generated_project_dir, "databricks-mlops-stacks", "mlops-stacks-config", ".mlops-setup-scripts", "terraform"
+        generated_project_dir,
+        "databricks-mlops-stacks",
+        "mlops-stacks-config",
+        ".mlops-setup-scripts",
+        "terraform",
     )
     sys.path.append(module_parent_dir)
     yield

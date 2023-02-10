@@ -26,22 +26,38 @@
 # Provide them via DB widgets or notebook arguments.
 #
 # A Hive-registered Delta table containing the input data.
-dbutils.widgets.text("input_table_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Input Table Name")
-# Input start date. 
+dbutils.widgets.text(
+    "input_table_path",
+    "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
+    label="Input Table Name",
+)
+# Input start date.
 dbutils.widgets.text("input_start_date", "", label="Input Start Date")
 # Input end date.
 dbutils.widgets.text("input_end_date", "", label="Input End Date")
 # Timestamp column. Will be used to filter input start/end dates.
 # This column is also used as a timestamp key of the feature table.
-dbutils.widgets.text("timestamp_column", "tpep_pickup_datetime", label="Timestamp column")
+dbutils.widgets.text(
+    "timestamp_column", "tpep_pickup_datetime", label="Timestamp column"
+)
 
 # Feature table to store the computed features.
-dbutils.widgets.text("output_table_name", "feature_store_taxi_example.trip_pickup_features", label="Output Feature Table Name")
+dbutils.widgets.text(
+    "output_table_name",
+    "feature_store_taxi_example.trip_pickup_features",
+    label="Output Feature Table Name",
+)
 
 # Feature transform module name.
-dbutils.widgets.text("features_transform_module", "pickup_features", label="Features transform file.")
+dbutils.widgets.text(
+    "features_transform_module", "pickup_features", label="Features transform file."
+)
 # Primary Keys columns for the feature table;
-dbutils.widgets.text("primary_keys", "zip", label="Primary keys columns for the feature table, comma separated.")
+dbutils.widgets.text(
+    "primary_keys",
+    "zip",
+    label="Primary keys columns for the feature table, comma separated.",
+)
 
 # COMMAND ----------
 import sys
@@ -64,13 +80,13 @@ pk_columns = dbutils.widgets.get("primary_keys")
 assert input_table_path != "", "input_table_path notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 
-# Extract database name. Needs to be updated for Unity Catalog. 
+# Extract database name. Needs to be updated for Unity Catalog.
 output_database = output_table_name.split(".")[0]
 
 # COMMAND ----------
 # DBTITLE 1,Create database.
 
-spark.sql("CREATE DATABASE IF NOT EXISTS " + output_database);
+spark.sql("CREATE DATABASE IF NOT EXISTS " + output_database)
 
 # COMMAND ----------
 # DBTITLE 1, Read input data.
@@ -83,6 +99,7 @@ raw_data = spark.read.format("delta").load(input_table_path)
 
 # Compute the features. This is done by dynamically loading the features module.
 from importlib import import_module
+
 mod = import_module(features_module)
 compute_features_fn = getattr(mod, "compute_features_fn")
 
@@ -97,6 +114,7 @@ features_df = compute_features_fn(
 
 # DBTITLE 1, Write computed features.
 from databricks import feature_store
+
 fs = feature_store.FeatureStoreClient()
 
 

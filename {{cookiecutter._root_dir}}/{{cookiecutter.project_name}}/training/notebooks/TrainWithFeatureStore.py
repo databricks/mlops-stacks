@@ -21,13 +21,23 @@
 # Provide them via DB widgets or notebook arguments.
 
 # Path to the Hive-registered Delta table containing the training data.
-dbutils.widgets.text("training_data_path", "/databricks-datasets/nyctaxi-with-zipcodes/subsampled", label="Path to the training data")
+dbutils.widgets.text(
+    "training_data_path",
+    "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
+    label="Path to the training data",
+)
 
 # MLflow experiment name.
-dbutils.widgets.text("experiment_name", "/{{cookiecutter.project_name}}/{{cookiecutter.experiment_base_name}}-test", label="MLflow experiment name")
+dbutils.widgets.text(
+    "experiment_name",
+    "/{{cookiecutter.project_name}}/{{cookiecutter.experiment_base_name}}-test",
+    label="MLflow experiment name",
+)
 
 # MLflow registered model name to use for the trained mode..
-dbutils.widgets.text("model_name", "{{cookiecutter.model_name}}-test", label="Model Name")
+dbutils.widgets.text(
+    "model_name", "{{cookiecutter.model_name}}-test", label="Model Name"
+)
 
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
@@ -68,6 +78,7 @@ def rounded_unix_timestamp(dt, num_minutes=15):
     delta = math.ceil(nsecs / (60 * num_minutes)) * (60 * num_minutes) - nsecs
     return int((dt + timedelta(seconds=delta)).replace(tzinfo=timezone.utc).timestamp())
 
+
 rounded_unix_timestamp_udf = udf(rounded_unix_timestamp, IntegerType())
 
 
@@ -77,14 +88,22 @@ def rounded_taxi_data(taxi_data_df):
     taxi_data_df = (
         taxi_data_df.withColumn(
             "rounded_pickup_datetime",
-            to_timestamp(rounded_unix_timestamp_udf(taxi_data_df["tpep_pickup_datetime"], lit(15))),
+            to_timestamp(
+                rounded_unix_timestamp_udf(
+                    taxi_data_df["tpep_pickup_datetime"], lit(15)
+                )
+            ),
         )
-            .withColumn(
+        .withColumn(
             "rounded_dropoff_datetime",
-            to_timestamp(rounded_unix_timestamp_udf(taxi_data_df["tpep_dropoff_datetime"], lit(30))),
+            to_timestamp(
+                rounded_unix_timestamp_udf(
+                    taxi_data_df["tpep_dropoff_datetime"], lit(30)
+                )
+            ),
         )
-            .drop("tpep_pickup_datetime")
-            .drop("tpep_dropoff_datetime")
+        .drop("tpep_pickup_datetime")
+        .drop("tpep_dropoff_datetime")
     )
     taxi_data_df.createOrReplaceTempView("taxi_data")
     return taxi_data_df
@@ -119,19 +138,22 @@ dropoff_features_table = "feature_store_taxi_example.trip_dropoff_features"
 
 pickup_feature_lookups = [
     FeatureLookup(
-        table_name = pickup_features_table,
-        feature_names = ["mean_fare_window_1h_pickup_zip", "count_trips_window_1h_pickup_zip"],
-        lookup_key = ["pickup_zip"],
-        timestamp_lookup_key = ["rounded_pickup_datetime"]
+        table_name=pickup_features_table,
+        feature_names=[
+            "mean_fare_window_1h_pickup_zip",
+            "count_trips_window_1h_pickup_zip",
+        ],
+        lookup_key=["pickup_zip"],
+        timestamp_lookup_key=["rounded_pickup_datetime"],
     ),
 ]
 
 dropoff_feature_lookups = [
     FeatureLookup(
-        table_name = dropoff_features_table,
-        feature_names = ["count_trips_window_30m_dropoff_zip", "dropoff_is_weekend"],
-        lookup_key = ["dropoff_zip"],
-        timestamp_lookup_key = ["rounded_dropoff_datetime"]
+        table_name=dropoff_features_table,
+        feature_names=["count_trips_window_30m_dropoff_zip", "dropoff_is_weekend"],
+        lookup_key=["dropoff_zip"],
+        timestamp_lookup_key=["rounded_dropoff_datetime"],
     ),
 ]
 
@@ -146,7 +168,7 @@ mlflow.end_run()
 # Start an mlflow run, which is needed for the feature store to log the model
 mlflow.start_run()
 
-# Since the rounded timestamp columns would likely cause the model to overfit the data 
+# Since the rounded timestamp columns would likely cause the model to overfit the data
 # unless additional feature engineering was performed, exclude them to avoid training on them.
 exclude_columns = ["rounded_pickup_datetime", "rounded_dropoff_datetime"]
 
@@ -155,9 +177,9 @@ fs = feature_store.FeatureStoreClient()
 # Create the training set that includes the raw input data merged with corresponding features from both feature tables
 training_set = fs.create_training_set(
     taxi_data,
-    feature_lookups = pickup_feature_lookups + dropoff_feature_lookups,
-    label = "fare_amount",
-    exclude_columns = exclude_columns
+    feature_lookups=pickup_feature_lookups + dropoff_feature_lookups,
+    label="fare_amount",
+    exclude_columns=exclude_columns,
 )
 
 # Load the TrainingSet into a dataframe which can be passed into sklearn for training a model
@@ -201,9 +223,7 @@ param = {"num_leaves": 32, "objective": "regression", "metric": "rmse"}
 num_rounds = 100
 
 # Train a lightGBM model
-model = lgb.train(
-    param, train_lgb_dataset, num_rounds
-)
+model = lgb.train(param, train_lgb_dataset, num_rounds)
 
 # COMMAND ----------
 # DBTITLE 1, Log model and return output.
@@ -214,14 +234,15 @@ fs.log_model(
     artifact_path="model_packaged",
     flavor=mlflow.lightgbm,
     training_set=training_set,
-    registered_model_name=model_name
+    registered_model_name=model_name,
 )
 
 # Build out the MLflow model registry URL for this model version.
 workspace_url = spark.conf.get("spark.databricks.workspaceUrl")
 model_version = get_latest_model_version(model_name)
-model_registry_url = "https://{workspace_url}/#mlflow/models/{model_name}/versions/{model_version}"\
-    .format(workspace_url=workspace_url, model_name=model_name, model_version=model_version)
+model_registry_url = "https://{workspace_url}/#mlflow/models/{model_name}/versions/{model_version}".format(
+    workspace_url=workspace_url, model_name=model_name, model_version=model_version
+)
 
 # The returned model URI is needed by the model deployment notebook.
 model_uri = f"models:/{model_name}/{model_version}"

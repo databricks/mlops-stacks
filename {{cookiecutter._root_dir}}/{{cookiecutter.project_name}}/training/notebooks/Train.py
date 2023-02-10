@@ -49,8 +49,8 @@
 # COMMAND ----------
 
 from mlflow.recipes import Recipe
-dbutils.widgets.dropdown(
-    "env", "dev", ["dev", "staging", "prod"], "Environment Name")
+
+dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 dbutils.widgets.dropdown("test_mode", "False", ["True", "False"], "Test Mode")
 
 env = dbutils.widgets.get("env")

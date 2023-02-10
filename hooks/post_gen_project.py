@@ -30,8 +30,12 @@ feature_store_paths = [
     os.path.join("features"),
     os.path.join("databricks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
-    os.path.join("mlops-stacks-config", "terraform", "prod", "write-feature-table-job.tf"),
-    os.path.join("mlops-stacks-config", "terraform", "staging", "write-feature-table-job.tf"),
+    os.path.join(
+        "mlops-stacks-config", "terraform", "prod", "write-feature-table-job.tf"
+    ),
+    os.path.join(
+        "mlops-stacks-config", "terraform", "staging", "write-feature-table-job.tf"
+    ),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 

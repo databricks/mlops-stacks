@@ -2,7 +2,7 @@
 ##################################################################################
 # Model Validation Notebook
 ##
-# This notebook uses mlflow model validation API to run mode validation after training and registering a model 
+# This notebook uses mlflow model validation API to run mode validation after training and registering a model
 # in model registry, before deploying it to Production stage.
 #
 # It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``mlops-stacks-config``
@@ -38,7 +38,9 @@
 # COMMAND ----------
 
 dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment Name")
-dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
+dbutils.widgets.dropdown(
+    "run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode"
+)
 
 # COMMAND ----------
 
@@ -56,6 +58,7 @@ from mlflow.recipes.utils import (
     get_recipe_root_path,
 )
 from mlflow.tracking.client import MlflowClient
+
 client = MlflowClient()
 
 env = dbutils.widgets.get("env")
@@ -63,6 +66,7 @@ _run_mode = dbutils.widgets.get("run_mode")
 if _run_mode.lower() == "disabled":
     dbutils.notebook.exit(0)
 dry_run = _run_mode.lower() == "dry_run"
+
 
 def get_model_type_from_recipe():
     recipe_config = get_recipe_config("../../training", f"databricks-{env}")
@@ -74,9 +78,11 @@ def get_model_type_from_recipe():
     else:
         raise Exception(f"Unsupported recipe {recipe_config}")
 
+
 def get_targets_from_recipe():
     recipe_config = get_recipe_config("../../training", f"databricks-{env}")
     return recipe_config.get("target_col")
+
 
 # set model evaluation parameters that can be inferred from the job
 model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
@@ -92,7 +98,9 @@ assert model_version != "", "model_version notebook parameter must be specified"
 
 # set experiment
 with open("../../../mlops-stacks-config/terraform/output/prod.json", "r") as f:
-    experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"]["value"]
+    experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"][
+        "value"
+    ]
 mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
@@ -103,7 +111,7 @@ mlflow.set_experiment(experiment_name)
 #        evaluator_config
 ##################################################################################
 
-# Whether to load the current registered "Production" stage model as baseline. A version with "Production" stage must 
+# Whether to load the current registered "Production" stage model as baseline. A version with "Production" stage must
 # exist for the model.
 # Baseline model is a requirement for relative change and absolute change validation rules.
 # TODO(optional) : enable_baseline_comparison
@@ -118,17 +126,19 @@ elif env == "staging":
     # TODO(required) : set data for staging workspace
     data = None
 else:
-    raise Exception("Unknown environment. Please select 'prod' or 'staging' as environment name")
+    raise Exception(
+        "Unknown environment. Please select 'prod' or 'staging' as environment name"
+    )
 
 # The string name of a column from data that contains evaluation labels.
-# Call get_targets_from_recipe() to get targets from recipe configs if mlflow recipe is used. 
+# Call get_targets_from_recipe() to get targets from recipe configs if mlflow recipe is used.
 # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # TODO(required) : targets
 targets = get_targets_from_recipe()
 
 
 # A string describing the model type. The model type can be either "regressor" and "classifier".
-# Call get_model_type_from_recipe() to get model type from recipe configs if mlflow recipe is used. 
+# Call get_model_type_from_recipe() to get model type from recipe configs if mlflow recipe is used.
 # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # TODO(required) : model_type
 model_type = get_model_type_from_recipe()
@@ -158,21 +168,27 @@ client.get_model_version(model_name, model_version).description
 eval_result = None
 err = None
 
+
 def log_to_model_description(run, success):
     run_info = run.info
-    run_link = "[Run](#mlflow/experiments/{0}/runs/{1})".format(run_info.experiment_id, run_info.run_id)
+    run_link = "[Run](#mlflow/experiments/{0}/runs/{1})".format(
+        run_info.experiment_id, run_info.run_id
+    )
     description = client.get_model_version(model_name, model_version).description
     status = "SUCCESS" if success else "FAILURE"
     if description != "":
         description += """
             ---
-        """.replace(" ", "")
-    description += "Model Validation Status: {0}\nValidation Details: {1}".format(status, run_link)
-    client.update_model_version(
-        name=model_name,
-        version=model_version,
-        description=description
+        """.replace(
+            " ", ""
+        )
+    description += "Model Validation Status: {0}\nValidation Details: {1}".format(
+        status, run_link
     )
+    client.update_model_version(
+        name=model_name, version=model_version, description=description
+    )
+
 
 # run evaluate
 with mlflow.start_run() as run, tempfile.TemporaryDirectory() as tmp_dir:
@@ -181,7 +197,11 @@ with mlflow.start_run() as run, tempfile.TemporaryDirectory() as tmp_dir:
     with open(validation_thresholds_file, "w") as f:
         if validation_thresholds:
             for metric_name in validation_thresholds:
-                f.write("{0:30}  {1}\n".format(metric_name, str(validation_thresholds[metric_name])))
+                f.write(
+                    "{0:30}  {1}\n".format(
+                        metric_name, str(validation_thresholds[metric_name])
+                    )
+                )
     mlflow.log_artifact(validation_thresholds_file)
 
     try:
@@ -193,19 +213,31 @@ with mlflow.start_run() as run, tempfile.TemporaryDirectory() as tmp_dir:
             evaluators=evaluators,
             validation_thresholds=validation_thresholds,
             custom_metrics=custom_metrics,
-            baseline_model=None if not enable_baseline_comparison else baseline_model_uri,
+            baseline_model=None
+            if not enable_baseline_comparison
+            else baseline_model_uri,
             evaluator_config=evaluator_config,
         )
         metrics_file = os.path.join(tmp_dir, "metrics.txt")
         with open(metrics_file, "w") as f:
-            f.write("{0:30}  {1:30}  {2}\n".format("metric_name", "candidate", "baseline"))
+            f.write(
+                "{0:30}  {1:30}  {2}\n".format("metric_name", "candidate", "baseline")
+            )
             for metric in eval_result.metrics:
                 candidate_metric_value = str(eval_result.metrics[metric])
                 baseline_metric_value = "N/A"
                 if metric in eval_result.baseline_model_metrics:
-                    mlflow.log_metric("baseline_"+metric, eval_result.baseline_model_metrics[metric])
-                    baseline_metric_value = str(eval_result.baseline_model_metrics[metric])
-                f.write("{0:30}  {1:30}  {2}\n".format(metric, candidate_metric_value, baseline_metric_value))
+                    mlflow.log_metric(
+                        "baseline_" + metric, eval_result.baseline_model_metrics[metric]
+                    )
+                    baseline_metric_value = str(
+                        eval_result.baseline_model_metrics[metric]
+                    )
+                f.write(
+                    "{0:30}  {1:30}  {2}\n".format(
+                        metric, candidate_metric_value, baseline_metric_value
+                    )
+                )
         mlflow.log_artifact(metrics_file)
         log_to_model_description(run, True)
     except Exception as err:
