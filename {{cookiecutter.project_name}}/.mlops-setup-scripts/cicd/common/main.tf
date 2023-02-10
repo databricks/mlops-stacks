@@ -20,9 +20,9 @@ resource "databricks_secret" "cd_credentials_token" {
 }
 
 resource "databricks_secret" "cd_github_server" {
-  key = "github_server"
+  key          = "github_server"
   string_value = var.github_server_url
-  scope = databricks_secret_scope.cd_credentials.id
+  scope        = databricks_secret_scope.cd_credentials.id
 }
 
 resource "databricks_secret" "cd_github_repo" {
