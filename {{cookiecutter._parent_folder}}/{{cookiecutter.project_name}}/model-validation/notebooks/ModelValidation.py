@@ -33,7 +33,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../requirements.txt
+# MAGIC %pip install -r ../../requirements.txt
 
 # COMMAND ----------
 
@@ -65,7 +65,7 @@ if _run_mode.lower() == "disabled":
 dry_run = _run_mode.lower() == "dry_run"
 
 def get_model_type_from_recipe():
-    recipe_config = get_recipe_config("../../", f"databricks-{env}")
+    recipe_config = get_recipe_config("../../training", f"databricks-{env}")
     problem_type = recipe_config.get("recipe").split("/")[0]
     if problem_type.lower() == "regression":
         return "regressor"
@@ -75,7 +75,7 @@ def get_model_type_from_recipe():
         raise Exception(f"Unsupported recipe {recipe_config}")
 
 def get_targets_from_recipe():
-    recipe_config = get_recipe_config("../../", f"databricks-{env}")
+    recipe_config = get_recipe_config("../../training", f"databricks-{env}")
     return recipe_config.get("target_col")
 
 # set model evaluation parameters that can be inferred from the job
@@ -91,7 +91,7 @@ assert model_name != "", "model_name notebook parameter must be specified"
 assert model_version != "", "model_version notebook parameter must be specified"
 
 # set experiment
-with open("../databricks-config/output/prod.json", "r") as f:
+with open("../../../mlops-stacks-config/terraform/output/prod.json", "r") as f:
     experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"]["value"]
 mlflow.set_experiment(experiment_name)
 

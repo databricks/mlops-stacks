@@ -28,7 +28,7 @@ def run_test_command(cmd, working_dir):
 @parametrize_by_project_generation_params
 def test_can_run_terraform_for_ml_resources(generated_project_dir, directory):
     working_dir = (
-        generated_project_dir / "my-mlops-project" / "databricks-config" / directory
+        generated_project_dir / "databricks-mlops-stacks" / "my-mlops-project" / "mlops-stacks-config" / "terraform" / directory
     )
     run_test_command(
         """
