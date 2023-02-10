@@ -1,5 +1,5 @@
 # Databricks ML resource config
-[(back to main README)](../{{cookiecutter.project_name}}/README.md)
+[(back to main README)](../README.md)
 
 ## Table of contents
 * [Intro](#intro)
@@ -158,4 +158,4 @@ environment, you can merge a PR updating `.tf` files under `staging/` and/or
 
 When your PR merges, continuous deployment automation will deploy changes to staging and then prod.
 
-[Back to main project README](../{{cookiecutter.project_name}}/README.md)
+[Back to main project README](../README.md)

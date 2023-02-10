@@ -1,5 +1,5 @@
 # MLOps Setup Guide
-[(back to main README)](../{{cookiecutter.project_name}}/README.md)
+[(back to main README)](../README.md)
 
 ## Table of contents
 * [Intro](#intro)

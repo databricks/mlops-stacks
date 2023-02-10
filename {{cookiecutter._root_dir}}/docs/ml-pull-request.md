@@ -1,6 +1,6 @@
 # Updating ML code in production
 
-[(back to main README)](../{{cookiecutter.project_name}}/README.md)
+[(back to main README)](../README.md)
 
 **NOTE**: This page assumes that your MLOps team has already configured CI/CD and deployed initial
 ML resources, per the [MLOps setup guide](mlops-setup.md).
