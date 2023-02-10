@@ -39,6 +39,14 @@ variable "github_repo_url" {
     error_message = "The github_repo_url variable cannot be empty"
   }
 }
+variable "github_server_url" {
+  type        = string
+  description = "URL of the hosted git server containing the current ML project, e.g. https://github.com/"
+  validation {
+    condition     = length(var.github_server_url) > 0
+    error_message = "The github_server_url variable cannot be empty"
+  }
+}
 {% endif -%}
 
 {%- if cookiecutter.cloud == "azure" %}

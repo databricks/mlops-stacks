@@ -15,6 +15,11 @@ variable "github_repo_url" {
   description = "URL of the hosted git repo containing the current ML project, e.g. https://github.com/myorg/myrepo"
 }
 
+variable "github_server_url" {
+  type        = string
+  description = "URL of the hosted git server containing the current ML project, e.g. https://github.com/"
+}
+
 variable "env" {
   type        = string
   description = "Current env, i.e. 'staging' or 'prod'"
