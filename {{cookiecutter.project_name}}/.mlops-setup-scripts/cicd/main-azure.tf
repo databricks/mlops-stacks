@@ -44,10 +44,10 @@ module "staging_workspace_cicd" {
     databricks = databricks.staging_sp
   }
   {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
-  git_provider    = var.git_provider
-  git_token       = var.git_token
-  env             = "staging"
-  github_repo_url = var.github_repo_url
+  git_provider      = var.git_provider
+  git_token         = var.git_token
+  env               = "staging"
+  github_repo_url   = var.github_repo_url
   github_server_url = var.github_server_url
   {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   git_provider = var.git_provider
@@ -61,10 +61,10 @@ module "prod_workspace_cicd" {
     databricks = databricks.prod_sp
   }
   {%- if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] %}
-  git_provider    = var.git_provider
-  git_token       = var.git_token
-  env             = "prod"
-  github_repo_url = var.github_repo_url
+  git_provider      = var.git_provider
+  git_token         = var.git_token
+  env               = "prod"
+  github_repo_url   = var.github_repo_url
   github_server_url = var.github_server_url
   {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   git_provider = var.git_provider
