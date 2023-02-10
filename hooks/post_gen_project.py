@@ -9,26 +9,27 @@ def remove_filepath(filepath):
         shutil.rmtree(filepath)
 
 
+root_dir = "{{cookiecutter._root_dir}}"
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 include_feature_store = "{{cookiecutter.include_feature_store}}"
 
 mlp_paths = [
-    os.path.join("profiles"),
-    os.path.join("notebooks", "Train.py"),
-    os.path.join("recipe.yaml"),
-    os.path.join("tests", "ingest_test.py"),
-    os.path.join("tests", "split_test.py"),
-    os.path.join("tests", "train_test.py"),
-    os.path.join("tests", "test_sample.parquet"),
-    os.path.join("tests", "transform_test.py"),
+    os.path.join(project_name, "training", "profiles"),
+    os.path.join(project_name, "training", "notebooks", "Train.py"),
+    os.path.join(project_name, "training", "recipe.yaml"),
+    os.path.join(project_name, "training", "tests", "ingest_test.py"),
+    os.path.join(project_name, "training", "tests", "split_test.py"),
+    os.path.join(project_name, "training", "tests", "train_test.py"),
+    os.path.join(project_name, "training", "tests", "test_sample.parquet"),
+    os.path.join(project_name, "training", "tests", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
 
 feature_store_paths = [
-    os.path.join("features"),
-    os.path.join("databricks", "TrainWithFeatureStore.py"),
+    os.path.join(project_name, "feature-engineering"),
+    os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join(
         "mlops-stacks-config", "terraform", "prod", "write-feature-table-job.tf"
@@ -42,13 +43,13 @@ feature_store_paths = [
 cloud_specific_paths = {
     "azure": [
         os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
-        os.path.join(".mlops-setup-scripts", "cicd", "main-azure.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "main-azure.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "variables.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-azure.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-azure.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "variables.tf"),
     ],
     "aws": [
-        os.path.join(".mlops-setup-scripts", "cicd", "main-aws.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "main-aws.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-aws.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-aws.tf"),
     ],
 }
 
@@ -64,7 +65,7 @@ cicd_specific_paths = {
     ],
     "azureDevOpsServices": [
         os.path.join(".azure"),
-        os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
+        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "azure-devops.tf"),
     ],
 }
 
