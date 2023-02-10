@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths-ignore:
-      - 'databricks-config/**'
+      - 'mlops-stacks-config/**'
 
 env:
   DATABRICKS_HOST: {{cookiecutter.databricks_staging_workspace_host}}

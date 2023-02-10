@@ -1,5 +1,5 @@
 # This GitHub workflow deploys Terraform resources (ML resource config and more)
-# defined under databricks-config, when PRs are merged into the default branch
+# defined under mlops-stacks-config, when PRs are merged into the default branch
 name: Terraform Deployment for {{cookiecutter.project_name}}
 
 on:
@@ -7,12 +7,12 @@ on:
     branches:
       - '{{cookiecutter.default_branch}}'
     paths:
-      - 'databricks-config/**'
+      - 'mlops-stacks-config/**'
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: ./databricks-config
+    working-directory: ./mlops-stacks-config/terraform
 
 jobs:
   staging:

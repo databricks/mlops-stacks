@@ -3,7 +3,7 @@
 # Generate and Write Features Notebook
 #
 # This notebook can be used to generate and write features to a Databricks Feature Store table.
-# It is configured and can be executed as a write-feature-table job defined under ``databricks-config``
+# It is configured and can be executed as a write-feature-table job defined under ``mlops-stacks-config``
 #
 # Parameters:
 #

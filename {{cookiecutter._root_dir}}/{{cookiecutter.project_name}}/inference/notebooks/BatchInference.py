@@ -3,7 +3,7 @@
 # Batch Inference Notebook
 #
 # This notebook is an example of applying a model for batch inference against an input delta table,
-# writing output to a delta table. It's scheduled as a batch inference job defined under ``databricks-config``
+# writing output to a delta table. It's scheduled as a batch inference job defined under ``mlops-stacks-config``
 #
 # Parameters:
 #

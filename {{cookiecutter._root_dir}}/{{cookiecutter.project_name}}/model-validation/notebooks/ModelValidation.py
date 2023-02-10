@@ -5,7 +5,7 @@
 # This notebook uses mlflow model validation API to run mode validation after training and registering a model 
 # in model registry, before deploying it to Production stage.
 #
-# It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``databricks-config``
+# It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``mlops-stacks-config``
 #
 # Please finish the two cells with "TODO" comments before enabling the model validation.
 #

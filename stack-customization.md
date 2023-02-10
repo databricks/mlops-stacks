@@ -67,14 +67,14 @@ The default stack currently has the following sub-components for CI/CD:
 
 ### ML resource config
 ML resource config (Terraform code definitions of ML jobs, experiments, etc) can be found under
-``{{cookiecutter.project_name}}/databricks-config``, along with docs. This component depends on
+``{{cookiecutter.project_name}}/mlops-stacks-config``, along with docs. This component depends on
 the MLOps setup scripts described above in the CI/CD component (`{{cookiecutter.project_name}}/.mlops-setup-scripts`).
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-`{{cookiecutter.project_name}}/databricks-config/README.md`.
+`{{cookiecutter.project_name}}/mlops-stacks-config/README.md`.
 
 ### Docs
 After making stack customizations, make any changes needed to

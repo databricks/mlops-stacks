@@ -32,7 +32,7 @@ git remote add upstream <hosted-git-repo-url>
 
 Commit the current README file and other docs to the `{{cookiecutter.default_branch}}` branch of the repo, to enable forking the repo:
 ```
-git add README.md docs .gitignore .mlops-setup-scripts databricks-config/README.md
+git add README.md docs .gitignore .mlops-setup-scripts mlops-stacks-config/README.md
 git commit -m "Adding project README"
 git push upstream {{cookiecutter.default_branch}}
 ```
@@ -55,11 +55,11 @@ Address the TODOs in the following files:
 
 ## Merge a PR with your initial ML code
 Create and push a PR branch adding the ML code to the repository.
-We recommend including all files outside of `databricks-config` in this PR:
+We recommend including all files outside of `mlops-stacks-config` in this PR:
 
 ```
 git checkout -b add-ml-code
-git add -- . ':!databricks-config'
+git add -- . ':!mlops-stacks-config'
 git commit -m "Add ML Code"
 git push upstream add-ml-code
 ```
@@ -89,7 +89,7 @@ For future ML code changes, iterate against the `{{cookiecutter.default_branch}}
 {% endif -%}
 
 ## Deploy ML resources and enable production jobs
-Follow the instructions in [databricks-config/README.md](../../mlops-stacks-config/README.md) to deploy ML resources
+Follow the instructions in [mlops-stacks-config/README.md](../../mlops-stacks-config/README.md) to deploy ML resources
 and production jobs.
 
 ## Next steps

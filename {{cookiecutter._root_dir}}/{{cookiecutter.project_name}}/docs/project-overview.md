@@ -63,7 +63,7 @@ contained in the following files:
 │                         under `notebooks` to test and deploy model training code
 {% endif -%}
 │
-├── databricks-config  <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod.
+├── mlops-stacks-config  <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod.
 │   ├── staging
 │   ├── prod
 ```
