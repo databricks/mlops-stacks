@@ -57,7 +57,7 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
 
 
 def read_workflow(tmpdir):
-    return (tmpdir / "my-mlops-project" / ".github/workflows/run-tests.yml").read_text(
+    return (tmpdir / "databricks-mlops-stacks" / ".github/workflows/run-tests.yml").read_text(
         "utf-8"
     )
 
