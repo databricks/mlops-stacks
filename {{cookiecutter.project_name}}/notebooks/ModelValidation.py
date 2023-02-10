@@ -160,7 +160,7 @@ err = None
 
 def log_to_model_description(run, success):
     run_info = run.info
-    run_link = "[Link](#mlflow/experiments/{0}/runs/{1})".format(run_info.experiment_id, run_info.run_id)
+    run_link = "[Run](#mlflow/experiments/{0}/runs/{1})".format(run_info.experiment_id, run_info.run_id)
     description = client.get_model_version(model_name, model_version).description
     status = "SUCCESS" if success else "FAILURE"
     if description != "":
