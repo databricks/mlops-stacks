@@ -21,8 +21,6 @@ resource "databricks_secret" "cd_credentials_token" {
 
 resource "databricks_secret" "cd_github_server" {
   key = "github_server"
-  // regex expression for parsing github server url out of github repo url
-  // example: http(s)://mygitserver.anything/org/repo -> http(s)://mygitserver.anything
   string_value = var.github_server_url
   scope = databricks_secret_scope.cd_credentials.id
 }
