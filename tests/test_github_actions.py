@@ -22,7 +22,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
         shell=True,
         check=True,
         executable="/bin/bash",
-        cwd=(generated_project_dir / "my-mlops-project"),
+        cwd=(generated_project_dir / "databricks-mlops-stacks"),
     )
 
 
@@ -42,5 +42,5 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
         shell=True,
         check=True,
         executable="/bin/bash",
-        cwd=(generated_project_dir / "my-mlops-project"),
+        cwd=(generated_project_dir / "databricks-mlops-stacks"),
     )

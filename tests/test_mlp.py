@@ -22,7 +22,7 @@ def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
     if include_feature_store == "yes":
         return
     project_dir = generated_project_dir / "databricks-mlops-stacks"
-    os.chdir(project_dir / "my-mlops-project" / "training" / "notebooks")
+    os.chdir(project_dir / "my-mlops-project" / "training")
     for env in ["staging", "prod"]:
         tf_output_dir = project_dir / "mlops-stacks-config" / "terraform" / "output"
         if not os.path.exists(tf_output_dir):

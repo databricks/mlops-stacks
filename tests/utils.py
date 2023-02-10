@@ -79,7 +79,7 @@ def markdown_checker_configs(tmpdir):
 
     file_name = "checker-config.json"
 
-    with open(tmpdir / "my-mlops-project" / file_name, "w") as outfile:
+    with open(tmpdir / "databricks-mlops-stacks" / file_name, "w") as outfile:
         json.dump(markdown_checker_config_dict, outfile)
 
 
