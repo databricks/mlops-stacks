@@ -55,11 +55,14 @@ github_repo = dbutils.secrets.get(
 token = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "token"
 )
-if github_server == "https://github.com" or github_server == "github.com":
-    github_server = "https://api.github.com"
-else:
-    # URL for github Enterprise Server: https://docs.github.com/en/enterprise-server@3.8/rest/actions/workflows
-    github_server = f"{github_server}/api/v3"
+
+{% if cookiecutter.cicd_platform == "gitHub" -%}
+github_server = "https://api.github.com"
+{% elif cookiecutter.cicd_platform == "gitHubEnterprise" -%}
+# URL for github Enterprise Server: https://docs.github.com/en/enterprise-server@3.8/rest/actions/workflows
+github_server = f"{github_server}/api/v3"
+{% endif %}
+
 cd_trigger_url = f"{github_server}/repos/{github_repo}/actions/workflows/deploy-model-{env}.yml/dispatches"
 authorization = f"token {token}"
 print(cd_trigger_url)

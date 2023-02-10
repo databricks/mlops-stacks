@@ -5,7 +5,18 @@ This directory contains setup scripts intended to automate CI/CD and ML resource
 for MLOps engineers.
 
 {% if cookiecutter.cicd_platform == "gitHub" -%}
-The scripts set up CI/CD with GitHub Actions. 
+The scripts set up CI/CD with GitHub Actions. If using another CI/CD provider, you can
+easily translate the provided CI/CD workflows (GitHub Actions YAML under `.github/workflows`)
+to other CI/CD providers by running the same shell commands, with a few caveats:
+
+* Usages of the `run-notebook` Action should be replaced by [installing the Databricks CLI](https://github.com/databricks/databricks-cli#installation)
+  and invoking the `databricks runs submit --wait` CLI
+  ([docs]({{ "dev-tools/cli/runs-cli.html#submit-a-one-time-run" | generate_doc_link(cookiecutter.cloud) }})).
+* The model deployment CD workflows in `deploy-model-prod.yml` and `deploy-model-staging.yml` are currently triggered
+  by the `notebooks/TriggerModelDeploy.py` helper notebook after the model training job completes. This notebook
+  hardcodes the API endpoint for triggering a GitHub Actions workflow. Update `notebooks/TriggerModelDeploy.py`
+  to instead hit the appropriate REST API endpoint for triggering model deployment CD for your CI/CD provider.
+
 {% elif cookiecutter.cicd_platform == "gitHubEnterprise" -%}
 The scripts set up CI/CD with GitHub Actions for GitHub Enterprise. If using another CI/CD provider, you can
 easily translate the provided CI/CD workflows (GitHub Actions YAML under `.github/workflows`)
