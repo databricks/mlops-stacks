@@ -18,7 +18,7 @@ variable "github_repo_url" {
 variable "github_server_url" {
   type        = string
   description = "URL of the hosted git server containing the current ML project, e.g. https://github.com/"
-  deafult = "https://github.com/"
+  default = "https://github.com/"
 }
 
 variable "env" {
