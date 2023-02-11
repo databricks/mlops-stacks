@@ -8,7 +8,7 @@ from utils import (
 
 
 @pytest.mark.parametrize(
-    "cicd_platform", ["GitHub Actions", "Github Actions for Enterprises"]
+    "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
 @pytest.mark.parametrize("include_feature_store", ["yes", "no"])
 @parametrize_by_cloud
@@ -30,7 +30,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 
 @pytest.mark.large
 @pytest.mark.parametrize(
-    "cicd_platform", ["GitHub Actions", "Github Actions for Enterprises"]
+    "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
 @pytest.mark.parametrize("include_feature_store", ["yes", "no"])
 @parametrize_by_cloud

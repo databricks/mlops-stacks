@@ -46,9 +46,6 @@ assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 
 {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
-github_server = dbutils.secrets.get(
-    f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_server"
-)
 github_repo = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_repo"
 )
@@ -59,6 +56,9 @@ token = dbutils.secrets.get(
 {% if cookiecutter.cicd_platform == "gitHub" -%}
 github_server = "https://api.github.com"
 {% elif cookiecutter.cicd_platform == "gitHubEnterprise" -%}
+github_server = dbutils.secrets.get(
+    f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_server"
+)
 # URL for github Enterprise Server: https://docs.github.com/en/enterprise-server@3.8/rest/actions/workflows
 github_server = f"{github_server}/api/v3"
 {% endif %}
