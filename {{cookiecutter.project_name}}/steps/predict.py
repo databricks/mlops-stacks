@@ -1,5 +1,5 @@
 import mlflow
-from pyspark.sql.functions import struct
+from pyspark.sql.functions import struct, lit
 
 
 def predict_batch(
@@ -15,7 +15,7 @@ def predict_batch(
     )
     output_df = table.withColumn(
         "prediction", predict(struct(*table.columns))
-    ).withColumn("model_version", model_version)
+    ).withColumn("model_version", lit(model_version))
     output_df.display()
     # Model predictions are written to the Delta table provided as input.
     # Delta is the default format in Databricks Runtime 8.0 and above.
