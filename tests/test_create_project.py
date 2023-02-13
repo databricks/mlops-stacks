@@ -16,7 +16,7 @@ from unittest import mock
 
 DEFAULT_PROJECT_NAME = "my_mlops_project"
 # UUID that when set as project name, prevents the removal of files needed in testing
-TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
+TEST_PROJECT_NAME = "27896cf3_bb3e_476e_8129_96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",

@@ -89,7 +89,7 @@ for cicd, paths in cicd_specific_paths.items():
 
 # Remove test files
 test_paths = ["_params_testing_only.txt"]
-if project_name != "27896cf3-bb3e-476e-8129-96df0406d5c7":
+if project_name != "27896cf3_bb3e_476e_8129_96df0406d5c7":
     for path in test_paths:
         os.remove(path)
 
