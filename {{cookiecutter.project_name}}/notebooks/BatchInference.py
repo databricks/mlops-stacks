@@ -60,5 +60,5 @@ model_version = next(version for version in model_version_infos if version.curre
 # DBTITLE 1,Load model and run inference
 from predict import predict_batch
 
-predict_batch(spark, model_uri, input_table_name, output_table_name)
+predict_batch(spark, model_uri, input_table_name, output_table_name, model_version)
 dbutils.notebook.exit(output_table_name)
