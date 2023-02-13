@@ -29,7 +29,7 @@ def run_test_command(cmd, working_dir):
 def test_can_run_terraform_for_ml_resources(generated_project_dir, directory):
     working_dir = (
         generated_project_dir
-        / "my-mlops-project"
+        / "my_mlops_project"
         / "mlops-stacks-config"
         / "terraform"
         / directory
@@ -55,7 +55,7 @@ def test_can_run_terraform_for_cicd(generated_project_dir, subdirectory):
         terraform validate
         """,
         working_dir=generated_project_dir
-        / "my-mlops-project"
+        / "my_mlops_project"
         / "mlops-stacks-config"
         / ".mlops-setup-scripts"
         / subdirectory,
@@ -66,7 +66,7 @@ def test_can_run_terraform_for_cicd(generated_project_dir, subdirectory):
 def add_script_dir_to_pythonpath(generated_project_dir):
     module_parent_dir = os.path.join(
         generated_project_dir,
-        "my-mlops-project",
+        "my_mlops_project",
         "mlops-stacks-config",
         ".mlops-setup-scripts",
         "terraform",

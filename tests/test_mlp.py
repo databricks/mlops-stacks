@@ -21,18 +21,18 @@ def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
     # so skip test in that case.
     if include_feature_store == "yes":
         return
-    project_dir = generated_project_dir / "my-mlops-project"
-    os.chdir(project_dir / "my-mlops-project" / "training" / "notebooks")
+    project_dir = generated_project_dir / "my_mlops_project"
+    os.chdir(project_dir / "my_mlops_project" / "training" / "notebooks")
     for env in ["staging", "prod"]:
         tf_output_dir = project_dir / "mlops-stacks-config" / "terraform" / "output"
         if not os.path.exists(tf_output_dir):
             tf_output_dir.mkdir()
         tf_output_file = tf_output_dir / f"{env}.json"
         fake_terraform_output = {
-            "my-mlops-project_experiment_name": {
+            "my_mlops_project_experiment_name": {
                 "value": "fake-exp",
             },
-            "my-mlops-project_model_name": {
+            "my_mlops_project_model_name": {
                 "value": "fake-model",
             },
         }

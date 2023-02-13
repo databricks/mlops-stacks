@@ -14,7 +14,7 @@ from utils import (
 )
 from unittest import mock
 
-DEFAULT_PROJECT_NAME = "my-mlops-project"
+DEFAULT_PROJECT_NAME = "my_mlops_project"
 # UUID that when set as project name, prevents the removal of files needed in testing
 TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
@@ -129,7 +129,7 @@ def test_markdown_links(generated_project_dir):
         shell=True,
         check=True,
         executable="/bin/bash",
-        cwd=(generated_project_dir / "my-mlops-project"),
+        cwd=(generated_project_dir / "my_mlops_project"),
     )
 
 

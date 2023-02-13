@@ -114,7 +114,7 @@ def validate_cookiecutter_version(version_string):
 
 
 def validate_mlflow_experiment_parent_dir(parent_dir):
-    valid_example_help_string = ' Valid directories are either subfolders of a user\'s home directory e.g. "/Users/jane@test.com/my-mlops-project" or non-repo subfolders of workspace root e.g. "/my-mlops-project".'
+    valid_example_help_string = ' Valid directories are either subfolders of a user\'s home directory e.g. "/Users/jane@test.com/my_mlops_project" or non-repo subfolders of workspace root e.g. "/my_mlops_project".'
     if not parent_dir.startswith("/"):
         raise ValueError(
             f"Workspace base directory must start with '/'. Got invalid base directory `{parent_dir}`."
@@ -153,7 +153,7 @@ def validate_databricks_workspace_host(host, orig_host):
         )
 
 
-INVALID_PROJECT_NAME_CHARS = {" ", "\\", "/", "."}
+INVALID_PROJECT_NAME_CHARS = {" ", "\\", "/", ".", "-"}
 VALID_PROJECT_NAME_MSG = (
     "Valid project names must contain at least three alphanumeric characters and "
     "cannot contain any of the following characters: %s" % INVALID_PROJECT_NAME_CHARS
