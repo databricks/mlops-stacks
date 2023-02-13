@@ -301,7 +301,7 @@ def test_generate_project_default_project_name_params(tmpdir):
     # Asserts default parameter values for parameters that involve the project name
     generate(tmpdir, context={})
     readme_contents = (
-        tmpdir / ROOT_DIR / DEFAULT_PROJECT_NAME / "README.md"
+        tmpdir / ROOT_DIR / "README.md"
     ).read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
     tf_config_contents = (
