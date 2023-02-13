@@ -14,7 +14,6 @@ from utils import (
 )
 from unittest import mock
 
-ROOT_DIR = "databricks-mlops-stacks"
 DEFAULT_PROJECT_NAME = "my-mlops-project"
 # UUID that when set as project name, prevents the removal of files needed in testing
 TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
@@ -130,7 +129,7 @@ def test_markdown_links(generated_project_dir):
         shell=True,
         check=True,
         executable="/bin/bash",
-        cwd=(generated_project_dir / "databricks-mlops-stacks"),
+        cwd=(generated_project_dir / "my-mlops-project"),
     )
 
 
@@ -231,7 +230,7 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
     }
     generate(tmpdir, params)
     tf_config_contents = (
-        tmpdir / ROOT_DIR / "mlops-stacks-config/terraform/prod/locals.tf"
+        tmpdir / DEFAULT_PROJECT_NAME / "mlops-stacks-config/terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
@@ -256,7 +255,7 @@ def test_generate_project_with_default_values(
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
-    test_file_contents = (tmpdir / ROOT_DIR / "_params_testing_only.txt").read_text(
+    test_file_contents = (tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt").read_text(
         "utf-8"
     )
     if cloud == "azure":
@@ -290,7 +289,7 @@ def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
         "cloud": cloud,
     }
     generate(tmpdir, context=context)
-    test_file_contents = (tmpdir / ROOT_DIR / "_params_testing_only.txt").read_text(
+    test_file_contents = (tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt").read_text(
         "utf-8"
     )
     assert f"databricks_staging_workspace_host={workspace_host}\n" in test_file_contents
@@ -301,11 +300,11 @@ def test_generate_project_default_project_name_params(tmpdir):
     # Asserts default parameter values for parameters that involve the project name
     generate(tmpdir, context={})
     readme_contents = (
-        tmpdir / ROOT_DIR / "README.md"
+        tmpdir / DEFAULT_PROJECT_NAME / "README.md"
     ).read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
     tf_config_contents = (
-        tmpdir / ROOT_DIR / "mlops-stacks-config/terraform/prod/locals.tf"
+        tmpdir / DEFAULT_PROJECT_NAME / "mlops-stacks-config/terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert (
         f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}"'

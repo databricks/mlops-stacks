@@ -58,7 +58,7 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
 
 def read_workflow(tmpdir):
     return (
-        tmpdir / "databricks-mlops-stacks" / ".github/workflows/run-tests.yml"
+        tmpdir / "my-mlops-project" / ".github/workflows/run-tests.yml"
     ).read_text("utf-8")
 
 
@@ -79,7 +79,7 @@ def markdown_checker_configs(tmpdir):
 
     file_name = "checker-config.json"
 
-    with open(tmpdir / "databricks-mlops-stacks" / file_name, "w") as outfile:
+    with open(tmpdir / "my-mlops-project" / file_name, "w") as outfile:
         json.dump(markdown_checker_config_dict, outfile)
 
 

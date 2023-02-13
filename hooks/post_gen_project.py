@@ -9,7 +9,7 @@ def remove_filepath(filepath):
         shutil.rmtree(filepath)
 
 
-root_dir = "{{cookiecutter._root_dir}}"
+root_dir = "{{cookiecutter.project_name}}"
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
@@ -19,11 +19,11 @@ mlp_paths = [
     os.path.join(project_name, "training", "profiles"),
     os.path.join(project_name, "training", "notebooks", "Train.py"),
     os.path.join(project_name, "training", "recipe.yaml"),
-    os.path.join(project_name, "training", "tests", "ingest_test.py"),
-    os.path.join(project_name, "training", "tests", "split_test.py"),
-    os.path.join(project_name, "training", "tests", "train_test.py"),
-    os.path.join(project_name, "training", "tests", "test_sample.parquet"),
-    os.path.join(project_name, "training", "tests", "transform_test.py"),
+    os.path.join(project_name,"tests",  "training", "ingest_test.py"),
+    os.path.join(project_name,"tests",  "training", "split_test.py"),
+    os.path.join(project_name,"tests",  "training", "train_test.py"),
+    os.path.join(project_name,"tests",  "training", "test_sample.parquet"),
+    os.path.join(project_name,"tests",  "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
 

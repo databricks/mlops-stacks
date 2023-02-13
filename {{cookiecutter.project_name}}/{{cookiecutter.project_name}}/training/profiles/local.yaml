@@ -17,7 +17,7 @@ INGEST_CONFIG:
   using: parquet
   # TODO: update this field to point to a local filesystem path containing e.g. a sample of your model training
   # dataset for local development.
-  location: "./data/sample.parquet"
+  location: "../../data/sample.parquet"
   loader_method: load_file_as_dataframe
 
 INGEST_SCORING_CONFIG:
@@ -27,7 +27,7 @@ INGEST_SCORING_CONFIG:
   using: parquet
   # TODO: update this field to point to a local filesystem path containing e.g. a sample of your input dataset
   # for batch inference
-  location: "./data/sample.parquet"
+  location: "../../data/sample.parquet"
   loader_method: load_file_as_dataframe
 
 PREDICT_OUTPUT_CONFIG:
