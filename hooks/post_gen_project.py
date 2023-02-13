@@ -29,6 +29,7 @@ mlp_paths = [
 
 feature_store_paths = [
     os.path.join(project_name, "feature-engineering"),
+    os.path.join("tests", "feature-engineering"),
     os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join(
