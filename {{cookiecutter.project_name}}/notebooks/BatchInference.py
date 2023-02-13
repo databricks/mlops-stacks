@@ -47,7 +47,13 @@ assert input_table_name != "", "input_table_name notebook parameter must be spec
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 
 model_name = get_model_name(env)
-model_uri = f"models:/{model_name}/{get_deployed_model_stage_for_env(env)}"
+stage = get_deployed_model_stage_for_env(env)
+model_uri = f"models:/{model_name}/{stage}"
+
+# Get model version from stage
+from mlflow import MlflowClient
+model_version_infos = MlflowClient().search_model_versions("name = '%s'" % model_name)
+model_version = next(version for version in model_version_infos if version.current_stage == stage).version
 
 # COMMAND ----------
 
