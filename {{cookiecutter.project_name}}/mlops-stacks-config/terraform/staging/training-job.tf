@@ -43,7 +43,7 @@ resource "databricks_job" "model_training_job" {
     }
 
     notebook_task {
-      notebook_path = "{{cookiecutter.project_name}}/model-validation/notebooks/ModelValidation"
+      notebook_path = "{{cookiecutter.project_name}}/model_validation/notebooks/ModelValidation"
       base_parameters = {
         env = local.env
         # Run mode for model validation. Possible values are :
