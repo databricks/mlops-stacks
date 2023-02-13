@@ -19,11 +19,11 @@ mlp_paths = [
     os.path.join(project_name, "training", "profiles"),
     os.path.join(project_name, "training", "notebooks", "Train.py"),
     os.path.join(project_name, "training", "recipe.yaml"),
-    os.path.join(project_name,"tests",  "training", "ingest_test.py"),
-    os.path.join(project_name,"tests",  "training", "split_test.py"),
-    os.path.join(project_name,"tests",  "training", "train_test.py"),
-    os.path.join(project_name,"tests",  "training", "test_sample.parquet"),
-    os.path.join(project_name,"tests",  "training", "transform_test.py"),
+    os.path.join(project_name, "tests", "training", "ingest_test.py"),
+    os.path.join(project_name, "tests", "training", "split_test.py"),
+    os.path.join(project_name, "tests", "training", "train_test.py"),
+    os.path.join(project_name, "tests", "training", "test_sample.parquet"),
+    os.path.join(project_name, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
 
@@ -43,13 +43,23 @@ feature_store_paths = [
 cloud_specific_paths = {
     "azure": [
         os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-azure.tf"),
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-azure.tf"),
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "variables.tf"),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-azure.tf"
+        ),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-azure.tf"
+        ),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "variables.tf"
+        ),
     ],
     "aws": [
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-aws.tf"),
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-aws.tf"),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-aws.tf"
+        ),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-aws.tf"
+        ),
     ],
 }
 
@@ -65,7 +75,9 @@ cicd_specific_paths = {
     ],
     "azureDevOpsServices": [
         os.path.join(".azure"),
-        os.path.join("mlops-stacks-config", ".mlops-setup-scripts", "cicd", "azure-devops.tf"),
+        os.path.join(
+            "mlops-stacks-config", ".mlops-setup-scripts", "cicd", "azure-devops.tf"
+        ),
     ],
 }
 

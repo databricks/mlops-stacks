@@ -255,9 +255,9 @@ def test_generate_project_with_default_values(
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
-    test_file_contents = (tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt").read_text(
-        "utf-8"
-    )
+    test_file_contents = (
+        tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt"
+    ).read_text("utf-8")
     if cloud == "azure":
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AZURE}
     elif cloud == "aws":
@@ -289,9 +289,9 @@ def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
         "cloud": cloud,
     }
     generate(tmpdir, context=context)
-    test_file_contents = (tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt").read_text(
-        "utf-8"
-    )
+    test_file_contents = (
+        tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt"
+    ).read_text("utf-8")
     assert f"databricks_staging_workspace_host={workspace_host}\n" in test_file_contents
     assert f"databricks_prod_workspace_host={workspace_host}\n" in test_file_contents
 
@@ -299,9 +299,7 @@ def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
 def test_generate_project_default_project_name_params(tmpdir):
     # Asserts default parameter values for parameters that involve the project name
     generate(tmpdir, context={})
-    readme_contents = (
-        tmpdir / DEFAULT_PROJECT_NAME / "README.md"
-    ).read_text("utf-8")
+    readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
     tf_config_contents = (
         tmpdir / DEFAULT_PROJECT_NAME / "mlops-stacks-config/terraform/prod/locals.tf"
