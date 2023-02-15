@@ -43,6 +43,9 @@ variable "github_repo_url" {
 variable "github_server_url" {
   type        = string
   description = "URL of the hosted git server containing the current ML project, e.g. https://github.com/"
+  {% if cookiecutter.cicd_platform == "gitHub" -%}
+  default     = "https://github.com/"
+  {% endif -%}
   validation {
     condition     = length(var.github_server_url) > 0
     error_message = "The github_server_url variable cannot be empty"
