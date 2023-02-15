@@ -1,6 +1,6 @@
 variable "git_token" {
   type        = string
-  {% if cookiecutter.cicd_platform == "gitHub" -%}
+  {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
   description = "Git token used to (1) checkout ML code to run during CI and (2) call back from Databricks -> GitHub Actions to trigger a model deployment CD workflow when automated model retraining completes. Must have read and write permissions on the Git repo containing the current ML project"
   {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
   description = "Azure DevOps personal access token (PAT) used by the created service principal to create Azure DevOps Pipelines and checkout ML code to run during CI/CD. PAT must have read, write and manage permissions for Build and Code scopes on the Azure DevOps project. See the following on how to create and use PATs (https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)"
@@ -30,13 +30,22 @@ variable "prod_profile" {
   default     = "{{cookiecutter.project_name}}-prod"
 }
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 variable "github_repo_url" {
   type        = string
   description = "URL of the hosted git repo containing the current ML project, e.g. https://github.com/myorg/myrepo"
   validation {
     condition     = length(var.github_repo_url) > 0
     error_message = "The github_repo_url variable cannot be empty"
+  }
+}
+
+variable "github_server_url" {
+  type        = string
+  description = "URL of the hosted git server containing the current ML project, e.g. https://github.com/"
+  validation {
+    condition     = length(var.github_server_url) > 0
+    error_message = "The github_server_url variable cannot be empty"
   }
 }
 {% endif -%}

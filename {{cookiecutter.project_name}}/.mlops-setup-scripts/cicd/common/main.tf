@@ -4,7 +4,7 @@ resource "databricks_git_credential" "service_principal_git_token" {
   personal_access_token = var.git_token
 }
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 // Store Git token for triggering CD workflows in a Databricks secret scope for
 // use by model training, in the staging and prod workspaces. We create the
 // secret scopes using our CI/CD service principals, so that only the CI/CD service
@@ -19,10 +19,16 @@ resource "databricks_secret" "cd_credentials_token" {
   scope        = databricks_secret_scope.cd_credentials.id
 }
 
+resource "databricks_secret" "cd_github_server" {
+  key          = "github_server"
+  string_value = var.github_server_url
+  scope        = databricks_secret_scope.cd_credentials.id
+}
+
 resource "databricks_secret" "cd_github_repo" {
   key = "github_repo"
   // Extract the 'organization/repo' substring used to identify the repo
-  string_value = replace(var.github_repo_url, "https://github.com/", "")
+  string_value = replace(var.github_repo_url, var.github_server_url, "")
   scope        = databricks_secret_scope.cd_credentials.id
 }
 {% endif %}

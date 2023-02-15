@@ -17,6 +17,19 @@ to other CI/CD providers by running the same shell commands, with a few caveats:
   hardcodes the API endpoint for triggering a GitHub Actions workflow. Update `notebooks/TriggerModelDeploy.py`
   to instead hit the appropriate REST API endpoint for triggering model deployment CD for your CI/CD provider.
 
+{% elif cookiecutter.cicd_platform == "gitHubEnterprise" -%}
+The scripts set up CI/CD with GitHub Actions for GitHub Enterprise. If using another CI/CD provider, you can
+easily translate the provided CI/CD workflows (GitHub Actions YAML under `.github/workflows`)
+to other CI/CD providers by running the same shell commands, with a few caveats:
+
+* Usages of the `run-notebook` Action should be replaced by [installing the Databricks CLI](https://github.com/databricks/databricks-cli#installation)
+  and invoking the `databricks runs submit --wait` CLI
+  ([docs]({{ "dev-tools/cli/runs-cli.html#submit-a-one-time-run" | generate_doc_link(cookiecutter.cloud) }})).
+* The model deployment CD workflows in `deploy-model-prod.yml` and `deploy-model-staging.yml` are currently triggered
+  by the `notebooks/TriggerModelDeploy.py` helper notebook after the model training job completes. This notebook
+  hardcodes the API endpoint for triggering a GitHub Actions workflow. Update `notebooks/TriggerModelDeploy.py`
+  to instead hit the appropriate REST API endpoint for triggering model deployment CD for your CI/CD provider.
+
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 The bootstrap steps use Terraform to set up the following in an automated manner:
 1. Create an Azure Blob Storage container for storing ML resource config (job, MLflow experiment, etc) state for the
@@ -198,6 +211,10 @@ python .mlops-setup-scripts/cicd/bootstrap.py \
 {%- if cookiecutter.cicd_platform == "gitHub" %}
   --var github_repo_url=https://github.com/<your-org>/<your-repo-name> \
   --var git_token=<your-git-token>
+{%- elif cookiecutter.cicd_platform == "gitHubEnterprise" %}
+   --var github_repo_url=<your-enterprise-github-server>/<your-org>/<your-repo-name> \
+   --var git_token=<your-git-token> \
+   --var github_server_url=<your-enterprise-github-server>
 {%- elif cookiecutter.cicd_platform == "azureDevOpsServices" %}
   --var azure_devops_org_url=https://dev.azure.com/<your-org-name> \
   --var azure_devops_project_name=<name-of-project> \

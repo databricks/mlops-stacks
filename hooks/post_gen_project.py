@@ -53,21 +53,11 @@ for cloud, paths in cloud_specific_paths.items():
         for path in paths:
             remove_filepath(path)
 
-
-cicd_specific_paths = {
-    "gitHub": [
-        os.path.join(".github"),
-    ],
-    "azureDevOpsServices": [
-        os.path.join(".azure"),
-        os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"),
-    ],
-}
-
-for cicd, paths in cicd_specific_paths.items():
-    if cicd != cicd_platform:
-        for path in paths:
-            remove_filepath(path)
+if cicd_platform in ["gitHub", "gitHubEnterprise"]:
+    remove_filepath(os.path.join(".azure"))
+    remove_filepath(os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"))
+elif cicd_platform == "azureDevOpsServices":
+    remove_filepath(os.path.join(".github"))
 
 # Remove test files
 test_paths = ["_params_testing_only.txt"]
