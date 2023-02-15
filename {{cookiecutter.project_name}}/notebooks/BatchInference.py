@@ -61,7 +61,7 @@ model_version = next(
 # Get datetime
 from datetime import datetime
 
-ts = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # COMMAND ----------
 
