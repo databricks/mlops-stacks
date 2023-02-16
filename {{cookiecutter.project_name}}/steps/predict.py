@@ -1,5 +1,5 @@
 import mlflow
-from pyspark.sql.functions import struct, lit, col, to_timestamp
+from pyspark.sql.functions import struct, lit, to_timestamp
 
 
 def predict_batch(
@@ -16,9 +16,7 @@ def predict_batch(
     output_df = (
         table.withColumn("prediction", predict(struct(*table.columns)))
         .withColumn("model_version", lit(model_version))
-        .withColumn("ts", lit(ts))
-        .withColumn("model_version", col("model_version").cast("int"))
-        .withColumn("ts", to_timestamp("ts"))
+        .withColumn("inference_timestamp", to_timestamp(lit(ts)))
     )
     output_df.display()
     # Model predictions are written to the Delta table provided as input.
