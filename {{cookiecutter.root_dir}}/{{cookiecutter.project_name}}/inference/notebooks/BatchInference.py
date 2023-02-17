@@ -33,7 +33,7 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 
 import sys
 
-sys.path.append("../../../training/steps")
+sys.path.append("../../training/steps")
 
 # COMMAND ----------
 

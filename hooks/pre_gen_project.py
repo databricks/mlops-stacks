@@ -166,6 +166,14 @@ VALID_PROJECT_NAME_MSG = (
 )
 
 
+def validate_root_dir(root_dir):
+    invalid_chars_in_name = INVALID_PROJECT_NAME_CHARS.intersection(root_dir)
+    if len(invalid_chars_in_name) > 0:
+        raise ValueError(
+            f"Root directory '{root_dir}' contained invalid characters {invalid_chars_in_name}. {VALID_PROJECT_NAME_MSG}"
+        )
+
+
 def validate_project_name(project_name):
     invalid_chars_in_name = INVALID_PROJECT_NAME_CHARS.intersection(project_name)
     if len(invalid_chars_in_name) > 0:
@@ -217,6 +225,7 @@ if __name__ == "__main__":
     ]:
         validate_databricks_workspace_host(host, orig_host)
     validate_project_name("{{cookiecutter.project_name}}")
+    validate_root_dir("{{cookiecutter.root_dir}}")
     validate_alphanumeric_project_name(
         "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
     )

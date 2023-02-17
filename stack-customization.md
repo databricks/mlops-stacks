@@ -67,7 +67,7 @@ The default stack currently has the following sub-components for CI/CD:
 
 ### ML resource config
 ML resource config (Terraform code definitions of ML jobs, experiments, etc) can be found under
-``{{cookiecutter.project_name}}/terraform``, along with docs. This component depends on
+``{{cookiecutter.root_dir}}/{{cookiecutter.project_name}}/terraform``, along with docs. This component depends on
 the MLOps setup scripts described above in the CI/CD component (`{{cookiecutter.root_dir}}/.mlops-setup-scripts`).
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
