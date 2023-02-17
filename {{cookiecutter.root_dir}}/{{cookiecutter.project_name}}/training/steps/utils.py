@@ -29,16 +29,16 @@ def get_deployed_model_stage_for_env(env):
 def _get_ml_config_value(env, key):
     # Reading ml config from terraform output file for the respective key and env(staging/prod).
     conf_file_path = os.path.join(
-        os.pardir, "mlops-stacks-config", "terraform", "output", f"{env}.json"
+        os.pardir, "{{cookiecutter.project_name}}", "terraform", "output", f"{env}.json"
     )
     try:
         with open(conf_file_path, "r") as handle:
             data = json.loads(handle.read())
     except FileNotFoundError as e:
         raise RuntimeError(
-            f"Unable to find file '{conf_file_path}'. Make sure ML config-as-code resources defined "
-            f"under mlops-stacks-config have been deployed to {env} (see mlops-stacks-config/README in the "
-            f"current git repo for details)"
+            f"Unable to find file '{conf_file_path}'. Make sure ML config-as-code resources defined under "
+            f"{{cookiecutter.project_name}} have been deployed to {env} (see {{cookiecutter.project_name}}"
+            f"/terraform/README in the current git repo for details)"
         ) from e
     try:
         return data[key]["value"]
@@ -72,5 +72,5 @@ def get_model_name(env, test_mode=False):
         resource_name_suffix = _get_resource_name_suffix(test_mode)
         return f"{{cookiecutter.model_name}}{resource_name_suffix}"
     else:
-        # Read ml model name from mlops-stacks-config
+        # Read ml model name from {{cookiecutter.project_name}}/terraform
         return _get_ml_config_value(env, "{{cookiecutter.project_name}}_model_name")

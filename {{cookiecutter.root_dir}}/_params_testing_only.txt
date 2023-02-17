@@ -1,4 +1,5 @@
 project_name={{cookiecutter.project_name}}
+root_dir={{cookiecutter.project_name}}
 cloud={{cookiecutter.cloud}}
 mlflow_experiment_parent_dir={{cookiecutter.mlflow_experiment_parent_dir}}
 databricks_staging_workspace_host={{cookiecutter.databricks_staging_workspace_host}}

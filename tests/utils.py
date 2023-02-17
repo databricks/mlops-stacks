@@ -45,7 +45,7 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
     generate(
         tmpdir,
         {
-            "project_name": "my_mlops_project",
+            "project_name": "my-mlops-project",
             "cloud": cloud,
             "cicd_platform": cicd_platform,
             "include_feature_store": include_feature_store,
@@ -61,7 +61,7 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
 
 
 def read_workflow(tmpdir):
-    return (tmpdir / "my_mlops_project" / ".github/workflows/run-tests.yml").read_text(
+    return (tmpdir / "my-mlops-project" / ".github/workflows/run-tests.yml").read_text(
         "utf-8"
     )
 
@@ -83,7 +83,7 @@ def markdown_checker_configs(tmpdir):
 
     file_name = "checker-config.json"
 
-    with open(tmpdir / "my_mlops_project" / file_name, "w") as outfile:
+    with open(tmpdir / "my-mlops-project" / file_name, "w") as outfile:
         json.dump(markdown_checker_config_dict, outfile)
 
 

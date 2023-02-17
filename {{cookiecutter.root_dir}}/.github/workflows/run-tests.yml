@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths-ignore:
-      - 'mlops-stacks-config/**'
+      - '{{cookiecutter.project_name}}/terraform/**'
 
 env:
   DATABRICKS_HOST: {{cookiecutter.databricks_staging_workspace_host}}

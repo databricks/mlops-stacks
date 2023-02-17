@@ -41,7 +41,7 @@ The bootstrap steps use Terraform to set up the following in an automated manner
    state in the Azure Blob Storage container created in (2).
 5. Create the two following Azure DevOps Pipelines along with required variable group:
     * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
-    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `mlops-stacks-config`, 
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `{{cookiecutter.project_name}}/terraform`, 
                          followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
 6. Create build validation policies defining requirements when PRs are submitted to the default branch of your repository.        
 {% endif -%}
@@ -167,7 +167,7 @@ Ensure your PAT (at a minimum) has the following permissions:
 - **Work Items**: Read
 
 ### Update permissions for the build service
-In our CI/CD workflow, upon successfully merging a PR with changes to `mlops-stacks-config/**` the CD step will trigger the
+In our CI/CD workflow, upon successfully merging a PR with changes to `{{cookiecutter.project_name}}/terraform/**` the CD step will trigger the
 Terraform deploy stage of our pipeline. Within this pipeline `git` commands are run to commit and modify Terraform output files. 
 To enable this workflow you must update the permissions of our build service. Within your **Project Settings**, select **Repostiories**.
 Go to the name of your repository and select **Security**. For the user `{{cookiecutter.project_name}} Build Service (<your-username>)` grant the following:
@@ -191,7 +191,7 @@ From the repo root directory, run:
 # Set AWS_REGION environment variable to your desired AWS region for storing
 # terraform state, e.g. "us-east-1" to store Terraform state in S3 buckets in us-east-1
 # NOTE: if you supply an AWS region other than us-east-1, be sure to update the
-# AWS region specified in mlops-stacks-config/terraform/staging/provider.tf and mlops-stacks-config/terraform/prod/provider.tf
+# AWS region specified in {{cookiecutter.project_name}}/terraform/staging/provider.tf and {{cookiecutter.project_name}}/terraform/prod/provider.tf
 # to match
 export AWS_REGION="us-east-1"
 {% endif -%}
@@ -242,7 +242,7 @@ The second CI/CD bootstrap script will:
 {% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
 5. Create the two following Azure DevOps Pipelines along with required variable group:
     * `testing_ci` - Unit tests and integration tests triggered upon PR to the {{cookiecutter.default_branch}} branch.
-    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `mlops-stacks-config`, 
+    * `terraform_cicd` - Continuous integration for Terraform triggered upon a PR to {{cookiecutter.default_branch}} and changes to `{{cookiecutter.project_name}}/terraform`, 
                          followed by continuous deployment of changes upon successfully merging into {{cookiecutter.default_branch}}.
 6. Create build validation policies defining requirements when PRs are submitted to the default branch of your repository.        
 {% endif %}

@@ -9,7 +9,7 @@
 
 ## Intro
 
-This directory (`mlops-stacks-config`) includes Databricks ML resource configuration, i.e. the definitions of a batch
+This directory (`{{cookiecutter.project_name}}/terraform`) includes Databricks ML resource configuration, i.e. the definitions of a batch
 inference job, a training job, an MLflow experiment, and an MLflow model.
 Configurations are split into separate `staging` and `prod` subdirectories
 for separate environments (separate staging/prod Databricks workspaces), and are expressed in
@@ -59,10 +59,10 @@ Authentication to Databricks REST APIs will not work if plans are executed remot
 
 ## Deploy initial ML resources
 After completing the prerequisites, create and push a PR branch adding
-the contents of `mlops-stacks-config` to the Git repo:
+the contents of `{{cookiecutter.project_name}}/terraform` to the Git repo:
 ```
 git checkout -b add-ml-resource-config
-git add mlops-stacks-config
+git add {{cookiecutter.project_name}}/terraform
 git commit -m "Add ML resource config"
 git push upstream add-ml-resource-config
 ```

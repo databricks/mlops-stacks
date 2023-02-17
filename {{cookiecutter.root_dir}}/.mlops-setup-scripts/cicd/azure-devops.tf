@@ -153,7 +153,7 @@ resource "azuredevops_branch_policy_build_validation" "testing-ci-build-validati
     display_name        = "Testing CI build validation policy (${data.azuredevops_git_repository.repo.name})"
     build_definition_id = azuredevops_build_definition.testing-ci.id
     valid_duration      = 720
-    filename_patterns   = ["*", "!/mlops-stacks-config/**"]
+    filename_patterns   = ["*", "!/{{cookiecutter.project_name}}/terraform/**"]
 
     scope {
       repository_id  = data.azuredevops_git_repository.repo.id
@@ -173,7 +173,7 @@ resource "azuredevops_branch_policy_build_validation" "terraform-cicd-build-vali
     display_name        = "Terraform CICD build validation policy (${data.azuredevops_git_repository.repo.name})"
     build_definition_id = azuredevops_build_definition.terraform-cicd.id
     valid_duration      = 720
-    filename_patterns   = ["/mlops-stacks-config/**"]
+    filename_patterns   = ["/{{cookiecutter.project_name}}/terraform/**"]
 
     scope {
       repository_id  = data.azuredevops_git_repository.repo.id

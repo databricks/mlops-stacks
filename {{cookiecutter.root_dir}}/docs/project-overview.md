@@ -63,7 +63,7 @@ contained in the following files:
 │                         under `notebooks` to test and deploy model training code
 {% endif -%}
 │
-├── mlops-stacks-config  <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod.
+├── {{cookiecutter.project_name}}/terraform  <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod.
 │   ├── staging
 │   ├── prod
 ```

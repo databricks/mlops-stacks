@@ -95,12 +95,12 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or Terraform
-config under `mlops-stacks-config` into your existing project.
+config under `{{cookiecutter.project_name}}/terraform` into your existing project.
 
 ### Can I adopt individual components of the stack?
 For this use case, we recommend instantiating the full stack via `cookiecutter`
-and copying the relevant stack subdirectories. For example, all ML resource config
-is defined under `mlops-stacks-config`, while CI/CD is defined e.g. under `.github`
+and copying the relevant stack subdirectories. For example, all ML terraform config
+is defined under `{{cookiecutter.project_name}}/terraform`, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
 ### Can I customize this stack?
@@ -133,7 +133,7 @@ discussion, before opening a pull request.
 
 This stack is implemented as a [cookiecutter template](https://cookiecutter.readthedocs.io/en/stable/)
 that generates new projects given user-supplied parameters. Parametrized project code can be found under
-the `{{cookiecutter.project_name}}` directory.
+the `{{cookiecutter.root_dir}}` directory.
 
 ### Installing development requirements
 

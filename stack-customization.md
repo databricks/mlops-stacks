@@ -55,26 +55,26 @@ notebooks with the expected interface for model training and inference under
 `{{cookiecutter_project_name}}/notebooks/`. See code comments in files under
 `{{cookiecutter_project_name}}/notebooks/` for the expected interface & behavior of these notebooks.
 
-You may also want to update developer-facing docs under `{{cookiecutter.project_name}}/docs/ml-developer-guide.md`,
+You may also want to update developer-facing docs under `{{cookiecutter.root_dir}}/docs/ml-developer-guide.md`,
 which will be read by users of your stack.
 
 ### CI/CD workflows
 The default stack currently has the following sub-components for CI/CD:
-* CI/CD workflow logic defined under `{{cookiecutter.project_name}}/.github/` for testing and deploying ML code and models
-* Automated scripts and docs for setting up CI/CD under `{{cookiecutter.project_name}}/.mlops-setup-scripts/`
+* CI/CD workflow logic defined under `{{cookiecutter.root_dir}}/.github/` for testing and deploying ML code and models
+* Automated scripts and docs for setting up CI/CD under `{{cookiecutter.root_dir}}/.mlops-setup-scripts/`
 * Logic to trigger model deployment through REST API calls to your CD system, when model training completes.
   This logic is currently captured in `{{cookiecutter.project_name}}/notebooks/TriggerModelDeploy.py`
 
 ### ML resource config
 ML resource config (Terraform code definitions of ML jobs, experiments, etc) can be found under
-``{{cookiecutter.project_name}}/mlops-stacks-config``, along with docs. This component depends on
-the MLOps setup scripts described above in the CI/CD component (`{{cookiecutter.project_name}}/.mlops-setup-scripts`).
+``{{cookiecutter.project_name}}/terraform``, along with docs. This component depends on
+the MLOps setup scripts described above in the CI/CD component (`{{cookiecutter.root_dir}}/.mlops-setup-scripts`).
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-`{{cookiecutter.project_name}}/mlops-stacks-config/README.md`.
+`{{cookiecutter.root_dir}}/{{cookiecutter.project_name}}/terraform/README.md`.
 
 ### Docs
 After making stack customizations, make any changes needed to
