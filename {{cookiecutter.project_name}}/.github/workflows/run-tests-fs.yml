@@ -145,7 +145,7 @@ jobs:
             ],
             "git_source": {
               "git_url": {% raw %}"${{ github.server_url }}/${{ github.repository }}",{% endraw %}
-              "git_provider": "gitHub",
+              "git_provider": "{{cookiecutter.cicd_platform}}",
               "git_commit": {% raw %}"${{ github.event.pull_request.head.sha || github.sha }}"{% endraw %}
             },
             "access_control_list": [

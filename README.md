@@ -50,7 +50,7 @@ To create a new project, run:
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``project_name``: name of the current project
  * ``cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
- * ``cicd_platform`` : CI/CD platform of choice (GitHub Actions or Azure DevOps)
+ * ``cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
 
 Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
 ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know

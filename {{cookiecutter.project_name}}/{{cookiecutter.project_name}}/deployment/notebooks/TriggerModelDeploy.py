@@ -4,7 +4,7 @@
 # after the Train.py notebook as part of a multi-task job, in order to trigger model
 # deployment after training completes.
 #
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 # NOTE: In general, you should not need to modify this notebook, unless you are using a CI/CD tool other than
 # GitHub Actions.
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
@@ -45,14 +45,25 @@ model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
 assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 
-{% if cookiecutter.cicd_platform == "gitHub" -%}
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 github_repo = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_repo"
 )
 token = dbutils.secrets.get(
     f"{env}-{{cookiecutter.project_name}}-cd-credentials", "token"
 )
-cd_trigger_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/deploy-model-{env}.yml/dispatches"
+
+{% if cookiecutter.cicd_platform == "gitHub" -%}
+github_server = "https://api.github.com"
+{% elif cookiecutter.cicd_platform == "gitHubEnterprise" -%}
+github_server = dbutils.secrets.get(
+    f"{env}-{{cookiecutter.project_name}}-cd-credentials", "github_server"
+)
+# URL for github Enterprise Server: https://docs.github.com/en/enterprise-server@3.8/rest/actions/workflows
+github_server = f"{github_server}/api/v3"
+{% endif %}
+
+cd_trigger_url = f"{github_server}/repos/{github_repo}/actions/workflows/deploy-model-{env}.yml/dispatches"
 authorization = f"token {token}"
 
 # COMMAND ----------
