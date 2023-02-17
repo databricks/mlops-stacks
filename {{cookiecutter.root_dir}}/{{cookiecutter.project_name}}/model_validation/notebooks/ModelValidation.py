@@ -97,7 +97,7 @@ assert model_name != "", "model_name notebook parameter must be specified"
 assert model_version != "", "model_version notebook parameter must be specified"
 
 # set experiment
-with open("../../../mlops-stacks-config/terraform/output/prod.json", "r") as f:
+with open("../../terraform/output/prod.json", "r") as f:
     experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"][
         "value"
     ]

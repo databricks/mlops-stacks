@@ -9,7 +9,7 @@ def remove_filepath(filepath):
         shutil.rmtree(filepath)
 
 
-root_dir = "{{cookiecutter.project_name}}"
+root_dir = "{{cookiecutter.root_dir}}"
 project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
@@ -29,14 +29,14 @@ mlp_paths = [
 
 feature_store_paths = [
     os.path.join(project_name, "feature_engineering"),
-    os.path.join("tests", "feature_engineering"),
+    os.path.join(project_name, "tests", "feature_engineering"),
     os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join(
-        "mlops-stacks-config", "terraform", "prod", "write-feature-table-job.tf"
+        project_name, "terraform", "prod", "write-feature-table-job.tf"
     ),
     os.path.join(
-        "mlops-stacks-config", "terraform", "staging", "write-feature-table-job.tf"
+        project_name, "terraform", "staging", "write-feature-table-job.tf"
     ),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
@@ -45,21 +45,21 @@ cloud_specific_paths = {
     "azure": [
         os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
         os.path.join(
-            "mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-azure.tf"
+            ".mlops-setup-scripts", "cicd", "main-azure.tf"
         ),
         os.path.join(
-            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-azure.tf"
+            ".mlops-setup-scripts", "terraform", "main-azure.tf"
         ),
         os.path.join(
-            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "variables.tf"
+            ".mlops-setup-scripts", "terraform", "variables.tf"
         ),
     ],
     "aws": [
         os.path.join(
-            "mlops-stacks-config", ".mlops-setup-scripts", "cicd", "main-aws.tf"
+            ".mlops-setup-scripts", "cicd", "main-aws.tf"
         ),
         os.path.join(
-            "mlops-stacks-config", ".mlops-setup-scripts", "terraform", "main-aws.tf"
+            ".mlops-setup-scripts", "terraform", "main-aws.tf"
         ),
     ],
 }

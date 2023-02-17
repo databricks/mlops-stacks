@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from pyspark.sql import SparkSession
 
-from {{cookiecutter.project_name}}.feature_engineering.features.dropoff_features import compute_features_fn
+from feature_engineering.features.dropoff_features import compute_features_fn
 
 
 @pytest.fixture(scope="session")

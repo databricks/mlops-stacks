@@ -1,4 +1,4 @@
-from {{cookiecutter.project_name}}.training.steps.train import estimator_fn
+from training.steps.train import estimator_fn
 from sklearn.utils.estimator_checks import check_estimator
 
 

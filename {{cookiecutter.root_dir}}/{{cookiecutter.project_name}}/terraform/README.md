@@ -1,5 +1,5 @@
 # Databricks ML resource config
-[(back to main README)](../README.md)
+[(back to main README)](../../README.md)
 
 ## Table of contents
 * [Intro](#intro)
@@ -21,7 +21,7 @@ creating identical resources in dev and verifying their behavior.
 This project ships with CI/CD workflows for developing and deploying ML resource config. You can open a PR (pull request) to modify configs in staging and prod,
 which will be unit-tested and then deployed after the PR is merged:
 
-![ML resource config diagram](../docs/images/mlops-resource-config.png)
+![ML resource config diagram](../../docs/images/mlops-resource-config.png)
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ which will be unit-tested and then deployed after the PR is merged:
 **If you or your ops team have already run the setup scripts under `.mlops-setup-scripts`,
 you can skip this section**
 
-Otherwise, we recommend that you or your ops team run the setup scripts documented in [.mlops-setup-scripts](.mlops-setup-scripts/README.md) to
+Otherwise, we recommend that you or your ops team run the setup scripts documented in [.mlops-setup-scripts](../../.mlops-setup-scripts/README.md) to
 provision a remote backend for storing the state of provisioned ML resources, and configure CI/CD
 with the appropriate credentials to access remote state.
 
@@ -45,7 +45,7 @@ defined in `staging/provider.tf` and `prod/provider.tf`. However, the repo does 
 remote state storage location for you, nor does it store credentials in CI/CD for accessing remote state files.
 
 We recommend that you or your ops team
-run the scripts under [.mlops-setup-scripts](.mlops-setup-scripts/README.md) to provision the
+run the scripts under [.mlops-setup-scripts](../../.mlops-setup-scripts/README.md) to provision the
 expected remote state backend and store credentials in CI/CD.
 
 Alternatively, you can follow
@@ -158,4 +158,4 @@ environment, you can merge a PR updating `.tf` files under `staging/` and/or
 
 When your PR merges, continuous deployment automation will deploy changes to staging and then prod.
 
-[Back to main project README](../README.md)
+[Back to main project README](../../README.md)
