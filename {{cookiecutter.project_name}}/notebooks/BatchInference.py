@@ -47,12 +47,26 @@ assert input_table_name != "", "input_table_name notebook parameter must be spec
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 
 model_name = get_model_name(env)
-model_uri = f"models:/{model_name}/{get_deployed_model_stage_for_env(env)}"
+stage = get_deployed_model_stage_for_env(env)
+model_uri = f"models:/{model_name}/{stage}"
+
+# Get model version from stage
+from mlflow import MlflowClient
+
+model_version_infos = MlflowClient().search_model_versions("name = '%s'" % model_name)
+model_version = max(
+    int(version.version) for version in model_version_infos if version.current_stage == stage
+)
+
+# Get datetime
+from datetime import datetime
+
+ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # COMMAND ----------
 
 # DBTITLE 1,Load model and run inference
 from predict import predict_batch
 
-predict_batch(spark, model_uri, input_table_name, output_table_name)
+predict_batch(spark, model_uri, input_table_name, output_table_name, model_version, ts)
 dbutils.notebook.exit(output_table_name)
