@@ -230,7 +230,10 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
     }
     generate(tmpdir, params)
     tf_config_contents = (
-        tmpdir / DEFAULT_PROJECT_NAME / DEFAULT_PROJECT_NAME / "terraform/prod/locals.tf"
+        tmpdir
+        / DEFAULT_PROJECT_NAME
+        / DEFAULT_PROJECT_NAME
+        / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
@@ -302,7 +305,10 @@ def test_generate_project_default_project_name_params(tmpdir):
     readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
     tf_config_contents = (
-            tmpdir / DEFAULT_PROJECT_NAME / DEFAULT_PROJECT_NAME / "terraform/prod/locals.tf"
+        tmpdir
+        / DEFAULT_PROJECT_NAME
+        / DEFAULT_PROJECT_NAME
+        / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert (
         f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}"'
