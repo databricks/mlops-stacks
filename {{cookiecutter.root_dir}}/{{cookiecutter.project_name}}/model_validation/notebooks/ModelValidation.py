@@ -62,6 +62,7 @@ from mlflow.tracking.client import MlflowClient
 client = MlflowClient()
 
 env = dbutils.widgets.get("env")
+experiment_name = dbutils.widgets.get("experiment_name")
 _run_mode = dbutils.widgets.get("run_mode")
 if _run_mode.lower() == "disabled":
     dbutils.notebook.exit(0)
@@ -97,10 +98,6 @@ assert model_name != "", "model_name notebook parameter must be specified"
 assert model_version != "", "model_version notebook parameter must be specified"
 
 # set experiment
-with open("../../terraform/output/prod.json", "r") as f:
-    experiment_name = json.load(f)["{{cookiecutter.project_name}}_experiment_name"][
-        "value"
-    ]
 mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------

@@ -49,7 +49,8 @@ resource "databricks_job" "model_training_job" {
     notebook_task {
       notebook_path = "{{cookiecutter.project_name}}/model_validation/notebooks/ModelValidation"
       base_parameters = {
-        env = local.env
+        env             = local.env
+        experiment_name = databricks_mlflow_experiment.experiment.name
         # Run mode for model validation. Possible values are :
         #   disabled : Do not run the model validation notebook.
         #   dry_run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
