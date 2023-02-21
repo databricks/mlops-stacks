@@ -266,6 +266,29 @@ def test_generate_project_with_default_values(
         assert f"{param}={value}" in test_file_contents
 
 
+@parametrize_by_project_generation_params
+def test_generate_project_check_feature_store_output(
+        tmpdir, cloud, cicd_platform, include_feature_store
+):
+    """
+    Asserts the behavior of feature store-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "include_feature_store": include_feature_store,
+    }
+    if cloud == "azure":
+        del context["cloud"]
+    generate(tmpdir, context=context)
+    fs_notebook_path = tmpdir / TEST_PROJECT_NAME / "notebooks" / "GenerateAndWriteFeatures.py"
+    if include_feature_store == "yes":
+        assert os.path.isfile(fs_notebook_path)
+    else:
+        assert not os.path.isfile(fs_notebook_path)
+
+
 @pytest.mark.parametrize(
     "workspace_url_suffix",
     [
