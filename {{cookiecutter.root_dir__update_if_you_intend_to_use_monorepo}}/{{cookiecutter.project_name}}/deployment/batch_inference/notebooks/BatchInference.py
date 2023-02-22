@@ -55,7 +55,9 @@ from mlflow import MlflowClient
 
 model_version_infos = MlflowClient().search_model_versions("name = '%s'" % model_name)
 model_version = max(
-    int(version.version) for version in model_version_infos if version.current_stage == stage
+    int(version.version)
+    for version in model_version_infos
+    if version.current_stage == stage
 )
 
 # Get datetime
