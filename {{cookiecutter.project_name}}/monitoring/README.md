@@ -1,6 +1,6 @@
 # Setup Data Monitoring for Inference Table
 
-**Databricks data monitoring is currently in private review. Please `sign up` for the private review and get approved 
+**Databricks Data Monitoring is currently in Private Preview. Please `sign up` for the preview and get approved 
 before proceeding.**
 
 This directory contains the notebook that can run in databricks workspace
