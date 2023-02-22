@@ -6,7 +6,7 @@
 
 # COMMAND ----------
 
-# Install data monitoring client library. Eventually this will be included in MLR
+# Install the Data Monitoring client library
 # TODO: Fill in wheel URL
 %pip install "{wheel_URL}"
 

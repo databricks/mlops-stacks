@@ -10,7 +10,7 @@ to set up Data Monitoring for a production inference table.
 
 ### Unity Catalog
 The table to be monitored must exist in Unity Catalog.
-If Unity Catalog is enabled for your workspace but the table exists in metastore, please copy the table to Unity Catalog.
+If Unity Catalog is enabled for your workspace but the table exists in the Hive metastore, please copy the table to Unity Catalog.
 
 For example, the following code shows how to import your data to a Unity Catalog managed table
  - load data from metastore example_project_predictions
@@ -42,7 +42,7 @@ The inference table is required to contain the following columns
 
 ### 1. Fill in data monitoring wheel URL
 The `SetUpDataMonitoringForInferenceTable.py` notebook can be found in the monitoring directory. Please complete TODO 
-and fill in the wheel_URL. The URL can be found from data monitoring private review user guide.
+and fill in the wheel_URL. The URL can be found from the Data Monitoring Private Preview user guide.
 
 
 ### 2. Review and update required fields 
