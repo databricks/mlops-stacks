@@ -67,12 +67,6 @@ ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # DBTITLE 1,Load model and run inference
 from predict import predict_batch
-{% if cookiecutter.include_feature_store == "yes" %}
-from databricks.feature_store import FeatureStoreClient
 
-fs_client = FeatureStoreClient()
-predict_batch(fs_client, model_uri, input_table_name, output_table_name, model_version, ts)
-{% else %}
 predict_batch(spark, model_uri, input_table_name, output_table_name, model_version, ts)
-{% endif %}
 dbutils.notebook.exit(output_table_name)
