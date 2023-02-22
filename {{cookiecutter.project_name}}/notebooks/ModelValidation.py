@@ -87,10 +87,10 @@ model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
 model_name = dbutils.jobs.taskValues.get("Train", "model_name", debugValue="")
 model_version = dbutils.jobs.taskValues.get("Train", "model_version", debugValue="")
 
-if model_uri == "" or model_name == "" or model_version == "":
+if model_uri == "":
     model_name = dbutils.widgets.get("model_name")
     model_version = dbutils.widgets.get("model_version")
-    model_uri = "models:/"+model_name+"/"+model_version
+    model_uri = "models:/" + model_name + "/" + model_version
 
 baseline_model_uri = "models:/" + model_name + "/Production"
 evaluators = "default"
