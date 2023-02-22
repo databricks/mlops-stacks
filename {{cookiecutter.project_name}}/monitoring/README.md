@@ -3,8 +3,8 @@
 **Databricks Data Monitoring is currently in Private Preview. Please `sign up` for the preview and get approved 
 before proceeding.**
 
-This directory contains the notebook that can run in databricks workspace
-to set up data monitoring for prod inference table.
+This directory contains the notebook that can run in a Databricks workspace
+to set up Data Monitoring for a production inference table.
 
 ## Prerequisites
 
