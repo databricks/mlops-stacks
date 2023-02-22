@@ -13,6 +13,7 @@ project_name = "{{cookiecutter.project_name}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 include_feature_store = "{{cookiecutter.include_feature_store}}"
+include_data_monitoring = "{{cookiecutter.include_data_monitoring}}"
 
 mlp_paths = [
     os.path.join("profiles"),
@@ -73,6 +74,10 @@ if include_feature_store == "yes":
 else:
     for path in feature_store_paths:
         remove_filepath(path)
+
+# Remove data monitoring files
+if include_data_monitoring == "no":
+    remove_filepath(os.path.join("monitoring"))
 
 readme_path = os.path.join(os.getcwd(), "README.md")
 print(
