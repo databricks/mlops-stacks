@@ -3,21 +3,21 @@ from pyspark.sql.functions import struct, lit, to_timestamp
 
 {% if cookiecutter.include_feature_store == "yes" %}
 def predict_batch(
-    fs_client, model_uri, input_table_name, output_table_name, model_version, ts
+    fs_client, spark_session, model_uri, input_table_name, output_table_name, model_version, ts
 ):
     """
     Apply the model at the specified URI for batch inference on the table with name input_table_name,
     writing results to the table with name output_table_name
     """
-    batch_df = fs_client.read_table(input_table_name)
+    table = spark_session.table(input_table_name)
 
-    predict = fs_client.score_batch(
+    prediction_df = fs_client.score_batch(
         model_uri,
-        batch_df
+        table
     )
 
     output_df = (
-        table.withColumn("prediction", predict(struct(*table.columns)))
+        table.withColumn("prediction", prediction_df["prediction"])
         .withColumn("model_version", lit(model_version))
         .withColumn("inference_timestamp", to_timestamp(lit(ts)))
     )
