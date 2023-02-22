@@ -37,7 +37,7 @@
 
 # COMMAND ----------
 
-dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment Name(decide input data)")
+dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment(for input data)")
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 dbutils.widgets.text("experiment_name", "/my-project-experiment", "Experiment Name")
 dbutils.widgets.text("model_name", "", "Model Name")
