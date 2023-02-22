@@ -133,7 +133,7 @@ discussion, before opening a pull request.
 
 This stack is implemented as a [cookiecutter template](https://cookiecutter.readthedocs.io/en/stable/)
 that generates new projects given user-supplied parameters. Parametrized project code can be found under
-the `{{cookiecutter.root_dir}}` directory.
+the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
 
 ### Installing development requirements
 

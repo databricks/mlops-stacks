@@ -225,7 +225,7 @@ if __name__ == "__main__":
     ]:
         validate_databricks_workspace_host(host, orig_host)
     validate_project_name("{{cookiecutter.project_name}}")
-    validate_root_dir("{{cookiecutter.root_dir}}")
+    validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
         "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
     )
