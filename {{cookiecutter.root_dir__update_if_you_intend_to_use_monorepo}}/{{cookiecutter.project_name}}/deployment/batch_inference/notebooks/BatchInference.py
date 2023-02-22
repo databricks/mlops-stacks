@@ -27,13 +27,13 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../../requirements.txt
+# MAGIC %pip install -r ../../../../requirements.txt
 
 # COMMAND ----------
 
 import sys
 
-sys.path.append("../../../training/steps")
+sys.path.append("..")
 
 # COMMAND ----------
 

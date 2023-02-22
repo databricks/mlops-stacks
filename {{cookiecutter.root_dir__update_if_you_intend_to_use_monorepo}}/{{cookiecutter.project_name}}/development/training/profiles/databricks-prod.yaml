@@ -1,5 +1,5 @@
 experiment:
-  name: {% raw -%}{{ ('../../terraform/output/prod.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_experiment_name"]["value"]{% raw-%}}}{% endraw %}
+  name: {% raw -%}{{ ('../../../terraform/output/prod.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_experiment_name"]["value"]{% raw-%}}}{% endraw %}
 
 # Set the registry server URI. This property is especially useful if you have a registry
 # server that’s different from the tracking server.
@@ -7,7 +7,7 @@ model_registry:
   # The MLflow registered model name under which to register model versions
   # In prod, we log to the model provisioned through ML configs under {{cookiecutter.project_name}}/terraform
   # See {{cookiecutter.project_name}}/terraform/README.md for details
-  model_name: {% raw -%}{{ ('../../terraform/output/prod.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_model_name"]["value"]{% raw %}}}{% endraw %}
+  model_name: {% raw -%}{{ ('../../../terraform/output/prod.json' | from_json){% endraw %}["{{cookiecutter.project_name}}_model_name"]["value"]{% raw %}}}{% endraw %}
 
 # Override the default train / validation / test dataset split ratios
 SPLIT_RATIOS: [0.75, 0.125, 0.125]

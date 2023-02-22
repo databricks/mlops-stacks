@@ -46,10 +46,10 @@ current ML project.
 {%- if cookiecutter.include_feature_store == "no" %}
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
-* [databricks-test.yaml](../%7B%7Bcookiecutter.project_name%7D%7D/development/training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests
-* [databricks-staging.yaml](../%7B%7Bcookiecutter.project_name%7D%7D/development/training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
+* [databricks-test.yaml](../{{cookiecutter.project_name}}/development/training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests
+* [databricks-staging.yaml](../{{cookiecutter.project_name}}/development/training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
   jobs that run in the staging workspace
-* [databricks-prod.yaml](../%7B%7Bcookiecutter.project_name%7D%7D/development/training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
+* [databricks-prod.yaml](../{{cookiecutter.project_name}}/development/training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
   jobs that run in the prod workspace
 {%- endif %}
 
