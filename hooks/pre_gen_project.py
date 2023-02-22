@@ -193,7 +193,8 @@ def validate_feature_store(use_feature_store, cicd_platform):
     if use_feature_store == "yes" and cicd_platform == "azureDevOpsServices":
         raise RuntimeError(
             "Feature Store component with Azure DevOps CI/CD is not supported yet. "
-            "Please use Github Actions instead, if possible.")
+            "Please use Github Actions instead, if possible."
+        )
 
 
 def validate_cloud_cicd_platform(cloud, cicd_platform):
