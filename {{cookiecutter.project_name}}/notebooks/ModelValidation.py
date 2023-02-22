@@ -37,8 +37,11 @@
 
 # COMMAND ----------
 
-dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment Name")
+dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment Name(decide input data)")
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
+dbutils.widgets.text("experiment_name", "/my-project-experiment", "Experiment Name")
+dbutils.widgets.text("model_name", "", "Model Name")
+dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
 
@@ -83,6 +86,11 @@ def get_targets_from_recipe():
 model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
 model_name = dbutils.jobs.taskValues.get("Train", "model_name", debugValue="")
 model_version = dbutils.jobs.taskValues.get("Train", "model_version", debugValue="")
+
+if model_uri == "" or model_name == "" or model_version == "":
+    model_name = dbutils.widgets.get("model_name")
+    model_version = dbutils.widgets.get("model_version")
+    model_uri = "models:/"+model_name+"/"+model_version
 
 baseline_model_uri = "models:/" + model_name + "/Production"
 evaluators = "default"
@@ -150,10 +158,6 @@ evaluator_config = {}
 
 # COMMAND ----------
 
-client.get_model_version(model_name, model_version).description
-
-# COMMAND ----------
-
 eval_result = None
 err = None
 
@@ -163,9 +167,7 @@ def log_to_model_description(run, success):
     description = client.get_model_version(model_name, model_version).description
     status = "SUCCESS" if success else "FAILURE"
     if description != "":
-        description += """
-            ---
-        """.replace(" ", "")
+        description += "\n\n---\n\n"
     description += "Model Validation Status: {0}\nValidation Details: {1}".format(status, run_link)
     client.update_model_version(
         name=model_name,
