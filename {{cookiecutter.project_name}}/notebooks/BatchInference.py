@@ -71,7 +71,7 @@ from predict import predict_batch
 from databricks.feature_store import FeatureStoreClient
 
 fs_client = FeatureStoreClient()
-predict_batch(fs_client, model_uri, input_table_name, output_table_name, model_version, ts)
+predict_batch(fs_client, spark, model_uri, input_table_name, output_table_name, model_version, ts)
 {% else %}
 predict_batch(spark, model_uri, input_table_name, output_table_name, model_version, ts)
 {% endif %}
