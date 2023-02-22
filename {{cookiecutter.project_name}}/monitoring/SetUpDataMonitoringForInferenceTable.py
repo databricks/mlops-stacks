@@ -114,5 +114,18 @@ dm.create_or_update_monitor(
     baseline_table_name=baseline_table_name,
     custom_metrics=custom_metrics,
     linked_entities=linked_entities,
+    skip_analysis=True,
     data_monitoring_dir=data_monitoring_dir
+)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC
+# MAGIC ### Refresh metrics
+
+# COMMAND ----------
+
+dm.refresh_metrics(
+    table_name = inference_table_name
 )
