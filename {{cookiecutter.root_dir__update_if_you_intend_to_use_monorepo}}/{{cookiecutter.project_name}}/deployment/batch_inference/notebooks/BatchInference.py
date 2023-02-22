@@ -34,6 +34,7 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 import sys
 
 sys.path.append("..")
+sys.path.append("../../..")
 
 # COMMAND ----------
 
