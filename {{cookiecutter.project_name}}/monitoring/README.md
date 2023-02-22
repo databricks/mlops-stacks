@@ -1,6 +1,6 @@
 # Setup Data Monitoring for Inference Table
 
-**Databricks Data Monitoring is currently in Private Preview. Please `sign up` for the preview and get approved 
+**Databricks Data Monitoring is currently in Private Preview. Please `sign up` for the preview and get approved
 before proceeding.**
 
 This directory contains the notebook that can run in a Databricks workspace
@@ -13,18 +13,8 @@ The table to be monitored must exist in Unity Catalog.
 If Unity Catalog is enabled for your workspace but the table exists in the Hive metastore, please copy the table to Unity Catalog.
 
 For example, the following code shows how to import your data to a Unity Catalog managed table
- - load data from metastore example_project_predictions
- - write data to Unity Catalog my_unity_catalog.my_schema.my_inference_table
- - convert prediction column to double type
- - convert tpep_pickup_datetime to timestamp type
- - convert tpep_dropoff_datetime to timestamp type
 ```
-from pyspark.sql.functions import col, to_timestamp
-
-df = spark.table("hive_metastore.default.example_project_predictions") \
-        .withColumn("prediction",col("prediction").cast("double")) \
-        .withColumn("tpep_pickup_datetime",to_timestamp("tpep_pickup_datetime")) \
-        .withColumn("tpep_dropoff_datetime",to_timestamp("tpep_dropoff_datetime"))
+df = spark.table("hive_metastore.default.example_project_predictions")
 df.write.saveAsTable(
     name = "my_unity_catalog.my_schema.my_inference_table"
 )
