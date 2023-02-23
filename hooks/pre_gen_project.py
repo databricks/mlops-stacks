@@ -166,6 +166,14 @@ VALID_PROJECT_NAME_MSG = (
 )
 
 
+def validate_root_dir(root_dir):
+    invalid_chars_in_name = INVALID_PROJECT_NAME_CHARS.intersection(root_dir)
+    if len(invalid_chars_in_name) > 0:
+        raise ValueError(
+            f"Root directory '{root_dir}' contained invalid characters {invalid_chars_in_name}. {VALID_PROJECT_NAME_MSG}"
+        )
+
+
 def validate_project_name(project_name):
     invalid_chars_in_name = INVALID_PROJECT_NAME_CHARS.intersection(project_name)
     if len(invalid_chars_in_name) > 0:
@@ -185,7 +193,8 @@ def validate_feature_store(use_feature_store, cicd_platform):
     if use_feature_store == "yes" and cicd_platform == "azureDevOpsServices":
         raise RuntimeError(
             "Feature Store component with Azure DevOps CI/CD is not supported yet. "
-            "Please use Github Actions instead, if possible.")
+            "Please use Github Actions instead, if possible."
+        )
 
 
 def validate_cloud_cicd_platform(cloud, cicd_platform):
@@ -217,10 +226,13 @@ if __name__ == "__main__":
     ]:
         validate_databricks_workspace_host(host, orig_host)
     validate_project_name("{{cookiecutter.project_name}}")
+    validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
         "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"
     )
-    validate_feature_store("{{cookiecutter.include_feature_store}}", "{{cookiecutter.cicd_platform}}")
+    validate_feature_store(
+        "{{cookiecutter.include_feature_store}}", "{{cookiecutter.cicd_platform}}"
+    )
