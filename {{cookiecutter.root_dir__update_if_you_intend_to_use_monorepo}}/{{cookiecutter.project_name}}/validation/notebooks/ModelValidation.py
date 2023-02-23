@@ -37,8 +37,12 @@
 
 # COMMAND ----------
 
-dbutils.widgets.dropdown("env", "prod", ["staging", "prod"], "Environment(for input data)")
-dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
+dbutils.widgets.dropdown(
+    "env", "prod", ["staging", "prod"], "Environment(for input data)"
+)
+dbutils.widgets.dropdown(
+    "run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode"
+)
 dbutils.widgets.text("experiment_name", "/my-project-experiment", "Experiment Name")
 dbutils.widgets.text("model_name", "", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
@@ -177,7 +181,9 @@ def log_to_model_description(run, success):
     status = "SUCCESS" if success else "FAILURE"
     if description != "":
         description += "\n\n---\n\n"
-    description += "Model Validation Status: {0}\nValidation Details: {1}".format(status, run_link)
+    description += "Model Validation Status: {0}\nValidation Details: {1}".format(
+        status, run_link
+    )
     client.update_model_version(
         name=model_name, version=model_version, description=description
     )
