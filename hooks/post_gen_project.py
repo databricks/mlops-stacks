@@ -78,7 +78,7 @@ else:
 
 # Remove data monitoring files
 if include_data_monitoring == "no":
-    remove_filepath(os.path.join("monitoring"))
+    remove_filepath(os.path.join(project_name, "monitoring"))
 
 readme_path = os.path.join(os.getcwd(), "README.md")
 print(
