@@ -15,24 +15,24 @@ cicd_platform = "{{cookiecutter.cicd_platform}}"
 include_feature_store = "{{cookiecutter.include_feature_store}}"
 
 mlp_paths = [
-    os.path.join(project_name, "development", "training", "profiles"),
-    os.path.join(project_name, "development", "training", "notebooks", "Train.py"),
-    os.path.join(project_name, "development", "training", "recipe.yaml"),
-    os.path.join(project_name, "tests", "development", "training", "ingest_test.py"),
-    os.path.join(project_name, "tests", "development", "training", "split_test.py"),
-    os.path.join(project_name, "tests", "development", "training", "train_test.py"),
+    os.path.join(project_name, "training", "profiles"),
+    os.path.join(project_name, "training", "notebooks", "Train.py"),
+    os.path.join(project_name, "training", "recipe.yaml"),
+    os.path.join(project_name, "tests", "training", "ingest_test.py"),
+    os.path.join(project_name, "tests", "training", "split_test.py"),
+    os.path.join(project_name, "tests", "training", "train_test.py"),
     os.path.join(
-        project_name, "tests", "development", "training", "test_sample.parquet"
+        project_name, "tests", "training", "test_sample.parquet"
     ),
-    os.path.join(project_name, "tests", "development", "training", "transform_test.py"),
+    os.path.join(project_name, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
 
 feature_store_paths = [
-    os.path.join(project_name, "development", "feature_engineering"),
-    os.path.join(project_name, "tests", "development", "feature_engineering"),
+    os.path.join(project_name, "feature_engineering"),
+    os.path.join(project_name, "tests", "feature_engineering"),
     os.path.join(
-        project_name, "development", "training", "notebooks", "TrainWithFeatureStore.py"
+        project_name, "training", "notebooks", "TrainWithFeatureStore.py"
     ),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join(project_name, "terraform", "prod", "write-feature-table-job.tf"),
