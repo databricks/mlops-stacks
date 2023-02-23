@@ -287,8 +287,12 @@ def test_generate_project_check_feature_store_output(
     }
     generate(tmpdir, context=context)
     fs_notebook_path = (
-        tmpdir / TEST_PROJECT_NAME / TEST_PROJECT_NAME/
-        "feature_engineering" / "notebooks" / "GenerateAndWriteFeatures.py"
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_NAME
+        / "feature_engineering"
+        / "notebooks"
+        / "GenerateAndWriteFeatures.py"
     )
     if include_feature_store == "yes":
         assert os.path.isfile(fs_notebook_path)
