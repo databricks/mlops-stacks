@@ -23,7 +23,7 @@ def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
         return
     project_dir = generated_project_dir / "my-mlops-project"
     os.chdir(
-        project_dir / "my-mlops-project" / "development" / "training" / "notebooks"
+        project_dir / "my-mlops-project" / "training" / "notebooks"
     )
     for env in ["staging", "prod"]:
         tf_output_dir = project_dir / "my-mlops-project" / "terraform" / "output"
