@@ -16,23 +16,24 @@ include_feature_store = "{{cookiecutter.include_feature_store}}"
 include_data_monitoring = "{{cookiecutter.include_data_monitoring}}"
 
 mlp_paths = [
-    os.path.join("profiles"),
-    os.path.join("notebooks", "Train.py"),
-    os.path.join("recipe.yaml"),
-    os.path.join("tests", "ingest_test.py"),
-    os.path.join("tests", "split_test.py"),
-    os.path.join("tests", "train_test.py"),
-    os.path.join("tests", "test_sample.parquet"),
-    os.path.join("tests", "transform_test.py"),
+    os.path.join(project_name, "training", "profiles"),
+    os.path.join(project_name, "training", "notebooks", "Train.py"),
+    os.path.join(project_name, "training", "recipe.yaml"),
+    os.path.join(project_name, "tests", "training", "ingest_test.py"),
+    os.path.join(project_name, "tests", "training", "split_test.py"),
+    os.path.join(project_name, "tests", "training", "train_test.py"),
+    os.path.join(project_name, "tests", "training", "test_sample.parquet"),
+    os.path.join(project_name, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
 
 feature_store_paths = [
-    os.path.join("features"),
-    os.path.join("databricks", "TrainWithFeatureStore.py"),
+    os.path.join(project_name, "feature_engineering"),
+    os.path.join(project_name, "tests", "feature_engineering"),
+    os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
-    os.path.join("databricks-config", "prod", "write-feature-table-job.tf"),
-    os.path.join("databricks-config", "staging", "write-feature-table-job.tf"),
+    os.path.join(project_name, "terraform", "prod", "write-feature-table-job.tf"),
+    os.path.join(project_name, "terraform", "staging", "write-feature-table-job.tf"),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 

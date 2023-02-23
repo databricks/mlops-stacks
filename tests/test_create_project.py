@@ -85,7 +85,8 @@ def test_no_template_strings_after_param_substitution(generated_project_dir):
 def test_no_databricks_workspace_urls():
     # Test that there are no accidental hardcoded Databricks workspace URLs included in stack source files
     cookiecutter_dir = (
-        pathlib.Path(__file__).parent.parent / "{{cookiecutter.project_name}}"
+        pathlib.Path(__file__).parent.parent
+        / "{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
     )
     test_paths = [
         os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
@@ -102,7 +103,8 @@ def test_no_databricks_workspace_urls():
 
 def test_no_databricks_doc_strings_before_project_generation():
     cookiecutter_dir = (
-        pathlib.Path(__file__).parent.parent / "{{cookiecutter.project_name}}"
+        pathlib.Path(__file__).parent.parent
+        / "{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
     )
     test_paths = [
         os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
@@ -230,7 +232,10 @@ def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
     }
     generate(tmpdir, params)
     tf_config_contents = (
-        tmpdir / DEFAULT_PROJECT_NAME / "databricks-config/prod/locals.tf"
+        tmpdir
+        / DEFAULT_PROJECT_NAME
+        / DEFAULT_PROJECT_NAME
+        / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
@@ -252,6 +257,7 @@ def test_generate_project_with_default_values(
         "cloud": cloud,
         "cicd_platform": cicd_platform,
     }
+    # Testing that Azure is the default option.
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
@@ -264,6 +270,34 @@ def test_generate_project_with_default_values(
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AWS}
     for param, value in params.items():
         assert f"{param}={value}" in test_file_contents
+
+
+@parametrize_by_project_generation_params
+def test_generate_project_check_feature_store_output(
+    tmpdir, cloud, cicd_platform, include_feature_store
+):
+    """
+    Asserts the behavior of feature store-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "include_feature_store": include_feature_store,
+    }
+    generate(tmpdir, context=context)
+    fs_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_NAME
+        / "feature_engineering"
+        / "notebooks"
+        / "GenerateAndWriteFeatures.py"
+    )
+    if include_feature_store == "yes":
+        assert os.path.isfile(fs_notebook_path)
+    else:
+        assert not os.path.isfile(fs_notebook_path)
 
 
 @pytest.mark.parametrize(
@@ -302,7 +336,10 @@ def test_generate_project_default_project_name_params(tmpdir):
     readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
     tf_config_contents = (
-        tmpdir / DEFAULT_PROJECT_NAME / "databricks-config/prod/locals.tf"
+        tmpdir
+        / DEFAULT_PROJECT_NAME
+        / DEFAULT_PROJECT_NAME
+        / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert (
         f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}"'
