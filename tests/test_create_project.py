@@ -257,6 +257,7 @@ def test_generate_project_with_default_values(
         "cloud": cloud,
         "cicd_platform": cicd_platform,
     }
+    # Testing that Azure is the default option.
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
@@ -269,6 +270,34 @@ def test_generate_project_with_default_values(
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AWS}
     for param, value in params.items():
         assert f"{param}={value}" in test_file_contents
+
+
+@parametrize_by_project_generation_params
+def test_generate_project_check_feature_store_output(
+    tmpdir, cloud, cicd_platform, include_feature_store
+):
+    """
+    Asserts the behavior of feature store-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "include_feature_store": include_feature_store,
+    }
+    generate(tmpdir, context=context)
+    fs_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_NAME
+        / "feature_engineering"
+        / "notebooks"
+        / "GenerateAndWriteFeatures.py"
+    )
+    if include_feature_store == "yes":
+        assert os.path.isfile(fs_notebook_path)
+    else:
+        assert not os.path.isfile(fs_notebook_path)
 
 
 @pytest.mark.parametrize(
