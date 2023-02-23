@@ -20,13 +20,16 @@
 # COMMAND ----------
 
 # The name of the column that represents the inference timestamp (i.e. time of prediction) for this row. This column should be of TimestampType.
-timestamp_col = "ts"
+# By default, BatchInference notebook generates the column with name `inference_timestamp`.
+timestamp_col = "inference_timestamp"
 
 # The name of the column that represents the model version used to predict on this row. 
 # This should correspond to the MLflow registered model version (or any identifier unique to a specific trained model).
+# By default, BatchInference notebook generates the column with name `model_version`.
 model_version_col = "model_version"
 
 # The name of the column that holds the prediction (from inference) for this row.
+# By default, BatchInference notebook generates the column with name `prediction`.
 prediction_col = "prediction"
 
 # The type of ML problem that the model is solving. This should be either “classification” or “regression”.
@@ -44,11 +47,6 @@ output_schema_name = "{catalog}.{schema}"
 # {"5 minutes", "30 minutes", "1 hour", "1 day", "n week(s)", "1 month", "1 year"}.
 granularities = ["1 hour"]
 
-# List of Databricks entity names that are associated
-# with this table. Only following entities are supported:
-#    ["models:/registry_model_name"] links a model registry model to the monitored table.
-linked_entities = ["models:/prod-{{cookiecutter.model_name}}"]
-
 # COMMAND ----------
 
 # MAGIC %md
@@ -57,6 +55,12 @@ linked_entities = ["models:/prod-{{cookiecutter.model_name}}"]
 # MAGIC TODO: Fill in optional fields as needed
 
 # COMMAND ----------
+
+# List of Databricks entity names that are associated
+# with this table. Only following entities are supported:
+#    ["models:/registry_model_name"] links a model registry model to the monitored table.
+# Update the parameter if model name has been updated after generating the project.
+linked_entities = ["models:/prod-{{cookiecutter.model_name}}"]
 
 # The name of the column that holds the label for this row. This field is optional if you do not have labels to provide with your data.
 # This column will be used to compute model quality metrics
@@ -92,7 +96,7 @@ custom_metrics = []
 
 # MAGIC %md
 # MAGIC 
-# MAGIC ### Create a monitor
+# MAGIC ### Create (or update) a monitor
 
 # COMMAND ----------
 

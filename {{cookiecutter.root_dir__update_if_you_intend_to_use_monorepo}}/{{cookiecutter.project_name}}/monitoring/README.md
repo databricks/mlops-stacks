@@ -37,13 +37,13 @@ and fill in the wheel_URL. The URL can be found from the Data Monitoring Private
 
 ### 2. Review and update required fields 
 Review and update the required fields: `timestamp_col`, `model_version_col`, `prediction_col`, 
-`problem_type`, `inference_table_name`, `granularities`, `linked_entities`.
+`problem_type`, `inference_table_name`, `granularities`.
 
 For details of the fields and the API, please refer to `Data Monitoring User Guide` and
 `Data Monitoring API Reference`.
 
 ### 3. Update optional fields as necessary
-Review and update optional fields as necessary: `output_schema_name`, `label_col`, `example_id_col`, 
+Review and update optional fields as necessary: `linked_entities`, `output_schema_name`, `label_col`, `example_id_col`, 
 `baseline_table_name`, `data_monitoring_dir`, `slicing_exprs`, `custom_metrics`.
 
 For details of the fields and the API, please refer to `Data Monitoring User Guide` and 
