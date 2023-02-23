@@ -21,9 +21,7 @@ mlp_paths = [
     os.path.join(project_name, "tests", "training", "ingest_test.py"),
     os.path.join(project_name, "tests", "training", "split_test.py"),
     os.path.join(project_name, "tests", "training", "train_test.py"),
-    os.path.join(
-        project_name, "tests", "training", "test_sample.parquet"
-    ),
+    os.path.join(project_name, "tests", "training", "test_sample.parquet"),
     os.path.join(project_name, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
 ]
@@ -31,9 +29,7 @@ mlp_paths = [
 feature_store_paths = [
     os.path.join(project_name, "feature_engineering"),
     os.path.join(project_name, "tests", "feature_engineering"),
-    os.path.join(
-        project_name, "training", "notebooks", "TrainWithFeatureStore.py"
-    ),
+    os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join(project_name, "terraform", "prod", "write-feature-table-job.tf"),
     os.path.join(project_name, "terraform", "staging", "write-feature-table-job.tf"),
