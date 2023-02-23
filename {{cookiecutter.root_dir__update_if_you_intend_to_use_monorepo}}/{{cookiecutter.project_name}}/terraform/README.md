@@ -92,12 +92,12 @@ The model validation stack focuses on building a plug-and-play stack component f
 in staging and prod.
 Its central purpose is to evaluate a registered model and validate its quality before deploying the model to Production/Staging.
 
-The model validation job is implemented in `notebooks/ModelValidation`. The model validation stack is defined in 
-`staging/training-job.tf` and `prod/training-job.tf`.
+The model validation job is implemented in [notebooks/ModelValidation](../validation/notebooks/ModelValidation.py). The model validation stack is defined in 
+[staging/training-job.tf](./staging/training-job.tf) and [prod/training-job.tf](./prod/training-job.tf).
 As part of the workflow, model validation runs after training and before the deployment.
 
-To enable the model validation stack, resolve the TODOs in `notebooks/ModelValidation` to complete the model validation implementation.
-Then update `run_mode` in `staging/training-job.tf` and `prod/training-job.tf`. `run_mode` can be one of the three values:
+To enable the model validation stack, resolve the TODOs in [notebooks/ModelValidation](../validation/notebooks/ModelValidation.py) to complete the model validation implementation.
+Then update `run_mode` in [staging/training-job.tf](./staging/training-job.tf) and [prod/training-job.tf](./prod/training-job.tf). `run_mode` can be one of the three values:
 * `disabled` : Do not run the model validation notebook.
 * `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
 * `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
