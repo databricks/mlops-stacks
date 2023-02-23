@@ -43,7 +43,11 @@ dbutils.widgets.dropdown(
 dbutils.widgets.dropdown(
     "run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode"
 )
-dbutils.widgets.text("experiment_name", "/my-project-experiment", "Experiment Name")
+dbutils.widgets.text(
+    "experiment_name",
+    "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
+    "Experiment Name",
+)
 dbutils.widgets.text("model_name", "", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
