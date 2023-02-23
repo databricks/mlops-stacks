@@ -252,6 +252,7 @@ def test_generate_project_with_default_values(
         "cloud": cloud,
         "cicd_platform": cicd_platform,
     }
+    # Testing that Azure is the default option.
     if cloud == "azure":
         del context["cloud"]
     generate(tmpdir, context=context)
@@ -279,8 +280,6 @@ def test_generate_project_check_feature_store_output(
         "cicd_platform": cicd_platform,
         "include_feature_store": include_feature_store,
     }
-    if cloud == "azure":
-        del context["cloud"]
     generate(tmpdir, context=context)
     fs_notebook_path = (
         tmpdir / TEST_PROJECT_NAME / "notebooks" / "GenerateAndWriteFeatures.py"
