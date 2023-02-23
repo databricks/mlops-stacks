@@ -2,7 +2,7 @@ import pytest
 import os
 import pandas as pd
 from pandas import DataFrame
-from development.training.steps.split import process_splits
+from training.steps.split import process_splits
 
 
 @pytest.fixture

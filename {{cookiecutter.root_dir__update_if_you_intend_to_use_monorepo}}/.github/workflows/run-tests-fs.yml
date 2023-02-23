@@ -58,7 +58,7 @@ jobs:
               {
                 "task_key": "pickup-features",
                 "notebook_task": {
-                  "notebook_path": "{{cookiecutter.project_name}}/development/feature_engineering/notebooks/GenerateAndWriteFeatures", 
+                  "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures", 
                   "base_parameters": {
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
@@ -85,7 +85,7 @@ jobs:
               {
                 "task_key": "dropoff-features",
                 "notebook_task": {
-                  "notebook_path": "{{cookiecutter.project_name}}/development/feature_engineering/notebooks/GenerateAndWriteFeatures",
+                  "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures",
                   "base_parameters": {                    
                     "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
@@ -120,7 +120,7 @@ jobs:
                   }
                 ],
                 "notebook_task": {
-                  "notebook_path": "{{cookiecutter.project_name}}/development/feature_engineering/notebooks/TrainWithFeatureStore",
+                  "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/TrainWithFeatureStore",
                   "base_parameters": {
                     "test_mode": "True",
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",

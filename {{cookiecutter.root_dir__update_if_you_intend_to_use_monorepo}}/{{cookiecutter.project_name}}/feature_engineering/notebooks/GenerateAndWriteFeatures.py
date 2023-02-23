@@ -62,7 +62,7 @@ dbutils.widgets.text(
 # COMMAND ----------
 import sys
 
-sys.path.append("../../training/steps")
+sys.path.append("../..")
 sys.path.append("../features")
 
 

@@ -14,7 +14,7 @@ resource "databricks_job" "write_feature_table_job" {
     task_key = "PickupFeatures"
 
     notebook_task {
-      notebook_path = "{{cookiecutter.project_name}}/development/feature_engineering/notebooks/GenerateAndWriteFeatures"
+      notebook_path = "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         # TODO modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
@@ -39,7 +39,7 @@ resource "databricks_job" "write_feature_table_job" {
   task {
     task_key = "DropoffFeatures"
     notebook_task {
-      notebook_path = "{{cookiecutter.project_name}}/development/feature_engineering/notebooks/GenerateAndWriteFeatures"
+      notebook_path = "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures"
       base_parameters = {
         # TODO: modify these arguments to reflect your setup.
         input_table_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
