@@ -6,9 +6,17 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("library_location", "", "data monitoring library location")
+
+# COMMAND ----------
+
+library_location = dbutils.widgets.get("library_location")
+
+# COMMAND ----------
+
 # Install the Data Monitoring client library
 # TODO: Fill in wheel URL
-%pip install "{wheel_URL}"
+%pip install $library_location
 
 # COMMAND ----------
 
@@ -34,13 +42,13 @@ prediction_col = "prediction"
 
 # The type of ML problem that the model is solving. This should be either “classification” or “regression”.
 # Other problem types are not supported at this time. 
-problem_type = "regression"
+problem_type = None
 
 # The inference table holding data to be monitored. Table name format {catalog}.{schema}.{table}
-inference_table_name = "{catalog}.{schema}.{table}"
+inference_table_name = None
 
 # Name of the schema in which to create output tables. format {catalog}.{schema}
-output_schema_name = "{catalog}.{schema}"
+output_schema_name = None
 
 # List of granularities to use when aggregating data
 # into time windows based on their timestamp. Currently the following static granularities are supported:
@@ -60,7 +68,9 @@ granularities = ["1 hour"]
 # with this table. Only following entities are supported:
 #    ["models:/registry_model_name"] links a model registry model to the monitored table.
 # Update the parameter if model name has been updated after generating the project.
-linked_entities = ["models:/prod-{{cookiecutter.model_name}}"]
+model = "models:/prod-{{cookiecutter.model_name}}"
+linked_entities = [model]
+assert "cookiecutter.model_name" not in model, "Please update to correct model name"
 
 # The name of the column that holds the label for this row. This field is optional if you do not have labels to provide with your data.
 # This column will be used to compute model quality metrics
