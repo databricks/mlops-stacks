@@ -172,15 +172,32 @@ evaluator_config = {}
 
 # COMMAND ----------
 
-eval_result = None
-err = None
+# helper methods
+def get_run_link(run_info):
+    return "[Run](#mlflow/experiments/{0}/runs/{1})".format(
+        run_info.experiment_id, run_info.run_id
+    )
+
+
+def get_training_run(model_name, model_version):
+    version = client.get_model_version(model_name, model_version)
+    return mlflow.get_run(run_id=version.run_id)
+
+
+def generate_run_name(training_run):
+    return None if not training_run else training_run.info.run_name + "-validation"
+
+
+def generate_description(training_run):
+    return (
+        None
+        if not training_run
+        else "Model Training Details: {0}\n".format(get_run_link(training_run.info))
+    )
 
 
 def log_to_model_description(run, success):
-    run_info = run.info
-    run_link = "[Run](#mlflow/experiments/{0}/runs/{1})".format(
-        run_info.experiment_id, run_info.run_id
-    )
+    run_link = get_run_link(run.info)
     description = client.get_model_version(model_name, model_version).description
     status = "SUCCESS" if success else "FAILURE"
     if description != "":
@@ -193,9 +210,14 @@ def log_to_model_description(run, success):
     )
 
 
-# run evaluate
-with mlflow.start_run() as run, tempfile.TemporaryDirectory() as tmp_dir:
+# COMMAND ----------
 
+training_run = get_training_run(model_name, model_version)
+# run evaluate
+with mlflow.start_run(
+    run_name=generate_run_name(training_run),
+    description=generate_description(training_run),
+) as run, tempfile.TemporaryDirectory() as tmp_dir:
     validation_thresholds_file = os.path.join(tmp_dir, "validation_thresholds.txt")
     with open(validation_thresholds_file, "w") as f:
         if validation_thresholds:
@@ -206,7 +228,6 @@ with mlflow.start_run() as run, tempfile.TemporaryDirectory() as tmp_dir:
                     )
                 )
     mlflow.log_artifact(validation_thresholds_file)
-
     try:
         eval_result = mlflow.evaluate(
             model=model_uri,
