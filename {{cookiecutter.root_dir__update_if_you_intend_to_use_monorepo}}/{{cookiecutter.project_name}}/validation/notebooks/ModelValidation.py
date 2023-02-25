@@ -180,14 +180,8 @@ def get_run_link(run_info):
 
 
 def get_training_run(model_name, model_version):
-    model_versions = client.search_model_versions(f"name='{model_name}'")
-    training_run_id_optional = [
-        version.run_id for version in model_versions if version.version == model_version
-    ]
-    if not training_run_id_optional:
-        print("Unable to find the training run!")
-        return None
-    return mlflow.get_run(run_id=training_run_id_optional[0])
+    version = client.get_model_version(model_name, model_version)
+    return mlflow.get_run(run_id=version.run_id)
 
 
 def generate_run_name(training_run):
