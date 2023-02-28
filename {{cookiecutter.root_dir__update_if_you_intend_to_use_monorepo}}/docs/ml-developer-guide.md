@@ -50,14 +50,14 @@ You'll need:
 * To set up [Databricks Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}): see instructions below
 
 #### Configuring Databricks Repos
-To use Repos, [set up git integration]({{ "repos/set-up-git-integration.html" | generate_doc_link(cookiecutter.cloud) }}) in your dev workspace.
+To use Repos, [set up git integration]({{ "repos/repos-setup.html" | generate_doc_link(cookiecutter.cloud) }}) in your dev workspace.
 
 If the current project has already been pushed to a hosted Git repo, follow the
-[UI workflow]({{ "repos/work-with-notebooks-other-files.html#clone-a-remote-git-repository" | generate_doc_link(cookiecutter.cloud) }})
+[UI workflow]({{ "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later" | generate_doc_link(cookiecutter.cloud) }})
 to clone it into your dev workspace and iterate.
 
 Otherwise, e.g. if iterating on ML code for a new project, follow the steps below:
-* Follow the [UI workflow]({{ "repos/work-with-notebooks-other-files.html#clone-a-remote-git-repository" | generate_doc_link(cookiecutter.cloud) }})
+* Follow the [UI workflow]({{ "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later" | generate_doc_link(cookiecutter.cloud) }})
   for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
 * Install the `dbx` CLI via `pip install --upgrade dbx`
 * Run `databricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
