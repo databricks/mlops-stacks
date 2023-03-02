@@ -24,7 +24,9 @@ This project contains the following components:
 contained in the following files:
 
 ```
-├── {{cookiecutter.project_name}}       <- Contains python code, notebooks and project reousrce configs related to the ML project. 
+{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}         <- Root directory. Both mono repo and poly repo are supported.
+│
+├── {{cookiecutter.project_name}}       <- Contains python code, notebooks and ML resources related to one ML project. 
 │   │
 {% if cookiecutter.include_feature_store == "yes" -%}
 │   ├── training                <- Training folder contains Notebook that trains and regisetered the model with feature store support.
