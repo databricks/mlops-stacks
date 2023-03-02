@@ -3,7 +3,6 @@
 ##################################################################################
 import numpy as np
 from enum import Enum
-from databricks.sdk.runtime import spark
 from mlflow.models import MetricThreshold, make_metric
 
 
@@ -33,7 +32,7 @@ def enable_baseline_comparison():
 # model validation data input for prod workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
 # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # TODO(required)
-def get_prod_workspace_validation_input():
+def get_prod_workspace_validation_input(spark):
     return spark.sql(
         "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`"
     )
@@ -42,7 +41,7 @@ def get_prod_workspace_validation_input():
 # model validation data input for staging workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
 # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # TODO(required)
-def get_staging_workspace_validation_input():
+def get_staging_workspace_validation_input(spark):
     return spark.sql(
         "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`"
     )

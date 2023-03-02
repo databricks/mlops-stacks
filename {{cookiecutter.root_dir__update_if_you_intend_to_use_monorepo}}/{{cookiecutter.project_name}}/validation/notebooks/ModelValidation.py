@@ -145,9 +145,9 @@ from model_validation_input import (
 enable_baseline_comparison = enable_baseline_comparison()
 
 if env == "prod":
-    data = get_prod_workspace_validation_input()
+    data = get_prod_workspace_validation_input(spark)
 elif env == "staging":
-    data = get_staging_workspace_validation_input()
+    data = get_staging_workspace_validation_input(spark)
 else:
     raise Exception(
         "Unknown environment. Please select 'prod' or 'staging' as environment name"
