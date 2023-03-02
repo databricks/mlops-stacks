@@ -11,14 +11,9 @@
 #
 # Parameters:
 #
-# * env (optional): Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
-#                   You can add environment-specific logic to this notebook based on the value of this parameter,
-#                   e.g. read validation data from different tables or data sources across environments.
-# * run_mode (optional): The model validation run mode. Defaults to Disabled. Possible values are disabled, dry_run, enabled.
-#                       disabled : Do not run the model validation notebook.
-#                       dry_run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
-#                       enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
-#
+# * env : Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
+#         You can add environment-specific logic to this notebook based on the value of this parameter,
+#         e.g. read validation data from different tables or data sources across environments.
 #
 #
 # For details on mlflow evaluate API, see doc https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
@@ -40,9 +35,6 @@
 dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
 )
-dbutils.widgets.dropdown(
-    "run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode"
-)
 dbutils.widgets.text(
     "experiment_name",
     "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
@@ -50,6 +42,33 @@ dbutils.widgets.text(
 )
 dbutils.widgets.text("model_name", "", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
+
+# COMMAND ----------
+
+import sys
+
+sys.path.append("..")
+sys.path.append("../..")
+
+from model_validation_input import get_run_mode, RunMode
+
+run_mode = get_run_mode()
+
+if run_mode == RunMode.DISABLED:
+    print(
+        "Model validation is in DISABLED mode. Exit model validation without blocking model deployment."
+    )
+    dbutils.notebook.exit(0)
+dry_run = run_mode == RunMode.DRY_RUN
+
+if dry_run:
+    print(
+        "Model validation is in DRY_RUN mode. Validation threshold validation failures will not block model deployment."
+    )
+else:
+    print(
+        "Model validation is in ENABLED mode. Validation threshold validation failures will block model deployment."
+    )
 
 # COMMAND ----------
 
@@ -72,10 +91,6 @@ client = MlflowClient()
 
 env = dbutils.widgets.get("env")
 experiment_name = dbutils.widgets.get("experiment_name")
-_run_mode = dbutils.widgets.get("run_mode")
-if _run_mode.lower() == "disabled":
-    dbutils.notebook.exit(0)
-dry_run = _run_mode.lower() == "dry_run"
 
 
 def get_model_type_from_recipe():
@@ -116,59 +131,40 @@ mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-##################################################################################
-# TODO : Please fill in this cell with proper values for enable_baseline_comparison,
-#        data, targets, model_type, custom_metrics, validation_thresholds
-#        evaluator_config
-##################################################################################
+from model_validation_input import (
+    enable_baseline_comparison,
+    get_prod_workspace_validation_input,
+    get_staging_workspace_validation_input,
+    get_model_type,
+    get_validation_thresholds,
+    get_custom_metrics,
+    get_evaluator_config,
+)
 
-# Whether to load the current registered "Production" stage model as baseline. A version with "Production" stage must
-# exist for the model.
-# Baseline model is a requirement for relative change and absolute change validation rules.
-# TODO(optional) : enable_baseline_comparison
-enable_baseline_comparison = False
+# take input
+enable_baseline_comparison = enable_baseline_comparison()
 
-# model validation data input for staging or prod workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
-# Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 if env == "prod":
-    # TODO(required) : set data for prod workspace
-    data = None
+    data = get_prod_workspace_validation_input()
 elif env == "staging":
-    # TODO(required) : set data for staging workspace
-    data = None
+    data = get_staging_workspace_validation_input()
 else:
     raise Exception(
         "Unknown environment. Please select 'prod' or 'staging' as environment name"
     )
 
-# The string name of a column from data that contains evaluation labels.
-# Call get_targets_from_recipe() to get targets from recipe configs if mlflow recipe is used.
-# Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(required) : targets
 targets = get_targets_from_recipe()
 
-
-# A string describing the model type. The model type can be either "regressor" and "classifier".
-# Call get_model_type_from_recipe() to get model type from recipe configs if mlflow recipe is used.
-# Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(required) : model_type
 model_type = get_model_type_from_recipe()
 
-# Custom metrics to be included. Set it to None if custom metrics are not needed.
-# Please refer to custom_metrics parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : define custom metric function as necessary
-# TODO(optional) : custom_metrics
-custom_metrics = []
+custom_metrics = get_custom_metrics()
 
-# Define model validation rules. Set it to None if validation rules are not needed.
-# Please refer to custom_metrics parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : validation_thresholds
-validation_thresholds = {}
+validation_thresholds = get_validation_thresholds()
 
-# A dictionary of additional configurations to supply to the evaluator.
-# Please refer to evaluator_config parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : evaluator_config
-evaluator_config = {}
+evaluator_config = get_evaluator_config()
+
+assert data, "Please provide correct data input for " + env
+assert model_type, "Please provide correct model type"
 
 # COMMAND ----------
 
@@ -228,6 +224,7 @@ with mlflow.start_run(
                     )
                 )
     mlflow.log_artifact(validation_thresholds_file)
+
     try:
         eval_result = mlflow.evaluate(
             model=model_uri,
@@ -273,3 +270,9 @@ with mlflow.start_run(
         mlflow.log_artifact(error_file)
         if not dry_run:
             raise err
+        else:
+            print(
+                "Model validation failed in DRY_RUN. It will not block model deployment."
+            )
+
+# COMMAND ----------
