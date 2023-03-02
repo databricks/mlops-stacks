@@ -76,7 +76,7 @@ batch inference job.
 ### Setting up batch inference job
 The batch inference job expects an input Delta table that with a schema that your registered model accepts. To use the batch
 inference job, set up such a Delta table in both your staging and prod workspace.
-Then, resolve the TODOs in `staging/inference-job.tf` and `prod/inference-job.tf`, passing
+Then, resolve the TODOs in `{{cookiecutter.project_name}}/terraform/staging/inference-job.tf` and `{{cookiecutter.project_name}}/terraform/prod/inference-job.tf`, passing
 the name of the input Delta table and the name of the output Delta table to which to write
 batch predictions as job parameters.
 
@@ -104,12 +104,12 @@ Then update `run_mode` in [staging/training-job.tf](./staging/training-job.tf) a
 
 Once model validation is in enabled or dry run mode, the model validation result will be logged to the description of the registered model version.
 ## Develop and test config changes
-To get started, open `staging/inference-job.tf`.  The file contains the ML resource definition of
+To get started, open `{{cookiecutter.project_name}}/terraform/staging/inference-job.tf`.  The file contains the ML resource definition of
 a batch inference job, like:
 
 ```$xslt
 resource "databricks_job" "batch_inference_job" {
-  name = "{{cookiecutter.project_name}} batch inference job"
+  name = "${local.env_prefix}{{cookiecutter.project_name}}-batch-inference-job"
 
   new_cluster {
     num_workers   = 3
@@ -124,8 +124,8 @@ resource "databricks_job" "batch_inference_job" {
 }
 ```
 
-The example above defines a Databricks job with name `{{cookiecutter.project_name}} batch inference job`
-that runs the notebook under `notebooks/BatchInference.py` to regularly apply your ML model
+The example above defines a Databricks job with name `staging-{{cookiecutter.project_name}}-batch-inference-job`
+that runs the notebook under `{{cookiecutter.project_name}}/deployment/batch_inference/notebooks/BatchInference.py` to regularly apply your ML model
 for batch inference. 
 
 At the start of the resource definition, we specify its type (`databricks_job`)

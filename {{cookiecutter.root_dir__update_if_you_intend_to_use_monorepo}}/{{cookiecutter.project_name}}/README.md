@@ -1,4 +1,4 @@
-# {{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}
+# {{cookiecutter.project_name}}
 
 This directory contains an ML project based on the default
 [Databricks MLOps Stack](https://github.com/databricks/mlops-stack),
@@ -32,20 +32,3 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                     |
 | Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide]({{cookiecutter.project_name}}/terraform/README.md)                                                                                        |
 | MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                             |
-
-## Mono repo
-
-It's possible to use the repo as a mono repo that contains multiple projects. All projects share the same workspace setup and service principal.
-
-For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
-1. Create another project from cookiecutter with project name `project2` and root direction name `project2`.
-2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
-{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
-3. Rename yaml files in  `project2/.github/workflows/` so that there won't be name conflicts.
-4. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`
-{% endif -%}
-{%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-3. Rename yaml files in  `project2/.azure/devlops-pipelines/` so that there won't be name conflicts.
-4. Copy yaml files from `project2/.azure/devlops-pipelines/` to `monorepo_root_dir/.azure/devlops-pipelines/`
-{% endif -%}
-

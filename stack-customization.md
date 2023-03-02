@@ -55,15 +55,15 @@ notebooks with the expected interface for model training and inference under
 `{{cookiecutter_project_name}}/notebooks/`. See code comments in files under
 `{{cookiecutter_project_name}}/notebooks/` for the expected interface & behavior of these notebooks.
 
-You may also want to update developer-facing docs under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/docs/ml-developer-guide.md`,
-which will be read by users of your stack.
+You may also want to update developer-facing docs under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/docs/ml-developer-guide.md`
+or `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/docs/ml-developer-guide-fs.md`, which will be read by users of your stack.
 
 ### CI/CD workflows
 The default stack currently has the following sub-components for CI/CD:
 * CI/CD workflow logic defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/.github/` for testing and deploying ML code and models
 * Automated scripts and docs for setting up CI/CD under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/.mlops-setup-scripts/`
 * Logic to trigger model deployment through REST API calls to your CD system, when model training completes.
-  This logic is currently captured in `{{cookiecutter.project_name}}/notebooks/TriggerModelDeploy.py`
+  This logic is currently captured in `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/deployment/model_deployment/notebooks/TriggerModelDeploy.py`
 
 ### ML resource config
 ML resource config (Terraform code definitions of ML jobs, experiments, etc) can be found under
@@ -78,6 +78,6 @@ When updating this component, you may want to update developer-facing docs in
 
 ### Docs
 After making stack customizations, make any changes needed to
-the stack docs under `{{cookiecutter.project_name}}/docs` and in the main README
-(`{{cookiecutter.project_name}}/README.md`) to reflect any updates you've made to the stack.
-For example, you may want to include a link to your custom stack in `{{cookiecutter.project_name}}/README.md`.
+the stack docs under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/docs` and in the main README
+(`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/README.md`) to reflect any updates you've made to the stack.
+For example, you may want to include a link to your custom stack in `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/README.md`.
