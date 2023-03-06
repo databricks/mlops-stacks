@@ -33,12 +33,12 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 | Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide]({{cookiecutter.project_name}}/terraform/README.md)                                                                                       |
 | MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 
-## Mono repo
+## Monorepo
 
-It's possible to use the repo as a mono repo that contains multiple projects. All projects share the same workspace setup and service principal.
+It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspace setup and service principal.
 
 For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
-1. Create another project from cookiecutter with project name `project2` and root direction name `project2`.
+1. Create another project from cookiecutter with project name `project2` and root directory name `project2`.
 2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
 {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
 3. Rename yaml files in  `project2/.github/workflows/` so that there won't be name conflicts.

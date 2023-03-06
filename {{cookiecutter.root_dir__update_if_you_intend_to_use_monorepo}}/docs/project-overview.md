@@ -24,12 +24,12 @@ This project contains the following components:
 contained in the following files:
 
 ```
-{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}         <- Root directory. Both mono repo and poly repo are supported.
+{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}         <- Root directory. Both monorepo and polyrepo are supported.
 │
 ├── {{cookiecutter.project_name}}       <- Contains python code, notebooks and ML resources related to one ML project. 
 │   │
 {% if cookiecutter.include_feature_store == "yes" -%}
-│   ├── training                <- Training folder contains Notebook that trains and regisetered the model with feature store support.
+│   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
 │   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
 │   │                              The output of these transforms get persisted as Feature Store tables. Most development
@@ -39,9 +39,9 @@ contained in the following files:
 │   │
 │   ├── monitoring              <- Model monitoring, feature monitoring, etc.
 │   │
-│   ├── deployment              <- Model deployment and endpoint deployment.
+│   ├── deployment              <- Deployment and Batch inference workflows
 │   │   │
-│   │   ├── batch_inference     <- Batch inference code that will run as part of schduled workflow.
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
 │   │   │
 │   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
 │   │
@@ -61,7 +61,7 @@ contained in the following files:
 │   │   │                          of each recipe step, such as the input dataset to use for training a model or the
 │   │   │                          performance criteria for promoting a model to production.
 │   │   │
-│   │   ├── profiles            <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow recipe execution.
+│   │   ├── profiles            <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow recipes execution.
 │   │
 │   │
 │   ├── validation              <- Optional model validation step before deploying a model.
@@ -70,7 +70,7 @@ contained in the following files:
 │   │
 │   ├── deployment              <- Model deployment and endpoint deployment.
 │   │   │
-│   │   ├── batch_inference     <- Batch inference code that will run as part of schduled workflow.
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
 │   │   │
 │   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
 │   │
