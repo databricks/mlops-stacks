@@ -120,7 +120,7 @@ jobs:
                   }
                 ],
                 "notebook_task": {
-                  "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/TrainWithFeatureStore",
+                  "notebook_path": "{{cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore",
                   "base_parameters": {
                     "env": "staging"
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
