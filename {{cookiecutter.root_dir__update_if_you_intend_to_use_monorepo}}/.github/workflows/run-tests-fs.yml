@@ -122,9 +122,9 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/TrainWithFeatureStore",
                   "base_parameters": {
-                    "test_mode": "True",
+                    "env": "staging"
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
-                    "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
+                    "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}-staging/{{cookiecutter.experiment_base_name}}-test",
                     "model_name": "{{cookiecutter.model_name}}-test"
                   }
                 },

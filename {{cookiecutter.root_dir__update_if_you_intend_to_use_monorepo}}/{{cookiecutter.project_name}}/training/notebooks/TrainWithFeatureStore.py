@@ -6,7 +6,7 @@
 # It is configured and can be executed as a training-job.tf job defined under ``{{cookiecutter.project_name}}/terraform``
 #
 # Parameters:
-#
+# * env (required):                 - Environment the notebook is run in (dev, staging, or prod). Defaults to "dev".
 # * training_data_path (required)   - Path to the training data.
 # * experiment_name (required)      - MLflow experiment name for the training runs. Will be created if it doesn't exist.
 # * model_name (required)           - MLflow registered model name to use for the trained model. Will be created if it
@@ -20,6 +20,10 @@
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 
+# Notebook Environment
+dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
+env = dbutils.widgets.get("env")
+
 # Path to the Hive-registered Delta table containing the training data.
 dbutils.widgets.text(
     "training_data_path",
@@ -30,11 +34,11 @@ dbutils.widgets.text(
 # MLflow experiment name.
 dbutils.widgets.text(
     "experiment_name",
-    "/{{cookiecutter.project_name}}/{{cookiecutter.experiment_base_name}}-test",
+    f"/{{cookiecutter.mlflow_experiment_parent_dir}}-{env}/{{cookiecutter.experiment_base_name}}-test",
     label="MLflow experiment name",
 )
 
-# MLflow registered model name to use for the trained mode..
+# MLflow registered model name to use for the trained mode.
 dbutils.widgets.text(
     "model_name", "{{cookiecutter.model_name}}-test", label="Model Name"
 )
