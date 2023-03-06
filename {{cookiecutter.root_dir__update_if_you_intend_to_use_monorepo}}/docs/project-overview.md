@@ -48,7 +48,7 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 {% else -%}
-│   ├── training                <- Folder for model development via MLflow recipe.
+│   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
 │   │   │                          development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details
