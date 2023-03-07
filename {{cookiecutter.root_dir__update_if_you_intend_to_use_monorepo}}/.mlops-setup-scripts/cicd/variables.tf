@@ -3,7 +3,7 @@ variable "git_token" {
   {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
   description = "Git token used to (1) checkout ML code to run during CI and (2) call back from Databricks -> GitHub Actions to trigger a model deployment CD workflow when automated model retraining completes. Must have read and write permissions on the Git repo containing the current ML project"
   {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
-  description = "Azure DevOps personal access token (PAT) used by the created service principal to create Azure DevOps Pipelines and checkout ML code to run during CI/CD. PAT must have read, write and manage permissions for Build and Code scopes on the Azure DevOps project. See the following on how to create and use PATs (https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)"
+  description = "Azure DevOps personal access token (PAT) used by the created service principal to create Azure DevOps Pipelines and checkout ML code to run during CI/CD. PAT must have read, write and manage permissions for Build and Code scopes on the Azure DevOps project. See the following on how to create and use PATs (https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows)"
   {% endif -%}
   sensitive   = true
   validation {

@@ -20,13 +20,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
-       {%- if cookiecutter.include_feature_store == "yes" %}
-      # Feature store tests bring up a local Spark session, so Java is required.
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          {%- endif %}
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
@@ -49,11 +42,7 @@ jobs:
         uses: databricks/run-notebook@v0
         id: train
         with:
-          {%- if cookiecutter.include_feature_store == "yes" %}
-          local-notebook-path: {{ cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore.py
-          {%- else %}
           local-notebook-path: {{ cookiecutter.project_name}}/training/notebooks/Train.py
-          {%- endif %}
           {% raw %}git-commit: ${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
           git-provider: {{ cookiecutter.cicd_platform }}
           new-cluster-json: >
@@ -78,12 +67,10 @@ jobs:
               }
             ]
           run-name: {{ cookiecutter.project_name}} Integration Test
-          {%- if cookiecutter.include_feature_store == "no" %}
           notebook-params-json: >
             {
               "env": "staging",
               "test_mode": "True"
             }
-          {%- endif %}
-          
+
           {% raw %}pr-comment-github-token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}

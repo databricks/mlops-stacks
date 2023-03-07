@@ -112,7 +112,7 @@ def test_no_databricks_doc_strings_before_project_generation():
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
-            "https://docs.microsoft.com/en-us/azure/databricks",
+            "https://learn.microsoft.com/en-us/azure/databricks",
             "https://docs.databricks.com/",
             "https://docs.gcp.databricks.com/",
         ],
@@ -220,8 +220,11 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
 @pytest.mark.parametrize(
     "experiment_parent_dir,expected_dir",
     [
-        ("/mlops-project-directory/", "/mlops-project-directory"),
-        ("/Users/test@databricks.com/project/", "/Users/test@databricks.com/project"),
+        ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
+        (
+            "/Users/test@databricks.com/project/",
+            "/Users/test@databricks.com/project-${local.env}",
+        ),
     ],
 )
 def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
@@ -342,7 +345,7 @@ def test_generate_project_default_project_name_params(tmpdir):
         / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert (
-        f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}"'
+        f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}-${{local.env}}"'
         in tf_config_contents
     )
 

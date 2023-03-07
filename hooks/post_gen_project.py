@@ -24,6 +24,7 @@ mlp_paths = [
     os.path.join(project_name, "tests", "training", "test_sample.parquet"),
     os.path.join(project_name, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
+    os.path.join(".github", "workflows", "run-tests.yml"),
 ]
 
 feature_store_paths = [

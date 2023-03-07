@@ -11,7 +11,7 @@ The default stack in this repo includes three modular components:
 | Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                     | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://docs.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
 | CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
@@ -59,7 +59,7 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``mlflow_experiment_parent_dir``: Base Databricks workspace directory under which an MLflow experiment for the
    current project will be created. The service principals used for CI/CD must have "Can Manage" permissions
    ([AWS](https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions) |
-   [Azure](https://docs.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
+   [Azure](https://learn.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
    [GCP](https://docs.gcp.databricks.com/security/access-control/workspace-acl.html#folder-permissions)) on this directory.
    We recommend using a dedicated directory for the current project, e.g. `/MLOps/<project_name>`, to isolate resources
    created for different projects.
