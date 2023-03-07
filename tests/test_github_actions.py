@@ -49,6 +49,7 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
         cwd=(generated_project_dir / "my-mlops-project"),
     )
 
+
 @pytest.mark.large
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
