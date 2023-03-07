@@ -220,8 +220,8 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
 @pytest.mark.parametrize(
     "experiment_parent_dir,expected_dir",
     [
-        ("/mlops-project-directory/", "/mlops-project-directory-prod"),
-        ("/Users/test@databricks.com/project/", "/Users/test@databricks.com/project-prod"),
+        ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
+        ("/Users/test@databricks.com/project/", "/Users/test@databricks.com/project-${local.env}"),
     ],
 )
 def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
@@ -342,7 +342,7 @@ def test_generate_project_default_project_name_params(tmpdir):
         / "terraform/prod/locals.tf"
     ).read_text("utf-8")
     assert (
-        f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}-prod"'
+        f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}-${{local.env}}"'
         in tf_config_contents
     )
 

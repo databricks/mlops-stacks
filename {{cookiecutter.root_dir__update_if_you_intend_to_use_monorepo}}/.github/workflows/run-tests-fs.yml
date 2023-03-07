@@ -24,9 +24,9 @@ jobs:
           python-version: 3.8
       # Feature store tests bring up a local Spark session, so Java is required.
       - uses: actions/setup-java@v2
-      with:
-        distribution: 'temurin'
-        java-version: '11'
+        with:
+          distribution: 'temurin'
+          java-version: '11'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
