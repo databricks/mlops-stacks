@@ -43,6 +43,16 @@ dbutils.widgets.text(
     "model_name", "{{cookiecutter.model_name}}-test", label="Model Name"
 )
 
+# Pickup features table name
+dbutils.widgets.text(
+    "pickup_features_table", "feature_store_taxi_example.trip_pickup_features", label="Pickup Features Table"
+)
+
+# Dropoff features table name
+dbutils.widgets.text(
+    "dropoff_features_table", "feature_store_taxi_example.trip_dropoff_features", label="Dropoff Features Table"
+)
+
 # COMMAND ----------
 # DBTITLE 1,Define input and output variables
 
@@ -137,8 +147,8 @@ display(taxi_data)
 from databricks.feature_store import FeatureLookup
 import mlflow
 
-pickup_features_table = "feature_store_taxi_example.trip_pickup_features"
-dropoff_features_table = "feature_store_taxi_example.trip_dropoff_features"
+pickup_features_table = dbutils.widgets.get("pickup_features_table")
+dropoff_features_table = dbutils.widgets.get("dropoff_features_table")
 
 pickup_feature_lookups = [
     FeatureLookup(

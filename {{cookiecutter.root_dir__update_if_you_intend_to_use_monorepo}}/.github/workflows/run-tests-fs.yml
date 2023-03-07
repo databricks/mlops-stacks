@@ -60,7 +60,6 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures", 
                   "base_parameters": {
-                    "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_pickup_datetime",
                     "output_table_name": "feature_store_taxi_example.trip_pickup_features_test",
@@ -87,7 +86,6 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "{{cookiecutter.project_name}}/feature_engineering/notebooks/GenerateAndWriteFeatures",
                   "base_parameters": {                    
-                    "test_mode": "True",
                     "input_table_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "timestamp_column": "tpep_dropoff_datetime",
                     "output_table_name": "feature_store_taxi_example.trip_dropoff_features_test",
@@ -122,10 +120,12 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "{{cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore",
                   "base_parameters": {
-                    "env": "staging"
+                    "env": "staging",
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
                     "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}-staging/{{cookiecutter.experiment_base_name}}-test",
-                    "model_name": "{{cookiecutter.model_name}}-test"
+                    "model_name": "{{cookiecutter.model_name}}-test",
+                    "pickup_features_table": "feature_store_taxi_example.trip_pickup_features_test"
+                    "dropoff_features_table": "feature_store_taxi_example.trip_dropoff_features_test"
                   }
                 },
                 "new_cluster": {
