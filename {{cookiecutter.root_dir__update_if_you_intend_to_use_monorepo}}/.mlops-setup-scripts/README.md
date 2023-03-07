@@ -69,8 +69,8 @@ To use the scripts, you must:
 * Be able to create Git tokens with permission to check out the current repository
 {% if cookiecutter.cloud == "azure" -%}
 * Determine the Azure AAD tenant (directory) ID and subscription associated with your staging and prod workspaces,
-  and verify that you have at least [Application.ReadWrite.All](https://docs.microsoft.com/en-us/graph/permissions-reference#application-resource-permissions) permissions on
-  the AAD tenant and ["Contributor" permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all) on
+  and verify that you have at least [Application.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#application-resource-permissions) permissions on
+  the AAD tenant and ["Contributor" permissions](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all) on
   the subscription. To do this:
     1. Navigate to the [Azure Databricks resource page](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Databricks%2Fworkspaces) in the Azure portal. Ensure there are no filters configured in the UI, i.e. that
        you're viewing workspaces across all Subscriptions and Resource Groups.
@@ -80,15 +80,15 @@ To use the scripts, you must:
        the workspace name
     3. If you can't find the workspaces, switch to another directory by clicking your profile info in the top-right of the Azure Portal, then
        repeat steps i) and ii). If you still can't find the workspace, ask your Azure account admin to ensure that you have
-       at least ["Contributor" permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all)
+       at least ["Contributor" permissions](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all)
        on the subscription containing the workspaces. After confirming that the staging and prod workspaces are in the current directory, proceed to the next steps.
     4. The [Azure Databricks resource page](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Databricks%2Fworkspaces)
        contains links to the subscription containing your staging and prod workspaces. Click into the subscription, copy its ID ("Subscription ID"), and
        store it as an environment variable by running `export AZURE_SUBSCRIPTION_ID=<subscription-id>`
     5. Verify that you have "Contributor" access by clicking into
        "Access Control (IAM)" > "View my access" within the subscription UI,
-       as described in [this doc page](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access#step-1-open-the-azure-resources).
-       If you don't have [Contributor permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all),
+       as described in [this doc page](https://learn.microsoft.com/en-us/azure/role-based-access-control/check-access#step-1-open-the-azure-resources).
+       If you don't have [Contributor permissions](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all),
        ask an Azure account admin to grant access.
     6. Find the current tenant ID
        by navigating to [this page](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/Properties),
@@ -97,7 +97,7 @@ To use the scripts, you must:
     7. Verify that you can create and manage service principals in the AAD tenant, by opening the
        [App registrations UI](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
        under the Azure Active Directory resource within the Azure portal. Then, verify that you can click "New registration" to create
-       a new AAD application, but don't actually create one. If unable to click "New registration", ask your Azure admin to grant you [Application.ReadWrite.All](https://docs.microsoft.com/en-us/graph/permissions-reference#application-resource-permissions) permissions
+       a new AAD application, but don't actually create one. If unable to click "New registration", ask your Azure admin to grant you [Application.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#application-resource-permissions) permissions
   {% elif cookiecutter.cloud == "aws" -%}
 * Have permission to manage AWS IAM users and attached IAM policies (`"iam:*"` permissions) in the current AWS account.
   If you lack sufficient permissions, you'll see an error message describing any missing permissions when you

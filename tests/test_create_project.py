@@ -112,7 +112,7 @@ def test_no_databricks_doc_strings_before_project_generation():
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
-            "https://docs.microsoft.com/en-us/azure/databricks",
+            "https://learn.microsoft.com/en-us/azure/databricks",
             "https://docs.databricks.com/",
             "https://docs.gcp.databricks.com/",
         ],
