@@ -34,7 +34,7 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a 
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
-[workflow](../.github/workflows/run-tests.yml) 
+[workflow](../.github/workflows/run-tests{% if cookiecutter.include_feature_store %}-fs{% endif %}.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
 [Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
 {% endif %} 
