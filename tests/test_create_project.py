@@ -221,7 +221,10 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     "experiment_parent_dir,expected_dir",
     [
         ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
-        ("/Users/test@databricks.com/project/", "/Users/test@databricks.com/project-${local.env}"),
+        (
+                "/Users/test@databricks.com/project/",
+                "/Users/test@databricks.com/project-${local.env}"
+        ),
     ],
 )
 def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
