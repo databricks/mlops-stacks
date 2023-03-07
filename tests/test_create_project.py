@@ -223,7 +223,7 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
         ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
         (
             "/Users/test@databricks.com/project/",
-            "/Users/test@databricks.com/project-${local.env}"
+            "/Users/test@databricks.com/project-${local.env}",
         ),
     ],
 )
