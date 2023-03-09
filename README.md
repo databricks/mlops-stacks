@@ -61,7 +61,7 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``mlflow_experiment_parent_dir``: Base Databricks workspace directory under which an MLflow experiment for the
    current project will be created. The service principals used for CI/CD must have "Can Manage" permissions
    ([AWS](https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions) |
-   [Azure](https://docs.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
+   [Azure](https://learn.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
    [GCP](https://docs.gcp.databricks.com/security/access-control/workspace-acl.html#folder-permissions)) on this directory.
    We recommend using a dedicated directory for the current project, e.g. `/MLOps/<project_name>`, to isolate resources
    created for different projects.

@@ -123,23 +123,19 @@ def validate_mlflow_experiment_parent_dir(parent_dir):
     valid_example_help_string = ' Valid directories are either subfolders of a user\'s home directory e.g. "/Users/jane@test.com/my-mlops-project" or non-repo subfolders of workspace root e.g. "/my-mlops-project".'
     if not parent_dir.startswith("/"):
         raise ValueError(
-            f"Workspace base directory must start with '/'. Got invalid base directory `{parent_dir}`."
-            + valid_example_help_string
+            f"Workspace base directory must start with '/'. Got invalid base directory `{parent_dir}`.{valid_example_help_string}"
         )
     if parent_dir == "/":
         raise ValueError(
-            f"Workspace base directory cannot be workspace root '/'."
-            + valid_example_help_string
+            f"Workspace base directory cannot be workspace root '/'.{valid_example_help_string}"
         )
     if parent_dir == "/Repos" or parent_dir.startswith("/Repos/"):
         raise ValueError(
-            f"Workspace base directory cannot be under `/Repos`. Got invalid base directory `{parent_dir}`."
-            + valid_example_help_string
+            f"Workspace base directory cannot be under `/Repos`. Got invalid base directory `{parent_dir}`.{valid_example_help_string}"
         )
     if parent_dir == "/Users":
         raise ValueError(
-            f"Workspace base directory cannot be the `/Users` directory."
-            + valid_example_help_string
+            f"Workspace base directory cannot be the `/Users` directory.{valid_example_help_string}"
         )
     users_dir_prefix = "/Users/"
     if (

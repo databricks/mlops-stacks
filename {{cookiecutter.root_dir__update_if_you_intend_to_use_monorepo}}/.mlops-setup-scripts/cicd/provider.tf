@@ -25,7 +25,7 @@ terraform {
   // The `backend` block below configures the azurerm backend
   // (docs:
   // https://www.terraform.io/language/settings/backends/azurerm and
-  // https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage)
+  // https://learn.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage)
   // for storing Terraform state in Azure Blob Storage. The targeted Azure Blob Storage bucket is
   // provisioned by the Terraform config under .mlops-setup-scripts/terraform:
   //

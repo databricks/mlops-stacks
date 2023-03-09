@@ -1,4 +1,4 @@
-// Copied from https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage?tabs=terraform#code-try-3
+// Copied from https://learn.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage?tabs=terraform#code-try-3
 terraform {
   required_providers {
     azurerm = {
