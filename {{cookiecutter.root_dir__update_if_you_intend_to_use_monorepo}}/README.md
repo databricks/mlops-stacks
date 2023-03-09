@@ -1,4 +1,4 @@
-# {{cookiecutter.project_name}}
+# {{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}
 
 This directory contains an ML project based on the default
 [Databricks MLOps Stack](https://github.com/databricks/mlops-stack),
@@ -25,10 +25,27 @@ After that, follow the [ML pull request guide](docs/ml-pull-request.md)
 and [ML resource config guide]({{cookiecutter.project_name}}/terraform/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
 or pipeline resources (e.g. use a larger instance type for model training) via pull request.
 
-| Role                          | Goal                                                                          | Docs                                                                                                                                                                 |
-|-------------------------------|-------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| First-time users of this repo | Understand the ML pipeline and code structure in this repo                    | [Project overview](docs/project-overview.md)                                                                                                                         |
-| Data Scientist                | Get started writing ML code for a brand new project                           | {% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](docs/ml-developer-guide-fs.md).{% else %}[ML quickstart](docs/ml-developer-guide.md).{% endif %} |
-| Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                     |
-| Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide]({{cookiecutter.project_name}}/terraform/README.md)                                                                                        |
-| MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                             |
+| Role                          | Goal                                                                          | Docs                                                                                                                                                                |
+|-------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| First-time users of this repo | Understand the ML pipeline and code structure in this repo                    | [Project overview](docs/project-overview.md)                                                                                                                        |
+| Data Scientist                | Get started writing ML code for a brand new project                           | {% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](docs/ml-developer-guide-fs.md).{% else %}[ML quickstart](docs/ml-developer-guide.md){% endif %} |
+| Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
+| Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs   | [ML resource config guide]({{cookiecutter.project_name}}/terraform/README.md)                                                                                       |
+| MLOps / DevOps                | Set up CI/CD and ML pipeline resource deployment for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
+
+## Monorepo
+
+It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspaces and service principals.
+
+For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
+1. Create another project from cookiecutter with project name `project2` and root directory name `project2`.
+2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
+{% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
+3. Rename yaml files in  `project2/.github/workflows/` so that there won't be name conflicts.
+4. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`
+{% endif -%}
+{%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
+3. Rename yaml files in  `project2/.azure/devops-pipelines/` so that there won't be name conflicts.
+4. Copy yaml files from `project2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/`
+{% endif -%}
+

@@ -1,7 +1,7 @@
 # Databricks MLOps Stack
 
 > **_NOTE:_**  This feature is in [private preview](https://docs.databricks.com/release-notes/release-types.html). The interface/APIs may change and no formal support is available during the preview. However, you can still create new production-grade ML projects using the stack.
-If interested in trying it out, please fill out this [form](https://docs.google.com/forms/d/e/1FAIpQLSfHXCmkbsEURjQQvtUGObgh2D5q1eD4YRHnUxZ0M4Hu0W63WA/viewform) and you’ll be contacted by a Databricks representative.
+If interested in trying it out, please fill out this [form](https://docs.google.com/forms/d/e/1FAIpQLSfHXCmkbsEURjQQvtUGObgh2D5q1eD4YRHnUxZ0M4Hu0W63WA/viewform), and you’ll be contacted by a Databricks representative.
 
 This repo provides a customizable stack for starting new ML projects
 on Databricks that follow production best-practices out of the box.
@@ -10,8 +10,8 @@ The default stack in this repo includes three modular components:
 
 | Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                     | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                       | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
+| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)   | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
 | CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
@@ -49,6 +49,8 @@ To create a new project, run:
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``project_name``: name of the current project
+ * ``root_dir__update_if_you_intend_to_use_monorepo``: name of the root directory. The root directory name should be specified if monorepo will be used for the project. 
+   Otherwise, user can leave it blank to use the name of the current project as root directory name.
  * ``cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
  * ``cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
 
@@ -95,12 +97,12 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or Terraform
-config under `{{cookiecutter.project_name}}/terraform` into your existing project.
+config under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform` into your existing project.
 
 ### Can I adopt individual components of the stack?
 For this use case, we recommend instantiating the full stack via `cookiecutter`
 and copying the relevant stack subdirectories. For example, all ML terraform config
-is defined under `{{cookiecutter.project_name}}/terraform`, while CI/CD is defined e.g. under `.github`
+is defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform`, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
 ### Can I customize this stack?
