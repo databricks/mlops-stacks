@@ -35,7 +35,7 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 
 ## Monorepo
 
-It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspace setup and service principal.
+It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspaces and service principals.
 
 For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
 1. Create another project from cookiecutter with project name `project2` and root directory name `project2`.
