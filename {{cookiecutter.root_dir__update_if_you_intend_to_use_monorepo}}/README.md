@@ -45,7 +45,7 @@ For example, assuming there's existing repo with root directory name `monorepo_r
 4. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`
 {% endif -%}
 {%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-3. Rename yaml files in  `project2/.azure/devlops-pipelines/` so that there won't be name conflicts.
-4. Copy yaml files from `project2/.azure/devlops-pipelines/` to `monorepo_root_dir/.azure/devlops-pipelines/`
+3. Rename yaml files in  `project2/.azure/devops-pipelines/` so that there won't be name conflicts.
+4. Copy yaml files from `project2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/`
 {% endif -%}
 
