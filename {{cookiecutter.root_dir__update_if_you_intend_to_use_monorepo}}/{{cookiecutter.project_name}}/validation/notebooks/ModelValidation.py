@@ -153,16 +153,6 @@ mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-from model_validation_input import (
-    enable_baseline_comparison,
-    get_prod_workspace_validation_input,
-    get_staging_workspace_validation_input,
-    get_model_type,
-    get_validation_thresholds,
-    get_custom_metrics,
-    get_evaluator_config,
-)
-
 # take input
 run_mode = dbutils.widgets.get("run_mode").lower()
 dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
