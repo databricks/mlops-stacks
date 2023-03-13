@@ -90,17 +90,17 @@ else:
 
 # COMMAND ----------
 
+import importlib
 import mlflow
 import os
 import tempfile
 import traceback
-from mlflow.recipes.utils import (
+{% if cookiecutter.include_feature_store == "no" %}from mlflow.recipes.utils import (
     get_recipe_config,
     get_recipe_name,
     get_recipe_root_path,
-)
+){% endif %}
 from mlflow.tracking.client import MlflowClient
-import importlib
 
 client = MlflowClient()
 
