@@ -46,8 +46,7 @@ resource "databricks_job" "model_training_job" {
       notebook_path = "{{cookiecutter.project_name}}/validation/notebooks/ModelValidation"
       base_parameters = {
         {%- if cookiecutter.include_feature_store == "no" %}
-        env             = local.env
-        {% endif -%}
+        env             = local.env{% endif %}
         experiment_name = databricks_mlflow_experiment.experiment.name
         # The `run_mode` defines whether model validation is enabled or not.
         # It can be one of the three values:
@@ -73,14 +72,13 @@ resource "databricks_job" "model_training_job" {
         # The string name of a column from data that contains evaluation labels.
         # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
         # TODO: targets
-        targets = "mean_squared_error"
-        {% endif -%}
+        targets = "mean_squared_error"{% endif %}
         # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns custom metrics.
         # TODO(optional): custom_metrics_loader_function
         custom_metrics_loader_function = "custom_metrics"
         # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns model validation thresholds.
         # TODO(optional): validation_thresholds_loader_function
-        validation_thresholds_loader_function: "validation_thresholds"
+        validation_thresholds_loader_function = "validation_thresholds"
       }
     }
 

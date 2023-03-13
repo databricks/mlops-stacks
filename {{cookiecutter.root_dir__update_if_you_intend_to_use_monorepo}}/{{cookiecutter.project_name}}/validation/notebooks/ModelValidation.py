@@ -7,7 +7,6 @@
 #
 # It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``{{cookiecutter.project_name}}/terraform``
 #
-# Please finish the two cells with "TODO" comments before enabling the model validation.
 #
 # Parameters:
 #
@@ -21,12 +20,10 @@
 # * enable_baseline_comparison              - Whether to load the current registered "Production" stage model as baseline.
 #                                             Baseline model is a requirement for relative change and absolute change validation thresholds.
 # * validation_input                        - Validation input. Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-{%- if cookiecutter.include_feature_store == "yes" %}
-# * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
+{% if cookiecutter.include_feature_store == "yes" %}# * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
 #                                             Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # * targets                                 - The string name of a column from data that contains evaluation labels.
-#                                             Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-{% endif -%}
+#                                             Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate{% endif %}
 # * custom_metrics_loader_function          - Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns custom metrics.
 # * validation_thresholds_loader_function   - Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns model validation thresholds.
 #
@@ -46,11 +43,9 @@
 
 # COMMAND ----------
 
-{%- if cookiecutter.include_feature_store == "no" %}
-dbutils.widgets.dropdown(
+{% if cookiecutter.include_feature_store == "no" %}dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
-)
-{% endif -%}
+){% endif %}
 dbutils.widgets.text(
     "experiment_name",
     "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
@@ -59,10 +54,9 @@ dbutils.widgets.text(
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
 dbutils.widgets.text("validation_input", "", "Validation Input")
-{%- if cookiecutter.include_feature_store == "yes" %}
+{% if cookiecutter.include_feature_store == "yes" %}
 dbutils.widgets.text("model_type", "", "Model Type")
-dbutils.widgets.text("targets", "", "Targets")
-{% endif -%}
+dbutils.widgets.text("targets", "", "Targets"){% endif %}
 dbutils.widgets.text("custom_metrics_loader_function", "", "Custom Metrics Loader Function")
 dbutils.widgets.text("validation_thresholds_loader_function", "", "Validation Thresholds Loader Function")
 dbutils.widgets.text("model_name", "", "Model Name")
@@ -76,7 +70,7 @@ sys.path.append("..")
 sys.path.append("../..")
 
 run_mode = dbutils.widgets.get("run_mode").lower()
-assert run_mode == "disabled" or disabled == "dry_run" or disabled == "enabled"
+assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"
 
 if run_mode == "disabled":
     print(
@@ -112,8 +106,7 @@ client = MlflowClient()
 
 experiment_name = dbutils.widgets.get("experiment_name")
 
-{%- if cookiecutter.include_feature_store == "no" %}
-env = dbutils.widgets.get("env")
+{% if cookiecutter.include_feature_store == "no" %}env = dbutils.widgets.get("env")
 assert env, "env notebook parameter must be specified"
 
 def get_model_type_from_recipe():
@@ -136,8 +129,8 @@ def get_targets_from_recipe():
         return recipe_config.get("target_col")
     except Exception as ex:
         print(f"Not able to get targets from mlflow recipe databricks-{env}.")
-        raise ex
-{% endif -%}
+        raise ex{% endif %}
+
 
 # set model evaluation parameters that can be inferred from the job
 model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
@@ -187,13 +180,10 @@ validation_input = dbutils.widgets.get("validation_input")
 assert validation_input
 data = spark.sql(validation_input)
 
-{%- if cookiecutter.include_feature_store == "yes" %}
-model_type = dbutils.widgets.get("model_type")
+{% if cookiecutter.include_feature_store == "yes" %}model_type = dbutils.widgets.get("model_type")
 targets = dbutils.widgets.get("targets")
-{% else -%}
-model_type = get_model_type_from_recipe()
-targets = get_targets_from_recipe()
-{% endif -%}
+{% else %}model_type = get_model_type_from_recipe()
+targets = get_targets_from_recipe(){% endif %}
 assert model_type
 assert targets
 

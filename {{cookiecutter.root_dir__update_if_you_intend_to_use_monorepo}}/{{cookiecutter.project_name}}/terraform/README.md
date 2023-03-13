@@ -92,14 +92,13 @@ The model validation stack focuses on building a plug-and-play stack component f
 in staging and prod.
 Its central purpose is to evaluate a registered model and validate its quality before deploying the model to Production/Staging.
 
-The model validation job is implemented in [notebooks/ModelValidation](../validation/notebooks/ModelValidation.py). The model validation stack is defined in 
-[staging/training-job.tf](./staging/training-job.tf) and [prod/training-job.tf](./prod/training-job.tf).
-As part of the workflow, model validation runs after training and before the deployment.
+Model validation contains three components: 
+* [staging/training-job.tf](./staging/training-job.tf) and [prod/training-job.tf](./prod/training-job.tf) contain resource config and input parameters for model validation.
+* [validation.py](../validation/validation.py) defines custom metrics and validation thresholds that are referenced by above resource config files.
+* [notebooks/ModelValidation](../validation/notebooks/ModelValidation.py) contains the validation job implementation. In most cases you don't need to modify this file.
 
-To enable the model validation stack, resolve the TODOs in [model_validation_input](../validation/model_validation_input.py) to complete the model validation implementation
-and update return value of `get_run_mode`.
-
-Once model validation is in ENABLED or DRY_RUN mode, the model validation result will be logged to the description of the registered model version.
+To set up and enable model validation, update [validation.py](../validation/validation.py) to return desired custom metrics and validation thresholds, then 
+resolve the TODOs in [staging/training-job.tf](./staging/training-job.tf) and [prod/training-job.tf](./prod/training-job.tf).
 
 ## Develop and test config changes
 To get started, open `staging/inference-job.tf`.  The file contains the ML resource definition of
