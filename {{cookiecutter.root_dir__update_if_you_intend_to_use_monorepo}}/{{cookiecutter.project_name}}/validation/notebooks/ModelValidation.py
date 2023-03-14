@@ -7,19 +7,25 @@
 #
 # It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``{{cookiecutter.project_name}}/terraform``
 #
-# Please finish the two cells with "TODO" comments before enabling the model validation.
 #
 # Parameters:
 #
-# * env (optional): Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
-#                   You can add environment-specific logic to this notebook based on the value of this parameter,
-#                   e.g. read validation data from different tables or data sources across environments.
-# * run_mode (optional): The model validation run mode. Defaults to Disabled. Possible values are disabled, dry_run, enabled.
-#                       disabled : Do not run the model validation notebook.
-#                       dry_run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
-#                       enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
-#
-#
+# * env                                     - Name of the environment the notebook is run in (staging, or prod). Defaults to "prod".
+# * `run_mode`                              - The `run_mode` defines whether model validation is enabled or not. It can be one of the three values:
+#                                             * `disabled` : Do not run the model validation notebook.
+#                                             * `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move
+#                                                            model to Production stage.
+#                                             * `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation
+#                                                            rules are passing.
+# * enable_baseline_comparison              - Whether to load the current registered "Production" stage model as baseline.
+#                                             Baseline model is a requirement for relative change and absolute change validation thresholds.
+# * validation_input                        - Validation input. Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+{% if cookiecutter.include_feature_store == "yes" %}# * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
+#                                             Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+# * targets                                 - The string name of a column from data that contains evaluation labels.
+#                                             Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate{% endif %}
+# * custom_metrics_loader_function          - Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns custom metrics.
+# * validation_thresholds_loader_function   - Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns model validation thresholds.
 #
 # For details on mlflow evaluate API, see doc https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # For details and examples about performing model validation, see the Model Validation documentation https://mlflow.org/docs/latest/models.html#model-validation
@@ -37,61 +43,94 @@
 
 # COMMAND ----------
 
-dbutils.widgets.dropdown(
+{% if cookiecutter.include_feature_store == "no" %}dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
-)
-dbutils.widgets.dropdown(
-    "run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode"
-)
+){% endif %}
 dbutils.widgets.text(
     "experiment_name",
     "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
     "Experiment Name",
 )
+dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
+dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
+dbutils.widgets.text("validation_input", "", "Validation Input")
+{% if cookiecutter.include_feature_store == "yes" %}
+dbutils.widgets.text("model_type", "", "Model Type")
+dbutils.widgets.text("targets", "", "Targets"){% endif %}
+dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
+dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
+dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
 dbutils.widgets.text("model_name", "", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
 
+import sys
+
+sys.path.append("..")
+sys.path.append("../..")
+
+run_mode = dbutils.widgets.get("run_mode").lower()
+assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"
+
+if run_mode == "disabled":
+    print(
+        "Model validation is in DISABLED mode. Exit model validation without blocking model deployment."
+    )
+    dbutils.notebook.exit(0)
+dry_run = run_mode == "dry_run"
+
+if dry_run:
+    print(
+        "Model validation is in DRY_RUN mode. Validation threshold validation failures will not block model deployment."
+    )
+else:
+    print(
+        "Model validation is in ENABLED mode. Validation threshold validation failures will block model deployment."
+    )
+
+# COMMAND ----------
+
+import importlib
 import mlflow
-from mlflow.models import MetricThreshold, make_metric
-import pandas as pd
 import os
-import numpy as np
 import tempfile
-import json
 import traceback
-from mlflow.recipes.utils import (
+{% if cookiecutter.include_feature_store == "no" %}from mlflow.recipes.utils import (
     get_recipe_config,
     get_recipe_name,
     get_recipe_root_path,
-)
+){% endif %}
 from mlflow.tracking.client import MlflowClient
 
 client = MlflowClient()
 
-env = dbutils.widgets.get("env")
 experiment_name = dbutils.widgets.get("experiment_name")
-_run_mode = dbutils.widgets.get("run_mode")
-if _run_mode.lower() == "disabled":
-    dbutils.notebook.exit(0)
-dry_run = _run_mode.lower() == "dry_run"
 
+{% if cookiecutter.include_feature_store == "no" %}env = dbutils.widgets.get("env")
+assert env, "env notebook parameter must be specified"
 
 def get_model_type_from_recipe():
-    recipe_config = get_recipe_config("../../training", f"databricks-{env}")
-    problem_type = recipe_config.get("recipe").split("/")[0]
-    if problem_type.lower() == "regression":
-        return "regressor"
-    elif problem_type.lower() == "classification":
-        return "classifier"
-    else:
-        raise Exception(f"Unsupported recipe {recipe_config}")
-
+    try:
+        recipe_config = get_recipe_config("../../training", f"databricks-{env}")
+        problem_type = recipe_config.get("recipe").split("/")[0]
+        if problem_type.lower() == "regression":
+            return "regressor"
+        elif problem_type.lower() == "classification":
+            return "classifier"
+        else:
+            raise Exception(f"Unsupported recipe {recipe_config}")
+    except Exception as ex:
+        print(f"Not able to get model type from mlflow recipe databricks-{env}.")
+        raise ex
 
 def get_targets_from_recipe():
-    recipe_config = get_recipe_config("../../training", f"databricks-{env}")
-    return recipe_config.get("target_col")
+    try:
+        recipe_config = get_recipe_config("../../training", f"databricks-{env}")
+        return recipe_config.get("target_col")
+    except Exception as ex:
+        print(f"Not able to get targets from mlflow recipe databricks-{env}.")
+        raise ex{% endif %}
 
 
 # set model evaluation parameters that can be inferred from the job
@@ -106,7 +145,6 @@ if model_uri == "":
 
 baseline_model_uri = "models:/" + model_name + "/Production"
 evaluators = "default"
-assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 assert model_name != "", "model_name notebook parameter must be specified"
 assert model_version != "", "model_version notebook parameter must be specified"
@@ -116,59 +154,41 @@ mlflow.set_experiment(experiment_name)
 
 # COMMAND ----------
 
-##################################################################################
-# TODO : Please fill in this cell with proper values for enable_baseline_comparison,
-#        data, targets, model_type, custom_metrics, validation_thresholds
-#        evaluator_config
-##################################################################################
+# take input
 
-# Whether to load the current registered "Production" stage model as baseline. A version with "Production" stage must
-# exist for the model.
-# Baseline model is a requirement for relative change and absolute change validation rules.
-# TODO(optional) : enable_baseline_comparison
-enable_baseline_comparison = False
+enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
+assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
+enable_baseline_comparison = enable_baseline_comparison == "true"
 
-# model validation data input for staging or prod workspace. A Pandas DataFrame or Spark DataFrame, containing evaluation features and labels.
-# Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-if env == "prod":
-    # TODO(required) : set data for prod workspace
-    data = None
-elif env == "staging":
-    # TODO(required) : set data for staging workspace
-    data = None
-else:
-    raise Exception(
-        "Unknown environment. Please select 'prod' or 'staging' as environment name"
-    )
+validation_input = dbutils.widgets.get("validation_input")
+assert validation_input
+data = spark.sql(validation_input)
 
-# The string name of a column from data that contains evaluation labels.
-# Call get_targets_from_recipe() to get targets from recipe configs if mlflow recipe is used.
-# Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(required) : targets
-targets = get_targets_from_recipe()
+{% if cookiecutter.include_feature_store == "yes" %}model_type = dbutils.widgets.get("model_type")
+targets = dbutils.widgets.get("targets")
+{% else %}model_type = get_model_type_from_recipe()
+targets = get_targets_from_recipe(){% endif %}
+assert model_type
+assert targets
 
-
-# A string describing the model type. The model type can be either "regressor" and "classifier".
-# Call get_model_type_from_recipe() to get model type from recipe configs if mlflow recipe is used.
-# Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(required) : model_type
-model_type = get_model_type_from_recipe()
-
-# Custom metrics to be included. Set it to None if custom metrics are not needed.
-# Please refer to custom_metrics parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : define custom metric function as necessary
-# TODO(optional) : custom_metrics
-custom_metrics = []
-
-# Define model validation rules. Set it to None if validation rules are not needed.
-# Please refer to custom_metrics parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : validation_thresholds
-validation_thresholds = {}
-
-# A dictionary of additional configurations to supply to the evaluator.
-# Please refer to evaluator_config parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-# TODO(optional) : evaluator_config
-evaluator_config = {}
+custom_metrics_loader_function_name = dbutils.widgets.get("custom_metrics_loader_function")
+validation_thresholds_loader_function_name = dbutils.widgets.get("validation_thresholds_loader_function")
+evaluator_config_loader_function_name = dbutils.widgets.get("evaluator_config_loader_function")
+assert custom_metrics_loader_function_name
+assert validation_thresholds_loader_function_name
+assert evaluator_config_loader_function_name
+custom_metrics_loader_function = getattr(
+    importlib.import_module("validation"), custom_metrics_loader_function_name
+)
+validation_thresholds_loader_function = getattr(
+    importlib.import_module("validation"), validation_thresholds_loader_function_name
+)
+evaluator_config_loader_function = getattr(
+    importlib.import_module("validation"), evaluator_config_loader_function_name
+)
+custom_metrics = custom_metrics_loader_function()
+validation_thresholds = validation_thresholds_loader_function()
+evaluator_config = evaluator_config_loader_function()
 
 # COMMAND ----------
 
@@ -228,6 +248,7 @@ with mlflow.start_run(
                     )
                 )
     mlflow.log_artifact(validation_thresholds_file)
+
     try:
         eval_result = mlflow.evaluate(
             model=model_uri,
@@ -273,3 +294,9 @@ with mlflow.start_run(
         mlflow.log_artifact(error_file)
         if not dry_run:
             raise err
+        else:
+            print(
+                "Model validation failed in DRY_RUN. It will not block model deployment."
+            )
+
+# COMMAND ----------

@@ -46,14 +46,43 @@ resource "databricks_job" "model_training_job" {
     notebook_task {
       notebook_path = "{{cookiecutter.project_name}}/validation/notebooks/ModelValidation"
       base_parameters = {
-        env             = local.env
+        {%- if cookiecutter.include_feature_store == "no" %}
+        env             = local.env{% endif %}
         experiment_name = databricks_mlflow_experiment.experiment.name
-        # Run mode for model validation. Possible values are :
-        #   disabled : Do not run the model validation notebook.
-        #   dry_run  : Run the model validation notebook. Ignore failed model validation rules and proceed to move model to Production stage.
-        #   enabled  : Run the model validation notebook. Move model to Production stage only if all model validation rules are passing.
-        # Please complete the TODO sessions in notebooks/ModelValidation before enabling model validation
+        # The `run_mode` defines whether model validation is enabled or not.
+        # It can be one of the three values:
+        # `disabled` : Do not run the model validation notebook.
+        # `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move
+        #               model to Production stage.
+        # `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation
+        #               rules are passing.
+        # TODO: update run_mode
         run_mode = "disabled"
+        # Whether to load the current registered "Production" stage model as baseline.
+        # Baseline model is a requirement for relative change and absolute change validation thresholds.
+        # TODO: update enable_baseline_comparison
+        enable_baseline_comparison = "true"
+        # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+        # TODO: update validation_input
+        validation_input = "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`"
+        {%- if cookiecutter.include_feature_store == "yes" %}
+        # A string describing the model type. The model type can be either "regressor" and "classifier".
+        # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+        # TODO: update model_type
+        model_type = "regressor"
+        # The string name of a column from data that contains evaluation labels.
+        # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+        # TODO: targets
+        targets = "mean_squared_error"{% endif %}
+        # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns custom metrics.
+        # TODO(optional): custom_metrics_loader_function
+        custom_metrics_loader_function = "custom_metrics"
+        # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns model validation thresholds.
+        # TODO(optional): validation_thresholds_loader_function
+        validation_thresholds_loader_function = "validation_thresholds"
+        # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns evaluator_config.
+        # TODO(optional): evaluator_config_loader_function
+        evaluator_config_loader_function = "evaluator_config"
       }
     }
 

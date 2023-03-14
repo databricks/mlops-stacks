@@ -29,7 +29,7 @@ def get_deployed_model_stage_for_env(env):
 def _get_ml_config_value(env, key):
     # Reading ml config from terraform output file for the respective key and env(staging/prod).
     conf_file_path = os.path.join(
-        os.pardir, "{{cookiecutter.project_name}}", "terraform", "output", f"{env}.json"
+        os.pardir, os.pardir, os.pardir, "terraform", "output", f"{env}.json"
     )
     try:
         with open(conf_file_path, "r") as handle:
