@@ -83,6 +83,9 @@ resource "databricks_job" "model_training_job" {
         # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns model validation thresholds.
         # TODO(optional): validation_thresholds_loader_function
         validation_thresholds_loader_function = "validation_thresholds"
+        # Specifies the name of the function in {{cookiecutter.project_name}}/validation/validation.py that returns evaluator_config.
+        # TODO(optional): evaluator_config_loader_function
+        evaluator_config_loader_function = "evaluator_config"
       }
     }
 

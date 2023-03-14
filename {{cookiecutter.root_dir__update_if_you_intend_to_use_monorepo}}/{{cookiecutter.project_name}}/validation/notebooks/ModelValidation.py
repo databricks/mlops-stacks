@@ -57,8 +57,9 @@ dbutils.widgets.text("validation_input", "", "Validation Input")
 {% if cookiecutter.include_feature_store == "yes" %}
 dbutils.widgets.text("model_type", "", "Model Type")
 dbutils.widgets.text("targets", "", "Targets"){% endif %}
-dbutils.widgets.text("custom_metrics_loader_function", "", "Custom Metrics Loader Function")
-dbutils.widgets.text("validation_thresholds_loader_function", "", "Validation Thresholds Loader Function")
+dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
+dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
+dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
 dbutils.widgets.text("model_name", "", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
@@ -154,13 +155,6 @@ mlflow.set_experiment(experiment_name)
 # COMMAND ----------
 
 # take input
-run_mode = dbutils.widgets.get("run_mode").lower()
-dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
-dbutils.widgets.text("validation_input", "", "Validation Input")
-dbutils.widgets.text("model_type", "", "Model Type")
-dbutils.widgets.text("targets", "", "Targets")
-dbutils.widgets.text("custom_metrics_loader_function", "", "Custom Metrics Loader Function")
-dbutils.widgets.text("validation_thresholds_loader_function", "", "Validation Thresholds Loader Function")
 
 enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
 assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
@@ -179,17 +173,22 @@ assert targets
 
 custom_metrics_loader_function_name = dbutils.widgets.get("custom_metrics_loader_function")
 validation_thresholds_loader_function_name = dbutils.widgets.get("validation_thresholds_loader_function")
+evaluator_config_loader_function_name = dbutils.widgets.get("evaluator_config_loader_function")
 assert custom_metrics_loader_function_name
 assert validation_thresholds_loader_function_name
+assert evaluator_config_loader_function_name
 custom_metrics_loader_function = getattr(
     importlib.import_module("validation"), custom_metrics_loader_function_name
 )
 validation_thresholds_loader_function = getattr(
     importlib.import_module("validation"), validation_thresholds_loader_function_name
 )
+evaluator_config_loader_function = getattr(
+    importlib.import_module("validation"), evaluator_config_loader_function_name
+)
 custom_metrics = custom_metrics_loader_function()
 validation_thresholds = validation_thresholds_loader_function()
-evaluator_config = {}
+evaluator_config = evaluator_config_loader_function()
 
 # COMMAND ----------
 
