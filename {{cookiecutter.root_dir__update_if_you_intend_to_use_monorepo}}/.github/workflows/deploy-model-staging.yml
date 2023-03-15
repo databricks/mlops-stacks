@@ -38,4 +38,4 @@ jobs:
           MLFLOW_TRACKING_URI: databricks
         run: |
           pip install mlflow
-          python steps/deploy.py {% raw %}"${{ github.event.inputs.modelUri }}"{% endraw %} "staging"
+          python {{cookiecutter.project_name}}/deployment/model_deployment/deploy.py {% raw %}"${{ github.event.inputs.modelUri }}"{% endraw %} "staging"

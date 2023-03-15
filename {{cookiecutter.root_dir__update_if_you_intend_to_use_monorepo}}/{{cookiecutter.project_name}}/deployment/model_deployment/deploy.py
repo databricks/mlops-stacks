@@ -1,6 +1,9 @@
+import sys
+import pathlib
+
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
 from utils import get_deployed_model_stage_for_env
 from mlflow.tracking import MlflowClient
-import sys
 
 
 def deploy(model_uri, env):
