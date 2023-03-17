@@ -1,5 +1,5 @@
 # This GitHub workflow deploys Terraform resources (ML resource config and more)
-# defined under {{cookiecutter.project_name}}/terraform, when PRs are merged into the default branch
+# defined under {{cookiecutter.project_name}}/terraform/staging, when PRs are merged into the default branch
 name: Terraform Deployment for {{cookiecutter.project_name}} Staging
 
 on:
