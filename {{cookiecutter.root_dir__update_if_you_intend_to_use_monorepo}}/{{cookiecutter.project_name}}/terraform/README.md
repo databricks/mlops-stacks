@@ -51,7 +51,7 @@ expected remote state backend and store credentials in CI/CD.
 Alternatively, you can follow
 [Terraform docs](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) to specify a custom remote state
 backend in `staging/provider.tf` and `prod/provider.tf`, store credentials for accessing the backend in CI/CD,
-and configure the `.github/workflows/terraform-ci.yml` and `.github/workflows/terraform-cd-prod.yml` and `.github/workflows/terraform-cd-staging.yml` workflows
+and configure the `.github/workflows/terraform-ci.yml`, `.github/workflows/terraform-cd-prod.yml`, and `.github/workflows/terraform-cd-staging.yml` workflows
 to authenticate to the remote backend. If using the Terraform Cloud backend, make sure your Terraform workspace is configured
 to [execute plans locally](https://www.terraform.io/cloud-docs/workspaces/settings#execution-mode).
 Authentication to Databricks REST APIs will not work if plans are executed remotely.
