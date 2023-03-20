@@ -16,7 +16,7 @@ resource "databricks_job" "model_training_job" {
     {% if cookiecutter.include_feature_store == "yes" %}notebook_task {
       notebook_path = "{{cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore"
       base_parameters = {
-        env                = local.env
+        env = local.env
         # TODO: Update training_data_path
         training_data_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         experiment_name    = databricks_mlflow_experiment.experiment.name
