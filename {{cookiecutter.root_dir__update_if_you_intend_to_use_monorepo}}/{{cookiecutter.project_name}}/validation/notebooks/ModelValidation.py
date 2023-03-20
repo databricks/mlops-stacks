@@ -65,6 +65,13 @@ dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
 
+{% if cookiecutter.include_feature_store == "yes" %}
+print(
+    "Currently model validation is not supported for models registered with feature store. Please refer to "
+    "issue https://github.com/databricks/mlops-stack/issues/70 for more details."
+)
+dbutils.notebook.exit(0){% endif %}
+
 import sys
 
 sys.path.append("..")
