@@ -17,6 +17,7 @@ resource "databricks_job" "model_training_job" {
       notebook_path = "{{cookiecutter.project_name}}/training/notebooks/TrainWithFeatureStore"
       base_parameters = {
         env                = local.env
+        # TODO: Update training_data_path
         training_data_path = "/databricks-datasets/nyctaxi-with-zipcodes/subsampled"
         experiment_name    = databricks_mlflow_experiment.experiment.name
         model_name         = "${local.env_prefix}{{cookiecutter.model_name}}"

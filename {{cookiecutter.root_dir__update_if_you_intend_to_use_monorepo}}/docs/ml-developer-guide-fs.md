@@ -27,16 +27,17 @@ In each module, there is `compute_features_fn` method that you need to implement
 (each column being a separate feature), given the input dataframe, timestamp column and time-ranges. 
 The output dataframe will be persisted in a [time-series Feature Store table]({{ "machine-learning/feature-store/time-series.html"  | generate_doc_link(cookiecutter.cloud) }}). 
 See the example modules' documentation for more information.
-* Python unit tests in the same `features` folder.
-
-* Feature engineering notebook, `notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, 
-* dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
+* Python unit tests for feature computation modules in `{{cookiecutter.project_name}}/tests/feature_engineering` folder.
+* Feature engineering notebook, `notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
 * Training notebook that [trains]({{ "machine-learning/feature-store/train-models-with-feature-store.html"  | generate_doc_link(cookiecutter.cloud) }} ) a regression model by creating a training dataset using the Feature Store client.
 * Model deployment and batch inference notebooks that deploy and use the trained model. 
 * An automated integration test is provided (in `.github/workflows/run-tests-fs.yaml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
 
-To adapt this sample code for your use case, address TODOs in the files mentioned above, specifying configs such as input Delta tables/dataset path(s) to use when developing
+To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
 the feature engineering pipelines.
+1. Implement your feature module, address TODOs in `{{cookiecutter.project_name}}/feature_engineering/features` and create unit test in `{{cookiecutter.project_name}}/tests/feature_engineering`
+2. Update `{{cookiecutter.project_name}}/terraform/staging/write-feature-table-job.tf` and `{{cookiecutter.project_name}}/terraform/prod/write-feature-table-job.tf`. Fill in parameters for `GenerateAndWriteFeatures` job.
+3. Update training data path in `{{cookiecutter.project_name}}/terraform/staging/training-job.tf` and `{{cookiecutter.project_name}}/terraform/prod/training-job.tf`
 
 We expect most of the development to take place in the `features/` folder.
 
