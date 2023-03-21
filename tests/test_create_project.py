@@ -125,7 +125,7 @@ def test_markdown_links(generated_project_dir):
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
         """
-        npm install -g markdown-link-check
+        npm install -g markdown-link-check@3.10.3
         find . -name \*.md -print0 | xargs -0 -n1 markdown-link-check -c ./checker-config.json
         """,
         shell=True,
