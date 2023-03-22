@@ -127,8 +127,8 @@ jobs:
                   "base_parameters": {
                     "env": "staging",
                     "training_data_path": "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
-                    "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}-staging/{{cookiecutter.experiment_base_name}}-test",
-                    "model_name": "{{cookiecutter.model_name}}-test",
+                    "experiment_name": "{{cookiecutter.mlflow_experiment_parent_dir}}-staging/test-{{cookiecutter.experiment_base_name}}",
+                    "model_name": "test-{{cookiecutter.model_name}}",
                     "pickup_features_table": "feature_store_taxi_example.trip_pickup_features_test",
                     "dropoff_features_table": "feature_store_taxi_example.trip_dropoff_features_test"
                   }

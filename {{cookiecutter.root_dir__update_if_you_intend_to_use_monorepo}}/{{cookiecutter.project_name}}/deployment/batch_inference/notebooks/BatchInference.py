@@ -8,6 +8,7 @@
 # Parameters:
 #
 #  * env (optional)  - String name of the current environment (dev, staging, or prod). Defaults to "dev"
+#  * model_name (required) - The name of the model to be transitioned.
 #  * input_table_name (required)  - Delta table name containing your input data.
 #  * output_table_name (required) - Delta table name where the predictions will be written to.
 #                                   Note that this will create a new version of the Delta table if
@@ -20,6 +21,8 @@
 #
 # Name of the current environment
 dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
+# Name of the model
+dbutils.widgets.text("model_name", "", label="Model Name")
 # A Hive-registered Delta table containing the input features.
 dbutils.widgets.text("input_table_name", "", label="Input Table Name")
 # Delta table to store the output predictions.
@@ -47,7 +50,6 @@ output_table_name = dbutils.widgets.get("output_table_name")
 assert input_table_name != "", "input_table_name notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 
-model_name = get_model_name(env)
 stage = get_deployed_model_stage_for_env(env)
 model_uri = f"models:/{model_name}/{stage}"
 

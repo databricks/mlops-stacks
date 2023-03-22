@@ -16,16 +16,15 @@
 #
 # Parameters:
 #
-# * env (optional): Name of the environment the notebook is run in (dev, staging, or prod). Defaults to "dev".
+# * env (optional): Name of the environment the notebook is run in (test, staging, or prod).
 #                   You can add environment-specific logic to this notebook based on the value of this parameter,
 #                   e.g. read training data from different tables or data sources across environments.
-# * test_mode (optional): Whether the current notebook is running in "test" mode. Defaults to False. In the provided
-#                         notebook, when test_mode is True, an extra "test" suffix is added to the names of
-#                         MLflow experiments and registered models used for training. This separates the potentially
-#                         many runs/models logged during integration tests from
-#                         runs/models produced by staging/production model training jobs. You can use the value of this
-#                         parameter to further customize the behavior of this notebook based on whether it's running as
-#                         a test or for recurring model training in staging/production.
+#                   The `databricks-dev` profile will be used if users manually run the notebook.
+#                   The `databricks-test` profile will be used during CI test runs.
+#                   This separates the potentially many runs/models logged during integration tests from
+#                   runs/models produced by staging/production model training jobs. You can use the value of this
+#                   parameter to further customize the behavior of this notebook based on whether it's running as
+#                   a test or for recurring model training in staging/production.
 #
 #
 # Return values:
@@ -50,13 +49,13 @@
 
 from mlflow.recipes import Recipe
 
-dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
-dbutils.widgets.dropdown("test_mode", "False", ["True", "False"], "Test Mode")
-
-env = dbutils.widgets.get("env")
-_test_mode = dbutils.widgets.get("test_mode")
-test_mode = True if _test_mode.lower() == "true" else False
-profile = f"databricks-test" if test_mode else f"databricks-{env}"
+try:
+    # Profile from databricks workflow input will be used.
+    env = dbutils.widgets.get("env")
+    profile = f"databricks-{env}"
+except:
+    # When the users manually run the notebook, we use the "databricks-dev" profile instead of staging, prod or test.
+    profile = "databricks-dev"
 
 # COMMAND ----------
 
