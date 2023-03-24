@@ -24,8 +24,7 @@ resource "databricks_job" "batch_inference_job" {
   notebook_task {
     notebook_path = "{{cookiecutter.project_name}}/deployment/batch_inference/notebooks/BatchInference"
     base_parameters = {
-      env        = local.env
-      model_name = databricks_mlflow_model.registered_model.name
+      env = local.env
       # TODO: Specify input and output table names for batch inference here
       input_table_name  = ""
       output_table_name = "{{cookiecutter.project_name_alphanumeric}}_predictions"

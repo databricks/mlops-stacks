@@ -1,6 +1,7 @@
 resource "databricks_mlflow_model" "registered_model" {
   name = "${local.env_prefix}{{cookiecutter.model_name}}"
   depends_on = [
+    databricks_job.batch_inference_job,
     databricks_job.model_training_job
   ]
   description = <<EOF
