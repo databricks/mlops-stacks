@@ -38,6 +38,8 @@ def compute_features_fn(input_df, timestamp_column, start_date, end_date):
     The timestamp_column, start_date, end_date args are optional but strongly recommended for time-series based
     features.
 
+    TODO: Update and adapt the sample code for your use case
+
     :param input_df: Input dataframe.
     :param timestamp_column: Column containing the timestamp. This column is used to limit the range of feature
     computation. It is also used as the timestamp key column when populating the feature table, so it needs to be
