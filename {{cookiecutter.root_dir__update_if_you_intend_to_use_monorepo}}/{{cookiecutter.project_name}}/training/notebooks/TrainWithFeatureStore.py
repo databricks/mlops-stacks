@@ -34,13 +34,13 @@ dbutils.widgets.text(
 # MLflow experiment name.
 dbutils.widgets.text(
     "experiment_name",
-    f"/test-{{cookiecutter.experiment_base_name}}",
+    f"/dev-{{cookiecutter.experiment_base_name}}",
     label="MLflow experiment name",
 )
 
 # MLflow registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "test-{{cookiecutter.model_name}}", label="Model Name"
+    "model_name", "dev-{{cookiecutter.model_name}}", label="Model Name"
 )
 
 # Pickup features table name
