@@ -29,14 +29,14 @@ jobs:
           java-version: '11'
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install -r test-requirements.txt
       - name: Run tests with pytest
         run: |
-          cd {{cookiecutter.project_name}}
-          pytest
-          cd ..
+            cd {{cookiecutter.project_name}}
+            pytest
+            cd ..
   
   integration_test:
     needs: unit_tests
