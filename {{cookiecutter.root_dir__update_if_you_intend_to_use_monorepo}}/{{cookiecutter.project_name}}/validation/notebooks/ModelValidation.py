@@ -48,7 +48,7 @@
 ){% endif %}
 dbutils.widgets.text(
     "experiment_name",
-    "{{cookiecutter.mlflow_experiment_parent_dir}}/{{cookiecutter.experiment_base_name}}-test",
+    "/dev-{{cookiecutter.experiment_base_name}}",
     "Experiment Name",
 )
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
@@ -60,7 +60,7 @@ dbutils.widgets.text("targets", "", "Targets"){% endif %}
 dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
 dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
 dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
-dbutils.widgets.text("model_name", "", "Model Name")
+dbutils.widgets.text("model_name", "dev-{{cookiecutter.model_name}}", "Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------

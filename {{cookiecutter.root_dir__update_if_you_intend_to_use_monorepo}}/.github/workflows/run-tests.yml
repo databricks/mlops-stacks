@@ -72,8 +72,7 @@ jobs:
           run-name: {{ cookiecutter.project_name}} Integration Test
           notebook-params-json: >
             {
-              "env": "staging",
-              "test_mode": "True"
+              "env": "test"
             }
 
           {% raw %}pr-comment-github-token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}
