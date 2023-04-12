@@ -32,32 +32,11 @@ feature_store_paths = [
     os.path.join(project_name, "tests", "feature_engineering"),
     os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
-    os.path.join(project_name, "terraform", "prod", "write-feature-table-job.tf"),
-    os.path.join(project_name, "terraform", "staging", "write-feature-table-job.tf"),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 
-cloud_specific_paths = {
-    "azure": [
-        os.path.join(".github", "workflows", "scripts", "generate-aad-token.sh"),
-        os.path.join(".mlops-setup-scripts", "cicd", "main-azure.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "main-azure.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "variables.tf"),
-    ],
-    "aws": [
-        os.path.join(".mlops-setup-scripts", "cicd", "main-aws.tf"),
-        os.path.join(".mlops-setup-scripts", "terraform", "main-aws.tf"),
-    ],
-}
-
-for cloud, paths in cloud_specific_paths.items():
-    if cloud != current_cloud:
-        for path in paths:
-            remove_filepath(path)
-
 if cicd_platform in ["gitHub", "gitHubEnterprise"]:
     remove_filepath(os.path.join(".azure"))
-    remove_filepath(os.path.join(".mlops-setup-scripts", "cicd", "azure-devops.tf"))
 elif cicd_platform == "azureDevOpsServices":
     remove_filepath(os.path.join(".github"))
 
