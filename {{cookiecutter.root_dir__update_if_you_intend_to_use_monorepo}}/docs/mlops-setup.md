@@ -17,7 +17,7 @@ This page explains how to productionize the current project, setting up CI/CD an
 ML resource deployment, and deploying ML training and inference jobs.
 
 After following this guide, data scientists can follow the [ML Pull Request](ml-pull-request.md) and 
-[ML Config](../{{cookiecutter.project_name}}/terraform/README.md) guides to make changes to ML code or deployed jobs.
+[ML Config](../{{cookiecutter.project_name_alphanumeric_underscore}}/terraform/README.md) guides to make changes to ML code or deployed jobs.
 
 ## Create a hosted Git repo
 Create a hosted Git repo to store project code, if you haven't already done so. From within the project
@@ -46,10 +46,10 @@ current ML project.
 {%- if cookiecutter.include_feature_store == "no" %}
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
-* [databricks-test.yaml](../{{cookiecutter.project_name}}/training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests
-* [databricks-staging.yaml](../{{cookiecutter.project_name}}/training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
+* [databricks-test.yaml](../{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests
+* [databricks-staging.yaml](../{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
   jobs that run in the staging workspace
-* [databricks-prod.yaml](../{{cookiecutter.project_name}}/training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
+* [databricks-prod.yaml](../{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
   jobs that run in the prod workspace
 {%- endif %}
 
@@ -89,11 +89,11 @@ For future ML code changes, iterate against the `{{cookiecutter.default_branch}}
 {% endif -%}
 
 ## Deploy ML resources and enable production jobs
-Follow the instructions in [{{cookiecutter.project_name}}/terraform/README.md](../{{cookiecutter.project_name}}/terraform/README.md) to deploy ML resources
+Follow the instructions in [{{cookiecutter.project_name}}/terraform/README.md](../{{cookiecutter.project_name_alphanumeric_underscore}}/terraform/README.md) to deploy ML resources
 and production jobs.
 
 ## Next steps
 After you configure CI/CD and deploy training & inference pipelines, notify data scientists working
 on the current project. They should now be able to follow the
-[ML pull request guide](ml-pull-request.md) and [ML resource config guide](../{{cookiecutter.project_name}}/terraform/README.md) to propose, test, and deploy
+[ML pull request guide](ml-pull-request.md) and [ML resource config guide](../{{cookiecutter.project_name_alphanumeric_underscore}}/terraform/README.md) to propose, test, and deploy
 ML code and pipeline changes to production.

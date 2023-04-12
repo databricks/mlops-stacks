@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from pyspark.sql import SparkSession
 
-from feature_engineering.features.dropoff_features import (
+from {{cookiecutter.project_name_alphanumeric_underscore}}.feature_engineering.features.dropoff_features import (
     compute_features_fn,
 )
 

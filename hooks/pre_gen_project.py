@@ -40,7 +40,8 @@ import cookiecutter
         "model_name": cookiecutter.project_name + "-model",
         "experiment_base_name": cookiecutter.project_name + "-experiment",
         "service_principal_group": cookiecutter.project_name + "-service-principals",
-        "project_name_alphanumeric": cookiecutter.project_name | regex_replace("[^A-Za-z0-9]","") 
+        "project_name_alphanumeric_underscore": cookiecutter.project_name | regex_replace("[^A-Za-z0-9_-]","") 
+            | regex_replace("[-]","_") 
     }
 )}}
 
@@ -224,7 +225,7 @@ if __name__ == "__main__":
     validate_project_name("{{cookiecutter.project_name}}")
     validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
-        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
+        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric_underscore}}"
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"

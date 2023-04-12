@@ -9,28 +9,28 @@ def remove_filepath(filepath):
         shutil.rmtree(filepath)
 
 
-project_name = "{{cookiecutter.project_name}}"
+project_name_alphanumeric_underscore = "{{cookiecutter.project_name_alphanumeric_underscore}}"
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 include_feature_store = "{{cookiecutter.include_feature_store}}"
 
 mlp_paths = [
-    os.path.join(project_name, "training", "profiles"),
-    os.path.join(project_name, "training", "notebooks", "Train.py"),
-    os.path.join(project_name, "training", "recipe.yaml"),
-    os.path.join(project_name, "tests", "training", "ingest_test.py"),
-    os.path.join(project_name, "tests", "training", "split_test.py"),
-    os.path.join(project_name, "tests", "training", "train_test.py"),
-    os.path.join(project_name, "tests", "training", "test_sample.parquet"),
-    os.path.join(project_name, "tests", "training", "transform_test.py"),
+    os.path.join(project_name_alphanumeric_underscore, "training", "profiles"),
+    os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "Train.py"),
+    os.path.join(project_name_alphanumeric_underscore, "training", "recipe.yaml"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "ingest_test.py"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "split_test.py"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "train_test.py"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "test_sample.parquet"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
     os.path.join(".github", "workflows", "run-tests.yml"),
 ]
 
 feature_store_paths = [
-    os.path.join(project_name, "feature_engineering"),
-    os.path.join(project_name, "tests", "feature_engineering"),
-    os.path.join(project_name, "training", "notebooks", "TrainWithFeatureStore.py"),
+    os.path.join(project_name_alphanumeric_underscore, "feature_engineering"),
+    os.path.join(project_name_alphanumeric_underscore, "tests", "feature_engineering"),
+    os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
@@ -42,7 +42,7 @@ elif cicd_platform == "azureDevOpsServices":
 
 # Remove test files
 test_paths = ["_params_testing_only.txt"]
-if project_name != "27896cf3-bb3e-476e-8129-96df0406d5c7":
+if project_name_alphanumeric_underscore != "27896cf3_bb3e_476e_8129_96df0406d5c7":
     for path in test_paths:
         os.remove(path)
 

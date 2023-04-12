@@ -2,7 +2,7 @@ import pytest
 import os
 import pandas as pd
 from pandas import DataFrame
-from training.steps.split import process_splits
+from {{cookiecutter.project_name_alphanumeric_underscore}}.training.steps.split import process_splits
 
 
 @pytest.fixture

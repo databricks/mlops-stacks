@@ -3,7 +3,7 @@ import os
 import tempfile
 import pandas as pd
 from pandas import DataFrame
-from training.steps.ingest import load_file_as_dataframe
+from {{cookiecutter.project_name_alphanumeric_underscore}}.training.steps.ingest import load_file_as_dataframe
 
 
 @pytest.fixture
