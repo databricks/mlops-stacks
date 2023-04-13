@@ -43,7 +43,20 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../../../requirements.txt
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+
+# COMMAND ----------
+
+# MAGIC %pip install -r ../../requirements.txt
+
+# COMMAND ----------
+
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+%cd ../
 
 # COMMAND ----------
 

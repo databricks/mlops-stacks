@@ -62,6 +62,7 @@ model_name = dbutils.widgets.get("model_name")
 
 # COMMAND ----------
 # DBTITLE 1, Set experiment
+
 import mlflow
 
 mlflow.set_experiment(experiment_name)
@@ -73,7 +74,6 @@ raw_data = spark.read.format("delta").load(input_table_path)
 display(raw_data)
 
 # COMMAND ----------
-
 # DBTITLE 1, Helper functions
 
 from pyspark.sql import *
@@ -134,14 +134,12 @@ def get_latest_model_version(model_name):
 
 
 # COMMAND ----------
-
 # DBTITLE 1, Read taxi data for training
 
 taxi_data = rounded_taxi_data(raw_data)
 display(taxi_data)
 
 # COMMAND ----------
-
 # DBTITLE 1, Create FeatureLookups
 
 from databricks.feature_store import FeatureLookup
@@ -172,8 +170,8 @@ dropoff_feature_lookups = [
 ]
 
 # COMMAND ----------
-
 # DBTITLE 1, Create Training Dataset
+
 from databricks import feature_store
 
 # End any existing runs (in the case this notebook is being run for a second time)

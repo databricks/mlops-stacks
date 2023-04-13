@@ -39,7 +39,20 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../../../requirements.txt
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+
+# COMMAND ----------
+
+# MAGIC %pip install -r ../../requirements.txt
+
+# COMMAND ----------
+
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+%cd ../
 
 # COMMAND ----------
 
@@ -53,10 +66,10 @@ dbutils.widgets.text(
 )
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
-dbutils.widgets.text("validation_input", "", "Validation Input")
+dbutils.widgets.text("validation_input", "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`", "Validation Input")
 {% if cookiecutter.include_feature_store == "yes" %}
-dbutils.widgets.text("model_type", "", "Model Type")
-dbutils.widgets.text("targets", "", "Targets"){% endif %}
+dbutils.widgets.text("model_type", "regressor", "Model Type")
+dbutils.widgets.text("targets", "fare_amount", "Targets"){% endif %}
 dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
 dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
 dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
@@ -71,11 +84,6 @@ print(
     "issue https://github.com/databricks/mlops-stack/issues/70 for more details."
 )
 dbutils.notebook.exit(0){% endif %}
-
-import sys
-
-sys.path.append("..")
-sys.path.append("../..")
 
 run_mode = dbutils.widgets.get("run_mode").lower()
 assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"

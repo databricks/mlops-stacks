@@ -27,14 +27,22 @@ dbutils.widgets.text("output_table_name", "", label="Output Table Name")
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../../../../requirements.txt
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+
+# COMMAND ----------
+
+# MAGIC %pip install -r ../../../requirements.txt
 
 # COMMAND ----------
 
 import sys
 
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+%cd ..
 sys.path.append("..")
-sys.path.append("../../..")
 
 # COMMAND ----------
 
@@ -67,8 +75,8 @@ from datetime import datetime
 ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # COMMAND ----------
-
 # DBTITLE 1,Load model and run inference
+
 from predict import predict_batch
 
 predict_batch(spark, model_uri, input_table_name, output_table_name, model_version, ts)

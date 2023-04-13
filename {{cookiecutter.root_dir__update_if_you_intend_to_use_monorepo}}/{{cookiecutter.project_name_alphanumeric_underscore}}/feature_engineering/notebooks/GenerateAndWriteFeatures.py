@@ -60,10 +60,11 @@ dbutils.widgets.text(
 )
 
 # COMMAND ----------
-import sys
 
-sys.path.append("../..")
-sys.path.append("../features")
+import os
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+%cd ../features
 
 
 # COMMAND ----------
@@ -90,11 +91,11 @@ spark.sql("CREATE DATABASE IF NOT EXISTS " + output_database)
 
 # COMMAND ----------
 # DBTITLE 1, Read input data.
+
 raw_data = spark.read.format("delta").load(input_table_path)
 
 
 # COMMAND ----------
-
 # DBTITLE 1,Compute features.
 
 # Compute the features. This is done by dynamically loading the features module.
@@ -111,8 +112,8 @@ features_df = compute_features_fn(
 )
 
 # COMMAND ----------
-
 # DBTITLE 1, Write computed features.
+
 from databricks import feature_store
 
 fs = feature_store.FeatureStoreClient()
