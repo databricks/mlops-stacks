@@ -12,6 +12,7 @@
 #  * output_table_name (required) - Delta table name where the predictions will be written to.
 #                                   Note that this will create a new version of the Delta table if
 #                                   the table already exists
+#  * model_name (required) - The name of the model to be used in batch inference.
 ##################################################################################
 
 
@@ -24,6 +25,8 @@ dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment 
 dbutils.widgets.text("input_table_name", "", label="Input Table Name")
 # Delta table to store the output predictions.
 dbutils.widgets.text("output_table_name", "", label="Output Table Name")
+# Batch inference model name
+dbutils.widgets.text("model_name", "", label="Model Name")
 
 # COMMAND ----------
 
@@ -47,15 +50,15 @@ sys.path.append("..")
 # COMMAND ----------
 
 # DBTITLE 1,Define input and output variables
-from utils import get_deployed_model_stage_for_env, get_model_name
+from utils import get_deployed_model_stage_for_env
 
 env = dbutils.widgets.get("env")
 input_table_name = dbutils.widgets.get("input_table_name")
 output_table_name = dbutils.widgets.get("output_table_name")
+model_name = dbutils.widgets.get("model_name")
 assert input_table_name != "", "input_table_name notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
-
-model_name = get_model_name(env)
+assert model_name != "", "model_name notebook parameter must be specified"
 stage = get_deployed_model_stage_for_env(env)
 model_uri = f"models:/{model_name}/{stage}"
 
