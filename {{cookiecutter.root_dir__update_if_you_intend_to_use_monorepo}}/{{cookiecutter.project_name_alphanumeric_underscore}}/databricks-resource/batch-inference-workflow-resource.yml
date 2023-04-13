@@ -26,7 +26,8 @@ resources:
             notebook_path: ./deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
               env: ${bundle.environment}
-              input_table_name: taxi_scoring_sample
+              {% if cookiecutter.include_feature_store == "yes" %}input_table_name: hive_metastore.default.taxi_scoring_sample_feature_store_inference_input
+              {%- else -%}input_table_name: taxi_scoring_sample{% endif %}
               output_table_name: {{cookiecutter.project_name_alphanumeric_underscore}}_predictions
               model_name: *model_name
 

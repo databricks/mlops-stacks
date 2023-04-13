@@ -20,7 +20,7 @@ def predict_batch(
         table
     )
     output_df = (
-        table.withColumn("prediction", prediction_df["prediction"])
+        prediction_df.withColumn("prediction", prediction_df["prediction"])
         .withColumn("model_version", lit(model_version))
         .withColumn("inference_timestamp", to_timestamp(lit(ts)))
     )

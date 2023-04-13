@@ -45,7 +45,7 @@ resources:
               features_transform_module: dropoff_features
               primary_keys: zip
       schedule:
-        quartz_cron_expression: "0 0 9 * * ?" # daily at 9am
+        quartz_cron_expression: "0 0 7 * * ?" # daily at 7am
         timezone_id: UTC
       <<: *permissions
       # If you want to turn on notifications for this job, please uncomment the below code,
