@@ -23,56 +23,10 @@ jobs:
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
-            pip install -r requirements.txt
+            pip install -r ./{{cookiecutter.project_name_alphanumeric_underscore}}/requirements.txt
             pip install -r test-requirements.txt
       - name: Run tests with pytest
         run: |
-            cd {{cookiecutter.project_name}}
+            cd {{cookiecutter.project_name_alphanumeric_underscore}}
             pytest
             cd ..
-  
-  integration_test:
-    needs: unit_tests
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        {%- if cookiecutter.cloud == "azure" %}
-      - name: Generate AAD Token
-        {% raw %}run: ./.github/workflows/scripts/generate-aad-token.sh ${{ secrets.stagingAzureSpTenantId }} ${{ secrets.stagingAzureSpApplicationId }} ${{ secrets.stagingAzureSpClientSecret }}{% endraw %}
-        {%- endif %}
-      - name: Train model
-        uses: databricks/run-notebook@v0
-        id: train
-        with:
-          local-notebook-path: {{ cookiecutter.project_name}}/training/notebooks/Train.py
-          {% raw %}git-commit: ${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
-          git-provider: {{ cookiecutter.cicd_platform }}
-          new-cluster-json: >
-            {
-              "spark_version": "11.0.x-cpu-ml-scala2.12",
-              {% raw %}"node_type_id": "${{ env.NODE_TYPE_ID }}",{% endraw %}
-              "num_workers": 0,
-              "spark_conf": {
-                "spark.databricks.cluster.profile": "singleNode",
-                "spark.master": "local[*, 4]"
-              },
-              "custom_tags": {
-                "ResourceClass": "SingleNode",
-                "clusterSource": "mlops-stack/0.0"
-              }
-            }
-          access-control-list-json: >
-            [
-              {
-                "group_name": "{{cookiecutter.read_user_group}}",
-                "permission_level": "CAN_VIEW"
-              }
-            ]
-          run-name: {{ cookiecutter.project_name}} Integration Test
-          notebook-params-json: >
-            {
-              "env": "test"
-            }
-
-          {% raw %}pr-comment-github-token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}

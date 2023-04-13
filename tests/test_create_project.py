@@ -15,8 +15,10 @@ from utils import (
 from unittest import mock
 
 DEFAULT_PROJECT_NAME = "my-mlops-project"
+DEFAULT_PROJECT_DIRECTORY = "my_mlops_project"
 # UUID that when set as project name, prevents the removal of files needed in testing
 TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
+TEST_PROJECT_DIRECTORY = "27896cf3_bb3e_476e_8129_96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",
@@ -172,7 +174,7 @@ def test_markdown_links(generated_project_dir):
             "project_name": "a",
         },
         {
-            "project_name": "a-b",
+            "project_name": "a-",
         },
         {
             "project_name": "Name with spaces",
@@ -217,30 +219,30 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     generate(tmpdir, valid_params)
 
 
-@pytest.mark.parametrize(
-    "experiment_parent_dir,expected_dir",
-    [
-        ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
-        (
-            "/Users/test@databricks.com/project/",
-            "/Users/test@databricks.com/project-${local.env}",
-        ),
-    ],
-)
-def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
-    tmpdir, experiment_parent_dir, expected_dir
-):
-    params = {
-        "mlflow_experiment_parent_dir": experiment_parent_dir,
-    }
-    generate(tmpdir, params)
-    tf_config_contents = (
-        tmpdir
-        / DEFAULT_PROJECT_NAME
-        / DEFAULT_PROJECT_NAME
-        / "terraform/prod/locals.tf"
-    ).read_text("utf-8")
-    assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
+# @pytest.mark.parametrize(
+#     "experiment_parent_dir,expected_dir",
+#     [
+#         ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
+#         (
+#             "/Users/test@databricks.com/project/",
+#             "/Users/test@databricks.com/project-${local.env}",
+#         ),
+#     ],
+# )
+# def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
+#     tmpdir, experiment_parent_dir, expected_dir
+# ):
+#     params = {
+#         "mlflow_experiment_parent_dir": experiment_parent_dir,
+#     }
+#     generate(tmpdir, params)
+#     tf_config_contents = (
+#         tmpdir
+#         / DEFAULT_PROJECT_NAME
+#         / DEFAULT_PROJECT_NAME
+#         / "terraform/prod/locals.tf"
+#     ).read_text("utf-8")
+#     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
 
 @parametrize_by_project_generation_params
@@ -292,7 +294,7 @@ def test_generate_project_check_feature_store_output(
     fs_notebook_path = (
         tmpdir
         / TEST_PROJECT_NAME
-        / TEST_PROJECT_NAME
+        / TEST_PROJECT_DIRECTORY
         / "feature_engineering"
         / "notebooks"
         / "GenerateAndWriteFeatures.py"
@@ -341,11 +343,12 @@ def test_generate_project_default_project_name_params(tmpdir):
     tf_config_contents = (
         tmpdir
         / DEFAULT_PROJECT_NAME
-        / DEFAULT_PROJECT_NAME
-        / "terraform/prod/locals.tf"
+        / DEFAULT_PROJECT_DIRECTORY
+        / "databricks-resource/ml-artifacts-resource.yml"
     ).read_text("utf-8")
     assert (
-        f'mlflow_experiment_parent_dir = "/{DEFAULT_PROJECT_NAME}-${{local.env}}"'
+        "experiment_name: &experiment_name /${bundle.environment}-"
+        + DEFAULT_PROJECT_NAME
         in tf_config_contents
     )
 

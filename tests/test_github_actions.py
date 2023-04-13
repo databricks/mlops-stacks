@@ -40,8 +40,9 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     # Databricks REST API or Terraform remote state credentials
     subprocess.run(
         """
+        export GITHUB_TOKEN=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
         git init
-        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/run-tests.yml -j "unit_tests"
+        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests.yml -j "unit_tests"
         """,
         shell=True,
         check=True,
@@ -62,8 +63,9 @@ def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_
     # Databricks REST API or Terraform remote state credentials
     subprocess.run(
         """
+        export GITHUB_TOKEN=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
         git init
-        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/run-tests-fs.yml -j "unit_tests"
+        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests-fs.yml -j "unit_tests"
         """,
         shell=True,
         check=True,

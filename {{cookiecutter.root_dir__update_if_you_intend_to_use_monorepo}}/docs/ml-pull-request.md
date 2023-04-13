@@ -34,9 +34,9 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a 
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
-[workflow](../.github/workflows/run-tests{% if cookiecutter.include_feature_store == "yes" %}-fs{% endif %}.yml) 
+[workflow](../.github/workflows/{{cookiecutter.project_name}}-run-tests{% if cookiecutter.include_feature_store == "yes" %}-fs{% endif %}.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
-[Azure DevOps Pipeline](../.azure/devops-pipelines/tests-ci.yml)
+[Azure DevOps Pipeline](../.azure/devops-pipelines/{{cookiecutter.project_name}}-tests-ci.yml)
 {% endif %} 
 that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
