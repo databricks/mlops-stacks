@@ -1,0 +1,41 @@
+bundle:
+  name: {{cookiecutter.project_name}}
+
+
+include:
+  # Include ML artifact resources for the ml project
+  # Defines model and experiment
+  - ./databricks-resource/ml-artifacts-resource.yml
+
+  # Include workflow resources of the ml project
+  # Defines workflow for model training -> validation -> deployment
+  - ./databricks-resource/model-workflow-resource.yml
+  {%- if cookiecutter.include_feature_store == "yes" %}
+  # Defines workflow for feature engineering
+  - ./databricks-resource/feature-engineering-workflow-resource.yml{% endif %}
+  # Defines workflow for scheduled batch inference
+  - ./databricks-resource/batch-inference-workflow-resource.yml
+  # Defines workflow for data monitoring, metric refresh, alerts and triggering retraining
+  - ./databricks-resource/monitoring-workflow-resource.yml
+
+
+# Environment specific values for workspace
+environments:
+  dev:
+    default: true
+    workspace:
+      # TODO: set dev workspace
+      host:
+
+  staging:
+    workspace:
+      host: {{cookiecutter.databricks_staging_workspace_host}}
+
+  prod:
+    workspace:
+      host: {{cookiecutter.databricks_prod_workspace_host}}
+
+  test:
+    workspace:
+      host: {{cookiecutter.databricks_staging_workspace_host}}
+

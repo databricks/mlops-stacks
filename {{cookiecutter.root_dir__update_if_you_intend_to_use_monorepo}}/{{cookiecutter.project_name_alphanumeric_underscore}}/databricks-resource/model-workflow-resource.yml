@@ -1,0 +1,104 @@
+new_cluster: &new_cluster
+  new_cluster:
+    num_workers: 3
+    spark_version: 12.2.x-cpu-ml-scala2.12
+    node_type_id: {{cookiecutter.cloud_specific_node_type_id}}
+    custom_tags:
+      clusterSource: mlops-stack/0.1
+
+permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+# The experiment name must be the same as defined in ml-artifacts-bundle-resource.yml
+# Mingyu TODO: don't redefine the experiment name once bundle supports the reference
+experiment_name: &experiment_name /${bundle.environment}-{{cookiecutter.experiment_base_name}}
+model_name: &model_name ${bundle.environment}-{{cookiecutter.model_name}}
+
+resources:
+  jobs:
+    model_training_job:
+      name: ${bundle.environment}-{{cookiecutter.project_name}}-model-training-job
+      # Mingyu TODO: reuse the same cluster for all three jobs once bundle supports it.
+      tasks:
+        - task_key: Train
+          <<: *new_cluster
+          {% if cookiecutter.include_feature_store == "yes" %}notebook_task:
+            notebook_path: ./training/notebooks/TrainWithFeatureStore.py
+            base_parameters:
+              env: ${bundle.environment}
+              # TODO: Update training_data_path
+              training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
+              experiment_name: *experiment_name
+              model_name: *model_name
+              pickup_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_pickup_features
+              dropoff_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_dropoff_features
+          {%- else -%}notebook_task:
+            notebook_path: ./training/notebooks/Train.py
+            base_parameters:
+              env: ${bundle.environment}{% endif %}
+        - task_key: ModelValidation
+          <<: *new_cluster
+          depends_on:
+            - task_key: Train
+          notebook_task:
+            notebook_path: ./validation/notebooks/ModelValidation.py
+            base_parameters:
+              {%- if cookiecutter.include_feature_store == "no" %}
+              env: ${bundle.environment}{% endif %}
+              experiment_name: *experiment_name
+              # The `run_mode` defines whether model validation is enabled or not.
+              # It can be one of the three values:
+              # `disabled` : Do not run the model validation notebook.
+              # `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move
+              #               model to Production stage.
+              # `enabled`  : Run the model validation notebook. Move model to Production stage only if all model validation
+              #               rules are passing.
+              # TODO: update run_mode
+              run_mode: dry_run
+              # Whether to load the current registered "Production" stage model as baseline.
+              # Baseline model is a requirement for relative change and absolute change validation thresholds.
+              # TODO: update enable_baseline_comparison
+              enable_baseline_comparison: "false"
+              # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+              # TODO: update validation_input
+              validation_input: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
+              {%- if cookiecutter.include_feature_store == "yes" %}
+              # A string describing the model type. The model type can be either "regressor" and "classifier".
+              # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+              # TODO: update model_type
+              model_type: regressor
+              # The string name of a column from data that contains evaluation labels.
+              # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
+              # TODO: targets
+              targets: mean_squared_error{% endif %}
+              # Specifies the name of the function in {{cookiecutter.project_name}}/training_validation_deployment/validation/validation.py that returns custom metrics.
+              # TODO(optional): custom_metrics_loader_function
+              custom_metrics_loader_function: custom_metrics
+              # Specifies the name of the function in {{cookiecutter.project_name}}/training_validation_deployment/validation/validation.py that returns model validation thresholds.
+              # TODO(optional): validation_thresholds_loader_function
+              validation_thresholds_loader_function: validation_thresholds
+              # Specifies the name of the function in {{cookiecutter.project_name}}/training_validation_deployment/validation/validation.py that returns evaluator_config.
+              # TODO(optional): evaluator_config_loader_function
+              evaluator_config_loader_function: evaluator_config
+        - task_key: ModelDeployment
+          <<: *new_cluster
+          depends_on:
+            - task_key: ModelValidation
+          notebook_task:
+            notebook_path: ./deployment/model_deployment/notebooks/ModelDeployment.py
+            base_parameters:
+              env: ${bundle.environment}
+      schedule:
+        quartz_cron_expression: "0 0 9 * * ?" # daily at 9am
+        timezone_id: UTC
+      # Mingyu TODO: add git source once bundle is able to get git URL
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

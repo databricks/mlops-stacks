@@ -49,5 +49,5 @@ deploy(model_uri, env)
 
 # COMMAND ----------
 print(
-    f"Successfully transitioned model {model_uri} to {target_stage} stage"
+    f"Successfully completed model deployment for {model_uri}"
 )

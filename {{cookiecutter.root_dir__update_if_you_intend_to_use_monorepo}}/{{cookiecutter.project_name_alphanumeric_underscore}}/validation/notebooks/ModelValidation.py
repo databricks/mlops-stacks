@@ -127,7 +127,7 @@ assert env, "env notebook parameter must be specified"
 
 def get_model_type_from_recipe():
     try:
-        recipe_config = get_recipe_config("../../training", f"databricks-{env}")
+        recipe_config = get_recipe_config("../training", f"databricks-{env}")
         problem_type = recipe_config.get("recipe").split("/")[0]
         if problem_type.lower() == "regression":
             return "regressor"
@@ -141,7 +141,7 @@ def get_model_type_from_recipe():
 
 def get_targets_from_recipe():
     try:
-        recipe_config = get_recipe_config("../../training", f"databricks-{env}")
+        recipe_config = get_recipe_config("../training", f"databricks-{env}")
         return recipe_config.get("target_col")
     except Exception as ex:
         print(f"Not able to get targets from mlflow recipe databricks-{env}.")

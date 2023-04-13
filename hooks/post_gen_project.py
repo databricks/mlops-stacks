@@ -31,6 +31,11 @@ feature_store_paths = [
     os.path.join(project_name_alphanumeric_underscore, "feature_engineering"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "feature_engineering"),
     os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "TrainWithFeatureStore.py"),
+    os.path.join(
+        project_name_alphanumeric_underscore,
+        "databricks-resource",
+        "feature-engineering-workflow-resource.yml"
+    ),
     os.path.join(".github", "workflows", "run-tests-fs.yml"),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
