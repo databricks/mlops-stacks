@@ -24,7 +24,7 @@ mlp_paths = [
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "test_sample.parquet"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "transform_test.py"),
     os.path.join("docs", "ml-developer-guide.md"),
-    os.path.join(".github", "workflows", "run-tests.yml"),
+    os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests.yml"),
 ]
 
 feature_store_paths = [
@@ -36,7 +36,7 @@ feature_store_paths = [
         "databricks-resource",
         "feature-engineering-workflow-resource.yml"
     ),
-    os.path.join(".github", "workflows", "run-tests-fs.yml"),
+    os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests-fs.yml"),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 

@@ -15,9 +15,12 @@ resources:
   jobs:
     write_feature_table_job:
       name: ${bundle.environment}-{{cookiecutter.project_name}}-write-feature-table-job
+      job_clusters:
+        - job_cluster_key: write_feature_table_job_cluster
+          <<: *new_cluster
       tasks:
         - task_key: PickupFeatures
-          <<: *new_cluster
+          job_cluster_key: write_feature_table_job_cluster
           notebook_task:
             notebook_path: ./feature_engineering/notebooks/GenerateAndWriteFeatures.py
             base_parameters:
@@ -31,7 +34,7 @@ resources:
               features_transform_module: pickup_features
               primary_keys: zip
         - task_key: DropoffFeatures
-          <<: *new_cluster
+          job_cluster_key: write_feature_table_job_cluster
           notebook_task:
             notebook_path: ./feature_engineering/notebooks/GenerateAndWriteFeatures.py
             base_parameters:

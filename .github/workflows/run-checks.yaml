@@ -25,4 +25,5 @@ jobs:
       - name: Run tests with pytest
         run: |
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          export BRICKS_CLI_GITHUB_TOKEN=${{ secrets.BRICKS_CLI_GITHUB_TOKEN }}
           pytest tests --large -vv --black

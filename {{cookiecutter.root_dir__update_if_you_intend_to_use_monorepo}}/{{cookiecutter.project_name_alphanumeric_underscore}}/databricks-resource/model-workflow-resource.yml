@@ -20,10 +20,12 @@ resources:
   jobs:
     model_training_job:
       name: ${bundle.environment}-{{cookiecutter.project_name}}-model-training-job
-      # Mingyu TODO: reuse the same cluster for all three jobs once bundle supports it.
+      job_clusters:
+        - job_cluster_key: model_training_job_cluster
+          <<: *new_cluster
       tasks:
         - task_key: Train
-          <<: *new_cluster
+          job_cluster_key: model_training_job_cluster
           {% if cookiecutter.include_feature_store == "yes" %}notebook_task:
             notebook_path: ./training/notebooks/TrainWithFeatureStore.py
             base_parameters:
@@ -39,7 +41,7 @@ resources:
             base_parameters:
               env: ${bundle.environment}{% endif %}
         - task_key: ModelValidation
-          <<: *new_cluster
+          job_cluster_key: model_training_job_cluster
           depends_on:
             - task_key: Train
           notebook_task:
@@ -83,7 +85,7 @@ resources:
               # TODO(optional): evaluator_config_loader_function
               evaluator_config_loader_function: evaluator_config
         - task_key: ModelDeployment
-          <<: *new_cluster
+          job_cluster_key: model_training_job_cluster
           depends_on:
             - task_key: ModelValidation
           notebook_task:
