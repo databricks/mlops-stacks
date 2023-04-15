@@ -1,0 +1,38 @@
+# This GitHub workflow deploys Bundle resources (ML resource config and more)
+# defined under {{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/*
+# and {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml with staging environment configs,
+# when PRs are merged into the default branch
+name: Bundle Deployment for {{cookiecutter.project_name}} Staging
+
+on:
+  push:
+    branches:
+      - '{{cookiecutter.default_branch}}'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}
+
+env:
+  # This token is required until databricks/bricks repo is open to public
+  BRICKS_REPO_TOKEN: {% raw %}${{ secrets.BRICKS_REPO_GITHUB_TOKEN }}{% endraw %}
+  DATABRICKS_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+
+jobs:
+  staging:
+    concurrency: {{cookiecutter.project_name}}-staging-bundle-job
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-bricks@main
+        with:
+          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
+      - name: Validate Bundle For Staging Environment
+        id: validate
+        run: |
+          bricks bundle validate -e staging
+      - name: Deploy Bundle to Staging Environment
+        id: deploy
+        run: |
+          bricks bundle deploy -e staging

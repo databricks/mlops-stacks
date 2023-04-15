@@ -22,7 +22,7 @@ resources:
         - task_key: PickupFeatures
           job_cluster_key: write_feature_table_job_cluster
           notebook_task:
-            notebook_path: ./feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
             base_parameters:
               # TODO modify these arguments to reflect your setup.
               input_table_pat: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
@@ -36,7 +36,7 @@ resources:
         - task_key: DropoffFeatures
           job_cluster_key: write_feature_table_job_cluster
           notebook_task:
-            notebook_path: ./feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
             base_parameters:
               # TODO: modify these arguments to reflect your setup.
               input_table_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled

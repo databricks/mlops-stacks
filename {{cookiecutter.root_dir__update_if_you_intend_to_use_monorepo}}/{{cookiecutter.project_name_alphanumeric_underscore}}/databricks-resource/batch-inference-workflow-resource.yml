@@ -23,7 +23,7 @@ resources:
         - task_key: batch_inference_job
           <<: *new_cluster
           notebook_task:
-            notebook_path: ./deployment/batch_inference/notebooks/BatchInference.py
+            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
               env: ${bundle.environment}
               {% if cookiecutter.include_feature_store == "yes" %}input_table_name: hive_metastore.default.taxi_scoring_sample_feature_store_inference_input

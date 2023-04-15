@@ -27,7 +27,7 @@ resources:
         - task_key: Train
           job_cluster_key: model_training_job_cluster
           {% if cookiecutter.include_feature_store == "yes" %}notebook_task:
-            notebook_path: ./training/notebooks/TrainWithFeatureStore.py
+            notebook_path: ../training/notebooks/TrainWithFeatureStore.py
             base_parameters:
               env: ${bundle.environment}
               # TODO: Update training_data_path
@@ -37,7 +37,7 @@ resources:
               pickup_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_pickup_features
               dropoff_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_dropoff_features
           {%- else -%}notebook_task:
-            notebook_path: ./training/notebooks/Train.py
+            notebook_path: ../training/notebooks/Train.py
             base_parameters:
               env: ${bundle.environment}{% endif %}
         - task_key: ModelValidation
@@ -45,7 +45,7 @@ resources:
           depends_on:
             - task_key: Train
           notebook_task:
-            notebook_path: ./validation/notebooks/ModelValidation.py
+            notebook_path: ../validation/notebooks/ModelValidation.py
             base_parameters:
               {%- if cookiecutter.include_feature_store == "no" %}
               env: ${bundle.environment}{% endif %}
@@ -89,7 +89,7 @@ resources:
           depends_on:
             - task_key: ModelValidation
           notebook_task:
-            notebook_path: ./deployment/model_deployment/notebooks/ModelDeployment.py
+            notebook_path: ../deployment/model_deployment/notebooks/ModelDeployment.py
             base_parameters:
               env: ${bundle.environment}
       schedule:

@@ -2,16 +2,14 @@ name: ML Code Tests for {{cookiecutter.project_name}}
 on:
   workflow_dispatch:
   pull_request:
-    paths-ignore:
-      - '{{cookiecutter.project_name}}/terraform/**'
 
 env:
-  DATABRICKS_HOST: {{cookiecutter.databricks_staging_workspace_host}}
-  NODE_TYPE_ID: {{ cookiecutter.cloud_specific_node_type_id}}
-  {% if cookiecutter.cloud == "aws" -%}
-  DATABRICKS_TOKEN: {% raw %}${{secrets.STAGING_WORKSPACE_TOKEN}}{% endraw %}
-  {%- endif %}
-  
+  # This token is required until databricks/bricks repo is open to public
+  BRICKS_REPO_TOKEN: {% raw %}${{ secrets.BRICKS_REPO_GITHUB_TOKEN }}{% endraw %}
+  DATABRICKS_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+
+concurrency: {{cookiecutter.project_name}}-feature-training-integration-test-staging
+
 jobs:
   unit_tests:
     runs-on: ubuntu-latest
@@ -30,3 +28,25 @@ jobs:
             cd {{cookiecutter.project_name_alphanumeric_underscore}}
             pytest
             cd ..
+
+  integration_test:
+    needs: unit_tests
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - uses: databricks/setup-bricks@main
+        with:
+          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
+      - name: Validate Bundle For Test Environment in Staging Workspace
+        id: validate
+        run: |
+          bricks bundle validate -e test
+      - name: Deploy Bundle to Test Environment in Staging Workspace
+        id: deploy
+        run: |
+          bricks bundle deploy -e test
+      - name: Run Training Workflow for Test Environment in Staging Workspace
+        id: training
+        run: |
+          bricks bundle run model_training_job -e test
