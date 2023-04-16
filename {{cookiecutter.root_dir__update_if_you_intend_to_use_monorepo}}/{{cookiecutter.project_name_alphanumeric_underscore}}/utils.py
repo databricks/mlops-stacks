@@ -22,6 +22,7 @@ def get_deployed_model_stage_for_env(env):
         "dev": "Staging",
         "staging": "Staging",
         "prod": "Production",
+        "test": "Production",
     }
     return _MODEL_STAGE_FOR_ENV[env]
 
