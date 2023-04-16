@@ -9,7 +9,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/
+    working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
 
 env:
   # This token is required until databricks/bricks repo is open to public
@@ -33,18 +33,20 @@ jobs:
         env:
           DATABRICKS_TOKEN: {% raw %}${{ env.STAGING_WORKSPACE_TOKEN }}{% endraw %}
         run: |
-          bricks bundle validate -e staging
+          bricks bundle validate -e staging > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
         uses: actions/github-script@v6
         id: comment
         with:
           github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
           script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
             const output = `#### Bundle Staging Config Validated 🖌
             <details><summary>Staging Validation Output</summary>
 
             \`\`\`\n
-            {% raw %}${{ steps.validate.outputs.stdout }}{% endraw %}
+            ${fileContents}
             \`\`\`
 
             </details>`
@@ -71,18 +73,20 @@ jobs:
         env:
           DATABRICKS_TOKEN: {% raw %}${{ env.PROD_WORKSPACE_TOKEN }}{% endraw %}
         run: |
-          bricks bundle validate -e prod
+          bricks bundle validate -e prod > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
         uses: actions/github-script@v6
         id: comment
         with:
           github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
           script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
             const output = `#### Bundle Prod Config Validated 🖌
             <details><summary>Prod Validation Output</summary>
 
             \`\`\`\n
-            {% raw %}${{ steps.validate.outputs.stdout }}{% endraw %}
+            ${fileContents}
             \`\`\`
 
             </details>`
