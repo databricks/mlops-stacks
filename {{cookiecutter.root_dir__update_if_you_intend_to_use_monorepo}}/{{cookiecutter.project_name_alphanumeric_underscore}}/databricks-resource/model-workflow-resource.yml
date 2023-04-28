@@ -36,10 +36,14 @@ resources:
               model_name: *model_name
               pickup_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_pickup_features
               dropoff_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_dropoff_features
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {%- else -%}notebook_task:
             notebook_path: ../training/notebooks/Train.py
             base_parameters:
-              env: ${bundle.environment}{% endif %}
+              env: ${bundle.environment}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}{% endif %}
         - task_key: ModelValidation
           job_cluster_key: model_training_job_cluster
           depends_on:
@@ -84,6 +88,8 @@ resources:
               # Specifies the name of the function in {{cookiecutter.project_name}}/training_validation_deployment/validation/validation.py that returns evaluator_config.
               # TODO(optional): evaluator_config_loader_function
               evaluator_config_loader_function: evaluator_config
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: ModelDeployment
           job_cluster_key: model_training_job_cluster
           depends_on:
@@ -92,6 +98,8 @@ resources:
             notebook_path: ../deployment/model_deployment/notebooks/ModelDeployment.py
             base_parameters:
               env: ${bundle.environment}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
       schedule:
         quartz_cron_expression: "0 0 9 * * ?" # daily at 9am
         timezone_id: UTC

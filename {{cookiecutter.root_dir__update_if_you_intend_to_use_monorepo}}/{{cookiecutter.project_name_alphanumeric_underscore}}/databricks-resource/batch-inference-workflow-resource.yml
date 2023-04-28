@@ -30,6 +30,8 @@ resources:
               {%- else -%}input_table_name: taxi_scoring_sample{% endif %}
               output_table_name: {{cookiecutter.project_name_alphanumeric_underscore}}_predictions
               model_name: *model_name
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
       schedule:
         quartz_cron_expression: "0 0 11 * * ?" # daily at 11am
