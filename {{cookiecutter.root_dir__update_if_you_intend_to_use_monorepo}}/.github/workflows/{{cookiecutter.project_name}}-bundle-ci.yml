@@ -12,8 +12,6 @@ defaults:
     working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
 
 env:
-  # This token is required until databricks/bricks repo is open to public
-  BRICKS_REPO_TOKEN: {% raw %}${{ secrets.BRICKS_REPO_GITHUB_TOKEN }}{% endraw %}
   STAGING_WORKSPACE_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
   PROD_WORKSPACE_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
 
@@ -26,8 +24,6 @@ jobs:
         with:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
       - uses: databricks/setup-bricks@main
-        with:
-          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
       - name: Validate Bundle For Staging Environment
         id: validate
         env:
@@ -66,8 +62,6 @@ jobs:
         with:
           ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
       - uses: databricks/setup-bricks@main
-        with:
-          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
       - name: Validate Bundle For Prod Environment
         id: validate
         env:

@@ -41,7 +41,7 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     subprocess.run(
         """
         git init
-        act -s BRICKS_CLI_GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests.yml -j "unit_tests"
+        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests.yml -j "unit_tests"
         """,
         shell=True,
         check=True,
@@ -63,7 +63,7 @@ def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_
     subprocess.run(
         """
         git init
-        act -s BRICKS_CLI_GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests-fs.yml -j "unit_tests"
+        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests-fs.yml -j "unit_tests"
         """,
         shell=True,
         check=True,

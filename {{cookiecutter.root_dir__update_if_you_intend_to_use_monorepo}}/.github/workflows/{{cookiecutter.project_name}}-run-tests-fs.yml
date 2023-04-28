@@ -8,8 +8,6 @@ defaults:
     working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
 
 env:
-  # This token is required until databricks/bricks repo is open to public
-  BRICKS_REPO_TOKEN: {% raw %}${{ secrets.BRICKS_REPO_GITHUB_TOKEN }}{% endraw %}
   DATABRICKS_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
 
 concurrency: {{cookiecutter.project_name}}-feature-training-integration-test-staging
@@ -43,8 +41,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - uses: databricks/setup-bricks@main
-        with:
-          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
       - name: Validate Bundle For Test Environment in Staging Workspace
         id: validate
         run: |

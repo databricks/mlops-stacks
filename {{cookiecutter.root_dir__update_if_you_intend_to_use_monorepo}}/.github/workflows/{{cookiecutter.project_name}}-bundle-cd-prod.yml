@@ -15,8 +15,6 @@ defaults:
     working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}
 
 env:
-  # This token is required until databricks/bricks repo is open to public
-  BRICKS_REPO_TOKEN: {% raw %}${{ secrets.BRICKS_REPO_GITHUB_TOKEN }}{% endraw %}
   DATABRICKS_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
 
 jobs:
@@ -26,8 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-bricks@main
-        with:
-          token: {% raw %}${{ env.BRICKS_REPO_TOKEN }}{% endraw %}
       - name: Validate Bundle For Prod Environment
         id: validate
         run: |
