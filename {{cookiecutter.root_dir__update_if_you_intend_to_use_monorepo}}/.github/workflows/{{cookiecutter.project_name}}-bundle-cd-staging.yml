@@ -15,7 +15,14 @@ defaults:
     working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}
 
 env:
+  {% if cookiecutter.cloud == "aws" -%}
   DATABRICKS_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+  {%- endif %}
+  {% if cookiecutter.cloud == "azure" -%}
+  ARM_TENANT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_TENANT_ID }}{% endraw %}
+  ARM_CLIENT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  ARM_CLIENT_SECRET: {% raw %}${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  {%- endif %}
 
 jobs:
   staging:

@@ -12,8 +12,18 @@ defaults:
     working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
 
 env:
+  {% if cookiecutter.cloud == "aws" -%}
   STAGING_WORKSPACE_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
   PROD_WORKSPACE_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
+  {%- endif %}
+  {% if cookiecutter.cloud == "azure" -%}
+  STAGING_ARM_TENANT_ID: { % raw % }${{ secrets.STAGING_AZURE_SP_TENANT_ID }}{% endraw %}
+  STAGING_ARM_CLIENT_ID: { % raw % }${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  STAGING_ARM_CLIENT_SECRET: { % raw % }${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  PROD_ARM_TENANT_ID: { % raw % }${{ secrets.PROD_AZURE_SP_TENANT_ID }}{% endraw %}
+  PROD_ARM_CLIENT_ID: { % raw % }${{ secrets.PROD_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  PROD_ARM_CLIENT_SECRET: { % raw % }${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  {%- endif %}
 
 jobs:
   staging:
@@ -27,7 +37,14 @@ jobs:
       - name: Validate Bundle For Staging Environment
         id: validate
         env:
+          { % if cookiecutter.cloud == "aws" -% }
           DATABRICKS_TOKEN: {% raw %}${{ env.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+          {%- endif %}
+          {% if cookiecutter.cloud == "azure" -%}
+          ARM_TENANT_ID: { % raw % }${{ env.STAGING_ARM_TENANT_ID }}{% endraw %}
+          ARM_CLIENT_ID: { % raw % }${{ env.STAGING_ARM_CLIENT_ID }}{% endraw %}
+          ARM_CLIENT_SECRET: { % raw % }${{ env.STAGING_ARM_CLIENT_SECRET }}{% endraw %}
+          {%- endif %}
         run: |
           bricks bundle validate -e staging > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
@@ -65,7 +82,14 @@ jobs:
       - name: Validate Bundle For Prod Environment
         id: validate
         env:
+          { % if cookiecutter.cloud == "aws" -% }
           DATABRICKS_TOKEN: {% raw %}${{ env.PROD_WORKSPACE_TOKEN }}{% endraw %}
+          {%- endif %}
+          {% if cookiecutter.cloud == "azure" -%}
+          ARM_TENANT_ID: { % raw % }${{ env.PROD_ARM_TENANT_ID }}{% endraw %}
+          ARM_CLIENT_ID: { % raw % }${{ env.PROD_ARM_CLIENT_ID }}{% endraw %}
+          ARM_CLIENT_SECRET: { % raw % }${{ env.PROD_ARM_CLIENT_SECRET }}{% endraw %}
+          {%- endif %}
         run: |
           bricks bundle validate -e prod > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
