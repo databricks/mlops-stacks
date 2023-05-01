@@ -58,13 +58,6 @@ Others must be correctly specified for CI/CD to work, and so can be left at thei
 ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know
 ``databricks_staging_workspace_host``, it's better to specify it upfront):
 
- * ``mlflow_experiment_parent_dir``: Base Databricks workspace directory under which an MLflow experiment for the
-   current project will be created. The service principals used for CI/CD must have "Can Manage" permissions
-   ([AWS](https://docs.databricks.com/security/access-control/workspace-acl.html#folder-permissions) |
-   [Azure](https://learn.microsoft.com/en-us/azure/databricks/security/access-control/workspace-acl#--folder-permissions) |
-   [GCP](https://docs.gcp.databricks.com/security/access-control/workspace-acl.html#folder-permissions)) on this directory.
-   We recommend using a dedicated directory for the current project, e.g. `/MLOps/<project_name>`, to isolate resources
-   created for different projects.
  * ``databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
    We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view and debug CI test results

@@ -141,30 +141,6 @@ def test_markdown_links(generated_project_dir):
     "invalid_params",
     [
         {
-            "mlflow_experiment_parent_dir": "bad-dir-with-no-slash",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Repos",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Repos/my-ml-model",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Users",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Users/test@databricks.com",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Users/test@databricks.com/",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/",
-        },
-        {
-            "mlflow_experiment_parent_dir": "///",
-        },
-        {
             "databricks_staging_workspace_host": "http://no-https",
         },
         {
@@ -198,51 +174,11 @@ def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
 @pytest.mark.parametrize(
     "valid_params",
     [
-        {
-            "mlflow_experiment_parent_dir": "/Users/test@databricks.com/project",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Users/test@databricks.com/project/",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Repos-fake",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/Users-fake",
-        },
-        {
-            "mlflow_experiment_parent_dir": "/ml-projects/my-ml-project",
-        },
+        {},
     ],
 )
 def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     generate(tmpdir, valid_params)
-
-
-# @pytest.mark.parametrize(
-#     "experiment_parent_dir,expected_dir",
-#     [
-#         ("/mlops-project-directory/", "/mlops-project-directory-${local.env}"),
-#         (
-#             "/Users/test@databricks.com/project/",
-#             "/Users/test@databricks.com/project-${local.env}",
-#         ),
-#     ],
-# )
-# def test_strip_slash_if_needed_from_mlflow_experiment_parent_dir(
-#     tmpdir, experiment_parent_dir, expected_dir
-# ):
-#     params = {
-#         "mlflow_experiment_parent_dir": experiment_parent_dir,
-#     }
-#     generate(tmpdir, params)
-#     tf_config_contents = (
-#         tmpdir
-#         / DEFAULT_PROJECT_NAME
-#         / DEFAULT_PROJECT_NAME
-#         / "terraform/prod/locals.tf"
-#     ).read_text("utf-8")
-#     assert f'mlflow_experiment_parent_dir = "{expected_dir}"' in tf_config_contents
 
 
 @parametrize_by_project_generation_params
@@ -347,7 +283,7 @@ def test_generate_project_default_project_name_params(tmpdir):
         / "databricks-resource/ml-artifacts-resource.yml"
     ).read_text("utf-8")
     assert (
-        "experiment_name: &experiment_name /${bundle.environment}-"
+        "experiment_name: &experiment_name /Users/${workspace.current_user.userName}/${bundle.environment}-"
         + DEFAULT_PROJECT_NAME
         in tf_config_contents
     )
