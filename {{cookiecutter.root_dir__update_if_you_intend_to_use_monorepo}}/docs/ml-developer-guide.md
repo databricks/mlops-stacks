@@ -15,8 +15,10 @@ started iterating on model training code.
 
 **Note**: MLflow Recipes currently supports regression problems, with support for other problem types (classification, etc)
 planned for the future. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
-CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks for model training and inference under `notebooks`.
-See code comments in files under `notebooks/` for the expected interface & behavior of these notebooks.
+CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks  under `notebooks` 
+directory of the corresponding component, for example, model training notebooks in `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks`, 
+batch inference notebook in `{{cookiecutter.project_name_alphanumeric_underscore}}/deployment/batch_inference/notebooks`.
+See code comments in files under `notebooks` for the expected interface & behavior of these notebooks.
 
 If you're not using MLflow Recipes, you can still follow the docs below to develop your ML code, skipping sections
 that are targeted at MLflow Recipes users. Then, when you're ready
@@ -26,8 +28,8 @@ production jobs per the [MLOps setup guide](mlops-setup.md).
 ### Configure your ML pipeline
 **This section assumes use of MLflow Recipes**.
 
-Address TODOs in the recipe configs under `recipe.yaml`, `profiles/databricks-dev.yaml`,
-and `profiles/local.yaml`, specifying configs such as the training dataset path(s) to use when developing
+Address TODOs in the recipe configs under `{{cookiecutter.project_name_alphanumeric_underscore}}/training/recipe.yaml`, `{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/databricks-dev.yaml`,
+and `{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/local.yaml`, specifying configs such as the training dataset path(s) to use when developing
 locally or on Databricks.
 
 For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/recipes-regression-template/blob/main/recipe.yaml).
@@ -36,13 +38,18 @@ described in detail in
 the [Recipe overview](https://mlflow.org/docs/latest/recipes.html)
 and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.recipes.html).
 
-After configuring your recipe, you can iterate on and test ML code under ``steps``.
+After configuring your recipe, you can iterate on and test ML code under ``{{cookiecutter.project_name_alphanumeric_underscore}}/training/steps``.
 We expect most development to take place in the abovementioned YAML config files and
-`steps/train.py` (model training logic).
+`{{cookiecutter.project_name_alphanumeric_underscore}}/training/steps/train.py` (model training logic).
 
 ## Iterating on ML code
 
-### Develop on Databricks
+### Deploy ML code and resources to dev workspace using Bundles
+
+Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md#local-development-and-dev-workspace) 
+to use bricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
+
+### Develop on Databricks using Databricks Repo
 
 #### Prerequisites
 You'll need:
@@ -60,7 +67,7 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * Follow the [UI workflow]({{ "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later" | generate_doc_link(cookiecutter.cloud) }})
   for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
 * Install the `dbx` CLI via `pip install --upgrade dbx`
-* Run `databricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
+* Run `bricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
   This should prompt you to enter an API token
 * [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and paste it into the prompt from the previous step
@@ -68,9 +75,9 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
   `dbx sync repo --profile {{cookiecutter.project_name}}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
 #### Running code on Databricks
-You can iterate on ML code by running the provided `notebooks/Train.py` notebook on Databricks using
+You can iterate on ML code by running the provided `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks/Train.py` notebook on Databricks using
 [Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}). This notebook drives execution of
-the ML code defined under ``steps``. You can use multiple browser tabs to edit
+the ML code defined under ``{{cookiecutter.project_name_alphanumeric_underscore}}/training/steps``. You can use multiple browser tabs to edit
 logic in `steps` and run the training recipe in the `Train.py` notebook.
 
 

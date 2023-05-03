@@ -37,7 +37,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
     # We only test the unit test workflow, as it's the only one that doesn't require
-    # Databricks REST API or Terraform remote state credentials
+    # Databricks REST API
     subprocess.run(
         """
         git init
@@ -59,7 +59,7 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
 def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests passes for feature store"""
     # We only test the unit test workflow, as it's the only one that doesn't require
-    # Databricks REST API or Terraform remote state credentials
+    # Databricks REST API
     subprocess.run(
         """
         git init

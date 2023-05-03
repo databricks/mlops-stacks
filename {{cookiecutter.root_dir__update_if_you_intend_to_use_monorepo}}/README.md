@@ -41,11 +41,9 @@ For example, assuming there's existing repo with root directory name `monorepo_r
 1. Create another project from cookiecutter with project name `project2` and root directory name `project2`.
 2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
 {% if cookiecutter.cicd_platform in ["gitHub", "gitHubEnterprise"] -%}
-3. Rename yaml files in  `project2/.github/workflows/` so that there won't be name conflicts.
-4. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`
+3. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/` and make sure there's no name conflicts.
 {% endif -%}
 {%- if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-3. Rename yaml files in  `project2/.azure/devops-pipelines/` so that there won't be name conflicts.
-4. Copy yaml files from `project2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/`
+3. Copy yaml files from `project2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/` and make sure there's no name conflicts.
 {% endif -%}
 

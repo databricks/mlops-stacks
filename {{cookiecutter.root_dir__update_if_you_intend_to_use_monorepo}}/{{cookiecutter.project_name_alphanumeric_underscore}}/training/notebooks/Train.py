@@ -3,9 +3,8 @@
 # Model Training Notebook
 ##
 # This notebook runs the MLflow Regression Recipe to train and registers an MLflow model in the model registry.
-#
-# It's run as part of CI (to integration-test model training logic) and by an automated model training job
-# defined under ``{{cookiecutter.project_name}}/terraform``
+# It is configured and can be executed as the "Train" task in the model_training_job workflow defined under
+# ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/model-workflow-resource.yml``
 #
 # NOTE: In general, we recommend that you do not modify this notebook directly, and instead update data-loading
 # and model training logic in Python modules under the `steps` directory.

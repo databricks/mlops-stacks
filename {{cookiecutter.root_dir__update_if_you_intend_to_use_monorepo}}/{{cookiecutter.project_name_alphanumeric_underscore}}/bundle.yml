@@ -24,7 +24,7 @@ environments:
   dev:
     default: true
     workspace:
-      # TODO: set dev workspace
+      # TODO: add dev workspace URL
       host:
 
   staging:

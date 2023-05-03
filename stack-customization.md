@@ -63,18 +63,20 @@ The default stack currently has the following sub-components for CI/CD:
 * CI/CD workflow logic defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/.github/` for testing and deploying ML code and models
 * Automated scripts and docs for setting up CI/CD under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/.mlops-setup-scripts/`
 * Logic to trigger model deployment through REST API calls to your CD system, when model training completes.
-  This logic is currently captured in `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/deployment/model_deployment/notebooks/TriggerModelDeploy.py`
+  This logic is currently captured in `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/deployment/model_deployment/notebooks/TriggerModelDeploy.py`
 
-### ML resource config
-ML resource config (Terraform code definitions of ML jobs, experiments, etc) can be found under
-``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform``, along with docs. This component depends on
-the MLOps setup scripts described above in the CI/CD component (`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/.mlops-setup-scripts`).
+### ML resource configs
+Root ML resource config file can be found as ``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml``. 
+It defines the ML config resources to be included and workspace host for each environment.
+
+ML resource configs (bricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
+``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource``, along with docs.
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform/README.md`.
+`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md`.
 
 ### Docs
 After making stack customizations, make any changes needed to

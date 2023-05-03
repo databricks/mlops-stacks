@@ -11,7 +11,7 @@ The default stack in this repo includes three modular components:
 | Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                       | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [Terraform](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/terraform/)   | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [bricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)        | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
 | CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
@@ -67,7 +67,7 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
     repo pull ML code from this branch.
  * ``read_user_group``: Display name of the user group to give read permissions to the ML jobs, integration test job runs, and machine learning resources created for this project. A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
- * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, Terraform resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training. Note that the training code provided with this option will not be using MLflow recipes.    
+ * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training. Note that the training code provided with this option will not be using MLflow recipes.    
 
 See the generated ``README.md`` for next steps!
 
@@ -89,13 +89,15 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 ### I have an existing ML project. Can I productionize it using this stack?
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
-you can e.g. copy just the GitHub Actions workflows under `.github` or Terraform
-config under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform` into your existing project.
+you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
+ under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource` 
+and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` into your existing project.
 
 ### Can I adopt individual components of the stack?
 For this use case, we recommend instantiating the full stack via `cookiecutter`
-and copying the relevant stack subdirectories. For example, all ML terraform config
-is defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name}}/terraform`, while CI/CD is defined e.g. under `.github`
+and copying the relevant stack subdirectories. For example, all ML resource configs
+are defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource`
+and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml`, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
 ### Can I customize this stack?
@@ -133,7 +135,7 @@ the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
 ### Installing development requirements
 
 To run tests, install [actionlint](https://github.com/rhysd/actionlint),
-[terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
+[bricks CLI](https://docs.databricks.com/dev-tools/cli/bricks-cli.html), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
 [act](https://github.com/nektos/act), then install the Python
 dependencies listed in `dev-requirements.txt`:
 
