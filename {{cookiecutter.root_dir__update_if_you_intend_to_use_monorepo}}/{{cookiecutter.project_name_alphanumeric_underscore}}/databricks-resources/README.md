@@ -69,7 +69,8 @@ Alternatively, you can use other ways described by [bricks CLI]({{ "dev-tools/cl
 1. After installing Bricks CLI and setting up `DATABRICKS_TOKEN`, enter the {{cookiecutter.project_name_alphanumeric_underscore}} directory when prompted.
 2. Run `bricks bundle validate` to validate ML resource configurations. 
 3. Run `bricks bundle deploy` to provision ML resource configurations to dev workspace. The ML resource configurations and your ML code will together be copied to dev workspace. Databricks Workflows, Model and Experiment will be provisioned according to the ML resource configs.
-4. Go to Databricks dev workspace, check defined model,experiment and workflows status, and interact with the created workflows.
+4. Run `bricks bundle run <name-of-workflow e.g. model_training_job>` to run a specific workflow defined in your bundle files such as `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`.
+5. Go to the Databricks dev workspace to check the defined model, experiment, and workflows, and interact with the created workflows.
 
 ### Destroy ML resource configurations
 After development is done, run `bricks bundle destroy` to destroy(remove) ML resources from the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
