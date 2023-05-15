@@ -52,7 +52,7 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── databricks-resource     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── databricks-resources     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
 │       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
@@ -60,14 +60,14 @@ contained in the following files:
 │       │
 │       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for data monitor workflow
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for model and experiment
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitor workflow
 {% else -%}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
-│   │   │                          development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details
+│   │   │                          development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
 │   │   │
 │   │   ├── notebooks           <- Databricks notebook that runs the MLflow recipe, i.e. run the logic in `steps`. Used to
 │   │   │                          drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
@@ -92,15 +92,15 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
 │   │
-│   ├── databricks-resource     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── databricks-resources     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
 │       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
 │       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for data monitor workflow
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for model and experiment
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitor workflow
 {% endif -%}
 │
 {% if cookiecutter.cicd_platform == "gitHub" -%}

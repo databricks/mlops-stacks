@@ -33,7 +33,7 @@ feature_store_paths = [
     os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "TrainWithFeatureStore.py"),
     os.path.join(
         project_name_alphanumeric_underscore,
-        "databricks-resource",
+        "databricks-resources",
         "feature-engineering-workflow-resource.yml"
     ),
     os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests-fs.yml"),

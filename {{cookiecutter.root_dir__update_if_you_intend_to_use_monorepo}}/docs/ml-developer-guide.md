@@ -13,8 +13,7 @@ This project comes with example ML code to train a regression model to predict N
 The subsequent sections explain how to adapt the example code to your ML problem and quickly get
 started iterating on model training code.
 
-**Note**: MLflow Recipes currently supports regression problems, with support for other problem types (classification, etc)
-planned for the future. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
+**Note**: MLflow Recipes currently supports regression and classification problems, with support for other problem types planned for the future. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
 CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks  under `notebooks` 
 directory of the corresponding component, for example, model training notebooks in `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks`, 
 batch inference notebook in `{{cookiecutter.project_name_alphanumeric_underscore}}/deployment/batch_inference/notebooks`.
@@ -46,7 +45,7 @@ We expect most development to take place in the abovementioned YAML config files
 
 ### Deploy ML code and resources to dev workspace using Bundles
 
-Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md#local-development-and-dev-workspace) 
+Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md#local-development-and-dev-workspace) 
 to use bricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
 
 ### Develop on Databricks using Databricks Repo

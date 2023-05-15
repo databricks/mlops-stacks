@@ -4,7 +4,7 @@
 #
 # This notebook is an example of applying a model for batch inference against an input delta table,
 # It is configured and can be executed as the batch_inference_job in the batch_inference_job workflow defined under
-# ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml``
+# ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml``
 #
 # Parameters:
 #

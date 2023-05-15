@@ -17,11 +17,11 @@ The bricks CLI bundles top level is defined by file `{{cookiecutter.project_name
 During bricks CLI bundles deployment, the root config file will be loaded, validated and deployed to workspace provided by the environment together with all the included resources.
 
 ML Resource Configurations in this directory:
- - model workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/model-workflow-resource.yml`)
- - batch inference workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml`)
- - monitoring workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/monitoring-workflow-resource.yml`)
- - feature engineering workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/feature-engineering-workflow-resource.yml`)
- - model definition and experiment definition (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/ml-artifacts-resource.yml`)
+ - model workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`)
+ - batch inference workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`)
+ - monitoring workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/monitoring-workflow-resource.yml`)
+ - feature engineering workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/feature-engineering-workflow-resource.yml`)
+ - model definition and experiment definition (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/ml-artifacts-resource.yml`)
 
 
 ### Environment Config & CI/CD integration
@@ -57,7 +57,7 @@ Follow the document to learn how Bricks CLI authentication works -
 [Bricks Cli - set up authentication]({{ "dev-tools/cli/bricks-cli.html#set-up-authentication" | generate_doc_link(cookiecutter.cloud) }})
 
 1. Follow [bricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up Bricks Cli locally.
-2. Complete the `TODO` sessions - add the dev workspace URI to `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` under `environments.dev.workspace.host`.
+2. Complete the `TODO` sections - add the dev workspace URI to `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` under `environments.dev.workspace.host`.
 3. [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and copy it.
 4. Set env parameter `DATABRICKS_TOKEN` with the personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi1234567890ab1cde2f3ab456c7d89efa` if the access token is dapi1234567890ab1cde2f3ab456c7d89efa.
@@ -95,7 +95,7 @@ batch inference job.
 ### Setting up batch inference job
 The batch inference job expects an input Delta table that with a schema that your registered model accepts. To use the batch
 inference job, set up such a Delta table in both your staging and prod workspace.
-Then, update batch_inference_job base parameters in `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml` to pass
+Then, update batch_inference_job base parameters in `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml` to pass
 the name of the input Delta table and the name of the output Delta table to which to write batch predictions.
 
 As the batch job will be run with the credentials of the service principal that provisioned it, make sure that the service
@@ -121,7 +121,7 @@ resolve the TODOs in ModelValidation task of [model-workflow-resource.yml](./mod
 ## Develop and test config changes
 
 ### bricks CLI bundles schema overview
-To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of
+To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of
 a batch inference job, like:
 
 ```$xslt
