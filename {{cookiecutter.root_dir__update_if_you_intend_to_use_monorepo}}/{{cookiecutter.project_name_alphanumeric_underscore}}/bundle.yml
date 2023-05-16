@@ -50,8 +50,8 @@ environments:
         
         Links:
           * [Git Repo](${bundle.git.origin_url}): contains ML code for the current project.
-          * [Recurring model training job]({{cookiecutter.databricks_staging_workspace_host}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-          * [Recurring batch inference job]({{cookiecutter.databricks_staging_workspace_host}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.environment} model version for batch inference.
+          * [Recurring model training job]({{cookiecutter.databricks_prod_workspace_host}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+          * [Recurring batch inference job]({{cookiecutter.databricks_prod_workspace_host}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.environment} model version for batch inference.
     workspace:
       host: {{cookiecutter.databricks_prod_workspace_host}}
 
