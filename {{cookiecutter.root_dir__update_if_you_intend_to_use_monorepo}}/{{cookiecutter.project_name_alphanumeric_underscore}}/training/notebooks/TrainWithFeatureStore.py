@@ -4,7 +4,7 @@
 #
 # This notebook shows an example of a Model Training pipeline using Databricks Feature Store tables.
 # It is configured and can be executed as the "Train" task in the model_training_job workflow defined under
-# ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/model-workflow-resource.yml``
+# ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml``
 #
 # Parameters:
 # * env (required):                 - Environment the notebook is run in (staging, or prod). Defaults to "staging".

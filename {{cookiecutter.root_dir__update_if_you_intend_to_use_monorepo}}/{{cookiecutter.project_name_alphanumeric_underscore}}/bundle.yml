@@ -17,18 +17,18 @@ bundle:
 include:
   # Include ML artifact resources for the ml project
   # Defines model and experiment
-  - ./databricks-resource/ml-artifacts-resource.yml
+  - ./databricks-resources/ml-artifacts-resource.yml
 
   # Include workflow resources of the ml project
   # Defines workflow for model training -> validation -> deployment
-  - ./databricks-resource/model-workflow-resource.yml
+  - ./databricks-resources/model-workflow-resource.yml
   {%- if cookiecutter.include_feature_store == "yes" %}
   # Defines workflow for feature engineering
-  - ./databricks-resource/feature-engineering-workflow-resource.yml{% endif %}
+  - ./databricks-resources/feature-engineering-workflow-resource.yml{% endif %}
   # Defines workflow for scheduled batch inference
-  - ./databricks-resource/batch-inference-workflow-resource.yml
+  - ./databricks-resources/batch-inference-workflow-resource.yml
   # Defines workflow for data monitoring, metric refresh, alerts and triggering retraining
-  - ./databricks-resource/monitoring-workflow-resource.yml
+  - ./databricks-resources/monitoring-workflow-resource.yml
 
 
 # Environment specific values for workspace

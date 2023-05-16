@@ -70,13 +70,13 @@ Root ML resource config file can be found as ``{{cookiecutter.root_dir__update_i
 It defines the ML config resources to be included and workspace host for each environment.
 
 ML resource configs (bricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
-``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource``, along with docs.
+``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources``, along with docs.
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md`.
+`{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md`.
 
 ### Docs
 After making stack customizations, make any changes needed to

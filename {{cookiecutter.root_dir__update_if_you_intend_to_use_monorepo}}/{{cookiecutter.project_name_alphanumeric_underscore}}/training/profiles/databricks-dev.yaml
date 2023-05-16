@@ -1,7 +1,7 @@
 # This profile contains config overrides for model development on Databricks
 experiment:
   # The name of the experiment to use during training or model validation in dev environment.
-  # This value must be the same as experiment_name defined in
+  # TODO: This value must be the same as experiment_name defined in
   # {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml for dev environment.
   name: /dev-{{cookiecutter.experiment_base_name}}
 

@@ -5,7 +5,7 @@
 # This notebook uses mlflow model validation API to run mode validation after training and registering a model
 # in model registry, before deploying it to Production stage.
 #
-# It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/model-workflow-resource.yml``
+# It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml``
 #
 #
 # Parameters:
