@@ -157,7 +157,7 @@ At the start of the resource definition, we declared an anchor `new_cluster` tha
 
 We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.environment}-{{cookiecutter.project_name}}-batch-inference-job`. 
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
-After setting up Bricks CLI, you can run command `bricks bunle schema`  to learn more about bricks CLI bundles schema.
+After setting up Bricks CLI, you can run command `bricks bundle schema`  to learn more about bricks CLI bundles schema.
 
 The notebook_path is the relative path starting from the resource yaml file.
 

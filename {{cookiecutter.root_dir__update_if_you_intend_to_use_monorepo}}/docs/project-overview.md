@@ -62,7 +62,7 @@ contained in the following files:
 │       │
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitor workflow
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {% else -%}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
@@ -100,7 +100,7 @@ contained in the following files:
 │       │
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitor workflow
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {% endif -%}
 │
 {% if cookiecutter.cicd_platform == "gitHub" -%}
