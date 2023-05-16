@@ -1,7 +1,7 @@
 experiment:
   # The name of the experiment to use during training or model validation in staging environment.
   # This value must be the same as experiment_name defined in
-  # {{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/ml-artifacts-bundle-resource.yml for staging environment.
+  # {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml for staging environment.
   name: /staging-{{cookiecutter.experiment_base_name}}
 
 # Set the registry server URI. This property is especially useful if you have a registry
@@ -9,7 +9,7 @@ experiment:
 model_registry:
   # The MLflow registered model name under which to register model versions
   # This value must be the same as model_name defined in
-  # {{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/ml-artifacts-bundle-resource.yml for staging environment.
+  # {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml for staging environment.
   model_name: staging-{{cookiecutter.model_name}}
 
 # Override the default train / validation / test dataset split ratios

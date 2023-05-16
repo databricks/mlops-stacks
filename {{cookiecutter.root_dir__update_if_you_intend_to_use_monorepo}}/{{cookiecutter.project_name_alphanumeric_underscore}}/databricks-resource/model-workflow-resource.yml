@@ -11,11 +11,6 @@ permissions: &permissions
     - level: CAN_VIEW
       group_name: users
 
-# The experiment name must be the same as defined in ml-artifacts-bundle-resource.yml
-# Mingyu TODO: don't redefine the experiment name once bundle supports the reference
-experiment_name: &experiment_name /${bundle.environment}-{{cookiecutter.experiment_base_name}}
-model_name: &model_name ${bundle.environment}-{{cookiecutter.model_name}}
-
 resources:
   jobs:
     model_training_job:
@@ -32,8 +27,8 @@ resources:
               env: ${bundle.environment}
               # TODO: Update training_data_path
               training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
-              experiment_name: *experiment_name
-              model_name: *model_name
+              experiment_name: ${var.experiment_name}
+              model_name: ${var.model_name}
               pickup_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_pickup_features
               dropoff_features_table: feature_store_taxi_example.${bundle.environment}_{{cookiecutter.project_name_alphanumeric_underscore}}_trip_dropoff_features
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
@@ -53,7 +48,7 @@ resources:
             base_parameters:
               {%- if cookiecutter.include_feature_store == "no" %}
               env: ${bundle.environment}{% endif %}
-              experiment_name: *experiment_name
+              experiment_name: ${var.experiment_name}
               # The `run_mode` defines whether model validation is enabled or not.
               # It can be one of the three values:
               # `disabled` : Do not run the model validation notebook.

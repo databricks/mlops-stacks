@@ -276,17 +276,6 @@ def test_generate_project_default_project_name_params(tmpdir):
     generate(tmpdir, context={})
     readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
-    tf_config_contents = (
-        tmpdir
-        / DEFAULT_PROJECT_NAME
-        / DEFAULT_PROJECT_DIRECTORY
-        / "databricks-resource/ml-artifacts-resource.yml"
-    ).read_text("utf-8")
-    assert (
-        "experiment_name: &experiment_name /Users/${workspace.current_user.userName}/${bundle.environment}-"
-        + DEFAULT_PROJECT_NAME
-        in tf_config_contents
-    )
 
 
 @pytest.mark.parametrize(

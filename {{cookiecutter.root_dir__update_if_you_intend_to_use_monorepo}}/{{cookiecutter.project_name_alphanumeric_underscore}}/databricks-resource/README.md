@@ -169,7 +169,9 @@ The `${bundle.environment}` will be replaced by the environment config name duri
 To use different value based on different environment, you can use bundle variables based on environment, for example,
 ```$xslt
 variables:
-  batch_inference_input_table: input_table
+  batch_inference_input_table: 
+    description: The table name to be used for input to the batch inference workflow.
+    default: input_table
 
 environments:
   dev:
@@ -198,7 +200,7 @@ resources:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
               env: ${bundle.environment}
-              input_table_name: ${variables.batch_inference_input_table}
+              input_table_name: ${var.batch_inference_input_table}
               ...
 ```
 The `batch_inference_job` notebook parameter `input_table_name` is using a bundle variable `batch_inference_input_table` with default value "input_table".
