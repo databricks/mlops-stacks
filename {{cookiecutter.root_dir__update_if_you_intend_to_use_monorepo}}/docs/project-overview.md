@@ -18,7 +18,7 @@ This project contains the following components:
 | Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                                                                                                                                                                                                              |
-| ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) configured and deployed through [bricks CLI bundles]({{ "dev-tools/cli/bundle-cli.html" | generate_doc_link(cookiecutter.cloud) }})                                                                                                                                       |
+| ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) configured and deployed through [databricks CLI bundles]({{ "dev-tools/cli/bundle-cli.html" | generate_doc_link(cookiecutter.cloud) }})                                                                                                                                       |
 | CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %} |
 
 contained in the following files:
@@ -30,7 +30,7 @@ contained in the following files:
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
-│   ├── bundle.yml              <- bundle.yml is the root ML resource config file for the ML project that can be loaded by bricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
+│   ├── bundle.yml              <- bundle.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
 {% if cookiecutter.include_feature_store == "yes" -%}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.

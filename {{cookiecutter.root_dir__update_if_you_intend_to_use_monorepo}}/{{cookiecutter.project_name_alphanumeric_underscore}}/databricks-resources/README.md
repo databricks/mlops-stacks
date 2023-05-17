@@ -9,12 +9,12 @@
 
 ## Intro
 
-### bricks CLI bundles
-MLOps-stacks ML resources are configured and deployed through [bricks CLI bundles]({{ "dev-tools/cli/bundle-cli.html" | generate_doc_link(cookiecutter.cloud) }}). 
+### databricks CLI bundles
+MLOps-stacks ML resources are configured and deployed through [databricks CLI bundles]({{ "dev-tools/cli/bundle-cli.html" | generate_doc_link(cookiecutter.cloud) }}). 
 The bundle setting file must be expressed in YAML format and must contain at minimum the top-level bundle mapping.
 
-The bricks CLI bundles top level is defined by file `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml`.
-During bricks CLI bundles deployment, the root config file will be loaded, validated and deployed to workspace provided by the environment together with all the included resources.
+The databricks CLI bundles top level is defined by file `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml`.
+During databricks CLI bundles deployment, the root config file will be loaded, validated and deployed to workspace provided by the environment together with all the included resources.
 
 ML Resource Configurations in this directory:
  - model workflow (`{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`)
@@ -25,7 +25,7 @@ ML Resource Configurations in this directory:
 
 
 ### Environment Config & CI/CD integration
-The ML resources can be deployed to databricks workspace based on the bricks CLI bundles environment config. 
+The ML resources can be deployed to databricks workspace based on the databricks CLI bundles environment config. 
 Different environment configs share the general ML resource configurations with added ability to specify environment specific values(for example, workspace URI, model name, jobs notebook parameters, etc).
 
 This project ships with CI/CD workflows for developing and deploying ML resource configurations based on environment config.
@@ -53,27 +53,27 @@ Upon merging a commit to release branch, the release branch content will be depl
 
 ### Set up authentication
 
-Follow the document to learn how Bricks CLI authentication works -
-[Bricks Cli - set up authentication]({{ "dev-tools/cli/bricks-cli.html#set-up-authentication" | generate_doc_link(cookiecutter.cloud) }})
+Follow the document to learn how databricks CLI authentication works -
+[databricks CLI - set up authentication]({{ "dev-tools/cli/bricks-cli.html#set-up-authentication" | generate_doc_link(cookiecutter.cloud) }})
 
-1. Follow [bricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up Bricks Cli locally.
+1. Follow [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up databricks CLI locally.
 2. Complete the `TODO` sections - add the dev workspace URI to `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` under `environments.dev.workspace.host`.
 3. [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and copy it.
 4. Set env parameter `DATABRICKS_TOKEN` with the personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi1234567890ab1cde2f3ab456c7d89efa` if the access token is dapi1234567890ab1cde2f3ab456c7d89efa.
-5. Now you can use Bricks CLI to validate and deploy ML resource configurations to dev workspace.
+5. Now you can use databricks CLI to validate and deploy ML resource configurations to dev workspace.
 
-Alternatively, you can use other ways described by [bricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to set up authentication. For example, use username/password, or set up profile.
+Alternatively, you can use other ways described by [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to set up authentication. For example, use username/password, or set up profile.
 
 ### Validate and provision ML resource configurations
-1. After installing Bricks CLI and setting up `DATABRICKS_TOKEN`, enter the {{cookiecutter.project_name_alphanumeric_underscore}} directory when prompted.
-2. Run `bricks bundle validate` to validate ML resource configurations. 
-3. Run `bricks bundle deploy` to provision ML resource configurations to dev workspace. The ML resource configurations and your ML code will together be copied to dev workspace. Databricks Workflows, Model and Experiment will be provisioned according to the ML resource configs.
-4. Run `bricks bundle run <name-of-workflow e.g. model_training_job>` to run a specific workflow defined in your bundle files such as `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`.
+1. After installing databricks CLI and setting up `DATABRICKS_TOKEN`, enter the {{cookiecutter.project_name_alphanumeric_underscore}} directory when prompted.
+2. Run `databricks bundle validate` to validate ML resource configurations. 
+3. Run `databricks bundle deploy` to provision ML resource configurations to dev workspace. The ML resource configurations and your ML code will together be copied to dev workspace. Databricks Workflows, Model and Experiment will be provisioned according to the ML resource configs.
+4. Run `databricks bundle run <name-of-workflow e.g. model_training_job>` to run a specific workflow defined in your bundle files such as `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`.
 5. Go to the Databricks dev workspace to check the defined model, experiment, and workflows, and interact with the created workflows.
 
 ### Destroy ML resource configurations
-After development is done, run `bricks bundle destroy` to destroy(remove) ML resources from the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
+After development is done, run `databricks bundle destroy` to destroy(remove) ML resources from the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
 
 ## Set up CI and CD
 Please refer to [mlops-setup](../../docs/mlops-setup.md#configure-cicd) for instructions to set up CI and CD.
@@ -121,7 +121,7 @@ resolve the TODOs in ModelValidation task of [model-workflow-resource.yml](./mod
 
 ## Develop and test config changes
 
-### bricks CLI bundles schema overview
+### databricks CLI bundles schema overview
 To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of
 a batch inference job, like:
 
@@ -157,7 +157,7 @@ At the start of the resource definition, we declared an anchor `new_cluster` tha
 
 We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.environment}-{{cookiecutter.project_name}}-batch-inference-job`. 
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
-After setting up Bricks CLI, you can run command `bricks bundle schema`  to learn more about bricks CLI bundles schema.
+After setting up databricks CLI, you can run command `databricks bundle schema`  to learn more about databricks CLI bundles schema.
 
 The notebook_path is the relative path starting from the resource yaml file.
 
