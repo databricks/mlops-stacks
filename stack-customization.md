@@ -69,7 +69,7 @@ The default stack currently has the following sub-components for CI/CD:
 Root ML resource config file can be found as ``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml``. 
 It defines the ML config resources to be included and workspace host for each environment.
 
-ML resource configs (bricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
+ML resource configs (databricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
 ``{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources``, along with docs.
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,

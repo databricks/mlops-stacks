@@ -46,7 +46,7 @@ We expect most of the development to take place in the `{{cookiecutter.project_n
 ### Deploy ML code and resources to dev workspace using Bundles
 
 Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md#local-development-and-dev-workspace)
-to use bricks CLI bundles to deploy ML code together with ML resource configs to dev workspace.
+to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace.
 
 ### Develop on Databricks using Databricks Repo
 

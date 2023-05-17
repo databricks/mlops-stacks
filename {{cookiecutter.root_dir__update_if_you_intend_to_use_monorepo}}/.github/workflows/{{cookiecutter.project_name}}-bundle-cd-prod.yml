@@ -29,12 +29,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: databricks/setup-bricks@main
+      - uses: databricks/setup-cli@main
       - name: Validate Bundle For Prod Environment
         id: validate
         run: |
-          bricks bundle validate -e prod
+          databricks bundle validate -e prod
       - name: Deploy Bundle to Prod Environment
         id: deploy
         run: |
-          bricks bundle deploy -e prod
+          databricks bundle deploy -e prod

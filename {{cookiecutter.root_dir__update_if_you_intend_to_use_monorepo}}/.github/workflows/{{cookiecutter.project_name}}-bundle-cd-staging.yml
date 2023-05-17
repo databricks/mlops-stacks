@@ -29,12 +29,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: databricks/setup-bricks@main
+      - uses: databricks/setup-cli@main
       - name: Validate Bundle For Staging Environment
         id: validate
         run: |
-          bricks bundle validate -e staging
+          databricks bundle validate -e staging
       - name: Deploy Bundle to Staging Environment
         id: deploy
         run: |
-          bricks bundle deploy -e staging
+          databricks bundle deploy -e staging

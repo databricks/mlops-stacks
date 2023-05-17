@@ -11,7 +11,7 @@ The default stack in this repo includes three modular components:
 | Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project structure, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)                       | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [bricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)        | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)        | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
 | CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
@@ -135,7 +135,7 @@ the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
 ### Installing development requirements
 
 To run tests, install [actionlint](https://github.com/rhysd/actionlint),
-[bricks CLI](https://docs.databricks.com/dev-tools/cli/bricks-cli.html), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
+[databricks CLI](https://docs.databricks.com/dev-tools/cli/bricks-cli.html), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
 [act](https://github.com/nektos/act), then install the Python
 dependencies listed in `dev-requirements.txt`:
 

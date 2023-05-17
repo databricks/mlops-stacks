@@ -46,7 +46,7 @@ We expect most development to take place in the abovementioned YAML config files
 ### Deploy ML code and resources to dev workspace using Bundles
 
 Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md#local-development-and-dev-workspace) 
-to use bricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
+to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
 
 ### Develop on Databricks using Databricks Repo
 
@@ -66,7 +66,7 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * Follow the [UI workflow]({{ "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later" | generate_doc_link(cookiecutter.cloud) }})
   for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
 * Install the `dbx` CLI via `pip install --upgrade dbx`
-* Run `bricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
+* Run `databricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
   This should prompt you to enter an API token
 * [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and paste it into the prompt from the previous step
