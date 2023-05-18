@@ -1,4 +1,6 @@
 .DS_Store
+.vscode
+
 # local bundle files
 **/.databricks/*
 

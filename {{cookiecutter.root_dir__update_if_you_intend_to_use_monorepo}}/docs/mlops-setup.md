@@ -4,7 +4,7 @@
 ## Table of contents
 * [Intro](#intro)
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
-* [Configure CI/CD](#configure-cicd)
+* [Configure CI/CD]({% if cookiecutter.cicd_platform == "gitHub" %}#configure-cicd---github-actions{% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}#configure-cicd---azure-devops{% endif %})
 {%- if cookiecutter.include_feature_store == "no" %}
 * [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){% endif %}
 * [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
@@ -23,7 +23,7 @@ After following this guide, data scientists can follow the [ML Pull Request](ml-
 
 ## Create a hosted Git repo
 Create a hosted Git repo to store project code, if you haven't already done so. From within the project
-directory, initialize git and add your hosted Git repo as a remote:
+directory, initialize Git and add your hosted Git repo as a remote:
 ```
 git init --initial-branch={{cookiecutter.default_branch}}
 ```
@@ -32,14 +32,15 @@ git init --initial-branch={{cookiecutter.default_branch}}
 git remote add upstream <hosted-git-repo-url>
 ```
 
-Commit the current README file and other docs to the `{{cookiecutter.default_branch}}` branch of the repo, to enable forking the repo:
+Commit the current `README.md` file and other docs to the `{{cookiecutter.default_branch}}` branch of the repo, to enable forking the repo:
 ```
 git add README.md docs .gitignore {{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md
 git commit -m "Adding project README"
 git push upstream {{cookiecutter.default_branch}}
 ```
 
-## Configure CI/CD
+{% if cookiecutter.cicd_platform == "gitHub" -%} 
+## Configure CI/CD - GitHub Actions
 
 ### Prerequisites
 * You must be an account admin to add service principals to the account.
@@ -48,10 +49,10 @@ git push upstream {{cookiecutter.default_branch}}
   [prod workspace admin console]({{cookiecutter.databricks_prod_workspace_host}}#setting/accounts). If
   the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
 
-### Set up authentication for CI & CD
+### Set up authentication for CI/CD
 #### Set up Service Principal
 {% if cookiecutter.cloud == "azure" %}
-To authenticate and manage ML resources created by CI and CD, a
+To authenticate and manage ML resources created by CI/CD, 
 [service principals]({{ "administration-guide/users-groups/service-principals"  | generate_doc_link(cookiecutter.cloud) }})
 for the project should be created and added to both staging and prod workspaces. Follow
 [Add a service principal to your Azure Databricks account]({{ "administration-guide/users-groups/service-principals#--add-a-service-principal-to-your-azure-databricks-account"  | generate_doc_link(cookiecutter.cloud) }})
@@ -59,51 +60,131 @@ and [Add a service principal to a workspace]({{ "administration-guide/users-grou
 for details.
 
 {% elif cookiecutter.cloud == "aws" %}
-To authenticate and manage ML resources created by CI and CD, a
+To authenticate and manage ML resources created by CI/CD, 
 [service principals]({{ "administration-guide/users-groups/service-principals.html"  | generate_doc_link(cookiecutter.cloud) }})
-for the project should be created in and added to both staging and prod workspaces. Follow
+for the project should be created and added to both staging and prod workspaces. Follow
 [Add a service principal to your Databricks account]({{ "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account"  | generate_doc_link(cookiecutter.cloud) }})
 and [Add a service principal to a workspace]({{ "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace"  | generate_doc_link(cookiecutter.cloud) }})
 for details.
 {% endif %}
 
-#### Set secrets for CI & CD
+#### Set secrets for CI/CD
 {% if cookiecutter.cicd_platform == "gitHub" and cookiecutter.cloud == "aws" %}
-After creating a service principal and adding it to the staging and prod workspaces, follow
+After creating the service principals and adding them to the respective staging and prod workspaces, follow
 [Manage access tokens for a service principal]({{ "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal"  | generate_doc_link(cookiecutter.cloud) }})
-to get service principal tokens for staging and prod workspace and [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-to add the following secrets to gitHub:
-- STAGING_WORKSPACE_TOKEN : service principal token for staging workspace
-- PROD_WORKSPACE_TOKEN : service principal token for prod workspace
+to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the secrets to GitHub:
+- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
   {% endif %}
 
 {% if cookiecutter.cicd_platform == "gitHub" and cookiecutter.cloud == "azure" %}
-After creating a service principal and add it to the staging and prod workspaces, refer to
+After creating the service principals and adding them to the respective staging and prod workspaces, refer to
 [Manage access tokens for a service principal]({{ "administration-guide/users-groups/service-principals#--manage-access-tokens-for-a-service-principal"  | generate_doc_link(cookiecutter.cloud) }})
 and [Get Azure AD tokens for service principals]({{ "dev-tools/api/latest/aad/service-prin-aad-token"  | generate_doc_link(cookiecutter.cloud) }})
-to get service principal (tenant id, application id, client secret) for staging and prod workspace and [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-to add the following secrets to gitHub:
-- PROD_AZURE_SP_TENANT_ID
-- PROD_AZURE_SP_APPLICATION_ID
-- PROD_AZURE_SP_CLIENT_SECRET
-- STAGING_AZURE_SP_TENANT_ID
-- STAGING_AZURE_SP_APPLICATION_ID
-- STAGING_AZURE_SP_CLIENT_SECRET
+to get your service principal credentials (tenant id, application id, and client secret) for both the staging and prod service principals, and [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the following secrets to GitHub:
+- `PROD_AZURE_SP_TENANT_ID`
+- `PROD_AZURE_SP_APPLICATION_ID`
+- `PROD_AZURE_SP_CLIENT_SECRET`
+- `STAGING_AZURE_SP_TENANT_ID`
+- `STAGING_AZURE_SP_APPLICATION_ID`
+- `STAGING_AZURE_SP_CLIENT_SECRET`
   {% endif %}
 
-{% if cookiecutter.cicd_platform == "azureDevOpsServices" %}
-After creating a service principal and add it to the staging and prod workspaces, refer to
-[Manage access tokens for a service principal]({{ "administration-guide/users-groups/service-principals#--manage-access-tokens-for-a-service-principal"  | generate_doc_link(cookiecutter.cloud) }})
-and [Get Azure AD tokens for service principals]({{ "dev-tools/api/latest/aad/service-prin-aad-token"  | generate_doc_link(cookiecutter.cloud) }})
-to get service principal (tenant id, application id, client secret) for staging and prod workspace and [Set secret variables](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/set-secret-variables?view=azure-devops&tabs=yaml%2Cbash)
-to add the following secret variables to Azure DevOps:
-- PROD_AZURE_SP_TENANT_ID
-- PROD_AZURE_SP_APPLICATION_ID
-- PROD_AZURE_SP_CLIENT_SECRET
-- STAGING_AZURE_SP_TENANT_ID
-- STAGING_AZURE_SP_APPLICATION_ID
-- STAGING_AZURE_SP_CLIENT_SECRET
-  {% endif %}
+{% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%} 
+## Configure CI/CD - Azure DevOps
+
+Two Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
+
+- **`{{cookiecutter.project_name}}-tests-ci.yml`**:<br>
+  - **[CI]** Performs unit and integration tests<br>
+    - Triggered on PR to main
+- **`{{cookiecutter.project_name}}-bundle-cicd.yml`**:<br>
+  - **[CI]** Performs validation of Databricks resources defined under `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource`<br>
+    - Triggered on PR to main<br>
+  - **[CD]** Deploys Databricks resources to the staging workspace<br>
+    - Triggered on merging into main<br>
+  - **[CD]** Deploys Databricks resources to the prod workspace<br>
+    - Triggered on merging into release
+
+> Note that these workflows are provided as example CI/CD workflows, and can be easily modified to match your preferred CI/CD order of operations.
+
+Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Azure Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections.
+
+### Service principal approach [Default]
+
+By default, we provide Azure Pipelines where authentication is done using service principals.
+
+#### Requirements:
+- You must be an Azure account admin to add service principals to the account.
+- You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{cookiecutter.databricks_staging_workspace_host}}#setting/accounts) and
+  [prod workspace admin console]({{cookiecutter.databricks_prod_workspace_host}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+- Permissions to create Azure DevOps Pipelines in your Azure DevOps project. See the following [Azure DevOps prerequisites](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions).
+- Permissions to create Azure DevOps build policies. See the following [prerequisites](https://learn.microsoft.com/azure/devops/repos/git/branch-policies).
+
+#### Steps:
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ "administration-guide/users-groups/service-principals"  | generate_doc_link(cookiecutter.cloud) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Azure Databricks account]({{ "administration-guide/users-groups/service-principals#add-service-principals-to-your-account-using-the-account-console"  | generate_doc_link(cookiecutter.cloud) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ "administration-guide/users-groups/service-principals.html"  | generate_doc_link(cookiecutter.cloud) }}) for details.
+1. Follow ['Get Azure AD tokens for the service principals']({{ "dev-tools/api/latest/aad/service-prin-aad-token"  | generate_doc_link(cookiecutter.cloud) }})
+to get your service principal credentials (tenant id, application id, and client secret) for both the staging and prod service principals. You will use these credentials as variables in the project Azure Pipelines.
+1. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these pipelines will use the `{{cookiecutter.project_name}}-tests-ci.yml` script, and the other will use the `{{cookiecutter.project_name}}-bundles-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+1. Create a new variable group called `{{cookiecutter.project_name}} variable group` defining the following secret variables:
+    - `PROD_AZURE_SP_TENANT_ID`: tenant ID for the prod service principal
+    - `PROD_AZURE_SP_APPLICATION_ID`: application (client) ID for the prod service principal
+    - `PROD_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
+    - `STAGING_AZURE_SP_TENANT_ID`: tenant ID for the staging service principal
+    - `STAGING_AZURE_SP_APPLICATION_ID`: application (client) ID for the staging service principal
+    - `STAGING_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
+      - Ensure that the two Azure Pipelines created in the prior step have access to these variables by selecting the name of the pipelines under the 'Pipeline permissions' tab of this variable group.
+      - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
+1. Define two [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{cookiecutter.default_branch}}` branch using the two Azure build pipelines created in step 1. This is required so that any PR changes to the `{{cookiecutter.default_branch}}` must build successfully before PRs can complete.
+
+### Service connection approach [Recommended in production settings]
+
+#### Requirements:
+- You must be an Azure account admin to add service principals to the account.
+- You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{cookiecutter.databricks_staging_workspace_host}}#setting/accounts) and
+  [prod workspace admin console]({{cookiecutter.databricks_prod_workspace_host}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+- Permissions to create service connections within an Azure subscription. See the following [prerequisites](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints).
+- Permissions to create Azure DevOps Pipelines in your Azure DevOps project. See the following [Azure DevOps prerequisites](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions).
+- Permissions to create Azure DevOps build policies. See the following [prerequisites](https://learn.microsoft.com/azure/devops/repos/git/branch-policies).
+
+The ultimate aim of the service connection approach is to use two separate service connections, authenticated with a staging service principal and a production service principal, to deploy and run resources in the respective Azure Databricks workspaces. Taking this approach then negates the need to read client secrets or client IDs from the CI/CD pipelines.
+
+#### Steps:
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ "administration-guide/users-groups/service-principals"  | generate_doc_link(cookiecutter.cloud) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Azure Databricks account]({{ "administration-guide/users-groups/service-principals#add-service-principals-to-your-account-using-the-account-console"  | generate_doc_link(cookiecutter.cloud) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ "administration-guide/users-groups/service-principals.html"  | generate_doc_link(cookiecutter.cloud) }}) for details.
+1. [Create two Azure Resource Manager service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#create-a-service-connection) - one to be used to deploy to staging Databricks resources, the other for production resources. Each of these service connections should be authenticated with the respective staging and production service principals created in the prior step.
+1. Update both pipeline YAML files to use service connections rather than pipeline variables:
+   - First, remove any lines where the environment variables are set in tasks in `{{cookiecutter.project_name}}-tests-ci.yml` or `{{cookiecutter.project_name}}-bundle-cicd.yml` files. Specifically, any lines where the following env vars are used: `PROD_AZURE_SP_TENANT_ID`, `PROD_AZURE_SP_APPLICATION_ID`, `PROD_AZURE_SP_CLIENT_SECRET`, `STAGING_AZURE_SP_TENANT_ID`, `STAGING_AZURE_SP_APPLICATION_ID`, `STAGING_AZURE_SP_CLIENT_SECRET`
+   - Then, add the following AzureCLI task prior to installing the `databricks` cli in any of the pipeline jobs:
+
+```yaml
+# Get Azure Resource Manager variables using service connection
+- task: AzureCLI@2
+  displayName: 'Extract information from Azure CLI'
+  inputs:
+    azureSubscription: # TODO: insert SERVICE_CONNECTION_NAME
+    addSpnToEnvironment: true
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      subscription_id=$(az account list --query "[?isDefault].id"|jq -r '.[0]')
+      echo "##vso[task.setvariable variable=ARM_CLIENT_ID]${servicePrincipalId}"
+      echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
+      echo "##vso[task.setvariable variable=ARM_TENANT_ID]${tenantId}"
+      echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]${subscription_id}"
+```
+  > Note that you will have to update this code snippet with the respective service connection names, depending on which Databricks workspace you are deploying resources to.
+
+5. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these Pipelines will use the `{{cookiecutter.project_name}}-tests-ci.yml` script, and the other will use the `{{cookiecutter.project_name}}-bundle-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+6. Define two build validation branch policies for the `{{cookiecutter.default_branch}}` using the two Azure Pipelines created in step 1. This is required so that any PR changes to the `{{cookiecutter.default_branch}}` must build successfully before PRs can complete.
+{% endif %}
 
 {%- if cookiecutter.include_feature_store == "no" %}
 ## Configure profiles for tests, staging, and prod

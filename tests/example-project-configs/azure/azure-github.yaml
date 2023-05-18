@@ -2,7 +2,7 @@
 default_context:
   project_name: "example-azure-github-project"
   cloud: "azure"
-  cicd_plaform: "GitHub Actions"
+  cicd_platform: "GitHub Actions"
   databricks_staging_workspace_host: "https://adb-your-staging-workspace.azuredatabricks.net"
   databricks_prod_workspace_host: "https://adb-your-prod-workspace.azuredatabricks.net"
   default_branch: "main"
