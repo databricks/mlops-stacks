@@ -32,7 +32,7 @@ of the Git repo. Support for running tests against pull requests from repo forks
 is planned for the future.
 
 ## Viewing test status and debug logs
-Opening a pull request will trigger a 
+Opening a pull request will trigger a  
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
 [workflow](../.github/workflows/{{cookiecutter.project_name}}-run-tests{% if cookiecutter.include_feature_store == "yes" %}-fs{% endif %}.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 

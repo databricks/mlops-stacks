@@ -48,7 +48,7 @@ We expect most development to take place in the abovementioned YAML config files
 Refer to [Local development and dev workspace](../{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md#local-development-and-dev-workspace) 
 to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
 
-### Develop on Databricks using Databricks Repo
+### Develop on Databricks using Databricks Repos
 
 #### Prerequisites
 You'll need:
