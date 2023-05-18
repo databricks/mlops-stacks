@@ -8,11 +8,11 @@ on Databricks that follow production best-practices out of the box.
 
 The default stack in this repo includes three modular components:
 
-| Component                  | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
-|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project structure, with unit tested Python modules and notebooks.                                                                                          | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Config as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
-| CI/CD                      | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
+| Component                    | Description                                                                                                                                                         | Why it's useful                                                                                                                                                                         |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML Code                      | Example ML project structure, with unit tested Python modules and notebooks                                                                                         | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
+| ML Resource Configs as Code  | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)  | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| CI/CD                        | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
 Your organization can use the default stack as is or customize it as needed, e.g. to add/remove components or
@@ -109,9 +109,9 @@ for details on how to do this.
 ### Does the MLOps stack cover data (ETL) pipelines?
 
 Since MLOps Stacks is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
-it's not limited only to ML workflows and assets - it's Databricks Lakehouse wide. For instance, while the existing ML 
+it's not limited only to ML workflows and assets - it works for assets across the Databricks Lakehouse. For instance, while the existing ML 
 code samples contain feature engineering, training, model validation, deployment and batch inference workflows,
-you can  use it for Delta Live Tables pipelines as well using the same mechanisms.
+you can use it for Delta Live Tables pipelines as well.
 
 ### How can I provide feedback?
 
