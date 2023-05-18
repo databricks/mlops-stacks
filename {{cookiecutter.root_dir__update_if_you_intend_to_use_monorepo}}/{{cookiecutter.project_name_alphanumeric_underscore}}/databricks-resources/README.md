@@ -26,7 +26,7 @@ ML Resource Configurations in this directory:
 
 ### Environment Config & CI/CD integration
 The ML resources can be deployed to databricks workspace based on the databricks CLI bundles environment config. 
-Different environment configs share the general ML resource configurations with added ability to specify environment specific values(for example, workspace URI, model name, jobs notebook parameters, etc).
+Different environment configs share the general ML resource configurations with added ability to specify environment specific values (workspace URI, model name, jobs notebook parameters, etc).
 
 This project ships with CI/CD workflows for developing and deploying ML resource configurations based on environment config.
 

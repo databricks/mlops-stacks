@@ -7,7 +7,7 @@
   "databricks_prod_workspace_host": "URL of production Databricks workspace. Default: `{%- if cookiecutter.cloud == 'azure' -%} https://adb-xxxx.xx.azuredatabricks.net {%- elif cookiecutter.cloud == 'aws' -%} https://your-prod-workspace.cloud.databricks.com {%- endif -%}`",
   "default_branch": "Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default: `main`",
   "release_branch": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default: `release`",
-  "read_user_group": "Display name of the user group to give read permissions to the ML jobs, integration test job runs, and machine learning resources created for this project. A group with this name must exist in both the staging and prod workspaces. Default: `users`",
+  "read_user_group": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default: `users`",
   "include_feature_store": ["no", "yes"],
   "_extensions": ["local_extensions.generate_doc_link", "local_extensions.regex_replace", "local_extensions.get_host"]
 }

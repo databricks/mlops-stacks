@@ -59,6 +59,8 @@ for the project should be created and added to both staging and prod workspaces.
 and [Add a service principal to a workspace]({{ "administration-guide/users-groups/service-principals#--add-a-service-principal-to-a-workspace"  | generate_doc_link(cookiecutter.cloud) }})
 for details.
 
+For your convenience, we also have Terraform modules that can be used to [create](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-creation/databricks/latest) or [link](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-linking/databricks/latest) service principals.
+
 {% elif cookiecutter.cloud == "aws" %}
 To authenticate and manage ML resources created by CI/CD, 
 [service principals]({{ "administration-guide/users-groups/service-principals.html"  | generate_doc_link(cookiecutter.cloud) }})
@@ -66,6 +68,8 @@ for the project should be created and added to both staging and prod workspaces.
 [Add a service principal to your Databricks account]({{ "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account"  | generate_doc_link(cookiecutter.cloud) }})
 and [Add a service principal to a workspace]({{ "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace"  | generate_doc_link(cookiecutter.cloud) }})
 for details.
+
+For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 {% endif %}
 
 #### Set secrets for CI/CD
