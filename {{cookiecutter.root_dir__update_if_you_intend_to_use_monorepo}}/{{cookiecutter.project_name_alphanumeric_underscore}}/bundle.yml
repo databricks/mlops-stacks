@@ -5,9 +5,6 @@ variables:
   model_name:
     description: Model name for the model training.
     default: ${bundle.environment}-{{cookiecutter.model_name}}
-  model_description:
-    description: Model description for the model used in training.
-    default: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
 
 
 bundle:
@@ -44,14 +41,6 @@ environments:
       host: {{cookiecutter.databricks_staging_workspace_host}}
 
   prod:
-    variables:
-      model_description: |
-        MLflow registered model for the "{{cookiecutter.project_name}}" ML Project. See the corresponding [Git repo](${bundle.git.origin_url}) for details on the project.
-        
-        Links:
-          * [Git Repo](${bundle.git.origin_url}): contains ML code for the current project.
-          * [Recurring model training job]({{cookiecutter.databricks_prod_workspace_host}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-          * [Recurring batch inference job]({{cookiecutter.databricks_prod_workspace_host}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.environment} model version for batch inference.
     workspace:
       host: {{cookiecutter.databricks_prod_workspace_host}}
 

@@ -75,6 +75,17 @@ except:
 
 # COMMAND ----------
 
+from mlflow.recipes.utils import (
+    get_recipe_config,
+    get_recipe_root_path,
+)
+
+root_path = get_recipe_root_path()
+config = get_recipe_config(root_path, profile)
+if config['experiment']['name'].startswith(f"/{env}-{{cookiecutter.experiment_base_name}}"):
+    print("WARNING: The experiment name may not have been set correctly. Please confirm that the experiment name in the profile YAML file matches the experiment_name variable in {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml.")
+
+# COMMAND ----------
 
 r = Recipe(profile=profile)
 
