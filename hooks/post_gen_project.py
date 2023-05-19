@@ -18,6 +18,7 @@ mlp_paths = [
     os.path.join(project_name_alphanumeric_underscore, "training", "profiles"),
     os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "Train.py"),
     os.path.join(project_name_alphanumeric_underscore, "training", "recipe.yaml"),
+    os.path.join(project_name_alphanumeric_underscore, "training", "README.md"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "ingest_test.py"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "split_test.py"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "train_test.py"),
