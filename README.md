@@ -66,8 +66,9 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``default_branch``: Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged.
  * ``release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
     repo pull ML code from this branch.
- * ``read_user_group``: Display name of the user group to give read permissions to the ML jobs, integration test job runs, and machine learning resources created for this project. A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
- * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training.    
+ * ``read_user_group``: User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
+ * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training.
+ 
 
 See the generated ``README.md`` for next steps!
 
