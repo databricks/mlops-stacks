@@ -20,7 +20,7 @@ See code comments in files under `notebooks` for the expected interface & behavi
 If you're not using MLflow Recipes, you can still follow the docs below to develop your ML code, skipping sections
 that are targeted at MLflow Recipes users. Then, when you're ready
 to productionize your ML project, ask your ops team to set up CI/CD and deploy
-production jobs per the [MLOps setup guide](../mlops-setup.md).
+production jobs per the [MLOps setup guide](../../docs/mlops-setup.md).
 
 ### Configure your ML pipeline
 **This section assumes use of MLflow Recipes**.
@@ -112,12 +112,12 @@ Then, open a browser tab pointing to [http://127.0.0.1:5000](http://127.0.0.1:50
 You can run unit tests for your ML code via `pytest tests`.
 
 ## Next Steps
-If you're iterating on ML code for an existing, already-deployed ML project, follow [Submitting a Pull Request](../ml-pull-request.md)
+If you're iterating on ML code for an existing, already-deployed ML project, follow [Submitting a Pull Request](../../docs/ml-pull-request.md)
 to submit your code for testing and production deployment.
 
 Otherwise, if exploring a new ML problem and satisfied with the results (e.g. you were able to train
 a model with reasonable performance on your dataset), you may be ready to productionize your pipeline.
-To do this, follow the [MLOps Setup Guide](../mlops-setup.md) to set up CI/CD and deploy
+To do this, follow the [MLOps Setup Guide](../../docs/mlops-setup.md) to set up CI/CD and deploy
 production training/inference pipelines.
 
 [(back to main README)](../../README.md)
