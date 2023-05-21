@@ -53,49 +53,25 @@ Upon merging code into the release branch, the release branch content will be de
 
 ### Set up authentication
 
-<<<<<<< HEAD:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md
-To set up the bricks CLI using a Databricks personal access token, take the following steps:
+To set up the databricks CLI using a Databricks personal access token, take the following steps:
 
-1. Follow [bricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up the bricks CLI locally.
+1. Follow [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up the databricks CLI locally.
 2. Complete the `TODO` sections - add the dev workspace URI to `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` under `environments.dev.workspace.host`.
 3. [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and copy it.
 4. Set an env variable `DATABRICKS_TOKEN` with your Databricks personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi1234567890ab1cde2f3ab456c7d89efa` if the access token is dapi1234567890ab1cde2f3ab456c7d89efa.
-5. You can now use the bricks CLI to validate and deploy ML resource configurations to the dev workspace.
+5. You can now use the databricks CLI to validate and deploy ML resource configurations to the dev workspace.
 
-Alternatively, you can use the other approaches described in the [bricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) documentation to set up authentication. For example, using your Databricks username/password, or seting up a local profile.
+Alternatively, you can use the other approaches described in the [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) documentation to set up authentication. For example, using your Databricks username/password, or seting up a local profile.
 
 ### Validate and provision ML resource configurations
-1. After installing the bricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the {{cookiecutter.project_name_alphanumeric_underscore}} directory.
-2. Run `bricks bundle validate` to validate the Databricks resource configurations. 
-3. Run `bricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource`.
+1. After installing the databricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the {{cookiecutter.project_name_alphanumeric_underscore}} directory.
+2. Run `databricks bundle validate` to validate the Databricks resource configurations. 
+3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource`.
 4. Go to the Databricks dev workspace, check the defined model, experiment and workflows status, and interact with the created workflows.
 
 ### Destroy ML resource configurations
-After development is done, you can run `bricks bundle destroy` to destroy (remove) the defined Databricks resources in the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
-=======
-Follow the document to learn how databricks CLI authentication works -
-[databricks CLI - set up authentication]({{ "dev-tools/cli/bricks-cli.html#set-up-authentication" | generate_doc_link(cookiecutter.cloud) }})
-
-1. Follow [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up databricks CLI locally.
-2. Complete the `TODO` sections - add the dev workspace URI to `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` under `environments.dev.workspace.host`.
-3. [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
-  in your dev workspace and copy it.
-4. Set env parameter `DATABRICKS_TOKEN` with the personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi1234567890ab1cde2f3ab456c7d89efa` if the access token is dapi1234567890ab1cde2f3ab456c7d89efa.
-5. Now you can use databricks CLI to validate and deploy ML resource configurations to dev workspace.
-
-Alternatively, you can use other ways described by [databricks CLI]({{ "dev-tools/cli/bricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to set up authentication. For example, use username/password, or set up profile.
-
-### Validate and provision ML resource configurations
-1. After installing databricks CLI and setting up `DATABRICKS_TOKEN`, enter the {{cookiecutter.project_name_alphanumeric_underscore}} directory when prompted.
-2. Run `databricks bundle validate` to validate ML resource configurations. 
-3. Run `databricks bundle deploy` to provision ML resource configurations to dev workspace. The ML resource configurations and your ML code will together be copied to dev workspace. Databricks Workflows, Model and Experiment will be provisioned according to the ML resource configs.
-4. Run `databricks bundle run <name-of-workflow e.g. model_training_job>` to run a specific workflow defined in your bundle files such as `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml`.
-5. Go to the Databricks dev workspace to check the defined model, experiment, and workflows, and interact with the created workflows.
-
-### Destroy ML resource configurations
-After development is done, run `databricks bundle destroy` to destroy(remove) ML resources from the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
->>>>>>> main:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md
+After development is done, you can run `databricks bundle destroy` to destroy (remove) the defined Databricks resources in the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML resources.
 
 ## Set up CI/CD
 Please refer to [mlops-setup](../../docs/mlops-setup.md#configure-cicd) for instructions to set up CI/CD.
@@ -117,17 +93,10 @@ Resources will be deployed to the prod workspace on pushing code to the `{{cooki
 
 Follow the next section to configure the input and output data tables for the batch inference job.
 
-<<<<<<< HEAD:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md
 ### Setting up the batch inference job
 The batch inference job expects an input Delta table with a schema that your registered model accepts. To use the batch
 inference job, set up such a Delta table in both your staging and prod workspaces.
 Following this, update the batch_inference_job base parameters in `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml` to pass
-=======
-### Setting up batch inference job
-The batch inference job expects an input Delta table that with a schema that your registered model accepts. To use the batch
-inference job, set up such a Delta table in both your staging and prod workspace.
-Then, update batch_inference_job base parameters in `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml` to pass
->>>>>>> main:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md
 the name of the input Delta table and the name of the output Delta table to which to write batch predictions.
 
 As the batch job will be run with the credentials of the service principal that provisioned it, make sure that the service
@@ -152,14 +121,9 @@ resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml]
 
 ## Develop and test config changes
 
-<<<<<<< HEAD:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md
-### bricks CLI bundles schema overview
-To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of a batch inference job, like:
-=======
 ### databricks CLI bundles schema overview
 To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of
 a batch inference job, like:
->>>>>>> main:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md
 
 ```$xslt
 new_cluster: &new_cluster
@@ -192,11 +156,7 @@ At the start of the resource definition, we declared an anchor `new_cluster` tha
 
 We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.environment}-{{cookiecutter.project_name}}-batch-inference-job`. 
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
-<<<<<<< HEAD:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource/README.md
-After setting up the bricks CLI, you can run command `bricks bundle schema` to learn more about the bricks CLI bundles schema.
-=======
 After setting up databricks CLI, you can run command `databricks bundle schema`  to learn more about databricks CLI bundles schema.
->>>>>>> main:{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/README.md
 
 The notebook_path is the relative path starting from the resource yaml file.
 
