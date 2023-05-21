@@ -122,8 +122,7 @@ resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml]
 ## Develop and test config changes
 
 ### databricks CLI bundles schema overview
-To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of
-a batch inference job, like:
+To get started, open `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of a batch inference job, like:
 
 ```$xslt
 new_cluster: &new_cluster
