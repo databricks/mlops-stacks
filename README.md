@@ -130,7 +130,7 @@ the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
 ### Installing development requirements
 
 To run tests, install [actionlint](https://github.com/rhysd/actionlint),
-[databricks CLI](https://docs.databricks.com/dev-tools/cli/bricks-cli.html), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
+[databricks CLI](https://docs.databricks.com/dev-tools/cli/databricks-cli.html), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), and
 [act](https://github.com/nektos/act), then install the Python
 dependencies listed in `dev-requirements.txt`:
 
