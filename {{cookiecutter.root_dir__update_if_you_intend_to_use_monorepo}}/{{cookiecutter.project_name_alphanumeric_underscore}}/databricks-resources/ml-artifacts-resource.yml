@@ -1,0 +1,53 @@
+# Environment specific values
+environments:
+  dev:
+    resources:
+      models:
+        model:
+          description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
+
+  test:
+    resources:
+      models:
+        model:
+          description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
+
+  staging:
+    resources:
+      models:
+        model:
+          description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
+
+  prod:
+    resources:
+      models:
+        model:
+          description: |
+            MLflow registered model for the "{{cookiecutter.project_name}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
+            
+            Links:
+              * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
+              * [Recurring model training job]({{cookiecutter.databricks_staging_workspace_host}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{cookiecutter.databricks_staging_workspace_host}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.environment} model version for batch inference.
+
+# Allow users to read the model and experiment
+permissions: &permissions
+  permissions:
+    - level: CAN_READ
+      group_name: users
+
+# Defines model and experiments
+resources:
+  models:
+    model:
+      name: ${var.model_name}
+      <<: *permissions
+      depends_on:
+        - resources.jobs.model_training_job.id
+        - resources.jobs.batch_inference_job.id
+
+  experiments:
+    experiment:
+      name: ${var.experiment_name}
+      <<: *permissions
+      description: MLflow Experiment used to track runs for {{cookiecutter.project_name}} project.

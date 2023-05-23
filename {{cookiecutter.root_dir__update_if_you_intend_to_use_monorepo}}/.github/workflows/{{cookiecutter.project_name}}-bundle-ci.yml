@@ -1,0 +1,114 @@
+# This GitHub workflow validates Bundle config (ML resource config and more)
+# defined under {{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/*
+# and {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml, when PRs are merged into the main branch
+name: Bundle validation for {{cookiecutter.project_name}}
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+
+defaults:
+  run:
+    working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
+
+env:
+  {% if cookiecutter.cloud == "aws" -%}
+  STAGING_WORKSPACE_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+  PROD_WORKSPACE_TOKEN: {% raw %}${{ secrets.PROD_WORKSPACE_TOKEN }}{% endraw %}
+  {%- elif cookiecutter.cloud == "azure" -%}
+  STAGING_ARM_TENANT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_TENANT_ID }}{% endraw %}
+  STAGING_ARM_CLIENT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  STAGING_ARM_CLIENT_SECRET: {% raw %}${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  PROD_ARM_TENANT_ID: {% raw %}${{ secrets.PROD_AZURE_SP_TENANT_ID }}{% endraw %}
+  PROD_ARM_CLIENT_ID: {% raw %}${{ secrets.PROD_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  PROD_ARM_CLIENT_SECRET: {% raw %}${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  {%- endif %}
+
+jobs:
+  staging:
+    concurrency: {{cookiecutter.project_name}}-staging-bundle-job
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+      - uses: databricks/setup-cli@main
+      - name: Validate Bundle For Staging Environment
+        id: validate
+        env:
+          {% if cookiecutter.cloud == "aws" -%}
+          DATABRICKS_TOKEN: {% raw %}${{ env.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+          {%- elif cookiecutter.cloud == "azure" -%}
+          ARM_TENANT_ID: {% raw %}${{ env.STAGING_ARM_TENANT_ID }}{% endraw %}
+          ARM_CLIENT_ID: {% raw %}${{ env.STAGING_ARM_CLIENT_ID }}{% endraw %}
+          ARM_CLIENT_SECRET: {% raw %}${{ env.STAGING_ARM_CLIENT_SECRET }}{% endraw %}
+          {%- endif %}
+        run: |
+          databricks bundle validate -e staging > ../validate_output.txt
+      - name: Create Comment with Bundle Configuration
+        uses: actions/github-script@v6
+        id: comment
+        with:
+          github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
+            const output = `#### Bundle Staging Config Validated 🖌
+            <details><summary>Staging Validation Output</summary>
+
+            \`\`\`\n
+            ${fileContents}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+  prod:
+    concurrency: {{cookiecutter.project_name}}-prod-bundle-job
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: {% raw %}${{ github.event.pull_request.head.sha || github.sha }}{% endraw %}
+      - uses: databricks/setup-cli@main
+      - name: Validate Bundle For Prod Environment
+        id: validate
+        env:
+          {% if cookiecutter.cloud == "aws" -%}
+          DATABRICKS_TOKEN: {% raw %}${{ env.PROD_WORKSPACE_TOKEN }}{% endraw %}
+          {%- elif cookiecutter.cloud == "azure" -%}
+          ARM_TENANT_ID: {% raw %}${{ env.PROD_ARM_TENANT_ID }}{% endraw %}
+          ARM_CLIENT_ID: {% raw %}${{ env.PROD_ARM_CLIENT_ID }}{% endraw %}
+          ARM_CLIENT_SECRET: {% raw %}${{ env.PROD_ARM_CLIENT_SECRET }}{% endraw %}
+          {%- endif %}
+        run: |
+          databricks bundle validate -e prod > ../validate_output.txt
+      - name: Create Comment with Bundle Configuration
+        uses: actions/github-script@v6
+        id: comment
+        with:
+          github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('validate_output.txt', 'utf8');
+            const output = `#### Bundle Prod Config Validated 🖌
+            <details><summary>Prod Validation Output</summary>
+
+            \`\`\`\n
+            ${fileContents}
+            \`\`\`
+
+            </details>`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })

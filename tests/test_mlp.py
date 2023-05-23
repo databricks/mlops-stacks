@@ -22,19 +22,5 @@ def test_mlp_yaml_valid(generated_project_dir, profile, include_feature_store):
     if include_feature_store == "yes":
         return
     project_dir = generated_project_dir / "my-mlops-project"
-    os.chdir(project_dir / "my-mlops-project" / "training" / "notebooks")
-    for env in ["staging", "prod"]:
-        tf_output_dir = project_dir / "my-mlops-project" / "terraform" / "output"
-        if not os.path.exists(tf_output_dir):
-            tf_output_dir.mkdir()
-        tf_output_file = tf_output_dir / f"{env}.json"
-        fake_terraform_output = {
-            "my-mlops-project_experiment_name": {
-                "value": "fake-exp",
-            },
-            "my-mlops-project_model_name": {
-                "value": "fake-model",
-            },
-        }
-        tf_output_file.write_text(json.dumps(fake_terraform_output), encoding="utf-8")
+    os.chdir(project_dir / "my_mlops_project" / "training" / "notebooks")
     Recipe(profile)

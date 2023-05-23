@@ -1,15 +1,15 @@
 .DS_Store
-# Local .terraform directories
-**/.terraform/*
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+.vscode
 
-# .tfstate files
-*.tfstate
-*.tfstate.*
+# local bundle files
+**/.databricks/*
+
+mlops-stacks-using-bundle.iml
+mlops-stacks-using-bundle.ipr
+mlops-stacks-using-bundle.iws
 *.hcl
 .idea/
+.vscode/
 __pycache__/
 .cache
 *.pyc

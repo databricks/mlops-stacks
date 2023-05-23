@@ -40,15 +40,10 @@ import cookiecutter
         "model_name": cookiecutter.project_name + "-model",
         "experiment_base_name": cookiecutter.project_name + "-experiment",
         "service_principal_group": cookiecutter.project_name + "-service-principals",
-        "project_name_alphanumeric": cookiecutter.project_name | regex_replace("[^A-Za-z0-9]","") 
+        "project_name_alphanumeric_underscore": cookiecutter.project_name | regex_replace("[^A-Za-z0-9_-]","") 
+            | regex_replace("[-]","_") 
     }
 )}}
-
-{%- if "Default: `" in cookiecutter.mlflow_experiment_parent_dir -%}
-    {{
-        cookiecutter.update({"mlflow_experiment_parent_dir": "/" + cookiecutter.project_name })
-    }}
-{% endif %}
 
 {%- if "Default: `" in cookiecutter.databricks_staging_workspace_host and cookiecutter.cloud == 'azure' -%}
     {{
@@ -92,12 +87,6 @@ import cookiecutter
     }}
 {% endif %}
 
-{%- if cookiecutter.mlflow_experiment_parent_dir.endswith("/") and cookiecutter.mlflow_experiment_parent_dir != "/" -%}
-    {{
-        cookiecutter.update({"mlflow_experiment_parent_dir": cookiecutter.mlflow_experiment_parent_dir.rstrip("/")})
-    }}
-{% endif %}
-
 {{
     cookiecutter.update({
         "orig_databricks_prod_workspace_host": cookiecutter.databricks_prod_workspace_host,
@@ -116,35 +105,6 @@ def validate_cookiecutter_version(version_string):
     if not (major_version > 2 or (major_version == 2 and minor_version >= 1)):
         raise ValueError(
             f"Cookiecutter version is not at least 2.1.0. Got version {version_string}."
-        )
-
-
-def validate_mlflow_experiment_parent_dir(parent_dir):
-    valid_example_help_string = ' Valid directories are either subfolders of a user\'s home directory e.g. "/Users/jane@test.com/my-mlops-project" or non-repo subfolders of workspace root e.g. "/my-mlops-project".'
-    if not parent_dir.startswith("/"):
-        raise ValueError(
-            f"Workspace base directory must start with '/'. Got invalid base directory `{parent_dir}`.{valid_example_help_string}"
-        )
-    if parent_dir == "/":
-        raise ValueError(
-            f"Workspace base directory cannot be workspace root '/'.{valid_example_help_string}"
-        )
-    if parent_dir == "/Repos" or parent_dir.startswith("/Repos/"):
-        raise ValueError(
-            f"Workspace base directory cannot be under `/Repos`. Got invalid base directory `{parent_dir}`.{valid_example_help_string}"
-        )
-    if parent_dir == "/Users":
-        raise ValueError(
-            f"Workspace base directory cannot be the `/Users` directory.{valid_example_help_string}"
-        )
-    users_dir_prefix = "/Users/"
-    if (
-        parent_dir.startswith(users_dir_prefix)
-        and "/" not in parent_dir[len(users_dir_prefix) :]
-    ):
-        raise ValueError(
-            f"Workspace base directory cannot be a user's home directory. Got invalid base directory `{parent_dir}`."
-            + valid_example_help_string
         )
 
 
@@ -203,9 +163,6 @@ def validate_cloud_cicd_platform(cloud, cicd_platform):
 
 if __name__ == "__main__":
     validate_cookiecutter_version(cookiecutter.__version__)
-    validate_mlflow_experiment_parent_dir(
-        "{{cookiecutter.mlflow_experiment_parent_dir}}"
-    )
     orig_databricks_staging_workspace_host = (
         "{{cookiecutter.orig_databricks_staging_workspace_host}}"
     )
@@ -224,7 +181,7 @@ if __name__ == "__main__":
     validate_project_name("{{cookiecutter.project_name}}")
     validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
-        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric}}"
+        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric_underscore}}"
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"

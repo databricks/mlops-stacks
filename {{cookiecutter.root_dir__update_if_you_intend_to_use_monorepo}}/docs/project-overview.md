@@ -15,18 +15,22 @@ contains additional details on how ML pipelines are tested and deployed across e
 ## Code structure
 This project contains the following components:
 
-| Component                  | Description                                                                                                                                     |
-|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project code, with unit tested Python modules and notebooks using [MLflow recipes](https://mlflow.org/docs/latest/recipes.html)  |
-| ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) defined through [Terraform]({{ "dev-tools/terraform/index.html"   | generate_doc_link(cookiecutter.cloud) }}) |
-| CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %}                                                 |
+| Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
+| ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) configured and deployed through [databricks CLI bundles]({{ "dev-tools/cli/bundle-cli.html"                                                                                                                                                                               | generate_doc_link(cookiecutter.cloud) }})                                                                                                                                       |
+| CI/CD                      | {% if cookiecutter.cicd_platform == "gitHub" %}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{% endif %} |
 
 contained in the following files:
 
 ```
 {{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}         <- Root directory. Both monorepo and polyrepo are supported.
 │
-├── {{cookiecutter.project_name}}       <- Contains python code, notebooks and ML resources related to one ML project. 
+├── {{cookiecutter.project_name_alphanumeric_underscore}}       <- Contains python code, notebooks and ML resources related to one ML project. 
+│   │
+│   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
+│   │
+│   ├── bundle.yml              <- bundle.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
 {% if cookiecutter.include_feature_store == "yes" -%}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
@@ -47,11 +51,23 @@ contained in the following files:
 │   │
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── databricks-resources     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {% else -%}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
-│   │   │                          development work happens here. See https://mlflow.org/docs/latest/pipelines.html for details
+│   │   │                          development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
 │   │   │
 │   │   ├── notebooks           <- Databricks notebook that runs the MLflow recipe, i.e. run the logic in `steps`. Used to
 │   │   │                          drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
@@ -75,24 +91,25 @@ contained in the following files:
 │   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
-{% endif -%}
 │   │
-│   ├── terraform               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across staging/prod.
+│   ├── databricks-resources     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── staging             <- ML resource for staging workspace.
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
-│       ├── prod                <- ML resource for prod workspace.
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+{% endif -%}
 │
 {% if cookiecutter.cicd_platform == "gitHub" -%}
 ├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows run the notebooks
-│                                  under `notebooks` to test and deploy model training code
-│ 
+                                   under `notebooks` to test and deploy model training code
 {% elif cookiecutter.cicd_platform == "azureDevOpsServices" -%}
 ├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows run the notebooks
-│                                  under `notebooks` to test and deploy model training code
-│
+                                   under `notebooks` to test and deploy model training code
 {% endif -%}
-├── requirements.txt            <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 ```
 
 ## Next Steps

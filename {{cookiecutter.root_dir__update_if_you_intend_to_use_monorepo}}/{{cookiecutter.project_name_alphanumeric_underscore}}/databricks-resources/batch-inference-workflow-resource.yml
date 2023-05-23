@@ -1,0 +1,42 @@
+new_cluster: &new_cluster
+  new_cluster:
+    num_workers: 3
+    spark_version: 12.2.x-cpu-ml-scala2.12
+    node_type_id: {{cookiecutter.cloud_specific_node_type_id}}
+    custom_tags:
+      clusterSource: mlops-stack/0.1
+
+permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+resources:
+  jobs:
+    batch_inference_job:
+      name: ${bundle.environment}-{{cookiecutter.project_name}}-batch-inference-job
+      tasks:
+        - task_key: batch_inference_job
+          <<: *new_cluster
+          notebook_task:
+            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
+            base_parameters:
+              env: ${bundle.environment}
+              {% if cookiecutter.include_feature_store == "yes" %}input_table_name: hive_metastore.default.taxi_scoring_sample_feature_store_inference_input
+              {%- else -%}input_table_name: taxi_scoring_sample{% endif %}
+              output_table_name: {{cookiecutter.project_name_alphanumeric_underscore}}_predictions
+              model_name: ${var.model_name}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+
+      schedule:
+        quartz_cron_expression: "0 0 11 * * ?" # daily at 11am
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

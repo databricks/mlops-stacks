@@ -1,0 +1,50 @@
+variables:
+  experiment_name:
+    description: Experiment name for the model training.
+    default: /Users/${workspace.current_user.userName}/${bundle.environment}-{{cookiecutter.experiment_base_name}}
+  model_name:
+    description: Model name for the model training.
+    default: ${bundle.environment}-{{cookiecutter.model_name}}
+
+
+bundle:
+  name: {{cookiecutter.project_name}}
+
+
+include:
+  # Include ML artifact resources for the ml project
+  # Defines model and experiment
+  - ./databricks-resources/ml-artifacts-resource.yml
+
+  # Include workflow resources of the ml project
+  # Defines workflow for model training -> validation -> deployment
+  - ./databricks-resources/model-workflow-resource.yml
+  {%- if cookiecutter.include_feature_store == "yes" %}
+  # Defines workflow for feature engineering
+  - ./databricks-resources/feature-engineering-workflow-resource.yml{% endif %}
+  # Defines workflow for scheduled batch inference
+  - ./databricks-resources/batch-inference-workflow-resource.yml
+  # Defines workflow for data monitoring, metric refresh, alerts and triggering retraining
+  - ./databricks-resources/monitoring-workflow-resource.yml
+
+
+# Environment specific values for workspace
+environments:
+  dev:
+    default: true
+    workspace:
+      # TODO: add dev workspace URL
+      host:
+
+  staging:
+    workspace:
+      host: {{cookiecutter.databricks_staging_workspace_host}}
+
+  prod:
+    workspace:
+      host: {{cookiecutter.databricks_prod_workspace_host}}
+
+  test:
+    workspace:
+      host: {{cookiecutter.databricks_staging_workspace_host}}
+

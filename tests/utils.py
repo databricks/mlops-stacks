@@ -49,7 +49,6 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
             "cloud": cloud,
             "cicd_platform": cicd_platform,
             "include_feature_store": include_feature_store,
-            "mlflow_experiment_parent_dir": "/tmp",
             "databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
             "databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
             "default_branch": "main",

@@ -1,0 +1,56 @@
+name: ML Code Tests for {{cookiecutter.project_name}}
+on:
+  workflow_dispatch:
+  pull_request:
+
+defaults:
+  run:
+    working-directory: ./{{cookiecutter.project_name_alphanumeric_underscore}}/
+
+env:
+  {% if cookiecutter.cloud == "aws" -%}
+  DATABRICKS_TOKEN: {% raw %}${{ secrets.STAGING_WORKSPACE_TOKEN }}{% endraw %}
+  {%- elif cookiecutter.cloud == "azure" -%}
+  ARM_TENANT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_TENANT_ID }}{% endraw %}
+  ARM_CLIENT_ID: {% raw %}${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}{% endraw %}
+  ARM_CLIENT_SECRET: {% raw %}${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}{% endraw %}
+  {%- endif %}
+
+concurrency: {{cookiecutter.project_name}}-feature-training-integration-test-staging
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install -r ../test-requirements.txt
+      - name: Run tests with pytest
+        run: |
+            pytest
+
+  integration_test:
+    needs: unit_tests
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - name: Validate Bundle For Test Environment in Staging Workspace
+        id: validate
+        run: |
+          databricks bundle validate -e test
+      - name: Deploy Bundle to Test Environment in Staging Workspace
+        id: deploy
+        run: |
+          databricks bundle deploy -e test
+      - name: Run Training Workflow for Test Environment in Staging Workspace
+        id: training
+        run: |
+          databricks bundle run model_training_job -e test
