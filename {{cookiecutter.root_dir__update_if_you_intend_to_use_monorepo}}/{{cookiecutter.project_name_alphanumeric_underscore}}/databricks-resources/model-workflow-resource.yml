@@ -98,7 +98,6 @@ resources:
       schedule:
         quartz_cron_expression: "0 0 9 * * ?" # daily at 9am
         timezone_id: UTC
-      # Mingyu TODO: add git source once bundle is able to get git URL
       <<: *permissions
       # If you want to turn on notifications for this job, please uncomment the below code,
       # and provide a list of emails to the on_failure argument.
