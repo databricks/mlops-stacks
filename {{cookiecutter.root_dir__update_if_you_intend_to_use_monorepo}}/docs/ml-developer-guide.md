@@ -42,7 +42,7 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * Install the `dbx` CLI via `pip install --upgrade dbx`
 * Run `databricks configure --profile {{cookiecutter.project_name}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
   This should prompt you to enter an API token
-* [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
+* [Create a personal access token]({{ "dev-tools/auth.html#personal-access-tokens-for-users" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and paste it into the prompt from the previous step
 * From within the root directory of the current project, use the [dbx sync](https://dbx.readthedocs.io/en/latest/guides/python/devloop/mixed/#using-dbx-sync-repo-for-local-to-repo-synchronization) tool to copy code files from your local machine into the Repo by running
   `dbx sync repo --profile {{cookiecutter.project_name}}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
