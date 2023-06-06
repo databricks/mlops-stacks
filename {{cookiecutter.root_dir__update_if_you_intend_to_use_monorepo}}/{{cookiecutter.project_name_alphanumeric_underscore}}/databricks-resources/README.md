@@ -59,7 +59,7 @@ To set up the databricks CLI using a Databricks personal access token, take the 
 
 1. Follow [databricks CLI]({{ "dev-tools/cli/databricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) to download and set up the databricks CLI locally.
 2. Complete the `TODO` in `{{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml` to add the dev workspace URI under `environments.dev.workspace.host`.
-3. [Create a personal access token]({{ "dev-tools/api/latest/authentication.html#generate-a-personal-access-token" | generate_doc_link(cookiecutter.cloud) }})
+3. [Create a personal access token]({{ "dev-tools/auth.html#personal-access-tokens-for-users" | generate_doc_link(cookiecutter.cloud) }})
   in your dev workspace and copy it.
 4. Set an env variable `DATABRICKS_TOKEN` with your Databricks personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi1234567890ab1cde2f3ab456c7d89efa` if the access token is dapi1234567890ab1cde2f3ab456c7d89efa.
 5. You can now use the databricks CLI to validate and deploy ML resource configurations to the dev workspace.
