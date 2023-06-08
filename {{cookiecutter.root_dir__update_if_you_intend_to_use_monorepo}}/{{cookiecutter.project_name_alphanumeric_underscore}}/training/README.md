@@ -85,7 +85,7 @@ You can also iterate on ML code locally.
 
 #### Prerequisites
 * Python 3.8+
-* Install model training and test dependencies via `pip install -I -r requirements.txt -r test-requirements.txt`.
+* Install model training and test dependencies via `pip install -I -r {{cookiecutter.project_name_alphanumeric_underscore}}/requirements.txt -r test-requirements.txt` from project root directory.
 
 #### Trigger model training
 Run `mlp run --profile local` to trigger training locally. See the
