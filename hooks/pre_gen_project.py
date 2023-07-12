@@ -146,10 +146,10 @@ def validate_alphanumeric_project_name(project_name, alphanumeric_project_name):
 
 
 def validate_feature_store(use_feature_store, cicd_platform):
-    if use_feature_store == "yes" and cicd_platform == "azureDevOpsServices":
+    if use_feature_store == "yes" and cicd_platform  not in ["azureDevOpsServices", "gitHub"]:
         raise RuntimeError(
-            "Feature Store component with Azure DevOps CI/CD is not supported yet. "
-            "Please use Github Actions instead, if possible."
+            "Feature Store component is currently available only with Azure DevOps or GitHub Actions CI/CD is not supported yet. "
+            "Please use Azure DevOps or GitHub Actions, if possible."
         )
 
 
