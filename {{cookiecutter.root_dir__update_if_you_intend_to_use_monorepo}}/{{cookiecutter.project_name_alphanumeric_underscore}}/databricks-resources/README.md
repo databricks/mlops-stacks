@@ -67,7 +67,7 @@ To set up the databricks CLI using a Databricks personal access token, take the 
 Alternatively, you can use the other approaches described in the [databricks CLI]({{ "dev-tools/cli/databricks-cli.html" | generate_doc_link(cookiecutter.cloud) }}) documentation to set up authentication. For example, using your Databricks username/password, or seting up a local profile.
 
 ### Validate and provision ML resource configurations
-1. After installing the databricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the {{cookiecutter.project_name_alphanumeric_underscore}} directory.
+1. After installing the databricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the `{{cookiecutter.project_name_alphanumeric_underscore}}` directory.
 2. Run `databricks bundle validate` to validate the Databricks resource configurations. 
 3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resource`.
 4. Go to the Databricks dev workspace, check the defined model, experiment and workflows status, and interact with the created workflows.

@@ -114,7 +114,13 @@ Two Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
 
 > Note that these workflows are provided as example CI/CD workflows, and can be easily modified to match your preferred CI/CD order of operations.
 
-Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Azure Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections.
+Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Azure Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections. Let's add these.
+
+```
+git add .azure/devops-pipelines/{{cookiecutter.project_name}}-bundle-cicd.yml .azure/devops-pipelines/{{cookiecutter.project_name}}-tests-ci.yml 
+git commit -m "Adding devops-pipeline files"
+git push upstream {{cookiecutter.default_branch}}
+```
 
 ### Service principal approach [Default]
 
@@ -135,7 +141,7 @@ By default, we provide Azure Pipelines where authentication is done using servic
 1. Follow ['Get Azure AD tokens for the service principals']({{ "dev-tools/api/latest/aad/service-prin-aad-token"  | generate_doc_link(cookiecutter.cloud) }})
 to get your service principal credentials (tenant id, application id, and client secret) for both the staging and prod service principals. You will use these credentials as variables in the project Azure Pipelines.
 1. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these pipelines will use the `{{cookiecutter.project_name}}-tests-ci.yml` script, and the other will use the `{{cookiecutter.project_name}}-bundles-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
-1. Create a new variable group called `{{cookiecutter.project_name}} variable group` defining the following secret variables:
+1. Create a new variable group called `{{cookiecutter.project_name}} variable group` defining the following secret variables, for more details [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=classic#create-a-variable-group):
     - `PROD_AZURE_SP_TENANT_ID`: tenant ID for the prod service principal
     - `PROD_AZURE_SP_APPLICATION_ID`: application (client) ID for the prod service principal
     - `PROD_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
