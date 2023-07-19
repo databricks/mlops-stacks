@@ -29,8 +29,7 @@ def parametrize_by_project_generation_params(fn):
             ("azure", "GitHub Actions for GitHub Enterprise Servers", "no"),
             ("aws", "GitHub Actions for GitHub Enterprise Servers", "yes"),
             ("azure", "GitHub Actions for GitHub Enterprise Servers", "yes"),
-            #  ADO + Feature Store is not supported yet.
-            # ("azure", "Azure DevOps", "yes""),
+            ("azure", "Azure DevOps", "yes"),
         ],
     )
     @wraps(fn)
