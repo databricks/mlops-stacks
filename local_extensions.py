@@ -19,8 +19,14 @@ def generate_doc_link(path, cloud):
 
     :return: documentation links for the specified cloud
     """
-    if cloud == "aws" and path == "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later":
-        path = "repos/git-operations-with-repos.html#add-a-repo-connected-to-a-remote-repo"
+    if (
+        cloud == "aws"
+        and path
+        == "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later"
+    ):
+        path = (
+            "repos/git-operations-with-repos.html#add-a-repo-connected-to-a-remote-repo"
+        )
     baseUrl = AZURE_DOC_BASE if cloud == "azure" else AWS_DOC_BASE
     newDocsPath = path.replace(".html", "") if cloud == "azure" else path
     return f"{baseUrl}/{newDocsPath}"

@@ -10,7 +10,9 @@ from utils import (
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["Delta Table", "Feature Store", "MLflow Recipes"])
+@pytest.mark.parametrize(
+    "framework", ["Delta Table", "Feature Store", "MLflow Recipes"]
+)
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing

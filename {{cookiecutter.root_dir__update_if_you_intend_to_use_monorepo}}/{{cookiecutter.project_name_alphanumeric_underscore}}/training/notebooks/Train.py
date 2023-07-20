@@ -69,6 +69,7 @@ display(training_df)
 from mlflow.tracking import MlflowClient
 import mlflow.pyfunc
 
+
 def get_latest_model_version(model_name):
     latest_version = 1
     mlflow_client = MlflowClient()
@@ -116,9 +117,7 @@ model = lgb.train(param, train_lgb_dataset, num_rounds)
 
 # Log the trained model with MLflow
 mlflow.lightgbm.log_model(
-    model,
-    artifact_path="lgb_model",
-    registered_model_name=model_name,
+    model, artifact_path="lgb_model", registered_model_name=model_name,
 )
 
 # Build out the MLflow model registry URL for this model version.

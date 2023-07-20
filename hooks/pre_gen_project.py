@@ -164,6 +164,7 @@ def validate_alphanumeric_project_name(project_name, alphanumeric_project_name):
             f"Project name '{project_name}' was too short. {VALID_PROJECT_NAME_MSG}"
         )
 
+
 def validate_cloud_cicd_platform(cloud, cicd_platform):
     if cloud == "aws" and cicd_platform == "azureDevOpsServices":
         raise RuntimeError(
@@ -192,7 +193,8 @@ if __name__ == "__main__":
     validate_project_name("{{cookiecutter.project_name}}")
     validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
-        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric_underscore}}"
+        "{{cookiecutter.project_name}}",
+        "{{cookiecutter.project_name_alphanumeric_underscore}}",
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"

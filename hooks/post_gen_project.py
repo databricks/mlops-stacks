@@ -9,42 +9,74 @@ def remove_filepath(filepath):
         shutil.rmtree(filepath)
 
 
-project_name_alphanumeric_underscore = "{{cookiecutter.project_name_alphanumeric_underscore}}"
+project_name_alphanumeric_underscore = (
+    "{{cookiecutter.project_name_alphanumeric_underscore}}"
+)
 current_cloud = "{{cookiecutter.cloud}}"
 cicd_platform = "{{cookiecutter.cicd_platform}}"
 framework = "{{cookiecutter.framework}}"
 
 delta_paths = [
-    os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "Train.py"),
+    os.path.join(
+        project_name_alphanumeric_underscore, "training", "notebooks", "Train.py"
+    ),
 ]
 
 recipe_paths = [
     os.path.join(project_name_alphanumeric_underscore, "training", "profiles"),
-    os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "TrainWithMLflowRecipes.py"),
+    os.path.join(
+        project_name_alphanumeric_underscore,
+        "training",
+        "notebooks",
+        "TrainWithMLflowRecipes.py",
+    ),
     os.path.join(project_name_alphanumeric_underscore, "training", "recipe.yaml"),
     os.path.join(project_name_alphanumeric_underscore, "training", "README.md"),
-    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "ingest_test.py"),
-    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "split_test.py"),
-    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "train_test.py"),
-    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "test_sample.parquet"),
-    os.path.join(project_name_alphanumeric_underscore, "tests", "training", "transform_test.py"),
+    os.path.join(
+        project_name_alphanumeric_underscore, "tests", "training", "ingest_test.py"
+    ),
+    os.path.join(
+        project_name_alphanumeric_underscore, "tests", "training", "split_test.py"
+    ),
+    os.path.join(
+        project_name_alphanumeric_underscore, "tests", "training", "train_test.py"
+    ),
+    os.path.join(
+        project_name_alphanumeric_underscore, "tests", "training", "test_sample.parquet"
+    ),
+    os.path.join(
+        project_name_alphanumeric_underscore, "tests", "training", "transform_test.py"
+    ),
 ]
 
-delta_and_recipe_paths = delta_paths + recipe_paths + [
-    os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests.yml"),
-    os.path.join("docs", "ml-developer-guide.md"),
-]
+delta_and_recipe_paths = (
+    delta_paths
+    + recipe_paths
+    + [
+        os.path.join(
+            ".github", "workflows", "{{cookiecutter.project_name}}-run-tests.yml"
+        ),
+        os.path.join("docs", "ml-developer-guide.md"),
+    ]
+)
 
 feature_store_paths = [
     os.path.join(project_name_alphanumeric_underscore, "feature_engineering"),
     os.path.join(project_name_alphanumeric_underscore, "tests", "feature_engineering"),
-    os.path.join(project_name_alphanumeric_underscore, "training", "notebooks", "TrainWithFeatureStore.py"),
+    os.path.join(
+        project_name_alphanumeric_underscore,
+        "training",
+        "notebooks",
+        "TrainWithFeatureStore.py",
+    ),
     os.path.join(
         project_name_alphanumeric_underscore,
         "databricks-resources",
-        "feature-engineering-workflow-resource.yml"
+        "feature-engineering-workflow-resource.yml",
     ),
-    os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests-fs.yml"),
+    os.path.join(
+        ".github", "workflows", "{{cookiecutter.project_name}}-run-tests-fs.yml"
+    ),
     os.path.join("docs", "ml-developer-guide-fs.md"),
 ]
 
@@ -71,7 +103,7 @@ elif framework == "fs":
 else:
     for path in delta_paths + feature_store_paths:
         remove_filepath(path)
-    
+
 
 readme_path = os.path.join(os.getcwd(), "README.md")
 print(

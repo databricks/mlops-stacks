@@ -140,30 +140,14 @@ def test_markdown_links(generated_project_dir):
 @pytest.mark.parametrize(
     "invalid_params",
     [
-        {
-            "databricks_staging_workspace_host": "http://no-https",
-        },
-        {
-            "databricks_prod_workspace_host": "no-https",
-        },
-        {
-            "project_name": "a",
-        },
-        {
-            "project_name": "a-",
-        },
-        {
-            "project_name": "Name with spaces",
-        },
-        {
-            "project_name": "name/with/slashes",
-        },
-        {
-            "project_name": "name\\with\\backslashes",
-        },
-        {
-            "project_name": "name.with.periods",
-        },
+        {"databricks_staging_workspace_host": "http://no-https",},
+        {"databricks_prod_workspace_host": "no-https",},
+        {"project_name": "a",},
+        {"project_name": "a-",},
+        {"project_name": "Name with spaces",},
+        {"project_name": "name/with/slashes",},
+        {"project_name": "name\\with\\backslashes",},
+        {"project_name": "name.with.periods",},
     ],
 )
 def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
@@ -172,19 +156,14 @@ def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
 
 
 @pytest.mark.parametrize(
-    "valid_params",
-    [
-        {},
-    ],
+    "valid_params", [{},],
 )
 def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     generate(tmpdir, valid_params)
 
 
 @parametrize_by_project_generation_params
-def test_generate_project_with_default_values(
-    tmpdir, cloud, cicd_platform, framework
-):
+def test_generate_project_with_default_values(tmpdir, cloud, cicd_platform, framework):
     """
     Asserts the default parameter values for the stack. The project name and experiment
     parent directory are excluded from this test as they covered in other tests. If this test fails
@@ -214,9 +193,7 @@ def test_generate_project_with_default_values(
 
 
 @parametrize_by_project_generation_params
-def test_generate_project_check_delta_output(
-    tmpdir, cloud, cicd_platform, framework
-):
+def test_generate_project_check_delta_output(tmpdir, cloud, cicd_platform, framework):
     """
     Asserts the behavior of Delta Table-related artifacts when generating Stacks.
     """
@@ -239,6 +216,7 @@ def test_generate_project_check_delta_output(
         assert os.path.isfile(delta_notebook_path)
     else:
         assert not os.path.isfile(delta_notebook_path)
+
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
@@ -267,10 +245,9 @@ def test_generate_project_check_feature_store_output(
     else:
         assert not os.path.isfile(fs_notebook_path)
 
+
 @parametrize_by_project_generation_params
-def test_generate_project_check_recipe_output(
-    tmpdir, cloud, cicd_platform, framework
-):
+def test_generate_project_check_recipe_output(tmpdir, cloud, cicd_platform, framework):
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
     """

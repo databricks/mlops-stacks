@@ -15,11 +15,9 @@ def custom_metrics():
         return np.sum(np.abs(eval_df["prediction"] - eval_df["target"] + 1) ** 2)
 
     return [
-        make_metric(
-            eval_fn=squared_diff_plus_one,
-            greater_is_better=False,
-        ),
+        make_metric(eval_fn=squared_diff_plus_one, greater_is_better=False,),
     ]
+
 
 # Define model validation rules. Return empty dict if validation rules are not needed.
 # Please refer to validation_thresholds parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
@@ -36,6 +34,7 @@ def validation_thresholds():
             higher_is_better=False,
         ),
     }
+
 
 # Define evaluator config. Return empty dict if validation rules are not needed.
 # Please refer to evaluator_config parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
