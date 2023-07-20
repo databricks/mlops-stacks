@@ -10,7 +10,7 @@ def predict_batch(
     writing results to the table with name output_table_name
     """
     table = spark_session.table(input_table_name)
-    {% if cookiecutter.include_feature_store == "yes" %}
+    {% if cookiecutter.framework == "fs" %}
     from databricks.feature_store import FeatureStoreClient
     
     fs_client = FeatureStoreClient()

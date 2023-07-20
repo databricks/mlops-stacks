@@ -35,6 +35,26 @@ import cookiecutter
         )}}
 {% endif %}
 
+{%- if cookiecutter.framework == "Delta Table" -%} 
+    {{ cookiecutter.update(
+        {
+            "framework": "delta"
+        }
+    )}} 
+{%- elif cookiecutter.framework == "Feature Store" -%}
+    {{ cookiecutter.update(
+            {
+                "framework": "fs"
+            }
+        )}}
+{%- elif cookiecutter.framework == "MLflow Recipes" -%}
+    {{ cookiecutter.update(
+            {
+                "framework": "recipes"
+            }
+        )}}
+{% endif %}
+
 {{ cookiecutter.update(
     {
         "model_name": cookiecutter.project_name + "-model",

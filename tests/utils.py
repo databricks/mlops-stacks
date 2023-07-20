@@ -18,18 +18,23 @@ def parametrize_by_cloud(fn):
 
 def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
-        "cloud,cicd_platform,include_feature_store",
+        "cloud,cicd_platform,framework",
         [
-            ("aws", "GitHub Actions", "no"),
-            ("azure", "GitHub Actions", "no"),
-            ("azure", "Azure DevOps", "no"),
-            ("aws", "GitHub Actions", "yes"),
-            ("azure", "GitHub Actions", "yes"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "yes"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "yes"),
-            ("azure", "Azure DevOps", "yes"),
+            ("aws", "GitHub Actions", "delta"),
+            ("aws", "GitHub Actions", "fs"),
+            ("aws", "GitHub Actions", "recipes"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "delta"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "fs"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "recipes"),
+            ("azure", "GitHub Actions", "delta"),
+            ("azure", "GitHub Actions", "fs"),
+            ("azure", "GitHub Actions", "recipes"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "delta"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "fs"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "recipes"),
+            ("azure", "Azure DevOps", "delta"),
+            ("azure", "Azure DevOps", "fs"),
+            ("azure", "Azure DevOps", "recipes"),
         ],
     )
     @wraps(fn)
@@ -40,14 +45,14 @@ def parametrize_by_project_generation_params(fn):
 
 
 @pytest.fixture
-def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
+def generated_project_dir(tmpdir, cloud, cicd_platform, framework):
     generate(
         tmpdir,
         {
             "project_name": "my-mlops-project",
             "cloud": cloud,
             "cicd_platform": cicd_platform,
-            "include_feature_store": include_feature_store,
+            "framework": framework,
             "databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
             "databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
             "default_branch": "main",

@@ -19,7 +19,7 @@ include:
   # Include workflow resources of the ml project
   # Defines workflow for model training -> validation -> deployment
   - ./databricks-resources/model-workflow-resource.yml
-  {%- if cookiecutter.include_feature_store == "yes" %}
+  {%- if cookiecutter.framework == "fs" %}
   # Defines workflow for feature engineering
   - ./databricks-resources/feature-engineering-workflow-resource.yml{% endif %}
   # Defines workflow for scheduled batch inference

@@ -5,7 +5,7 @@
 * [Intro](#intro)
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
 * [Configure CI/CD]({% if cookiecutter.cicd_platform == "gitHub" %}#configure-cicd---github-actions{% elif cookiecutter.cicd_platform == "azureDevOpsServices" %}#configure-cicd---azure-devops{% endif %})
-{%- if cookiecutter.include_feature_store == "no" %}
+{%- if cookiecutter.framework == "recipes" %}
 * [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){% endif %}
 * [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
 {% if cookiecutter.release_branch != cookiecutter.default_branch -%}
@@ -196,7 +196,7 @@ The ultimate aim of the service connection approach is to use two separate servi
 6. Define two build validation branch policies for the `{{cookiecutter.default_branch}}` using the two Azure Pipelines created in step 1. This is required so that any PR changes to the `{{cookiecutter.default_branch}}` must build successfully before PRs can complete.
 {% endif %}
 
-{%- if cookiecutter.include_feature_store == "no" %}
+{%- if cookiecutter.framework == "recipes" %}
 ## Configure profiles for tests, staging, and prod
 Address the TODOs in the following files:
 * [databricks-dev.yaml](../{{cookiecutter.project_name_alphanumeric_underscore}}/training/profiles/databricks-dev.yaml): specify recipe configs to use in dev workspace

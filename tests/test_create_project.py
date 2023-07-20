@@ -23,7 +23,7 @@ DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",
     "read_user_group": "users",
-    "include_feature_store": "no",
+    "framework": "delta",
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",
@@ -183,7 +183,7 @@ def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
 
 @parametrize_by_project_generation_params
 def test_generate_project_with_default_values(
-    tmpdir, cloud, cicd_platform, include_feature_store
+    tmpdir, cloud, cicd_platform, framework
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -215,7 +215,7 @@ def test_generate_project_with_default_values(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
-    tmpdir, cloud, cicd_platform, include_feature_store
+    tmpdir, cloud, cicd_platform, framework
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
@@ -224,7 +224,7 @@ def test_generate_project_check_feature_store_output(
         "project_name": TEST_PROJECT_NAME,
         "cloud": cloud,
         "cicd_platform": cicd_platform,
-        "include_feature_store": include_feature_store,
+        "framework": framework,
     }
     generate(tmpdir, context=context)
     fs_notebook_path = (
@@ -235,10 +235,37 @@ def test_generate_project_check_feature_store_output(
         / "notebooks"
         / "GenerateAndWriteFeatures.py"
     )
-    if include_feature_store == "yes":
+    if framework == "fs":
         assert os.path.isfile(fs_notebook_path)
     else:
         assert not os.path.isfile(fs_notebook_path)
+
+@parametrize_by_project_generation_params
+def test_generate_project_check_recipe_output(
+    tmpdir, cloud, cicd_platform, framework
+):
+    """
+    Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "framework": framework,
+    }
+    generate(tmpdir, context=context)
+    recipe_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_DIRECTORY
+        / "training"
+        / "notebooks"
+        / "TrainWithRecipes.py"
+    )
+    if framework == "recipes":
+        assert os.path.isfile(recipe_notebook_path)
+    else:
+        assert not os.path.isfile(recipe_notebook_path)
 
 
 @pytest.mark.parametrize(

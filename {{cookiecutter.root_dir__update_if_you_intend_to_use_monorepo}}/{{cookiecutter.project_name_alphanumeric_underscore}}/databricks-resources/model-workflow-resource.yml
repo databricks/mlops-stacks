@@ -21,7 +21,17 @@ resources:
       tasks:
         - task_key: Train
           job_cluster_key: model_training_job_cluster
-          {% if cookiecutter.include_feature_store == "yes" %}notebook_task:
+          {% if cookiecutter.framework == "delta" %}notebook_task:
+            notebook_path: ../training/notebooks/Train.py
+            base_parameters:
+              env: ${bundle.environment}
+              # TODO: Update training_data_path
+              training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
+              experiment_name: ${var.experiment_name}
+              model_name: ${var.model_name}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          {% elif cookiecutter.framework == "fs" %}notebook_task:
             notebook_path: ../training/notebooks/TrainWithFeatureStore.py
             base_parameters:
               env: ${bundle.environment}
@@ -34,7 +44,7 @@ resources:
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {%- else -%}notebook_task:
-            notebook_path: ../training/notebooks/Train.py
+            notebook_path: ../training/notebooks/TrainWithMLflowRecipes.py
             base_parameters:
               env: ${bundle.environment}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
@@ -46,7 +56,7 @@ resources:
           notebook_task:
             notebook_path: ../validation/notebooks/ModelValidation.py
             base_parameters:
-              {%- if cookiecutter.include_feature_store == "no" %}
+              {%- if cookiecutter.framework == "recipes" %}
               env: ${bundle.environment}{% endif %}
               experiment_name: ${var.experiment_name}
               # The `run_mode` defines whether model validation is enabled or not.
@@ -65,7 +75,7 @@ resources:
               # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update validation_input
               validation_input: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
-              {%- if cookiecutter.include_feature_store == "yes" %}
+              {%- if cookiecutter.framework != "recipes" %}
               # A string describing the model type. The model type can be either "regressor" and "classifier".
               # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update model_type

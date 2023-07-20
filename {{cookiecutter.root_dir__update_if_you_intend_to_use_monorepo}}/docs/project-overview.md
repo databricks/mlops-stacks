@@ -32,7 +32,32 @@ contained in the following files:
 │   │
 │   ├── bundle.yml              <- bundle.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
-{% if cookiecutter.include_feature_store == "yes" -%}
+{% if cookiecutter.framework == "delta" -%}
+│   ├── training                <- Training folder contains Notebook that trains and registers the model.
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Deployment and Batch inference workflows
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── databricks-resources     <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+{% elif cookiecutter.framework == "fs" -%}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
 │   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.

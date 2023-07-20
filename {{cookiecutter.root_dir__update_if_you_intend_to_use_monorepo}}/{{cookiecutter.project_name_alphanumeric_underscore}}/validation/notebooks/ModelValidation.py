@@ -20,7 +20,7 @@
 # * enable_baseline_comparison              - Whether to load the current registered "Production" stage model as baseline.
 #                                             Baseline model is a requirement for relative change and absolute change validation thresholds.
 # * validation_input                        - Validation input. Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
-{% if cookiecutter.include_feature_store == "yes" %}# * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
+{% if cookiecutter.framework != "recipes" %}# * model_type                              - A string describing the model type. The model type can be either "regressor" and "classifier".
 #                                             Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # * targets                                 - The string name of a column from data that contains evaluation labels.
 #                                             Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate{% endif %}
@@ -60,7 +60,7 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 
 # COMMAND ----------
 
-{% if cookiecutter.include_feature_store == "no" %}dbutils.widgets.dropdown(
+{% if cookiecutter.framework == "recipes" %}dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
 ){% endif %}
 dbutils.widgets.text(
@@ -71,7 +71,7 @@ dbutils.widgets.text(
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
 dbutils.widgets.text("validation_input", "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`", "Validation Input")
-{% if cookiecutter.include_feature_store == "yes" %}
+{% if cookiecutter.framework != "recipes" %}
 dbutils.widgets.text("model_type", "regressor", "Model Type")
 dbutils.widgets.text("targets", "fare_amount", "Targets"){% endif %}
 dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
@@ -82,7 +82,7 @@ dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
 
-{% if cookiecutter.include_feature_store == "yes" %}
+{% if cookiecutter.framework == "fs" %}
 print(
     "Currently model validation is not supported for models registered with feature store. Please refer to "
     "issue https://github.com/databricks/mlops-stack/issues/70 for more details."
@@ -115,7 +115,7 @@ import mlflow
 import os
 import tempfile
 import traceback
-{% if cookiecutter.include_feature_store == "no" %}from mlflow.recipes.utils import (
+{% if cookiecutter.framework == "recipes" %}from mlflow.recipes.utils import (
     get_recipe_config,
     get_recipe_name,
     get_recipe_root_path,
@@ -126,7 +126,7 @@ client = MlflowClient()
 
 experiment_name = dbutils.widgets.get("experiment_name")
 
-{% if cookiecutter.include_feature_store == "no" %}env = dbutils.widgets.get("env")
+{% if cookiecutter.framework == "recipes" %}env = dbutils.widgets.get("env")
 assert env, "env notebook parameter must be specified"
 
 def get_model_type_from_recipe():
@@ -183,7 +183,7 @@ validation_input = dbutils.widgets.get("validation_input")
 assert validation_input
 data = spark.sql(validation_input)
 
-{% if cookiecutter.include_feature_store == "yes" %}model_type = dbutils.widgets.get("model_type")
+{% if cookiecutter.framework != "recipes" %}model_type = dbutils.widgets.get("model_type")
 targets = dbutils.widgets.get("targets")
 {% else %}model_type = get_model_type_from_recipe()
 targets = get_targets_from_recipe(){% endif %}
