@@ -35,16 +35,10 @@ recipe_paths = [
     os.path.join(project_name_alphanumeric_underscore, "tests", "training", "transform_test.py"),
 ]
 
-delta_and_recipe_paths = (
-    delta_paths
-    + recipe_paths
-    + [
-        os.path.join(
-            ".github", "workflows", "{{cookiecutter.project_name}}-run-tests.yml"
-        ),
-        os.path.join("docs", "ml-developer-guide.md"),
-    ]
-)
+delta_and_recipe_paths = delta_paths + recipe_paths + [
+    os.path.join(".github", "workflows", "{{cookiecutter.project_name}}-run-tests.yml"),
+    os.path.join("docs", "ml-developer-guide.md"),
+]
 
 feature_store_paths = [
     os.path.join(project_name_alphanumeric_underscore, "feature_engineering"),
