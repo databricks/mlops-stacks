@@ -14,9 +14,7 @@ def custom_metrics():
         """
         return np.sum(np.abs(eval_df["prediction"] - eval_df["target"] + 1) ** 2)
 
-    return [
-        make_metric(eval_fn=squared_diff_plus_one, greater_is_better=False,),
-    ]
+    return [make_metric(eval_fn=squared_diff_plus_one, greater_is_better=False)]
 
 
 # Define model validation rules. Return empty dict if validation rules are not needed.

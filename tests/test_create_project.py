@@ -140,14 +140,14 @@ def test_markdown_links(generated_project_dir):
 @pytest.mark.parametrize(
     "invalid_params",
     [
-        {"databricks_staging_workspace_host": "http://no-https",},
-        {"databricks_prod_workspace_host": "no-https",},
-        {"project_name": "a",},
-        {"project_name": "a-",},
-        {"project_name": "Name with spaces",},
-        {"project_name": "name/with/slashes",},
-        {"project_name": "name\\with\\backslashes",},
-        {"project_name": "name.with.periods",},
+        {"databricks_staging_workspace_host": "http://no-https"},
+        {"databricks_prod_workspace_host": "no-https"},
+        {"project_name": "a"},
+        {"project_name": "a-"},
+        {"project_name": "Name with spaces"},
+        {"project_name": "name/with/slashes"},
+        {"project_name": "name\\with\\backslashes"},
+        {"project_name": "name.with.periods"},
     ],
 )
 def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
@@ -155,9 +155,7 @@ def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
         generate(tmpdir, invalid_params)
 
 
-@pytest.mark.parametrize(
-    "valid_params", [{},],
-)
+@pytest.mark.parametrize("valid_params", [{}])
 def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     generate(tmpdir, valid_params)
 
