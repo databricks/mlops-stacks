@@ -18,7 +18,7 @@ from mlflow.recipes import Recipe
 @parametrize_by_project_generation_params
 def test_mlp_yaml_valid(generated_project_dir, profile, framework):
     # There's no MLP YAML configs generated so skip test in that case.
-    if framework != "recipes":
+    if framework != "MLflow Recipes":
         return
     project_dir = generated_project_dir / "my-mlops-project"
     os.chdir(project_dir / "my_mlops_project" / "training" / "notebooks")

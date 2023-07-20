@@ -10,7 +10,7 @@ from utils import (
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["delta", "fs", "recipes"])
+@pytest.mark.parametrize("framework", ["Delta Table", "Feature Store", "MLflow Recipes"])
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing
@@ -32,7 +32,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["delta", "recipes"])
+@pytest.mark.parametrize("framework", ["Delta Table", "MLflow Recipes"])
 @parametrize_by_cloud
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
@@ -54,7 +54,7 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["fs"])
+@pytest.mark.parametrize("framework", ["Feature Store"])
 @parametrize_by_cloud
 def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests passes for feature store"""

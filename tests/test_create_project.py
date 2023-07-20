@@ -214,6 +214,33 @@ def test_generate_project_with_default_values(
 
 
 @parametrize_by_project_generation_params
+def test_generate_project_check_delta_output(
+    tmpdir, cloud, cicd_platform, framework
+):
+    """
+    Asserts the behavior of Delta Table-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "framework": framework,
+    }
+    generate(tmpdir, context=context)
+    delta_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_DIRECTORY
+        / "training"
+        / "notebooks"
+        / "Train.py"
+    )
+    if framework == "Delta Table":
+        assert os.path.isfile(delta_notebook_path)
+    else:
+        assert not os.path.isfile(delta_notebook_path)
+
+@parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
     tmpdir, cloud, cicd_platform, framework
 ):
@@ -235,7 +262,7 @@ def test_generate_project_check_feature_store_output(
         / "notebooks"
         / "GenerateAndWriteFeatures.py"
     )
-    if framework == "fs":
+    if framework == "Feature Store":
         assert os.path.isfile(fs_notebook_path)
     else:
         assert not os.path.isfile(fs_notebook_path)
@@ -260,9 +287,9 @@ def test_generate_project_check_recipe_output(
         / TEST_PROJECT_DIRECTORY
         / "training"
         / "notebooks"
-        / "TrainWithRecipes.py"
+        / "TrainWithMLflowRecipes.py"
     )
-    if framework == "recipes":
+    if framework == "MLflow Recipes":
         assert os.path.isfile(recipe_notebook_path)
     else:
         assert not os.path.isfile(recipe_notebook_path)
