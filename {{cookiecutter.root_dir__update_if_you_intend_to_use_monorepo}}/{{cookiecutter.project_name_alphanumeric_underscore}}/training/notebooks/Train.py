@@ -93,8 +93,10 @@ from sklearn.model_selection import train_test_split
 import lightgbm as lgb
 import mlflow.lightgbm
 
-# Collect data into a Pandas array for training
-data = training_df.toPandas()[training_df.columns]
+# Collect data into a Pandas array for training. Since the timestamp columns would likely
+# cause the model to overfit the data, exclude them to avoid training on them.
+columns = [col for col in training_df.columns if col not in ['tpep_pickup_datetime', 'tpep_dropoff_datetime']]
+data = training_df.toPandas()[columns]
 
 train, test = train_test_split(data, random_state=123)
 X_train = train.drop(["fare_amount"], axis=1)
