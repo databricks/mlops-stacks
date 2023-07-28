@@ -7,4 +7,5 @@ default_branch={{cookiecutter.default_branch}}
 release_branch={{cookiecutter.release_branch}}
 read_user_group={{cookiecutter.read_user_group}}
 cicd_platform={{cookiecutter.cicd_platform}}
-framework={{cookiecutter.framework}}
+include_feature_store={{cookiecutter.include_feature_store}}
+include_mlflow_recipes={{cookiecutter.include_mlflow_recipes}}

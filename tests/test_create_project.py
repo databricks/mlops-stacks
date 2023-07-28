@@ -23,7 +23,8 @@ DEFAULT_PARAM_VALUES = {
     "default_branch": "main",
     "release_branch": "release",
     "read_user_group": "users",
-    "framework": "delta",
+    "include_feature_store": "no",
+    "include_mlflow_recipes": "no",
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",
