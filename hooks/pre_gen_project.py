@@ -35,22 +35,22 @@ import cookiecutter
         )}}
 {% endif %}
 
-{%- if cookiecutter.framework == "Delta Table" -%} 
+{%- if cookiecutter.include_feature_store == "yes" -%} 
     {{ cookiecutter.update(
         {
-            "framework": "delta"
+            "framework": "fs"
         }
     )}} 
-{%- elif cookiecutter.framework == "Feature Store" -%}
-    {{ cookiecutter.update(
-            {
-                "framework": "fs"
-            }
-        )}}
-{%- elif cookiecutter.framework == "MLflow Recipes" -%}
+{%- elif cookiecutter.include_mlflow_recipes == "yes" -%}
     {{ cookiecutter.update(
             {
                 "framework": "recipes"
+            }
+        )}}
+{%- else -%}
+    {{ cookiecutter.update(
+            {
+                "framework": "delta"
             }
         )}}
 {% endif %}
@@ -173,6 +173,13 @@ def validate_cloud_cicd_platform(cloud, cicd_platform):
         )
 
 
+def validate_feature_store_and_recipes(fs, recipes):
+    if fs == "yes" and recipes == "yes":
+        raise RuntimeError(
+            "Feature Store cannot be used with MLflow recipes. Please only use one of the two or neither."
+        )
+
+
 if __name__ == "__main__":
     validate_cookiecutter_version(cookiecutter.__version__)
     orig_databricks_staging_workspace_host = (
@@ -198,4 +205,8 @@ if __name__ == "__main__":
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"
+    )
+    validate_feature_store_and_recipes(
+        "{{cookiecutter.include_feature_store}}",
+        "{{cookiecutter.include_mlflow_recipes}}",
     )

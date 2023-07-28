@@ -11,7 +11,8 @@ from utils import (
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
 @pytest.mark.parametrize(
-    "framework", ["Delta Table", "Feature Store", "MLflow Recipes"]
+    "include_feature_store, include_mlflow_recipes",
+    [("yes", "no"), ("no", "yes"), ("no", "no")],
 )
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
@@ -34,7 +35,8 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["Delta Table", "MLflow Recipes"])
+@pytest.mark.parametrize("include_feature_store", ["no"])
+@pytest.mark.parametrize("include_mlflow_recipes", ["yes", "no"])
 @parametrize_by_cloud
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
@@ -56,7 +58,8 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
 )
-@pytest.mark.parametrize("framework", ["Feature Store"])
+@pytest.mark.parametrize("include_feature_store", ["yes"])
+@pytest.mark.parametrize("include_mlflow_recipes", ["no"])
 @parametrize_by_cloud
 def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests passes for feature store"""

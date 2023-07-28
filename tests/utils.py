@@ -18,23 +18,23 @@ def parametrize_by_cloud(fn):
 
 def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
-        "cloud,cicd_platform,framework",
+        "cloud,cicd_platform,include_feature_store, include_mlflow_recipes",
         [
-            ("aws", "GitHub Actions", "Delta Table"),
-            ("aws", "GitHub Actions", "Feature Store"),
-            ("aws", "GitHub Actions", "MLflow Recipes"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "Delta Table"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "Feature Store"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "MLflow Recipes"),
-            ("azure", "GitHub Actions", "Delta Table"),
-            ("azure", "GitHub Actions", "Feature Store"),
-            ("azure", "GitHub Actions", "MLflow Recipes"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "Delta Table"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "Feature Store"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "MLflow Recipes"),
-            ("azure", "Azure DevOps", "Delta Table"),
-            ("azure", "Azure DevOps", "Feature Store"),
-            ("azure", "Azure DevOps", "MLflow Recipes"),
+            ("aws", "GitHub Actions", "no", "no"),
+            ("aws", "GitHub Actions", "no", "yes"),
+            ("aws", "GitHub Actions", "yes", "no"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no", "no"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no", "yes"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "yes", "no"),
+            ("azure", "GitHub Actions", "no", "no"),
+            ("azure", "GitHub Actions", "no", "yes"),
+            ("azure", "GitHub Actions", "yes", "no"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no", "no"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no", "yes"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "yes", "no"),
+            ("azure", "Azure DevOps", "no", "no"),
+            ("azure", "Azure DevOps", "no", "yes"),
+            ("azure", "Azure DevOps", "yes", "no"),
         ],
     )
     @wraps(fn)
@@ -45,14 +45,17 @@ def parametrize_by_project_generation_params(fn):
 
 
 @pytest.fixture
-def generated_project_dir(tmpdir, cloud, cicd_platform, framework):
+def generated_project_dir(
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+):
     generate(
         tmpdir,
         {
             "project_name": "my-mlops-project",
             "cloud": cloud,
             "cicd_platform": cicd_platform,
-            "framework": framework,
+            "include_feature_store": include_feature_store,
+            "include_mlflow_recipes": include_mlflow_recipes,
             "databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
             "databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
             "default_branch": "main",
