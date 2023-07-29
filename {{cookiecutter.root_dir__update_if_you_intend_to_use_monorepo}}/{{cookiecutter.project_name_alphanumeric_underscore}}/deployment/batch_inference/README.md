@@ -3,7 +3,7 @@ To set up batch inference job via scheduled Databricks workflow, please refer to
 
 ## Prepare the batch inference input table for the example Project
 Please run the following code in a notebook to generate the example batch inference input table.
-{% if cookiecutter.include_feature_store == "yes" %}
+{% if cookiecutter.framework == "fs" %}
 ```
 from pyspark.sql.functions import to_timestamp, lit
 from pyspark.sql.types import IntegerType

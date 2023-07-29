@@ -18,18 +18,23 @@ def parametrize_by_cloud(fn):
 
 def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
-        "cloud,cicd_platform,include_feature_store",
+        "cloud,cicd_platform,include_feature_store, include_mlflow_recipes",
         [
-            ("aws", "GitHub Actions", "no"),
-            ("azure", "GitHub Actions", "no"),
-            ("azure", "Azure DevOps", "no"),
-            ("aws", "GitHub Actions", "yes"),
-            ("azure", "GitHub Actions", "yes"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no"),
-            ("aws", "GitHub Actions for GitHub Enterprise Servers", "yes"),
-            ("azure", "GitHub Actions for GitHub Enterprise Servers", "yes"),
-            ("azure", "Azure DevOps", "yes"),
+            ("aws", "GitHub Actions", "no", "no"),
+            ("aws", "GitHub Actions", "no", "yes"),
+            ("aws", "GitHub Actions", "yes", "no"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no", "no"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "no", "yes"),
+            ("aws", "GitHub Actions for GitHub Enterprise Servers", "yes", "no"),
+            ("azure", "GitHub Actions", "no", "no"),
+            ("azure", "GitHub Actions", "no", "yes"),
+            ("azure", "GitHub Actions", "yes", "no"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no", "no"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "no", "yes"),
+            ("azure", "GitHub Actions for GitHub Enterprise Servers", "yes", "no"),
+            ("azure", "Azure DevOps", "no", "no"),
+            ("azure", "Azure DevOps", "no", "yes"),
+            ("azure", "Azure DevOps", "yes", "no"),
         ],
     )
     @wraps(fn)
@@ -40,7 +45,9 @@ def parametrize_by_project_generation_params(fn):
 
 
 @pytest.fixture
-def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
+def generated_project_dir(
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+):
     generate(
         tmpdir,
         {
@@ -48,6 +55,7 @@ def generated_project_dir(tmpdir, cloud, cicd_platform, include_feature_store):
             "cloud": cloud,
             "cicd_platform": cicd_platform,
             "include_feature_store": include_feature_store,
+            "include_mlflow_recipes": include_mlflow_recipes,
             "databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
             "databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
             "default_branch": "main",

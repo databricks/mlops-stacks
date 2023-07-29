@@ -1,140 +1,131 @@
 # Databricks notebook source
 ##################################################################################
 # Model Training Notebook
-##
-# This notebook runs the MLflow Regression Recipe to train and registers an MLflow model in the model registry.
+#
+# This notebook shows an example of a Model Training pipeline using Delta tables.
 # It is configured and can be executed as the "Train" task in the model_training_job workflow defined under
 # ``{{cookiecutter.project_name_alphanumeric_underscore}}/databricks-resources/model-workflow-resource.yml``
 #
-# NOTE: In general, we recommend that you do not modify this notebook directly, and instead update data-loading
-# and model training logic in Python modules under the `steps` directory.
-# Modifying this notebook can break model training CI/CD.
-#
-# However, if you do need to make changes (e.g. to remove the use of MLflow Recipes APIs),
-# be sure to preserve the following interface expected by CI and the production model training job:
-#
 # Parameters:
-#
-# * env (optional): Name of the environment the notebook is run in (test, staging, or prod).
-#                   You can add environment-specific logic to this notebook based on the value of this parameter,
-#                   e.g. read training data from different tables or data sources across environments.
-#                   The `databricks-dev` profile will be used if users manually run the notebook.
-#                   The `databricks-test` profile will be used during CI test runs.
-#                   This separates the potentially many runs/models logged during integration tests from
-#                   runs/models produced by staging/production model training jobs. You can use the value of this
-#                   parameter to further customize the behavior of this notebook based on whether it's running as
-#                   a test or for recurring model training in staging/production.
-#
-#
-# Return values:
-# * model_uri: The notebook must return the URI of the registered model as notebook output specified through
-#              dbutils.notebook.exit() AND as a task value with key "model_uri" specified through
-#              dbutils.jobs.taskValues(...), for use by downstream notebooks.
-#
-# For details on MLflow Recipes and the individual split, transform, train etc steps below, including usage examples,
-# see the Regression Recipe overview documentation: https://mlflow.org/docs/latest/recipes.html
-# and Regression Recipes API documentation: https://mlflow.org/docs/latest/python_api/mlflow.recipes.html
+# * env (required):                 - Environment the notebook is run in (staging, or prod). Defaults to "staging".
+# * training_data_path (required)   - Path to the training data.
+# * experiment_name (required)      - MLflow experiment name for the training runs. Will be created if it doesn't exist.
+# * model_name (required)           - MLflow registered model name to use for the trained model. Will be created if it
+# *                                   doesn't exist.
 ##################################################################################
 
-# COMMAND ----------
-# MAGIC %load_ext autoreload
-# MAGIC %autoreload 2
 
 # COMMAND ----------
+# DBTITLE 1, Notebook arguments
 
-import os
-notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
-%cd $notebook_path
+# List of input args needed to run this notebook as a job.
+# Provide them via DB widgets or notebook arguments.
 
-# COMMAND ----------
+# Notebook Environment
+dbutils.widgets.dropdown("env", "staging", ["staging", "prod"], "Environment Name")
+env = dbutils.widgets.get("env")
 
-# MAGIC %pip install -r ../../requirements.txt
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
-import os
-notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
-%cd $notebook_path
-%cd ../
-
-# COMMAND ----------
-
-from mlflow.recipes import Recipe
-
-try:
-    # Profile from databricks workflow input will be used.
-    env = dbutils.widgets.get("env")
-    profile = f"databricks-{env}"
-except:
-    # When the users manually run the notebook, we use the "databricks-dev" profile instead of staging, prod or test.
-    profile = "databricks-dev"
-
-# COMMAND ----------
-
-from mlflow.recipes.utils import (
-    get_recipe_config,
-    get_recipe_root_path,
+# Path to the Hive-registered Delta table containing the training data.
+dbutils.widgets.text(
+    "training_data_path",
+    "/databricks-datasets/nyctaxi-with-zipcodes/subsampled",
+    label="Path to the training data",
 )
 
-root_path = get_recipe_root_path()
-config = get_recipe_config(root_path, profile)
-if config['experiment']['name'].startswith(f"/{env}-{{cookiecutter.experiment_base_name}}"):
-    print("WARNING: The experiment name may not have been set correctly. Please confirm that the experiment name in the profile YAML file matches the experiment_name variable in {{cookiecutter.project_name_alphanumeric_underscore}}/bundle.yml.")
+# MLflow experiment name.
+dbutils.widgets.text(
+    "experiment_name",
+    f"/dev-{{cookiecutter.experiment_base_name}}",
+    label="MLflow experiment name",
+)
+
+# MLflow registered model name to use for the trained mode.
+dbutils.widgets.text(
+    "model_name", "dev-{{cookiecutter.model_name}}", label="Model Name"
+)
+
+# COMMAND ----------
+# DBTITLE 1,Define input and output variables
+
+input_table_path = dbutils.widgets.get("training_data_path")
+experiment_name = dbutils.widgets.get("experiment_name")
+model_name = dbutils.widgets.get("model_name")
+
+# COMMAND ----------
+# DBTITLE 1, Set experiment
+
+import mlflow
+
+mlflow.set_experiment(experiment_name)
+
+# COMMAND ----------
+# DBTITLE 1, Load raw data
+
+training_df = spark.read.format("delta").load(input_table_path)
+display(training_df)
+
+# COMMAND ----------
+# DBTITLE 1, Helper function
+from mlflow.tracking import MlflowClient
+import mlflow.pyfunc
+
+
+def get_latest_model_version(model_name):
+    latest_version = 1
+    mlflow_client = MlflowClient()
+    for mv in mlflow_client.search_model_versions(f"name='{model_name}'"):
+        version_int = int(mv.version)
+        if version_int > latest_version:
+            latest_version = version_int
+    return latest_version
+
 
 # COMMAND ----------
 
-r = Recipe(profile=profile)
+# MAGIC %md
+# MAGIC Train a LightGBM model on the data, then log and register the model with MLflow.
 
 # COMMAND ----------
+# DBTITLE 1, Train model
 
-r.clean()
+import mlflow
+from sklearn.model_selection import train_test_split
+import lightgbm as lgb
+import mlflow.lightgbm
 
-# COMMAND ----------
+# Collect data into a Pandas array for training. Since the timestamp columns would likely
+# cause the model to overfit the data, exclude them to avoid training on them.
+columns = [col for col in training_df.columns if col not in ['tpep_pickup_datetime', 'tpep_dropoff_datetime']]
+data = training_df.toPandas()[columns]
 
-r.inspect()
+train, test = train_test_split(data, random_state=123)
+X_train = train.drop(["fare_amount"], axis=1)
+X_test = test.drop(["fare_amount"], axis=1)
+y_train = train.fare_amount
+y_test = test.fare_amount
 
-# COMMAND ----------
+mlflow.lightgbm.autolog()
+train_lgb_dataset = lgb.Dataset(X_train, label=y_train.values)
+test_lgb_dataset = lgb.Dataset(X_test, label=y_test.values)
 
-r.run("ingest")
+param = {"num_leaves": 32, "objective": "regression", "metric": "rmse"}
+num_rounds = 100
 
-# COMMAND ----------
-
-r.run("split")
-
-# COMMAND ----------
-
-r.run("transform")
-
-# COMMAND ----------
-
-r.run("train")
-
-# COMMAND ----------
-
-r.run("evaluate")
-
-# COMMAND ----------
-
-r.run("register")
+# Train a lightGBM model
+model = lgb.train(param, train_lgb_dataset, num_rounds)
 
 # COMMAND ----------
+# DBTITLE 1, Log model and return output.
 
-r.inspect("train")
+# Log the trained model with MLflow
+mlflow.lightgbm.log_model(
+    model, artifact_path="lgb_model", registered_model_name=model_name,
+)
 
-# COMMAND ----------
-
-test_data = r.get_artifact("test_data")
-test_data.describe()
-
-# COMMAND ----------
-
-model_version = r.get_artifact("registered_model_version")
-model_uri = f"models:/{model_version.name}/{model_version.version}"
+# The returned model URI is needed by the model deployment notebook.
+model_version = get_latest_model_version(model_name)
+model_uri = f"models:/{model_name}/{model_version}"
 dbutils.jobs.taskValues.set("model_uri", model_uri)
-dbutils.jobs.taskValues.set("model_name", model_version.name)
-dbutils.jobs.taskValues.set("model_version", model_version.version)
+dbutils.jobs.taskValues.set("model_name", model_name)
+dbutils.jobs.taskValues.set("model_version", model_version)
 dbutils.notebook.exit(model_uri)

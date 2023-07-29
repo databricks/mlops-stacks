@@ -9,5 +9,6 @@
   "release_branch": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default: `release`",
   "read_user_group": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default: `users`",
   "include_feature_store": ["no", "yes"],
+  "include_mlflow_recipes": ["no", "yes"],
   "_extensions": ["local_extensions.generate_doc_link", "local_extensions.regex_replace", "local_extensions.get_host"]
 }

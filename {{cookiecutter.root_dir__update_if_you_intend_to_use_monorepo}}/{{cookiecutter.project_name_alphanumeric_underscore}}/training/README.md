@@ -72,10 +72,10 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
   `dbx sync repo --profile {{cookiecutter.project_name}}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
 #### Running code on Databricks
-You can iterate on ML code by running the provided `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks/Train.py` notebook on Databricks using
+You can iterate on ML code by running the provided `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks/TrainWithMLflowRecipes.py` notebook on Databricks using
 [Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}). This notebook drives execution of
 the ML code defined under ``{{cookiecutter.project_name_alphanumeric_underscore}}/training/steps``. You can use multiple browser tabs to edit
-logic in `steps` and run the training recipe in the `Train.py` notebook.
+logic in `steps` and run the training recipe in the `TrainWithMLflowRecipes.py` notebook.
 
 
 ### Develop locally

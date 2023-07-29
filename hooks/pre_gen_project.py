@@ -35,6 +35,26 @@ import cookiecutter
         )}}
 {% endif %}
 
+{%- if cookiecutter.include_feature_store == "yes" -%} 
+    {{ cookiecutter.update(
+        {
+            "framework": "fs"
+        }
+    )}} 
+{%- elif cookiecutter.include_mlflow_recipes == "yes" -%}
+    {{ cookiecutter.update(
+            {
+                "framework": "recipes"
+            }
+        )}}
+{%- else -%}
+    {{ cookiecutter.update(
+            {
+                "framework": "delta"
+            }
+        )}}
+{% endif %}
+
 {{ cookiecutter.update(
     {
         "model_name": cookiecutter.project_name + "-model",
@@ -144,11 +164,19 @@ def validate_alphanumeric_project_name(project_name, alphanumeric_project_name):
             f"Project name '{project_name}' was too short. {VALID_PROJECT_NAME_MSG}"
         )
 
+
 def validate_cloud_cicd_platform(cloud, cicd_platform):
     if cloud == "aws" and cicd_platform == "azureDevOpsServices":
         raise RuntimeError(
             "Azure DevOps is not supported as a cicd_platform option with cloud=aws. "
             "If cloud=aws the currently supported cicd_platform is GitHub Actions."
+        )
+
+
+def validate_feature_store_and_recipes(fs, recipes):
+    if fs == "yes" and recipes == "yes":
+        raise RuntimeError(
+            "Feature Store cannot be used with MLflow recipes. Please only use one of the two or neither."
         )
 
 
@@ -172,8 +200,13 @@ if __name__ == "__main__":
     validate_project_name("{{cookiecutter.project_name}}")
     validate_root_dir("{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}")
     validate_alphanumeric_project_name(
-        "{{cookiecutter.project_name}}", "{{cookiecutter.project_name_alphanumeric_underscore}}"
+        "{{cookiecutter.project_name}}",
+        "{{cookiecutter.project_name_alphanumeric_underscore}}",
     )
     validate_cloud_cicd_platform(
         "{{cookiecutter.cloud}}", "{{cookiecutter.cicd_platform}}"
+    )
+    validate_feature_store_and_recipes(
+        "{{cookiecutter.include_feature_store}}",
+        "{{cookiecutter.include_mlflow_recipes}}",
     )

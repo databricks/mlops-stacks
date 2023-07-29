@@ -14,7 +14,7 @@ ML resources, per the [MLOps setup guide](mlops-setup.md).
 
 ## Intro
 After following the
-{% if cookiecutter.include_feature_store == "yes" %}[ML quickstart](ml-developer-guide-fs.md).
+{% if cookiecutter.framework == "fs" %}[ML quickstart](ml-developer-guide-fs.md).
 {% else %}[ML quickstart](ml-developer-guide.md).{% endif %}
 to iterate on ML code, the next step is to get
 your updated code merged back into the repo for production use. This page walks you through the workflow
@@ -34,14 +34,14 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a  
 {%- if cookiecutter.cicd_platform == "gitHub" -%} 
-[workflow](../.github/workflows/{{cookiecutter.project_name}}-run-tests{% if cookiecutter.include_feature_store == "yes" %}-fs{% endif %}.yml) 
+[workflow](../.github/workflows/{{cookiecutter.project_name}}-run-tests{% if cookiecutter.framework == "fs" %}-fs{% endif %}.yml) 
 {%- elif cookiecutter.cicd_platform == "azureDevopsServices" -%} 
 [Azure DevOps Pipeline](../.azure/devops-pipelines/{{cookiecutter.project_name}}-tests-ci.yml)
 {% endif %} 
-that runs unit and integration tests for the{% if cookiecutter.include_feature_store %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset.
+that runs unit and integration tests for the{% if cookiecutter.framework == "fs" %} feature engineering and{% endif %} model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
 to address any test failures.
-{% if cookiecutter.include_feature_store %}
+{% if cookiecutter.framework == "fs" %}
 The integration test runs the feature engineering and model training notebooks as a multi-task Databricks Job in the staging workspace.
 It reads input data, performs feature transforms, and writes outputs to Feature Store tables in the staging workspace. 
 The model training notebook uses these Feature Store tables as inputs to train, validate and register a new model version in the model registry. 
@@ -67,7 +67,7 @@ and then merge it into the upstream repo.
 
 ## Next Steps
 {%- if cookiecutter.default_branch == cookiecutter.release_branch %}
-After merging your pull request, subsequent runs of the {% if cookiecutter.include_feature_store %}feature engineering,{% endif %} model training and batch inference
+After merging your pull request, subsequent runs of the {% if cookiecutter.framework == "fs" %}feature engineering,{% endif %} model training and batch inference
 jobs in staging will automatically use your updated ML code.
 
 You may want to wait to confirm that
@@ -87,7 +87,7 @@ You can track the state of the ML pipelines for the current project from the MLf
 In both the staging and prod workspaces, the MLflow registered model contains links to:
 * The model versions produced through automated retraining
 * The Git repository containing the ML code run in the training and inference pipelines
-{% if cookiecutter.include_feature_store == "yes" %} * The recurring Feature Store jobs that computes and writes features to Feature Store tables. {% endif %} 
+{% if cookiecutter.framework == "fs" %} * The recurring Feature Store jobs that computes and writes features to Feature Store tables. {% endif %} 
 * The recurring training job that produces new model versions using the latest ML code and data
 * The model deployment CD workflow that takes model versions produced by the training job and deploys them for inference
 * The recurring batch inference job that uses the currently-deployed model version to score a dataset

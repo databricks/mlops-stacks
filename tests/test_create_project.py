@@ -24,6 +24,7 @@ DEFAULT_PARAM_VALUES = {
     "release_branch": "release",
     "read_user_group": "users",
     "include_feature_store": "no",
+    "include_mlflow_recipes": "no",
 }
 DEFAULT_PARAMS_AZURE = {
     "cloud": "azure",
@@ -140,30 +141,14 @@ def test_markdown_links(generated_project_dir):
 @pytest.mark.parametrize(
     "invalid_params",
     [
-        {
-            "databricks_staging_workspace_host": "http://no-https",
-        },
-        {
-            "databricks_prod_workspace_host": "no-https",
-        },
-        {
-            "project_name": "a",
-        },
-        {
-            "project_name": "a-",
-        },
-        {
-            "project_name": "Name with spaces",
-        },
-        {
-            "project_name": "name/with/slashes",
-        },
-        {
-            "project_name": "name\\with\\backslashes",
-        },
-        {
-            "project_name": "name.with.periods",
-        },
+        {"databricks_staging_workspace_host": "http://no-https"},
+        {"databricks_prod_workspace_host": "no-https"},
+        {"project_name": "a"},
+        {"project_name": "a-"},
+        {"project_name": "Name with spaces"},
+        {"project_name": "name/with/slashes"},
+        {"project_name": "name\\with\\backslashes"},
+        {"project_name": "name.with.periods"},
     ],
 )
 def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
@@ -171,19 +156,14 @@ def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
         generate(tmpdir, invalid_params)
 
 
-@pytest.mark.parametrize(
-    "valid_params",
-    [
-        {},
-    ],
-)
+@pytest.mark.parametrize("valid_params", [{}])
 def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
     generate(tmpdir, valid_params)
 
 
 @parametrize_by_project_generation_params
 def test_generate_project_with_default_values(
-    tmpdir, cloud, cicd_platform, include_feature_store
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -214,8 +194,37 @@ def test_generate_project_with_default_values(
 
 
 @parametrize_by_project_generation_params
+def test_generate_project_check_delta_output(
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+):
+    """
+    Asserts the behavior of Delta Table-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "include_feature_store": include_feature_store,
+        "include_mlflow_recipes": include_mlflow_recipes,
+    }
+    generate(tmpdir, context=context)
+    delta_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_DIRECTORY
+        / "training"
+        / "notebooks"
+        / "Train.py"
+    )
+    if include_mlflow_recipes == "no" and include_feature_store == "no":
+        assert os.path.isfile(delta_notebook_path)
+    else:
+        assert not os.path.isfile(delta_notebook_path)
+
+
+@parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
-    tmpdir, cloud, cicd_platform, include_feature_store
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
@@ -225,6 +234,7 @@ def test_generate_project_check_feature_store_output(
         "cloud": cloud,
         "cicd_platform": cicd_platform,
         "include_feature_store": include_feature_store,
+        "include_mlflow_recipes": include_mlflow_recipes,
     }
     generate(tmpdir, context=context)
     fs_notebook_path = (
@@ -239,6 +249,35 @@ def test_generate_project_check_feature_store_output(
         assert os.path.isfile(fs_notebook_path)
     else:
         assert not os.path.isfile(fs_notebook_path)
+
+
+@parametrize_by_project_generation_params
+def test_generate_project_check_recipe_output(
+    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+):
+    """
+    Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
+    """
+    context = {
+        "project_name": TEST_PROJECT_NAME,
+        "cloud": cloud,
+        "cicd_platform": cicd_platform,
+        "include_feature_store": include_feature_store,
+        "include_mlflow_recipes": include_mlflow_recipes,
+    }
+    generate(tmpdir, context=context)
+    recipe_notebook_path = (
+        tmpdir
+        / TEST_PROJECT_NAME
+        / TEST_PROJECT_DIRECTORY
+        / "training"
+        / "notebooks"
+        / "TrainWithMLflowRecipes.py"
+    )
+    if include_mlflow_recipes == "yes":
+        assert os.path.isfile(recipe_notebook_path)
+    else:
+        assert not os.path.isfile(recipe_notebook_path)
 
 
 @pytest.mark.parametrize(

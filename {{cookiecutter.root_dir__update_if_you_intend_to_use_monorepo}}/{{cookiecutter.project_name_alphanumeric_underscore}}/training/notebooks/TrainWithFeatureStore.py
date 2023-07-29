@@ -46,12 +46,16 @@ dbutils.widgets.text(
 
 # Pickup features table name
 dbutils.widgets.text(
-    "pickup_features_table", "feature_store_taxi_example.trip_pickup_features", label="Pickup Features Table"
+    "pickup_features_table",
+    "feature_store_taxi_example.trip_pickup_features",
+    label="Pickup Features Table",
 )
 
 # Dropoff features table name
 dbutils.widgets.text(
-    "dropoff_features_table", "feature_store_taxi_example.trip_dropoff_features", label="Dropoff Features Table"
+    "dropoff_features_table",
+    "feature_store_taxi_example.trip_dropoff_features",
+    label="Dropoff Features Table",
 )
 
 # COMMAND ----------
@@ -250,14 +254,8 @@ fs.log_model(
     registered_model_name=model_name,
 )
 
-# Build out the MLflow model registry URL for this model version.
-workspace_url = spark.conf.get("spark.databricks.workspaceUrl")
-model_version = get_latest_model_version(model_name)
-model_registry_url = "https://{workspace_url}/#mlflow/models/{model_name}/versions/{model_version}".format(
-    workspace_url=workspace_url, model_name=model_name, model_version=model_version
-)
-
 # The returned model URI is needed by the model deployment notebook.
+model_version = get_latest_model_version(model_name)
 model_uri = f"models:/{model_name}/{model_version}"
 dbutils.jobs.taskValues.set("model_uri", model_uri)
 dbutils.jobs.taskValues.set("model_name", model_name)

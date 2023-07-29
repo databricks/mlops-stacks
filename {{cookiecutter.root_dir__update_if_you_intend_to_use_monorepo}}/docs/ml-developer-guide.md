@@ -49,9 +49,9 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 
 #### Running code on Databricks
 You can iterate on the sample ML code by running the provided `{{cookiecutter.project_name_alphanumeric_underscore}}/training/notebooks/Train.py` notebook on Databricks using
-[Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}). This notebook drives execution of
+[Repos]({{ "repos/index.html" | generate_doc_link(cookiecutter.cloud) }}). {% if cookiecutter.framework == "recipes" %}This notebook drives execution of
 the ML code defined under ``{{cookiecutter.project_name_alphanumeric_underscore}}/training/steps``. You can use multiple browser tabs to edit
-logic in `steps` and run the training recipe in the `Train.py` notebook.
+logic in `steps` and run the training recipe in the `Train.py` notebook.{% endif %}
 
 
 ## Next Steps
