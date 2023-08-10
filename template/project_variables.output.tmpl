@@ -1,0 +1,23 @@
+{{template "cloud_specific_node_type_id"}}
+aaa{{.project_name}}aaa
+bbb{{.raw_cloud}}bbb
+{{.databricks_staging_workspace_host}}
+{{template "cloud"}}
+{{template "cicd_platform"}}
+{{template "databricks_staging_workspace_host"}}
+{{template "databricks_prod_workspace_host"}}
+{{.default_branch}}
+{{.release_branch}}
+{{.read_user_group}}
+{{template "include_feature_store"}}
+{{template "include_mlflow_recipes"}}
+{{template "cloud_specific_node_type_id"}}
+{{template "framework"}}
+{{template "experiment_base_name"}}
+{{.service_principal_group}}
+{{template "service_principal_group"}}
+{{template "experiment_base_name"}}
+{{template "service_principal_group"}}
+{{template "orig_databricks_staging_workspace_host"}}
+{{template "orig_databricks_prod_workspace_host"}}
+{{template "project_name_alphanumeric_underscore"}}

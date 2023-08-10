@@ -1,0 +1,11 @@
+project_name={{.project_name}}
+root_dir={{.project_name}}
+cloud={{cookiecutter.cloud}}
+databricks_staging_workspace_host={{cookiecutter.databricks_staging_workspace_host}}
+databricks_prod_workspace_host={{cookiecutter.databricks_prod_workspace_host}}
+default_branch={{.default_branch}}
+release_branch={{.release_branch}}
+read_user_group={{cookiecutter.read_user_group}}
+cicd_platform={{cookiecutter.cicd_platform}}
+include_feature_store={{cookiecutter.include_feature_store}}
+include_mlflow_recipes={{cookiecutter.include_mlflow_recipes}}

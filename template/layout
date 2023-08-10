@@ -1,0 +1,61 @@
+# Remove unrelated CICD platform files
+{{if (or(eq .cicd_platform "gitHub") (eq .cicd_platform "gitHubEnterprise"))}}
+    {{skip ".azure"}}
+{{else if (eq .cicd_platform "azureDevOpsServices")}}
+    {{skip ".github"}}
+{{end}}
+
+{{if (not(eq .project_name "27896cf3-bb3e-476e-8129-96df0406d5c7"))}}
+    {{skip "_params_testing_only.txt"}}
+{{end}}
+
+# Remove MLflow Recipes and Feature Store code in cases of Delta Table.
+{{if (eq .framework "delta")}}
+    # recipe_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/profiles")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/TrainWithMLflowRecipes.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/recipe.yaml")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/README.md")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/ingest_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/split_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/train_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/test_sample.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/transform_test.py")}}
+    # feature_store_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/feature_engineering")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/feature_engineering")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/TrainWithFeatureStore.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/databricks-resources/feature-engineering-workflow-resource.yml")}}
+    {{skip (printf "%s%s%s" ".github/workflows/" .project_name "-run-tests-fs.yml")}}
+    {{skip "docs/ml-developer-guide-fs.md"}}
+# Remove Delta and MLflow Recipes code in cases of Feature Store.
+{{else if (eq .framework "fs")}}
+    # delta_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/Train.py")}}
+    # recipe_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/profiles")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/TrainWithMLflowRecipes.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/recipe.yaml")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/README.md")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/ingest_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/split_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/train_test.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/test_sample.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/training/transform_test.py")}}
+    # delta_and_recipe_paths
+    {{skip (printf "%s%s%s" ".github/workflows/" .project_name "-run-tests.yml")}}}}
+    {{skip "docs/ml-developer-guide.md"}}}}
+# Remove Delta and Feature Store code in cases of MLflow Recipes.
+{{else}}
+    # delta_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/Train.py")}}
+    # feature_store_paths
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/feature_engineering")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/tests/feature_engineering")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/training/notebooks/TrainWithFeatureStore.py")}}
+    {{skip (printf "%s%s" .project_name_alphanumeric_underscore "/databricks-resources/feature-engineering-workflow-resource.yml")}}
+    {{skip (printf "%s%s%s" ".github/workflows/" .project_name "-run-tests-fs.yml")}}
+    {{skip "docs/ml-developer-guide-fs.md"}}
+{{end}}
+
+{{skip "layout.tmpl"}}

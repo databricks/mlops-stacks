@@ -1,0 +1,6 @@
+# define functions
+{{ define "get_host" -}}
+  {{- with url . -}}
+    {{- print .Scheme `://` .Host -}}
+  {{- end -}}
+{{- end }}
