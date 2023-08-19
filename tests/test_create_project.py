@@ -89,7 +89,7 @@ def test_no_databricks_workspace_urls():
     # Test that there are no accidental hardcoded Databricks workspace URLs included in stack source files
     cookiecutter_dir = (
         pathlib.Path(__file__).parent.parent
-        / "{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
+        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
     )
     test_paths = [
         os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
@@ -107,7 +107,7 @@ def test_no_databricks_workspace_urls():
 def test_no_databricks_doc_strings_before_project_generation():
     cookiecutter_dir = (
         pathlib.Path(__file__).parent.parent
-        / "{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
+        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
     )
     test_paths = [
         os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)

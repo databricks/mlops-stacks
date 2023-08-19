@@ -8,11 +8,11 @@ on Databricks that follow production best-practices out of the box.
 
 The default stack in this repo includes three modular components:
 
-| Component                    | Description                                                                                                                                                         | Why it's useful                                                                                                                                                                         |
-|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                      | Example ML project structure, with unit tested Python modules and notebooks                                                                                         | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Configs as Code  | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)  | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
-| CI/CD                        | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
+| Component                   | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML Code                     | Example ML project structure, with unit tested Python modules and notebooks                                                                                           | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
+| ML Resource Configs as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| CI/CD                       | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 
 Your organization can use the default stack as is or customize it as needed, e.g. to add/remove components or
@@ -92,14 +92,14 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
- under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template "project_name_alphanumeric_underscore"}}/databricks-resources` 
-and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template "project_name_alphanumeric_underscore"}}/bundle.yml` into your existing project.
+ under `{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources` 
+and `{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml` into your existing project.
 
 ### Can I adopt individual components of the stack?
 For this use case, we recommend instantiating the full stack via `cookiecutter`
 and copying the relevant stack subdirectories. For example, all ML resource configs
-are defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template "project_name_alphanumeric_underscore"}}/databricks-resources`
-and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template "project_name_alphanumeric_underscore"}}/bundle.yml`, while CI/CD is defined e.g. under `.github`
+are defined under `{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources`
+and `{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml`, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
 ### Can I customize this stack?
@@ -126,7 +126,7 @@ discussion, before opening a pull request.
 
 This stack is implemented as a [cookiecutter template](https://cookiecutter.readthedocs.io/en/stable/)
 that generates new projects given user-supplied parameters. Parametrized project code can be found under
-the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
+the `{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
 
 ### Installing development requirements
 

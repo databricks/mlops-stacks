@@ -1,54 +1,54 @@
 {
   "properties": {
-    "project_name": {
+    "input_project_name": {
       "type": "string",
       "default": "my-mlops-project",
-      "description": "Name of the project"
+      "description": "Project Name"
     },
-    "raw_cloud": {
+    "input_cloud": {
       "type": "string",
-      "description": "Select cloud: 1 - azure; 2 - aws; Choose from [1, 2]",
-      "default": "1"
+      "description": "Select cloud. \nChoose from azure, aws",
+      "default": "azure"
     },
-    "raw_cicd_platform": {
+    "input_cicd_platform": {
       "type": "string",
-      "description": "Select CICD platform: 1 - GitHub Actions; 2 - GitHub Actions for GitHub Enterprise Servers; 3 - Azure DevOpsChoose from [1, 2, 3]",
-      "default": "1"
+      "description": "Select CICD platform. \nChoose from github_actions, github_actions_for_github_enterprise_servers, azure_devlops",
+      "default": "github_actions"
     },
-    "raw_databricks_staging_workspace_host": {
+    "input_databricks_staging_workspace_host": {
       "type": "string",
-      "default": "https://",
-      "description": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Azure - https://adb-xxxx.xx.azuredatabricks.net; AWS - https://your-staging-workspace.cloud.databricks.com"
+      "default": "",
+      "description": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net \nAWS - https://your-staging-workspace.cloud.databricks.com\n"
     },
-    "raw_databricks_prod_workspace_host": {
+    "input_databricks_prod_workspace_host": {
       "type": "string",
-      "default": "https://",
-      "description": "URL of production Databricks workspace. Azure - https://adb-xxxx.xx.azuredatabricks.net; AWS - https://your-staging-workspace.cloud.databricks.com"
+      "default": "",
+      "description": "URL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net; \nAWS - https://your-prod-workspace.cloud.databricks.com\n"
     },
-    "default_branch": {
+    "input_default_branch": {
       "type": "string",
       "default": "main",
-      "description": "Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged"
+      "description": "Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default:"
     },
-    "release_branch": {
+    "input_release_branch": {
       "type": "string",
       "default": "release",
-      "description": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch"
+      "description": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default:"
     },
-    "read_user_group": {
+    "input_read_user_group": {
       "type": "string",
       "default": "users",
-      "description": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces"
+      "description": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default:"
     },
-    "raw_include_feature_store": {
+    "input_include_feature_store": {
       "type": "string",
-      "description": "Whether to include feature store: 1 - no; 2 - yes; Choose from [1, 2]",
-      "default": "1"
+      "description": "Whether to include feature store. \nChoose from no, yes",
+      "default": "no"
     },
-    "raw_include_mlflow_recipes": {
+    "input_include_mlflow_recipes": {
       "type": "string",
-      "description": "Whether to include mlflow recipes: 1 - no; 2 - yes; Choose from [1, 2]",
-      "default": "1"
+      "description": "Whether to include mlflow recipes. \nChoose from no, yes",
+      "default": "no"
     }
   }
 }
