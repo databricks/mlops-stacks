@@ -1,3 +1,4 @@
+input_root_dir={{.input_root_dir}}
 input_project_name={{.input_project_name}}
 input_cloud={{.input_cloud}}
 input_cicd_platform={{.input_cicd_platform}}
@@ -9,6 +10,7 @@ input_read_user_group={{.input_read_user_group}}
 input_include_feature_store={{.input_include_feature_store}}
 input_include_mlflow_recipes={{.input_include_mlflow_recipes}}
 
+root_dir={{ template `root_dir` . }}
 project_name={{ template `project_name` . }}
 cloud={{ template `cloud` . }}
 cicd_platform={{ template `cicd_platform` . }}
@@ -27,5 +29,3 @@ model_name={{ template `model_name` . }}
 experiment_base_name={{ template `experiment_base_name` . }}
 service_principal_group={{ template `service_principal_group` . }}
 project_name_alphanumeric_underscore={{ template `project_name_alphanumeric_underscore` . }}
-
-run validation{{ template `validation` . }}

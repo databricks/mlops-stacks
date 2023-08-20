@@ -1,4 +1,8 @@
 # define template variables
+{{ define `root_dir` -}}
+    {{ .input_root_dir }}
+{{- end }}
+
 {{ define `project_name` -}}
     {{ .input_project_name }}
 {{- end}}

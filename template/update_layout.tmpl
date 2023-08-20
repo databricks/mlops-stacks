@@ -1,0 +1,66 @@
+# Remove unrelated CICD platform files
+{{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` -}}
+{{ $root_dir := .input_root_dir}}
+
+{{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
+    {{ skip (printf `%s/%s` $root_dir `.azure`) }}
+{{ else if (eq .cicd_platform `azure_devlops`) }}
+    {{ skip (printf `%s/%s` $root_dir `.github`) }}
+{{ end }}
+
+{{ if (not (eq .project_name `27896cf3-bb3e-476e-8129-96df0406d5c7`)) }}
+    {{ skip (printf `%s/%s` $root_dir `_params_testing_only.txt`) }}
+{{ end }}
+
+# Remove Delta and Feature Store code in cases of MLflow Recipes.
+{{ if (eq .input_include_mlflow_recipes `yes`) }}
+    # delta_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/Train.py`) }}
+    # feature_store_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `databricks-resources/feature-engineering-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .project_name `run-tests-fs.yml`) }}
+    {{ skip (printf `%s/%s` $root_dir `docs/ml-developer-guide-fs.md`) }}
+# Remove Delta and MLflow Recipes code in cases of Feature Store.
+{{ else if (eq .input_include_feature_store `yes`) }}
+    # delta_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/Train.py`) }}
+    # recipe_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/ingest_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/split_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/train_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/test_sample.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/transform_test.py`) }}
+    # delta_and_recipe_paths
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests.yml`) }}
+    {{ skip (printf `%s/%s` $root_dir `docs/ml-developer-guide.md`) }}
+# Remove MLflow Recipes and Feature Store code in cases of Delta Table.
+{{ else }}
+    # recipe_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/ingest_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/split_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/train_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/test_sample.parquet`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/transform_test.py`) }}
+    # feature_store_paths
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `databricks-resources/feature-engineering-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests-fs.yml`) }}
+    {{ skip (printf `%s/%s` $root_dir `docs/ml-developer-guide-fs.md`) }}
+{{ end }}
+
+# Remove template files
+{{ skip `update_layout` }}
+{{ skip `run_validations` }}

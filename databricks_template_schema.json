@@ -5,6 +5,11 @@
       "default": "my-mlops-project",
       "description": "Project Name"
     },
+    "input_root_dir": {
+      "type": "string",
+      "default": "my-mlops-project",
+      "description": "Root directory name. Use a name different from the project name if you intend to use monorepo"
+    },
     "input_cloud": {
       "type": "string",
       "description": "Select cloud. \nChoose from azure, aws",
