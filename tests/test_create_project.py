@@ -1,4 +1,3 @@
-from cookiecutter.exceptions import FailedHookException
 import os
 import pathlib
 import pytest
@@ -88,12 +87,12 @@ def test_no_template_strings_after_param_substitution(generated_project_dir):
 
 def test_no_databricks_workspace_urls():
     # Test that there are no accidental hardcoded Databricks workspace URLs included in stack source files
-    cookiecutter_dir = (
+    template_dir = (
         pathlib.Path(__file__).parent.parent
-        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
+        / "template"
     )
     test_paths = [
-        os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
+        os.path.join(template_dir, path) for path in paths(template_dir)
     ]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
@@ -106,12 +105,12 @@ def test_no_databricks_workspace_urls():
 
 
 def test_no_databricks_doc_strings_before_project_generation():
-    cookiecutter_dir = (
+    template_dir = (
         pathlib.Path(__file__).parent.parent
-        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
+        / "template"
     )
     test_paths = [
-        os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
+        os.path.join(template_dir, path) for path in paths(template_dir)
     ]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
@@ -172,7 +171,7 @@ def test_generate_project_with_default_values(
     due to an update of the default values, please do the following checks:
     - The default param value constants in this test are up to date.
     - The default param values in the substitution logic in the pre_gen_project.py hook are up to date.
-    - The default param values in the help strings in cookiecutter.json are up to date.
+    - The default param values in the help strings in databricks_template_schema.json are up to date.
     """
     context = {
         "input_project_name": TEST_PROJECT_NAME,
