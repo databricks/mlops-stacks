@@ -18,7 +18,7 @@ AZURE_DEFAULT_PARAMS = {
     "input_release_branch": "release",
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
-    "input_include_mlflow_recipes": "no"
+    "input_include_mlflow_recipes": "no",
 }
 
 AWS_DEFAULT_PARAMS = {
@@ -26,6 +26,7 @@ AWS_DEFAULT_PARAMS = {
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
+
 
 def parametrize_by_cloud(fn):
     @wraps(fn)
@@ -66,7 +67,12 @@ def parametrize_by_project_generation_params(fn):
 
 @pytest.fixture
 def generated_project_dir(
-    tmpdir, databricks_cli, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     generate(
         tmpdir,
@@ -117,8 +123,12 @@ def markdown_checker_configs(tmpdir):
 
 def generate(directory, databricks_cli, context):
     params = {
-        **(AWS_DEFAULT_PARAMS if context.get("input_cloud") == "aws" else AZURE_DEFAULT_PARAMS),
-        **context
+        **(
+            AWS_DEFAULT_PARAMS
+            if context.get("input_cloud") == "aws"
+            else AZURE_DEFAULT_PARAMS
+        ),
+        **context,
     }
     json_string = json.dumps(params)
     config_file = directory / "config.json"
@@ -126,20 +136,24 @@ def generate(directory, databricks_cli, context):
     subprocess.run(
         f"{databricks_cli} bundle init {ASSET_TEMPLATE_ROOT_DIRECTORY} --config-file {config_file} --project-dir {directory}",
         shell=True,
-        check=True
+        check=True,
     )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def databricks_cli(tmp_path_factory):
     # create tools dir
-    tool_dir = tmp_path_factory.mktemp('tools')
+    tool_dir = tmp_path_factory.mktemp("tools")
     # copy script and make it executable
-    install_script_path =  os.path.join(os.path.dirname(__file__), "install.sh")
+    install_script_path = os.path.join(os.path.dirname(__file__), "install.sh")
     # download databricks cli
-    databricks_cli_dir = tool_dir / 'databricks_cli'
+    databricks_cli_dir = tool_dir / "databricks_cli"
     databricks_cli_dir.mkdir()
-    subprocess.run(["bash", install_script_path, databricks_cli_dir], capture_output=True, text=True)
+    subprocess.run(
+        ["bash", install_script_path, databricks_cli_dir],
+        capture_output=True,
+        text=True,
+    )
 
     yield f"{databricks_cli_dir}/databricks"
     # no need to remove the files as they are in test temp dir

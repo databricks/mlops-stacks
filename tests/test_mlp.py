@@ -1,7 +1,7 @@
 from utils import (
     databricks_cli,
     generated_project_dir,
-    parametrize_by_project_generation_params
+    parametrize_by_project_generation_params,
 )
 import pytest
 import os

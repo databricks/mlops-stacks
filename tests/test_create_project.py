@@ -87,13 +87,8 @@ def test_no_template_strings_after_param_substitution(generated_project_dir):
 
 def test_no_databricks_workspace_urls():
     # Test that there are no accidental hardcoded Databricks workspace URLs included in stack source files
-    template_dir = (
-        pathlib.Path(__file__).parent.parent
-        / "template"
-    )
-    test_paths = [
-        os.path.join(template_dir, path) for path in paths(template_dir)
-    ]
+    template_dir = pathlib.Path(__file__).parent.parent / "template"
+    test_paths = [os.path.join(template_dir, path) for path in paths(template_dir)]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
@@ -105,13 +100,8 @@ def test_no_databricks_workspace_urls():
 
 
 def test_no_databricks_doc_strings_before_project_generation():
-    template_dir = (
-        pathlib.Path(__file__).parent.parent
-        / "template"
-    )
-    test_paths = [
-        os.path.join(template_dir, path) for path in paths(template_dir)
-    ]
+    template_dir = pathlib.Path(__file__).parent.parent / "template"
+    test_paths = [os.path.join(template_dir, path) for path in paths(template_dir)]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
@@ -163,7 +153,12 @@ def test_generate_succeeds_with_valid_params(tmpdir, databricks_cli, valid_param
 
 @parametrize_by_project_generation_params
 def test_generate_project_with_default_values(
-    tmpdir, databricks_cli, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -196,7 +191,12 @@ def test_generate_project_with_default_values(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_delta_output(
-    tmpdir, databricks_cli, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of Delta Table-related artifacts when generating Stacks.
@@ -226,7 +226,12 @@ def test_generate_project_check_delta_output(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
-    tmpdir, databricks_cli, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
@@ -256,7 +261,12 @@ def test_generate_project_check_feature_store_output(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_recipe_output(
-    tmpdir, databricks_cli, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
@@ -294,7 +304,9 @@ def test_generate_project_check_recipe_output(
     ],
 )
 @parametrize_by_cloud
-def test_workspace_dir_strip_query_params(tmpdir, databricks_cli, cloud, workspace_url_suffix):
+def test_workspace_dir_strip_query_params(
+    tmpdir, databricks_cli, cloud, workspace_url_suffix
+):
     workspace_host = {
         "aws": "https://dbc-my-aws-workspace.cloud.databricks.com",
         "azure": "https://adb-mycoolworkspace.11.azuredatabricks.net",
@@ -311,7 +323,9 @@ def test_workspace_dir_strip_query_params(tmpdir, databricks_cli, cloud, workspa
     test_file_contents = (
         tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt"
     ).read_text("utf-8")
-    assert f"\ndatabricks_staging_workspace_host={workspace_host}\n" in test_file_contents
+    assert (
+        f"\ndatabricks_staging_workspace_host={workspace_host}\n" in test_file_contents
+    )
     assert f"\ndatabricks_prod_workspace_host={workspace_host}\n" in test_file_contents
 
 
@@ -320,4 +334,3 @@ def test_generate_project_default_project_name_params(tmpdir, databricks_cli):
     generate(tmpdir, databricks_cli, context={})
     readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
-
