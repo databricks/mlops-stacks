@@ -8,7 +8,7 @@
     {{ skip (printf `%s/%s` $root_dir `.github`) }}
 {{ end }}
 
-{{ if (not (eq .project_name `27896cf3-bb3e-476e-8129-96df0406d5c7`)) }}
+{{ if (not (eq .input_project_name `27896cf3-bb3e-476e-8129-96df0406d5c7`)) }}
     {{ skip (printf `%s/%s` $root_dir `_params_testing_only.txt`) }}
 {{ end }}
 

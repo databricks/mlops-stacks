@@ -1,7 +1,10 @@
-from utils import generated_project_dir, parametrize_by_project_generation_params
+from utils import (
+    databricks_cli,
+    generated_project_dir,
+    parametrize_by_project_generation_params
+)
 import pytest
 import os
-import json
 from mlflow.recipes import Recipe
 
 
