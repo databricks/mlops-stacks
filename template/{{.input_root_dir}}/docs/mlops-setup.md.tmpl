@@ -4,7 +4,7 @@
 ## Table of contents
 * [Intro](#intro)
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
-* [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devlops`) }}#configure-cicd---azure-devops{{ end }})
+* [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ end }})
 {{- if (eq .input_include_mlflow_recipes `yes`) }}
 * [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){{ end }}
 * [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
@@ -96,7 +96,7 @@ to add the following secrets to GitHub:
 - `STAGING_AZURE_SP_CLIENT_SECRET`
   {{ end }}
 
-{{ else if (eq .input_cicd_platform `azure_devlops`) -}}
+{{ else if (eq .input_cicd_platform `azure_devops`) -}}
 ## Configure CI/CD - Azure DevOps
 
 Two Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
