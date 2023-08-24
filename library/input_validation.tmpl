@@ -34,7 +34,7 @@
     {{- end -}}
 
     - Validate cicd platform
-    {{ if and (eq .input_cloud `aws`) (eq .input_cicd_platform `azure_devlops`) -}}
+    {{ if and (eq .input_cloud `aws`) (eq .input_cicd_platform `azure_devops`) -}}
         {{ fail `Azure DevOps is not supported as a cicd_platform option with cloud=aws. If cloud=aws the currently supported cicd_platform is GitHub Actions.` }}
     {{- end -}}
 

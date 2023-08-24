@@ -17,7 +17,7 @@
     },
     "input_cicd_platform": {
       "type": "string",
-      "description": "Select CICD platform. \nChoose from github_actions, github_actions_for_github_enterprise_servers, azure_devlops",
+      "description": "Select CICD platform. \nChoose from github_actions, github_actions_for_github_enterprise_servers, azure_devops",
       "default": "github_actions"
     },
     "input_databricks_staging_workspace_host": {
