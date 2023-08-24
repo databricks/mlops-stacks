@@ -53,9 +53,9 @@ def parametrize_by_project_generation_params(fn):
             ("azure", "github_actions_for_github_enterprise_servers", "no", "no"),
             ("azure", "github_actions_for_github_enterprise_servers", "no", "yes"),
             ("azure", "github_actions_for_github_enterprise_servers", "yes", "no"),
-            ("azure", "azure_devlops", "no", "no"),
-            ("azure", "azure_devlops", "no", "yes"),
-            ("azure", "azure_devlops", "yes", "no"),
+            ("azure", "azure_devops", "no", "no"),
+            ("azure", "azure_devops", "no", "yes"),
+            ("azure", "azure_devops", "yes", "no"),
         ],
     )
     @wraps(fn)
