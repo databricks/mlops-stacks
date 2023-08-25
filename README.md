@@ -35,8 +35,9 @@ structure defined in the default stack.
 
 ### Prerequisites
  - Python 3.8+
- - [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html)
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.203.2
 
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.203.2 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 Databricks asset bundle is in private preview. Please contact a Databricks representative for more information.
 
 ### Starting a new project
