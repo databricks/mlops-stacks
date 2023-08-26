@@ -35,40 +35,38 @@ structure defined in the default stack.
 
 ### Prerequisites
  - Python 3.8+
- - [Cookiecutter Python package](http://cookiecutter.readthedocs.org/en/latest/installation.html) >= 2.1.0: This can be installed with pip:
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.203.2
 
-``` bash
-$ pip install 'cookiecutter>=2.1.0'
-```
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.203.2 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
+Databricks asset bundle is in private preview. Please contact a Databricks representative for more information.
 
 ### Starting a new project
 
 To create a new project, run:
 
-    cookiecutter https://github.com/databricks/mlops-stack
+    databricks bundle init https://github.com/databricks/mlops-stack
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
- * ``project_name``: name of the current project
- * ``root_dir__update_if_you_intend_to_use_monorepo``: name of the root directory. The root directory name should be specified if monorepo will be used for the project. 
-   Otherwise, user can leave it blank to use the name of the current project as root directory name.
- * ``cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
- * ``cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
+ * ``input_project_name``: name of the current project
+ * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
+ * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
+ * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
 
 Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
 ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know
-``databricks_staging_workspace_host``, it's better to specify it upfront):
+``input_databricks_staging_workspace_host``, it's better to specify it upfront):
 
- * ``databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
+ * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
    We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view and debug CI test results
- * ``databricks_prod_workspace_host``: URL of production Databricks workspace. We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
+ * ``input_databricks_prod_workspace_host``: URL of production Databricks workspace. We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view production job status and see job logs to debug failures.
- * ``default_branch``: Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged.
- * ``release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
+ * ``input_default_branch``: Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged.
+ * ``input_release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
     repo pull ML code from this branch.
- * ``read_user_group``: User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
- * ``include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training.
- * ``include_mlflow_recipes``: If selected, will provide [MLflow Recipes](https://mlflow.org/docs/latest/recipes.html) stack components, dividing the training pipeline into configurable steps and profiles.
+ * ``input_read_user_group``: User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
+ * ``input_include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML resource configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training.
+ * ``input_include_mlflow_recipes``: If selected, will provide [MLflow Recipes](https://mlflow.org/docs/latest/recipes.html) stack components, dividing the training pipeline into configurable steps and profiles.
  
 
 See the generated ``README.md`` for next steps!
@@ -84,7 +82,7 @@ production model serving endpoints.
 
 However, you can run the stack against just a single workspace, against a dev and
 staging/prod workspace, etc. Just supply the same workspace URL for
-`databricks_staging_host` and `databricks_prod_host`. If you go this route, we
+`input_databricks_staging_workspace_host` and `input_databricks_prod_workspace_host`. If you go this route, we
 recommend using different service principals to manage staging vs prod resources,
 to ensure that CI workloads run in staging cannot interfere with production resources.
 
@@ -92,14 +90,14 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
- under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources` 
-and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml` into your existing project.
+ under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources`` 
+and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml`` into your existing project.
 
 ### Can I adopt individual components of the stack?
-For this use case, we recommend instantiating the full stack via `cookiecutter`
+For this use case, we recommend instantiating the full stack via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) 
 and copying the relevant stack subdirectories. For example, all ML resource configs
-are defined under `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources`
-and `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml`, while CI/CD is defined e.g. under `.github`
+are defined under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources``
+and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml``, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
 ### Can I customize this stack?
@@ -124,9 +122,9 @@ Please provide feedback (bug reports, feature requests, etc) via GitHub issues.
 We welcome community contributions. For substantial changes, we ask that you first file a GitHub issue to facilitate
 discussion, before opening a pull request.
 
-This stack is implemented as a [cookiecutter template](https://cookiecutter.readthedocs.io/en/stable/)
+This stack is implemented as a [Databricks asset bundle template](https://docs.databricks.com/en/dev-tools/bundles/templates.html)
 that generates new projects given user-supplied parameters. Parametrized project code can be found under
-the `{{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}` directory.
+the `{{.input_root_dir}}` directory.
 
 ### Installing development requirements
 
@@ -139,7 +137,7 @@ dependencies listed in `dev-requirements.txt`:
 
 ### Running the tests
 **NOTE**: This section is for open-source developers contributing to the default stack
-in this repo.  If you are working on an ML project using the stack (e.g. if you ran `cookiecutter`
+in this repo.  If you are working on an ML project using the stack (e.g. if you ran `databricks bundle init`
 to start a new project), see the `README.md` within your generated
 project directory for detailed instructions on how to make and test changes.
 
@@ -174,12 +172,12 @@ of the example project:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.yaml" --no-input --overwrite-if-exists
+databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.json"
 ```
 
 To create an example AWS project, using GitHub Actions for CI/CD, run:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-cookiecutter "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.yaml" --no-input --overwrite-if-exists
+databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.json"
 ```
