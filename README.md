@@ -48,8 +48,7 @@ To create a new project, run:
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``input_project_name``: name of the current project
- * ``input_root_dir``: name of the root directory. The root directory name should be specified if monorepo will be used for the project. 
-   Otherwise, user can use the name of the current project as root directory name.
+ * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
  * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP)
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
 
@@ -173,12 +172,12 @@ of the example project:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-databricks "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.json"
+databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.json"
 ```
 
 To create an example AWS project, using GitHub Actions for CI/CD, run:
 ```
 # Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
 MLOPS_STACK_PATH=~/mlops-stack
-databricks "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.json"
+databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.json"
 ```
