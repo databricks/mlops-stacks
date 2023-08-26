@@ -1,0 +1,13 @@
+{
+  "input_root_dir": "example-azure-github-project",
+  "input_project_name": "example-azure-github-project",
+  "input_cloud": "azure",
+  "input_cicd_platform": "github_actions",
+  "input_databricks_staging_workspace_host": "https://adb-your-staging-workspace.azuredatabricks.net",
+  "input_databricks_prod_workspace_host": "https://adb-your-prod-workspace.azuredatabricks.net",
+  "input_default_branch": "main",
+  "input_release_branch": "release",
+  "input_read_user_group": "users",
+  "input_include_feature_store": "no",
+  "input_include_mlflow_recipes": "no"
+}

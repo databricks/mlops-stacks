@@ -23,12 +23,12 @@
     "input_databricks_staging_workspace_host": {
       "type": "string",
       "default": "",
-      "description": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net \nAWS - https://your-staging-workspace.cloud.databricks.com\n"
+      "description": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-staging-workspace.cloud.databricks.com\n"
     },
     "input_databricks_prod_workspace_host": {
       "type": "string",
       "default": "",
-      "description": "URL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net; \nAWS - https://your-prod-workspace.cloud.databricks.com\n"
+      "description": "URL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-prod-workspace.cloud.databricks.com\n"
     },
     "input_default_branch": {
       "type": "string",

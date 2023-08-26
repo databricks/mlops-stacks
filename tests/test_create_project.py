@@ -1,4 +1,3 @@
-from cookiecutter.exceptions import FailedHookException
 import os
 import pathlib
 import pytest
@@ -6,6 +5,7 @@ import subprocess
 from utils import (
     read_workflow,
     generate,
+    databricks_cli,
     markdown_checker_configs,
     paths,
     generated_project_dir,
@@ -20,21 +20,21 @@ DEFAULT_PROJECT_DIRECTORY = "my_mlops_project"
 TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
 TEST_PROJECT_DIRECTORY = "27896cf3_bb3e_476e_8129_96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
-    "default_branch": "main",
-    "release_branch": "release",
-    "read_user_group": "users",
-    "include_feature_store": "no",
-    "include_mlflow_recipes": "no",
+    "input_default_branch": "main",
+    "input_release_branch": "release",
+    "input_read_user_group": "users",
+    "input_include_feature_store": "no",
+    "input_include_mlflow_recipes": "no",
 }
 DEFAULT_PARAMS_AZURE = {
-    "cloud": "azure",
-    "databricks_staging_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
-    "databricks_prod_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
+    "input_cloud": "azure",
+    "input_databricks_staging_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
+    "input_databricks_prod_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
 }
 DEFAULT_PARAMS_AWS = {
-    "cloud": "aws",
-    "databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
-    "databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
+    "input_cloud": "aws",
+    "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
+    "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
 
 
@@ -87,13 +87,8 @@ def test_no_template_strings_after_param_substitution(generated_project_dir):
 
 def test_no_databricks_workspace_urls():
     # Test that there are no accidental hardcoded Databricks workspace URLs included in stack source files
-    cookiecutter_dir = (
-        pathlib.Path(__file__).parent.parent
-        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
-    )
-    test_paths = [
-        os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
-    ]
+    template_dir = pathlib.Path(__file__).parent.parent / "template"
+    test_paths = [os.path.join(template_dir, path) for path in paths(template_dir)]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
@@ -105,13 +100,8 @@ def test_no_databricks_workspace_urls():
 
 
 def test_no_databricks_doc_strings_before_project_generation():
-    cookiecutter_dir = (
-        pathlib.Path(__file__).parent.parent
-        / "{cookiecutter.root_dir__update_if_you_intend_to_use_monorepo}}"
-    )
-    test_paths = [
-        os.path.join(cookiecutter_dir, path) for path in paths(cookiecutter_dir)
-    ]
+    template_dir = pathlib.Path(__file__).parent.parent / "template"
+    test_paths = [os.path.join(template_dir, path) for path in paths(template_dir)]
     assert_no_disallowed_strings_in_files(
         file_paths=test_paths,
         disallowed_strings=[
@@ -141,29 +131,34 @@ def test_markdown_links(generated_project_dir):
 @pytest.mark.parametrize(
     "invalid_params",
     [
-        {"databricks_staging_workspace_host": "http://no-https"},
-        {"databricks_prod_workspace_host": "no-https"},
-        {"project_name": "a"},
-        {"project_name": "a-"},
-        {"project_name": "Name with spaces"},
-        {"project_name": "name/with/slashes"},
-        {"project_name": "name\\with\\backslashes"},
-        {"project_name": "name.with.periods"},
+        {"input_databricks_staging_workspace_host": "http://no-https"},
+        {"input_databricks_prod_workspace_host": "no-https"},
+        {"input_project_name": "a"},
+        {"input_project_name": "a-"},
+        {"input_project_name": "Name with spaces"},
+        {"input_project_name": "name/with/slashes"},
+        {"input_project_name": "name\\with\\backslashes"},
+        {"input_project_name": "name.with.periods"},
     ],
 )
-def test_generate_fails_with_invalid_params(tmpdir, invalid_params):
-    with pytest.raises(FailedHookException):
-        generate(tmpdir, invalid_params)
+def test_generate_fails_with_invalid_params(tmpdir, databricks_cli, invalid_params):
+    with pytest.raises(Exception):
+        generate(tmpdir, databricks_cli, invalid_params)
 
 
 @pytest.mark.parametrize("valid_params", [{}])
-def test_generate_succeeds_with_valid_params(tmpdir, valid_params):
-    generate(tmpdir, valid_params)
+def test_generate_succeeds_with_valid_params(tmpdir, databricks_cli, valid_params):
+    generate(tmpdir, databricks_cli, valid_params)
 
 
 @parametrize_by_project_generation_params
 def test_generate_project_with_default_values(
-    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -171,17 +166,18 @@ def test_generate_project_with_default_values(
     due to an update of the default values, please do the following checks:
     - The default param value constants in this test are up to date.
     - The default param values in the substitution logic in the pre_gen_project.py hook are up to date.
-    - The default param values in the help strings in cookiecutter.json are up to date.
+    - The default param values in the help strings in databricks_template_schema.json are up to date.
     """
     context = {
-        "project_name": TEST_PROJECT_NAME,
-        "cloud": cloud,
-        "cicd_platform": cicd_platform,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_cloud": cloud,
+        "input_cicd_platform": cicd_platform,
     }
     # Testing that Azure is the default option.
     if cloud == "azure":
-        del context["cloud"]
-    generate(tmpdir, context=context)
+        del context["input_cloud"]
+    generate(tmpdir, databricks_cli, context=context)
     test_file_contents = (
         tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt"
     ).read_text("utf-8")
@@ -195,19 +191,25 @@ def test_generate_project_with_default_values(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_delta_output(
-    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of Delta Table-related artifacts when generating Stacks.
     """
     context = {
-        "project_name": TEST_PROJECT_NAME,
-        "cloud": cloud,
-        "cicd_platform": cicd_platform,
-        "include_feature_store": include_feature_store,
-        "include_mlflow_recipes": include_mlflow_recipes,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_cloud": cloud,
+        "input_cicd_platform": cicd_platform,
+        "input_include_feature_store": include_feature_store,
+        "input_include_mlflow_recipes": include_mlflow_recipes,
     }
-    generate(tmpdir, context=context)
+    generate(tmpdir, databricks_cli, context=context)
     delta_notebook_path = (
         tmpdir
         / TEST_PROJECT_NAME
@@ -224,19 +226,25 @@ def test_generate_project_check_delta_output(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_feature_store_output(
-    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
     """
     context = {
-        "project_name": TEST_PROJECT_NAME,
-        "cloud": cloud,
-        "cicd_platform": cicd_platform,
-        "include_feature_store": include_feature_store,
-        "include_mlflow_recipes": include_mlflow_recipes,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_cloud": cloud,
+        "input_cicd_platform": cicd_platform,
+        "input_include_feature_store": include_feature_store,
+        "input_include_mlflow_recipes": include_mlflow_recipes,
     }
-    generate(tmpdir, context=context)
+    generate(tmpdir, databricks_cli, context=context)
     fs_notebook_path = (
         tmpdir
         / TEST_PROJECT_NAME
@@ -253,19 +261,25 @@ def test_generate_project_check_feature_store_output(
 
 @parametrize_by_project_generation_params
 def test_generate_project_check_recipe_output(
-    tmpdir, cloud, cicd_platform, include_feature_store, include_mlflow_recipes
+    tmpdir,
+    databricks_cli,
+    cloud,
+    cicd_platform,
+    include_feature_store,
+    include_mlflow_recipes,
 ):
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
     """
     context = {
-        "project_name": TEST_PROJECT_NAME,
-        "cloud": cloud,
-        "cicd_platform": cicd_platform,
-        "include_feature_store": include_feature_store,
-        "include_mlflow_recipes": include_mlflow_recipes,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_cloud": cloud,
+        "input_cicd_platform": cicd_platform,
+        "input_include_feature_store": include_feature_store,
+        "input_include_mlflow_recipes": include_mlflow_recipes,
     }
-    generate(tmpdir, context=context)
+    generate(tmpdir, databricks_cli, context=context)
     recipe_notebook_path = (
         tmpdir
         / TEST_PROJECT_NAME
@@ -290,52 +304,33 @@ def test_generate_project_check_recipe_output(
     ],
 )
 @parametrize_by_cloud
-def test_workspace_dir_strip_query_params(tmpdir, cloud, workspace_url_suffix):
+def test_workspace_dir_strip_query_params(
+    tmpdir, databricks_cli, cloud, workspace_url_suffix
+):
     workspace_host = {
         "aws": "https://dbc-my-aws-workspace.cloud.databricks.com",
         "azure": "https://adb-mycoolworkspace.11.azuredatabricks.net",
     }[cloud]
     workspace_url = f"{workspace_host}{workspace_url_suffix}"
     context = {
-        "project_name": TEST_PROJECT_NAME,
-        "databricks_staging_workspace_host": workspace_url,
-        "databricks_prod_workspace_host": workspace_url,
-        "cloud": cloud,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_databricks_staging_workspace_host": workspace_url,
+        "input_databricks_prod_workspace_host": workspace_url,
+        "input_cloud": cloud,
     }
-    generate(tmpdir, context=context)
+    generate(tmpdir, databricks_cli, context=context)
     test_file_contents = (
         tmpdir / TEST_PROJECT_NAME / "_params_testing_only.txt"
     ).read_text("utf-8")
-    assert f"databricks_staging_workspace_host={workspace_host}\n" in test_file_contents
-    assert f"databricks_prod_workspace_host={workspace_host}\n" in test_file_contents
+    assert (
+        f"\ndatabricks_staging_workspace_host={workspace_host}\n" in test_file_contents
+    )
+    assert f"\ndatabricks_prod_workspace_host={workspace_host}\n" in test_file_contents
 
 
-def test_generate_project_default_project_name_params(tmpdir):
+def test_generate_project_default_project_name_params(tmpdir, databricks_cli):
     # Asserts default parameter values for parameters that involve the project name
-    generate(tmpdir, context={})
+    generate(tmpdir, databricks_cli, context={})
     readme_contents = (tmpdir / DEFAULT_PROJECT_NAME / "README.md").read_text("utf-8")
     assert DEFAULT_PROJECT_NAME in readme_contents
-
-
-@pytest.mark.parametrize(
-    "cookiecutter_version, is_valid",
-    [
-        ("2.0.5", False),
-        ("2.1.0", True),
-        ("2.1.1", True),
-        ("2.1.1.dev0", True),
-        ("2.9.0", True),
-        ("2.10.0", True),
-        ("3.0.0", True),
-        ("1.9.3", False),
-        ("1.0.0", False),
-    ],
-)
-def test_cookiecutter_version_validation(cookiecutter_version, is_valid):
-    from hooks.pre_gen_project import validate_cookiecutter_version
-
-    if is_valid:
-        validate_cookiecutter_version(cookiecutter_version)
-    else:
-        with pytest.raises(ValueError):
-            validate_cookiecutter_version(cookiecutter_version)
