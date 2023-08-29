@@ -2,25 +2,25 @@
 environments:
   dev:
     resources:
-      models:
+      model-registry:
         model:
           description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
 
   test:
     resources:
-      models:
+      model-registry:
         model:
           description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
 
   staging:
     resources:
-      models:
+      model-registry:
         model:
           description: MLflow registered model for the "{{cookiecutter.project_name}}" ML Project for ${bundle.environment} environment.
 
   prod:
     resources:
-      models:
+      model-registry:
         model:
           description: |
             MLflow registered model for the "{{cookiecutter.project_name}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
@@ -38,7 +38,7 @@ permissions: &permissions
 
 # Defines model and experiments
 resources:
-  models:
+  model-registry:
     model:
       name: ${var.model_name}
       <<: *permissions
