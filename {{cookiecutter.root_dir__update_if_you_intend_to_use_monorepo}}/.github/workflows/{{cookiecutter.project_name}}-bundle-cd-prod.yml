@@ -33,8 +33,8 @@ jobs:
       - name: Validate Bundle For Prod Environment
         id: validate
         run: |
-          databricks bundle validate -e prod
+          databricks bundle validate -t prod
       - name: Deploy Bundle to Prod Environment
         id: deploy
         run: |
-          databricks bundle deploy -e prod
+          databricks bundle deploy -t prod
