@@ -134,6 +134,11 @@ def generate(directory, databricks_cli, context):
     config_file = directory / "config.json"
     config_file.write(json_string)
     subprocess.run(
+        f"echo dapi123 | {databricks_cli} configure --host https://123",
+        shell=True,
+        check=True,
+    )
+    subprocess.run(
         f"{databricks_cli} bundle init {ASSET_TEMPLATE_ROOT_DIRECTORY} --config-file {config_file} --output-dir {directory}",
         shell=True,
         check=True,
