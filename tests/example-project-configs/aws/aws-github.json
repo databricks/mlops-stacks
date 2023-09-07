@@ -1,0 +1,13 @@
+{
+  "input_root_dir": "example-aws-github-project",
+  "input_project_name": "example-aws-github-project",
+  "input_cloud": "aws",
+  "input_cicd_platform": "github_actions",
+  "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
+  "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
+  "input_default_branch": "main",
+  "input_release_branch": "release",
+  "input_read_user_group": "users",
+  "input_include_feature_store": "no",
+  "input_include_mlflow_recipes": "no"
+}

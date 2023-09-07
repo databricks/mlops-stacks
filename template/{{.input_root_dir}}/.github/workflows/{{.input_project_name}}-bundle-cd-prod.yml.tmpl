@@ -1,0 +1,40 @@
+# This GitHub workflow deploys Bundle resources (ML resource config and more)
+# defined under {{template `project_name_alphanumeric_underscore` .}}/databricks-resources/*
+# and {{template `project_name_alphanumeric_underscore` .}}/bundle.yml with prod environment configs,
+# when PRs are merged into the release branch
+name: Bundle Deployment for {{template `project_name` .}} Prod
+
+on:
+  push:
+    branches:
+      - '{{template `release_branch` .}}'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./{{template `project_name_alphanumeric_underscore` .}}
+
+env:
+  {{ if (eq .input_cloud `aws`) -}}
+  DATABRICKS_TOKEN: {{`${{ secrets.PROD_WORKSPACE_TOKEN }}`}}
+  {{- else if (eq .input_cloud `azure`) -}}
+  ARM_TENANT_ID: {{`${{ secrets.PROD_AZURE_SP_TENANT_ID }}`}}
+  ARM_CLIENT_ID: {{`${{ secrets.PROD_AZURE_SP_APPLICATION_ID }}`}}
+  ARM_CLIENT_SECRET: {{`${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}`}}
+  {{- end }}
+
+jobs:
+  prod:
+    concurrency: {{template `project_name` .}}-prod-bundle-job
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: databricks/setup-cli@main
+      - name: Validate Bundle For Prod Environment
+        id: validate
+        run: |
+          databricks bundle validate -e prod
+      - name: Deploy Bundle to Prod Environment
+        id: deploy
+        run: |
+          databricks bundle deploy -e prod

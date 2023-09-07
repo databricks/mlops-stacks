@@ -1,0 +1,45 @@
+# Validate workspace hostname
+{{ define `validation` }}
+    - Validate staging workspace host URL
+    {{ if not ((regexp `^https.*`).MatchString (print .input_databricks_staging_workspace_host)) -}}
+        {{- if not (eq (print .input_databricks_staging_workspace_host) "") -}}
+            {{ fail `Databricks staging workspace host URLs must start with https. Got invalid workspace host.` }}
+        {{- end -}}
+    {{- end -}}
+
+    - Validate prod workspace host URL
+    {{ if not ((regexp `^https.*`).MatchString (print .input_databricks_prod_workspace_host)) -}}
+        {{- if not (eq (print .input_databricks_prod_workspace_host) "") -}}
+            {{ fail `Databricks prod workspace host URLs must start with https. Got invalid workspace host.` }}
+        {{- end -}}
+    {{- end -}}
+
+    - Validate project name invalid characters
+    {{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` }}
+    {{- if ((regexp `[ ./\\]+`).MatchString .input_project_name) -}}
+        {{ fail `Project name contained invalid characters. Valid project names cannot contain any of the following characters: " ", ".", "\", "/"` }}
+    {{- end -}}
+
+    {{- if ((regexp `[ ./\\]+`).MatchString $project_name_alphanumeric_underscore) -}}
+        {{ fail `Project name contained invalid characters. Valid project names cannot contain any of the following characters: " ", ".", "\", "/"` }}
+    {{- end -}}
+
+    - Validate project name invalid length
+    {{ if ((regexp `^.{0,2}$`).MatchString .input_project_name) -}}
+        {{ fail `Invalid project name. Valid project names must contain at least three alphanumeric characters.` }}
+    {{- end -}}
+
+    {{- if ((regexp `^.{0,2}$`).MatchString $project_name_alphanumeric_underscore) -}}
+        {{ fail `Invalid project name. Valid project names must contain at least three alphanumeric characters.` }}
+    {{- end -}}
+
+    - Validate cicd platform
+    {{ if and (eq .input_cloud `aws`) (eq .input_cicd_platform `azure_devops`) -}}
+        {{ fail `Azure DevOps is not supported as a cicd_platform option with cloud=aws. If cloud=aws the currently supported cicd_platform is GitHub Actions.` }}
+    {{- end -}}
+
+    - Validate feature store and recipes
+    {{- if and (eq .input_include_feature_store `yes`) (eq .input_include_mlflow_recipes `yes`) -}}
+        {{ fail `Feature Store cannot be used with MLflow recipes. Please only use one of the two or neither.` }}
+    {{- end -}}
+{{- end -}}

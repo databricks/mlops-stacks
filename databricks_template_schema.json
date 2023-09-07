@@ -1,0 +1,70 @@
+{
+  "properties": {
+    "input_project_name": {
+      "order": 1,
+      "type": "string",
+      "default": "my-mlops-project",
+      "description": "Project Name"
+    },
+    "input_root_dir": {
+      "order": 2,
+      "type": "string",
+      "default": "my-mlops-project",
+      "description": "Root directory name. Use a name different from the project name if you intend to use monorepo"
+    },
+    "input_cloud": {
+      "order": 3,
+      "type": "string",
+      "description": "Select cloud. \nChoose from azure, aws",
+      "default": "azure"
+    },
+    "input_cicd_platform": {
+      "order": 4,
+      "type": "string",
+      "description": "Select CICD platform. \nChoose from github_actions, github_actions_for_github_enterprise_servers, azure_devops",
+      "default": "github_actions"
+    },
+    "input_databricks_staging_workspace_host": {
+      "order": 5,
+      "type": "string",
+      "default": "",
+      "description": "URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-staging-workspace.cloud.databricks.com\n"
+    },
+    "input_databricks_prod_workspace_host": {
+      "order": 6,
+      "type": "string",
+      "default": "",
+      "description": "URL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-prod-workspace.cloud.databricks.com\n"
+    },
+    "input_default_branch": {
+      "order": 7,
+      "type": "string",
+      "default": "main",
+      "description": "Name of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default:"
+    },
+    "input_release_branch": {
+      "order": 8,
+      "type": "string",
+      "default": "release",
+      "description": "Name of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default:"
+    },
+    "input_read_user_group": {
+      "order": 9,
+      "type": "string",
+      "default": "users",
+      "description": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default:"
+    },
+    "input_include_feature_store": {
+      "order": 10,
+      "type": "string",
+      "description": "Whether to include feature store. \nChoose from no, yes",
+      "default": "no"
+    },
+    "input_include_mlflow_recipes": {
+      "order": 11,
+      "type": "string",
+      "description": "Whether to include mlflow recipes. \nChoose from no, yes",
+      "default": "no"
+    }
+  }
+}

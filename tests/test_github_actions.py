@@ -1,6 +1,7 @@
 import subprocess
 import pytest
 from utils import (
+    databricks_cli,
     generated_project_dir,
     parametrize_by_cloud,
     parametrize_by_project_generation_params,
@@ -8,7 +9,7 @@ from utils import (
 
 
 @pytest.mark.parametrize(
-    "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
+    "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize(
     "include_feature_store, include_mlflow_recipes",
@@ -33,7 +34,7 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 
 @pytest.mark.large
 @pytest.mark.parametrize(
-    "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
+    "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize("include_feature_store", ["no"])
 @pytest.mark.parametrize("include_mlflow_recipes", ["yes", "no"])
@@ -56,7 +57,7 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
 
 @pytest.mark.large
 @pytest.mark.parametrize(
-    "cicd_platform", ["GitHub Actions", "GitHub Actions for GitHub Enterprise Servers"]
+    "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize("include_feature_store", ["yes"])
 @pytest.mark.parametrize("include_mlflow_recipes", ["no"])

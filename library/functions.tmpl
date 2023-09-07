@@ -1,0 +1,20 @@
+# define functions
+{{ define "get_host" -}}
+  {{- with url . -}}
+    {{- print .Scheme `://` .Host -}}
+  {{- end -}}
+{{- end }}
+
+{{ define "generate_doc_link" -}}
+    {{- if eq .cloud `aws` -}}
+        {{- if eq .path `repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later` -}}
+            https://docs.databricks.com/repos/git-operations-with-repos.html#add-a-repo-connected-to-a-remote-repo
+        {{- else -}}
+            https://docs.databricks.com/{{ print .path }}
+        {{- end -}}
+    {{- else if eq .cloud `azure` -}}
+        https://learn.microsoft.com/azure/databricks/{{ (regexp `\.html`).ReplaceAllString (print .path) `` }}
+    {{- else -}}
+        {{ fail `Invalid selection of cloud in function generate_doc_link. Please choose from [azure, aws]` }}
+    {{- end -}}
+{{- end }}
