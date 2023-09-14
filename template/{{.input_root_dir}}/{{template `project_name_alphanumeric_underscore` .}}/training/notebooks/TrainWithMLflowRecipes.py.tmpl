@@ -83,7 +83,7 @@ from mlflow.recipes.utils import (
 root_path = get_recipe_root_path()
 config = get_recipe_config(root_path, profile)
 if config['experiment']['name'].startswith(f"/{env}-{{template `experiment_base_name` .}}"):
-    print("WARNING: The experiment name may not have been set correctly. Please confirm that the experiment name in the profile YAML file matches the experiment_name variable in {{template `project_name_alphanumeric_underscore` .}}/bundle.yml.")
+    print("WARNING: The experiment name may not have been set correctly. Please confirm that the experiment name in the profile YAML file matches the experiment_name variable in {{template `project_name_alphanumeric_underscore` .}}/databricks.yml.")
 
 # COMMAND ----------
 
