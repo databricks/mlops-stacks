@@ -1,6 +1,6 @@
 # This GitHub workflow deploys Bundle resources (ML resource config and more)
 # defined under {{template `project_name_alphanumeric_underscore` .}}/databricks-resources/*
-# and {{template `project_name_alphanumeric_underscore` .}}/bundle.yml with prod environment configs,
+# and {{template `project_name_alphanumeric_underscore` .}}/bundle.yml with prod target(environment) configs,
 # when PRs are merged into the release branch
 name: Bundle Deployment for {{template `project_name` .}} Prod
 
@@ -30,11 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Prod Environment
+      - name: Validate Bundle For Prod Target(Environment)
         id: validate
         run: |
-          databricks bundle validate -e prod
-      - name: Deploy Bundle to Prod Environment
+          databricks bundle validate -t prod
+      - name: Deploy Bundle to Prod Target(Environment)
         id: deploy
         run: |
-          databricks bundle deploy -e prod
+          databricks bundle deploy -t prod

@@ -47,19 +47,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Test Environment in Staging Workspace
+      - name: Validate Bundle For Test Target(Environment) in Staging Workspace
         id: validate
         run: |
-          databricks bundle validate -e test
-      - name: Deploy Bundle to Test Environment in Staging Workspace
+          databricks bundle validate -t test
+      - name: Deploy Bundle to Test Target(Environment) in Staging Workspace
         id: deploy
         run: |
-          databricks bundle deploy -e test
-      - name: Run Feature Engineering Workflow for Test Environment in Staging Workspace
+          databricks bundle deploy -t test
+      - name: Run Feature Engineering Workflow for Test Target(Environment) in Staging Workspace
         id: feature_engineering
         run: |
-          databricks bundle run write_feature_table_job -e test
-      - name: Run Training Workflow for Test Environment in Staging Workspace
+          databricks bundle run write_feature_table_job -t test
+      - name: Run Training Workflow for Test Target(Environment) in Staging Workspace
         id: training
         run: |
-          databricks bundle run model_training_job -e test
+          databricks bundle run model_training_job -t test

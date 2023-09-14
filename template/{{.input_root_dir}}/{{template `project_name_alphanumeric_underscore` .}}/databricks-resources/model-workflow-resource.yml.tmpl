@@ -14,7 +14,7 @@ permissions: &permissions
 resources:
   jobs:
     model_training_job:
-      name: ${bundle.environment}-{{template `project_name` .}}-model-training-job
+      name: ${bundle.target}-{{template `project_name` .}}-model-training-job
       job_clusters:
         - job_cluster_key: model_training_job_cluster
           <<: *new_cluster
@@ -24,7 +24,7 @@ resources:
           {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}notebook_task:
             notebook_path: ../training/notebooks/Train.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               # TODO: Update training_data_path
               training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
               experiment_name: ${var.experiment_name}
@@ -34,19 +34,19 @@ resources:
           {{ else if (eq .input_include_feature_store `yes`) }}notebook_task:
             notebook_path: ../training/notebooks/TrainWithFeatureStore.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               # TODO: Update training_data_path
               training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
               experiment_name: ${var.experiment_name}
               model_name: ${var.model_name}
-              pickup_features_table: feature_store_taxi_example.${bundle.environment}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
-              dropoff_features_table: feature_store_taxi_example.${bundle.environment}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
+              pickup_features_table: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
+              dropoff_features_table: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {{- else -}}notebook_task:
             notebook_path: ../training/notebooks/TrainWithMLflowRecipes.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}{{ end }}
         - task_key: ModelValidation
@@ -57,7 +57,7 @@ resources:
             notebook_path: ../validation/notebooks/ModelValidation.py
             base_parameters:
               {{- if (eq .input_include_mlflow_recipes `yes`) }}
-              env: ${bundle.environment}{{ end }}
+              env: ${bundle.target}{{ end }}
               experiment_name: ${var.experiment_name}
               # The `run_mode` defines whether model validation is enabled or not.
               # It can be one of the three values:
@@ -102,7 +102,7 @@ resources:
           notebook_task:
             notebook_path: ../deployment/model_deployment/notebooks/ModelDeployment.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
       schedule:

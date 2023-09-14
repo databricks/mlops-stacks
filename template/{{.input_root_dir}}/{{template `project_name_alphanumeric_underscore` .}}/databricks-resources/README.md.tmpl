@@ -58,7 +58,7 @@ Upon merging code into the release branch, the release branch content will be de
 To set up the databricks CLI using a Databricks personal access token, take the following steps:
 
 1. Follow [databricks CLI]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/databricks-cli.html")) }}) to download and set up the databricks CLI locally.
-2. Complete the `TODO` in `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml` to add the dev workspace URI under `environments.dev.workspace.host`.
+2. Complete the `TODO` in `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml` to add the dev workspace URI under `targets.dev.workspace.host`.
 3. [Create a personal access token]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/auth.html#personal-access-tokens-for-users")) }})
   in your dev workspace and copy it.
 4. Set an env variable `DATABRICKS_TOKEN` with your Databricks personal access token in your terminal. For example, run `export DATABRICKS_TOKEN=dapi12345` if the access token is dapi12345.
@@ -138,43 +138,43 @@ new_cluster: &new_cluster
 resources:
   jobs:
     batch_inference_job:
-      name: ${bundle.environment}-{{template `project_name` .}}-batch-inference-job
+      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
           <<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               input_table_name: batch_inference_input_table_name
               ...
 ```
 
-The example above defines a Databricks job with name `${bundle.environment}-{{template `project_name` .}}-batch-inference-job`
+The example above defines a Databricks job with name `${bundle.target}-{{template `project_name` .}}-batch-inference-job`
 that runs the notebook under `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/BatchInference.py` to regularly apply your ML model for batch inference. 
 
 At the start of the resource definition, we declared an anchor `new_cluster` that will be referenced and used later. For more information about anchors in yaml schema, please refer to the [yaml documentation](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases).
 
-We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.environment}-{{template `project_name` .}}-batch-inference-job`. 
+We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.target}-{{template `project_name` .}}-batch-inference-job`.
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
 After setting up databricks CLI, you can run command `databricks bundle schema`  to learn more about databricks CLI bundles schema.
 
 The notebook_path is the relative path starting from the resource yaml file.
 
 ### Environment config based variables
-The `${bundle.environment}` will be replaced by the environment config name during the bundle deployment. For example, during the deployment of a `test` environment config, the job name will be
+The `${bundle.target}` will be replaced by the environment config name during the bundle deployment. For example, during the deployment of a `test` environment config, the job name will be
 `test-{{template `project_name` .}}-batch-inference-job`. During the deployment of the `staging` environment config, the job name will be
 `staging-{{template `project_name` .}}-batch-inference-job`.
 
 
-To use different values based on different environment, you can use bundle variables based on the given environment, for example,
+To use different values based on different environment, you can use bundle variables based on the given target, for example,
 ```$xslt
 variables:
   batch_inference_input_table: 
     description: The table name to be used for input to the batch inference workflow.
     default: input_table
 
-environments:
+targets:
   dev:
     variables:
       batch_inference_input_table: dev_table
@@ -193,14 +193,14 @@ new_cluster: &new_cluster
 resources:
   jobs:
     batch_inference_job:
-      name: ${bundle.environment}-{{template `project_name` .}}-batch-inference-job
+      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
           <<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               input_table_name: ${var.batch_inference_input_table}
               ...
 ```

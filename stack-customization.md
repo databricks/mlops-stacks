@@ -68,7 +68,7 @@ The default stack currently has the following sub-components for CI/CD:
 
 ### ML resource configs
 Root ML resource config file can be found as ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml``. 
-It defines the ML config resources to be included and workspace host for each environment.
+It defines the ML config resources to be included and workspace host for each target(environment).
 
 ML resource configs (databricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
 ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources``, along with docs.

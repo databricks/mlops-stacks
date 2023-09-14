@@ -33,7 +33,7 @@ jobs:
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Staging Environment
+      - name: Validate Bundle For Staging Target(Environment)
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
@@ -44,7 +44,7 @@ jobs:
           ARM_CLIENT_SECRET: {{`${{ env.STAGING_ARM_CLIENT_SECRET }}`}}
           {{- end }}
         run: |
-          databricks bundle validate -e staging > ../validate_output.txt
+          databricks bundle validate -t staging > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
         uses: actions/github-script@v6
         id: comment
@@ -77,7 +77,7 @@ jobs:
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Prod Environment
+      - name: Validate Bundle For Prod Target(Environment)
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
@@ -88,7 +88,7 @@ jobs:
           ARM_CLIENT_SECRET: {{`${{ env.PROD_ARM_CLIENT_SECRET }}`}}
           {{- end }}
         run: |
-          databricks bundle validate -e prod > ../validate_output.txt
+          databricks bundle validate -t prod > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
         uses: actions/github-script@v6
         id: comment

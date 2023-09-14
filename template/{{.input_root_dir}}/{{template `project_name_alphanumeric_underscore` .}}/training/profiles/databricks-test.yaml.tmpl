@@ -1,7 +1,7 @@
 experiment:
-  # The name of the experiment to use during training or model validation in test environment.
+  # The name of the experiment to use during training or model validation in test target(environment).
   # TODO: This value must be the same as experiment_name defined in
-  # {{template `project_name_alphanumeric_underscore` .}}/databricks.yml for test environment.
+  # {{template `project_name_alphanumeric_underscore` .}}/databricks.yml for test target(environment).
   name: /test-{{template `experiment_base_name` .}}
 
 # Set the registry server URI. This property is especially useful if you have a registry
@@ -10,7 +10,7 @@ model_registry:
   # Specifies the name of the Registered Model to use when registering a trained model to
   # the MLflow Model Registry
   # This value must be the same as model_name defined in
-  # {{template `project_name_alphanumeric_underscore` .}}/databricks.yml for test environment.
+  # {{template `project_name_alphanumeric_underscore` .}}/databricks.yml for test target(environment).
   model_name: test-{{template `model_name` .}}
 
 # Override the default train / validation / test dataset split ratios

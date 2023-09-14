@@ -1,22 +1,22 @@
-# Environment specific values
-environments:
+# Target(environment) specific values
+targets:
   dev:
     resources:
       models:
         model:
-          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.environment} environment.
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} environment.
 
   test:
     resources:
       models:
         model:
-          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.environment} environment.
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} environment.
 
   staging:
     resources:
       models:
         model:
-          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.environment} environment.
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} environment.
 
   prod:
     resources:
@@ -28,7 +28,7 @@ environments:
             Links:
               * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
               * [Recurring model training job]({{template `databricks_staging_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-              * [Recurring batch inference job]({{template `databricks_staging_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.environment} model version for batch inference.
+              * [Recurring batch inference job]({{template `databricks_staging_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
 
 # Allow users to read the model and experiment
 permissions: &permissions

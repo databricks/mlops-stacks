@@ -14,7 +14,7 @@ permissions: &permissions
 resources:
   jobs:
     write_feature_table_job:
-      name: ${bundle.environment}-{{template `project_name` .}}-write-feature-table-job
+      name: ${bundle.target}-{{template `project_name` .}}-write-feature-table-job
       job_clusters:
         - job_cluster_key: write_feature_table_job_cluster
           <<: *new_cluster
@@ -30,7 +30,7 @@ resources:
               input_start_date: ""
               input_end_date: ""
               timestamp_column: tpep_pickup_datetime
-              output_table_name: feature_store_taxi_example.${bundle.environment}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
+              output_table_name: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
               features_transform_module: pickup_features
               primary_keys: zip
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
@@ -46,7 +46,7 @@ resources:
               input_start_date: ""
               input_end_date: ""
               timestamp_column: tpep_dropoff_datetime
-              output_table_name: feature_store_taxi_example.${bundle.environment}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
+              output_table_name: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
               features_transform_module: dropoff_features
               primary_keys: zip
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run

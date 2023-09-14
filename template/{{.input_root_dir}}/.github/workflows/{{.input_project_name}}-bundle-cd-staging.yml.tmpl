@@ -1,6 +1,6 @@
 # This GitHub workflow deploys Bundle resources (ML resource config and more)
 # defined under {{template `project_name_alphanumeric_underscore` .}}/databricks-resources/*
-# and {{template `project_name_alphanumeric_underscore` .}}/bundle.yml with staging environment configs,
+# and {{template `project_name_alphanumeric_underscore` .}}/bundle.yml with staging target(environment) configs,
 # when PRs are merged into the default branch
 name: Bundle Deployment for {{template `project_name` .}} Staging
 
@@ -30,11 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Staging Environment
+      - name: Validate Bundle For Staging Target(Environment)
         id: validate
         run: |
-          databricks bundle validate -e staging
-      - name: Deploy Bundle to Staging Environment
+          databricks bundle validate -t staging
+      - name: Deploy Bundle to Staging Target(Environment)
         id: deploy
         run: |
-          databricks bundle deploy -e staging
+          databricks bundle deploy -t staging

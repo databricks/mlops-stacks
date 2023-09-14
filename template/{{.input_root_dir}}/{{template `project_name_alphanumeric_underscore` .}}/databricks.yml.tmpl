@@ -6,10 +6,10 @@ bundle:
 variables:
   experiment_name:
     description: Experiment name for the model training.
-    default: /Users/${workspace.current_user.userName}/${bundle.environment}-{{template `experiment_base_name` .}}
+    default: /Users/${workspace.current_user.userName}/${bundle.target}-{{template `experiment_base_name` .}}
   model_name:
     description: Model name for the model training.
-    default: ${bundle.environment}-{{template `model_name` .}}
+    default: ${bundle.target}-{{template `model_name` .}}
 
 
 include:
@@ -29,8 +29,8 @@ include:
   - ./databricks-resources/monitoring-workflow-resource.yml
 
 
-# Environment specific values for workspace
-environments:
+# Target(environment) specific values for workspace
+targets:
   dev:
     default: true
     workspace:
