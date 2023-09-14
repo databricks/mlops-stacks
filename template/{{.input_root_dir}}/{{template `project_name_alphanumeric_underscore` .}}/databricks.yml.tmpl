@@ -1,3 +1,8 @@
+# The name of the bundle. run `databricks bundle schema` to see the full bundle settings schema.
+bundle:
+  name: {{template `project_name` .}}
+
+
 variables:
   experiment_name:
     description: Experiment name for the model training.
@@ -5,10 +10,6 @@ variables:
   model_name:
     description: Model name for the model training.
     default: ${bundle.environment}-{{template `model_name` .}}
-
-
-bundle:
-  name: {{template `project_name` .}}
 
 
 include:
