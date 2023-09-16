@@ -26,20 +26,20 @@ ML Resource Configurations in this directory:
  - model definition and experiment definition (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/ml-artifacts-resource.yml`)
 
 
-### Environment Config & CI/CD integration
-The ML resources can be deployed to databricks workspace based on the databricks CLI bundles environment config. 
-Different environment configs share the general ML resource configurations with added ability to specify environment specific values (workspace URI, model name, jobs notebook parameters, etc).
+### Deployment Config & CI/CD integration
+The ML resources can be deployed to databricks workspace based on the databricks CLI bundles deployment config.
+Deployment configs of different deployment targets share the general ML resource configurations with added ability to specify deployment target specific values (workspace URI, model name, jobs notebook parameters, etc).
 
-This project ships with CI/CD workflows for developing and deploying ML resource configurations based on environment config.
+This project ships with CI/CD workflows for developing and deploying ML resource configurations based on deployment config.
 
-| Environment | Description                                                                                                                                                                                                                           | Databricks Workspace | Model Name                          | Experiment Name                                |
+| Deployment Target | Description                                                                                                                                                                                                                           | Databricks Workspace | Model Name                          | Experiment Name                                |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|-------------------------------------|------------------------------------------------|
-| dev         | The `dev` environment is used by ML engineers to deploy ML resources to development workspace with `dev` environment configs. The config is for ML project development purposes.                                                           | dev workspace        | dev-{{template `model_name` .}}     | /dev-{{template `experiment_base_name` .}}     |
-| staging     | The `staging` environment is part of the CD pipeline. Latest {{template `default_branch` .}} content will be deployed to staging workspace with `staging` environment config.                                                             | staging workspace    | staging-{{template `model_name` .}} | /staging-{{template `experiment_base_name` .}} |
-| prod        | The `prod` environment is part of the CD pipeline. Latest {{template `release_branch` .}} content will be deployed to prod workspace with `prod` environment config.                                                                      | prod workspace       | prod-{{template `model_name` .}}    | /prod-{{template `experiment_base_name` .}}    |
-| test        | The `test` environment is part of the CI pipeline. For changes targeting the {{template `default_branch` .}} branch, upon making a PR, an integration test will be triggered and ML resources deployed to the staging workspace defined under `test` environment. | staging workspace    | test-{{template `model_name` .}}    | /test-{{template `experiment_base_name` .}}    |
+| dev         | The `dev` deployment target is used by ML engineers to deploy ML resources to development workspace with `dev` configs. The config is for ML project development purposes.                                                           | dev workspace        | dev-{{template `model_name` .}}     | /dev-{{template `experiment_base_name` .}}     |
+| staging     | The `staging` deployment target is part of the CD pipeline. Latest {{template `default_branch` .}} content will be deployed to staging workspace with `staging` config.                                                             | staging workspace    | staging-{{template `model_name` .}} | /staging-{{template `experiment_base_name` .}} |
+| prod        | The `prod` deployment target is part of the CD pipeline. Latest {{template `release_branch` .}} content will be deployed to prod workspace with `prod` config.                                                                      | prod workspace       | prod-{{template `model_name` .}}    | /prod-{{template `experiment_base_name` .}}    |
+| test        | The `test` deployment target is part of the CI pipeline. For changes targeting the {{template `default_branch` .}} branch, upon making a PR, an integration test will be triggered and ML resources deployed to the staging workspace defined under `test` deployment target. | staging workspace    | test-{{template `model_name` .}}    | /test-{{template `experiment_base_name` .}}    |
 
-During ML code development, you can deploy local ML resource configurations together with ML code to the a Databricks workspace to run the training, model validation or batch inference pipelines. The deployment will use `dev` environment config by default. 
+During ML code development, you can deploy local ML resource configurations together with ML code to the a Databricks workspace to run the training, model validation or batch inference pipelines. The deployment will use `dev` config by default.
 
 You can open a PR (pull request) to modify ML code or the resource config against {{template `default_branch` .}} branch.
 The PR will trigger Python unit tests, followed by an integration test executed on the staging workspace, as defined under the `test` environment resource. 
