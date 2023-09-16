@@ -33,7 +33,7 @@ jobs:
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Staging Target(Environment)
+      - name: Validate Bundle For Staging
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
@@ -77,7 +77,7 @@ jobs:
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@main
-      - name: Validate Bundle For Prod Target(Environment)
+      - name: Validate Bundle For Prod
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
