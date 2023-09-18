@@ -20,7 +20,7 @@
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `databricks-resources/feature-engineering-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
     {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests-fs.yml`) }}
     {{ skip (printf `%s/%s` $root_dir `docs/ml-developer-guide-fs.md`) }}
 # Remove Delta and MLflow Recipes code in cases of Feature Store.
@@ -56,7 +56,7 @@
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `databricks-resources/feature-engineering-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
     {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests-fs.yml`) }}
     {{ skip (printf `%s/%s` $root_dir `docs/ml-developer-guide-fs.md`) }}
 {{ end }}
