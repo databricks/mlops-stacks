@@ -13,26 +13,16 @@ variables:
 
 
 include:
-  # Include ML artifact resources for the ml project
-  # Defines model and experiment
-  - ./resources/ml-artifacts-resource.yml
-
-  # Include workflow resources of the ml project
-  # Defines workflow for model training -> validation -> deployment
-  - ./resources/model-workflow-resource.yml
-  {{- if (eq .input_include_feature_store `yes`) }}
-  # Defines workflow for feature engineering
-  - ./resources/feature-engineering-workflow-resource.yml{{ end }}
-  # Defines workflow for scheduled batch inference
-  - ./resources/batch-inference-workflow-resource.yml
-  # Defines workflow for data monitoring, metric refresh, alerts and triggering retraining
-  - ./resources/monitoring-workflow-resource.yml
-
+  # Resources folder contains ML artifact resources for the ml project that defines model and experiment
+  # And workflows resources for the ml project including model training -> validation -> deployment, 
+  # feature engineerng, batch inference, data monitoring, metric refresh, alerts and triggering retraining
+  - ./resources/*
 
 # Environment specific values for workspace
 environments:
   dev:
     default: true
+    mode: development
     workspace:
       # TODO: add dev workspace URL
       host:
@@ -42,6 +32,7 @@ environments:
       host: {{template `databricks_staging_workspace_host` .}}
 
   prod:
+    mode: production
     workspace:
       host: {{template `databricks_prod_workspace_host` .}}
 
