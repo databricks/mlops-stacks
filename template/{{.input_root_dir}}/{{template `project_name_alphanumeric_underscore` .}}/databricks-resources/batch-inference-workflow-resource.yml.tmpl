@@ -14,17 +14,17 @@ permissions: &permissions
 resources:
   jobs:
     batch_inference_job:
-      name: ${bundle.environment}-{{template `project_name` .}}-batch-inference-job
+      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
           <<: *new_cluster
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
             base_parameters:
-              env: ${bundle.environment}
+              env: ${bundle.target}
               {{ if (eq .input_include_feature_store `yes`) }}input_table_name: hive_metastore.default.taxi_scoring_sample_feature_store_inference_input
               {{- else -}}input_table_name: taxi_scoring_sample{{ end }}
-              output_table_name: ${bundle.environment}_{{template `project_name_alphanumeric_underscore` .}}_predictions
+              output_table_name: ${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_predictions
               model_name: ${var.model_name}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
