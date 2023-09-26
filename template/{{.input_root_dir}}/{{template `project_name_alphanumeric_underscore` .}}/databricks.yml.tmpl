@@ -13,21 +13,10 @@ variables:
 
 
 include:
-  # Include ML artifact resources for the ml project
-  # Defines model and experiment
-  - ./databricks-resources/ml-artifacts-resource.yml
-
-  # Include workflow resources of the ml project
-  # Defines workflow for model training -> validation -> deployment
-  - ./databricks-resources/model-workflow-resource.yml
-  {{- if (eq .input_include_feature_store `yes`) }}
-  # Defines workflow for feature engineering
-  - ./databricks-resources/feature-engineering-workflow-resource.yml{{ end }}
-  # Defines workflow for scheduled batch inference
-  - ./databricks-resources/batch-inference-workflow-resource.yml
-  # Defines workflow for data monitoring, metric refresh, alerts and triggering retraining
-  - ./databricks-resources/monitoring-workflow-resource.yml
-
+  # Resources folder contains ML artifact resources for the ml project that defines model and experiment
+  # And workflows resources for the ml project including model training -> validation -> deployment,
+  # {{- if (eq .input_include_feature_store `yes`) }} feature engineerng, {{ end }} batch inference, data monitoring, metric refresh, alerts and triggering retraining
+  - ./resources/*.yml
 
 # Deployment Target specific values for workspace
 targets:

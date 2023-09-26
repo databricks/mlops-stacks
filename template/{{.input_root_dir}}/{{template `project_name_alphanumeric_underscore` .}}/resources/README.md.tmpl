@@ -19,11 +19,11 @@ The databricks CLI bundles top level is defined by file `{{template `project_nam
 During databricks CLI bundles deployment, the root config file will be loaded, validated and deployed to workspace provided by the environment together with all the included resources.
 
 ML Resource Configurations in this directory:
- - model workflow (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/model-workflow-resource.yml`)
- - batch inference workflow (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/batch-inference-workflow-resource.yml`)
- - monitoring workflow (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/monitoring-workflow-resource.yml`)
- - feature engineering workflow (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/feature-engineering-workflow-resource.yml`)
- - model definition and experiment definition (`{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/ml-artifacts-resource.yml`)
+ - model workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/model-workflow-resource.yml`)
+ - batch inference workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/batch-inference-workflow-resource.yml`)
+ - monitoring workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/monitoring-workflow-resource.yml`)
+ - feature engineering workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/feature-engineering-workflow-resource.yml`)
+ - model definition and experiment definition (`{{template `project_name_alphanumeric_underscore` .}}/resources/ml-artifacts-resource.yml`)
 
 
 ### Deployment Config & CI/CD integration
@@ -124,7 +124,7 @@ resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml]
 ## Develop and test config changes
 
 ### databricks CLI bundles schema overview
-To get started, open `{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of a batch inference job, like:
+To get started, open `{{template `project_name_alphanumeric_underscore` .}}/resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of a batch inference job, like:
 
 ```$xslt
 new_cluster: &new_cluster

@@ -93,13 +93,13 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project from the stack and copy relevant components
 into your existing project to productionize it. The stack is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
- under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources`` 
+ under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources`` 
 and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml`` into your existing project.
 
 ### Can I adopt individual components of the stack?
 For this use case, we recommend instantiating the full stack via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) 
 and copying the relevant stack subdirectories. For example, all ML resource configs
-are defined under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources``
+are defined under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``
 and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml``, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 

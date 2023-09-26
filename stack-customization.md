@@ -71,13 +71,13 @@ Root ML resource config file can be found as ``{{.input_root_dir}}/{{template `p
 It defines the ML config resources to be included and workspace host for each deployment target.
 
 ML resource configs (databricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
-``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources``, along with docs.
+``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``, along with docs.
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks-resources/README.md``.
+``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources/README.md``.
 
 ### Docs
 After making stack customizations, make any changes needed to
