@@ -71,6 +71,12 @@
       "type": "string",
       "description": "Whether to use the Model Registry with Unity Catalog. \nChoose from no, yes",
       "default": "no"
+    },
+    "input_schema_name": {
+      "order": 13,
+      "type": "string",
+      "description": "Name of schema to use when registering a model in Unity Catalog. Note that this schema must already exist.",
+      "default": "schema_name"
     }
   }
 }
