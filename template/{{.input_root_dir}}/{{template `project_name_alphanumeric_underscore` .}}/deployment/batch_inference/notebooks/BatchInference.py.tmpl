@@ -26,12 +26,21 @@ dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment 
 dbutils.widgets.text("input_table_name", "", label="Input Table Name")
 # Delta table to store the output predictions.
 dbutils.widgets.text("output_table_name", "", label="Output Table Name")
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 # Batch inference model name
-dbutils.widgets.text("model_name", "", label="Model Name")
+dbutils.widgets.text(
+    "model_name", "dev-{{template `model_name` .}}", label="Model Name"
+)
+{{else}}
+# Unity Catalog registered model name to use for the trained mode.
+dbutils.widgets.text(
+    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Model Name"
+){{end}}
 
 # COMMAND ----------
 
 import os
+
 notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
 %cd $notebook_path
 
@@ -55,7 +64,9 @@ sys.path.append("../..")
 # COMMAND ----------
 
 # DBTITLE 1,Define input and output variables
-from utils import get_deployed_model_stage_for_env
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
+from utils import get_deployed_model_stage_for_env{{else}}
+from utils import get_deployed_model_alias_for_env{{end}}
 
 env = dbutils.widgets.get("env")
 input_table_name = dbutils.widgets.get("input_table_name")
@@ -64,18 +75,28 @@ model_name = dbutils.widgets.get("model_name")
 assert input_table_name != "", "input_table_name notebook parameter must be specified"
 assert output_table_name != "", "output_table_name notebook parameter must be specified"
 assert model_name != "", "model_name notebook parameter must be specified"
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 stage = get_deployed_model_stage_for_env(env)
-model_uri = f"models:/{model_name}/{stage}"
+model_uri = f"models:/{model_name}/{stage}"{{else}}
+alias = get_deployed_model_alias_for_env(env)
+model_uri = f"models:/{model_name}@{alias}"{{end}}
 
-# Get model version from stage
+# COMMAND ----------
+
 from mlflow import MlflowClient
-
+{{ if (eq .input_include_models_in_unity_catalog "no") }}
+# Get model version from stage
 model_version_infos = MlflowClient().search_model_versions("name = '%s'" % model_name)
 model_version = max(
     int(version.version)
     for version in model_version_infos
     if version.current_stage == stage
-)
+){{else}}
+# Get model version from alias
+client = MlflowClient(registry_uri="databricks-uc")
+model_version = client.get_model_version_by_alias(model_name, alias).version{{end}}
+
+# COMMAND ----------
 
 # Get datetime
 from datetime import datetime
