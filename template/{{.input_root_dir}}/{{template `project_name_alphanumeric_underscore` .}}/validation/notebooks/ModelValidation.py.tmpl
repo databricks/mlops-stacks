@@ -66,7 +66,7 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 
 {{ if (eq .input_include_mlflow_recipes `yes`) }}dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
-){{ end }}
+){{ end -}}
 dbutils.widgets.text(
     "experiment_name",
     "/dev-{{template `experiment_base_name` .}}",
@@ -89,14 +89,12 @@ dbutils.widgets.text("model_name", "dev.{{template `schema_name` .}}.{{template 
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
-
 {{ if (eq .input_include_feature_store `yes`) }}
 print(
     "Currently model validation is not supported for models registered with feature store. Please refer to "
     "issue https://github.com/databricks/mlops-stack/issues/70 for more details."
 )
 dbutils.notebook.exit(0){{ end }}
-
 run_mode = dbutils.widgets.get("run_mode").lower()
 assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"
 
@@ -129,17 +127,14 @@ import traceback
     get_recipe_root_path,
 ){{ end }}
 from mlflow.tracking.client import MlflowClient
-
 {{ if (eq .input_include_models_in_unity_catalog "no") }}
 client = MlflowClient()
 {{else}}
 client = MlflowClient(registry_uri="databricks-uc")
 {{ end }}
-
 # set experiment
 experiment_name = dbutils.widgets.get("experiment_name")
 mlflow.set_experiment(experiment_name)
-
 {{ if (eq .input_include_mlflow_recipes `yes`) }}env = dbutils.widgets.get("env")
 assert env, "env notebook parameter must be specified"
 
@@ -164,8 +159,6 @@ def get_targets_from_recipe():
     except Exception as ex:
         print(f"Not able to get targets from mlflow recipe databricks-{env}.")
         raise ex{{ end }}
-
-
 # set model evaluation parameters that can be inferred from the job
 model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
 model_name = dbutils.jobs.taskValues.get("Train", "model_name", debugValue="")
@@ -175,13 +168,11 @@ if model_uri == "":
     model_name = dbutils.widgets.get("model_name")
     model_version = dbutils.widgets.get("model_version")
     model_uri = "models:/" + model_name + "/" + model_version
-
 {{ if (eq .input_include_models_in_unity_catalog "no") }}
 baseline_model_uri = "models:/" + model_name + "/Production"
 {{else}}
 baseline_model_uri = "models:/" + model_name + "@champion"
 {{ end }}
-
 evaluators = "default"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 assert model_name != "", "model_name notebook parameter must be specified"
@@ -190,7 +181,6 @@ assert model_version != "", "model_version notebook parameter must be specified"
 # COMMAND ----------
 
 # take input
-
 enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
 assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
 enable_baseline_comparison = enable_baseline_comparison == "true"
@@ -264,10 +254,10 @@ def log_to_model_description(run, success):
         name=model_name, version=model_version, description=description
     )
 
-
 # COMMAND ----------
 
 training_run = get_training_run(model_name, model_version)
+
 # run evaluate
 with mlflow.start_run(
     run_name=generate_run_name(training_run),
