@@ -130,7 +130,7 @@ To get started, open `{{template `project_name_alphanumeric_underscore` .}}/reso
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
-    spark_version: 12.2.x-cpu-ml-scala2.12
+    spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
       clusterSource: mlops-stack/0.1
@@ -185,7 +185,7 @@ targets:
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
-    spark_version: 12.2.x-cpu-ml-scala2.12
+    spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
       clusterSource: mlops-stack/0.1
