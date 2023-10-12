@@ -11,7 +11,7 @@ model_registry:
   # Specify the MLflow registered model name under which to register model versions
   # This value must be the same as model_name defined in
   # {{template `project_name_alphanumeric_underscore` .}}/databricks.yml for dev deployment target.
-  model_name: dev-{{template `model_name` .}}
+  model_name: {{ if (eq .input_include_models_in_unity_catalog "yes") }}dev-{{template `model_name` .}}{{else}}dev.{{template `schema_name` .}}.{{template `model_name` .}}{{end}}
 
 # Override the default train / validation / test dataset split ratios
 SPLIT_RATIOS: [0.75, 0.125, 0.125]

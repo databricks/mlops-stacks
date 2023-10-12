@@ -86,6 +86,8 @@ if config['experiment']['name'].startswith(f"/{env}-{{template `experiment_base_
     print("WARNING: The experiment name may not have been set correctly. Please confirm that the experiment name in the profile YAML file matches the experiment_name variable in {{template `project_name_alphanumeric_underscore` .}}/databricks.yml.")
 
 # COMMAND ----------
+{{ if (eq .input_include_models_in_unity_catalog "yes") }}import mlflow
+mlflow.set_registry_uri("databricks-uc"){{end}}
 
 r = Recipe(profile=profile)
 
