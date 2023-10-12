@@ -77,6 +77,12 @@
       "type": "string",
       "description": "Name of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist.",
       "default": "schema_name"
+    },
+    "input_unity_catalog_read_user_group": {
+      "order": 14,
+      "type": "string",
+      "default": "account users",
+      "description": "User group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in both the staging and prod workspaces. Default:"
     }
   }
 }

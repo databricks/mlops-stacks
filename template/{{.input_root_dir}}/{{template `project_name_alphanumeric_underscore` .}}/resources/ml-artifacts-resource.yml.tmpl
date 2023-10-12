@@ -63,7 +63,7 @@ grants: &grants
   grants:
     - privileges:
         - EXECUTE
-      principal: account users{{end}}
+      principal: {{template `unity_catalog_read_user_group` .}}{{end}}
 
 # Defines model and experiments
 resources:
