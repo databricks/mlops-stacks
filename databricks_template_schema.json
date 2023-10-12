@@ -16,14 +16,12 @@
       "order": 3,
       "type": "string",
       "description": "Select cloud. \nChoose from azure, aws",
-      "enum": ["azure", "aws"],
       "default": "azure"
     },
     "input_cicd_platform": {
       "order": 4,
       "type": "string",
       "description": "Select CICD platform. \nChoose from github_actions, github_actions_for_github_enterprise_servers, azure_devops",
-      "enum": ["github_actions", "github_actions_for_github_enterprise_servers", "azure_devops"],
       "default": "github_actions"
     },
     "input_databricks_staging_workspace_host": {
@@ -60,27 +58,24 @@
       "order": 10,
       "type": "string",
       "description": "Whether to include feature store. \nChoose from no, yes",
-      "enum": ["yes", "no"],
       "default": "no"
     },
     "input_include_mlflow_recipes": {
       "order": 11,
       "type": "string",
       "description": "Whether to include mlflow recipes. \nChoose from no, yes",
-      "enum": ["yes", "no"],
       "default": "no"
     },
     "input_include_models_in_unity_catalog": {
       "order": 12,
       "type": "string",
       "description": "Whether to use the Model Registry with Unity Catalog. \nChoose from no, yes",
-      "enum": ["yes", "no"],
       "default": "no"
     },
     "input_schema_name": {
       "order": 13,
       "type": "string",
-      "description": "Name of schema to use when registering a model in Unity Catalog. Note that this schema must already exist.",
+      "description": "Name of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist.",
       "default": "schema_name"
     }
   }

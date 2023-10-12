@@ -25,6 +25,7 @@ DEFAULT_PARAM_VALUES = {
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
     "input_include_mlflow_recipes": "no",
+    "input_include_models_in_unity_catalog": "no",    
 }
 DEFAULT_PARAMS_AZURE = {
     "input_cloud": "azure",
@@ -159,6 +160,7 @@ def test_generate_project_with_default_values(
     cicd_platform,
     include_feature_store,
     include_mlflow_recipes,
+    include_models_in_unity_catalog,
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -197,6 +199,7 @@ def test_generate_project_check_delta_output(
     cicd_platform,
     include_feature_store,
     include_mlflow_recipes,
+    include_models_in_unity_catalog,
 ):
     """
     Asserts the behavior of Delta Table-related artifacts when generating Stacks.
@@ -208,6 +211,7 @@ def test_generate_project_check_delta_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
+        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,        
     }
     generate(tmpdir, databricks_cli, context=context)
     delta_notebook_path = (
@@ -232,6 +236,7 @@ def test_generate_project_check_feature_store_output(
     cicd_platform,
     include_feature_store,
     include_mlflow_recipes,
+    include_models_in_unity_catalog,
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
@@ -243,6 +248,7 @@ def test_generate_project_check_feature_store_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
+        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,        
     }
     generate(tmpdir, databricks_cli, context=context)
     fs_notebook_path = (
@@ -278,6 +284,7 @@ def test_generate_project_check_recipe_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
+        "input_include_models_in_unity_catalog": input_include_models_in_unity_catalog,        
     }
     generate(tmpdir, databricks_cli, context=context)
     recipe_notebook_path = (
