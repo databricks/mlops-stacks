@@ -26,6 +26,8 @@ DEFAULT_PARAM_VALUES = {
     "input_include_feature_store": "no",
     "input_include_mlflow_recipes": "no",
     "input_include_models_in_unity_catalog": "no",    
+    "input_schema_name": "schema_name",    
+    "input_unity_catalog_read_user_group": "account users",    
 }
 DEFAULT_PARAMS_AZURE = {
     "input_cloud": "azure",
@@ -161,6 +163,8 @@ def test_generate_project_with_default_values(
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
+    schema_name,
+    unity_catalog_read_user_group,
 ):
     """
     Asserts the default parameter values for the stack. The project name and experiment
@@ -200,6 +204,8 @@ def test_generate_project_check_delta_output(
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
+    schema_name,
+    unity_catalog_read_user_group,
 ):
     """
     Asserts the behavior of Delta Table-related artifacts when generating Stacks.
@@ -211,7 +217,9 @@ def test_generate_project_check_delta_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,        
+        "input_include_models_in_unity_catalog": include_models_in_unity_catalog, 
+        "input_schema_name": schema_name,
+        "input_unity_catalog_read_user_group": unity_catalog_read_user_group,
     }
     generate(tmpdir, databricks_cli, context=context)
     delta_notebook_path = (
@@ -237,6 +245,8 @@ def test_generate_project_check_feature_store_output(
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
+    schema_name,
+    unity_catalog_read_user_group,
 ):
     """
     Asserts the behavior of feature store-related artifacts when generating Stacks.
@@ -248,7 +258,9 @@ def test_generate_project_check_feature_store_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,        
+        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,    
+        "input_schema_name": schema_name,
+        "input_unity_catalog_read_user_group": unity_catalog_read_user_group,            
     }
     generate(tmpdir, databricks_cli, context=context)
     fs_notebook_path = (
@@ -273,6 +285,9 @@ def test_generate_project_check_recipe_output(
     cicd_platform,
     include_feature_store,
     include_mlflow_recipes,
+    include_models_in_unity_catalog,
+    schema_name,
+    unity_catalog_read_user_group
 ):
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
@@ -284,7 +299,9 @@ def test_generate_project_check_recipe_output(
         "input_cicd_platform": cicd_platform,
         "input_include_feature_store": include_feature_store,
         "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": input_include_models_in_unity_catalog,        
+        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
+        "input_schema_name": schema_name,
+        "input_unity_catalog_read_user_group": unity_catalog_read_user_group,                
     }
     generate(tmpdir, databricks_cli, context=context)
     recipe_notebook_path = (
