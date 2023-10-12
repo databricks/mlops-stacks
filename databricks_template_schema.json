@@ -65,6 +65,12 @@
       "type": "string",
       "description": "Whether to include mlflow recipes. \nChoose from no, yes",
       "default": "no"
+    },
+    "input_include_models_in_unity_catalog": {
+      "order": 12,
+      "type": "string",
+      "description": "Whether to use the Model Registry with Unity Catalog. \nChoose from no, yes",
+      "default": "no"
     }
   }
 }

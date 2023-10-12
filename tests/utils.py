@@ -19,6 +19,7 @@ AZURE_DEFAULT_PARAMS = {
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
     "input_include_mlflow_recipes": "no",
+    "input_include_models_in_unity_catalog": "no",
 }
 
 AWS_DEFAULT_PARAMS = {
