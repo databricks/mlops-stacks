@@ -10,8 +10,13 @@
 # * env (required):                 - Environment the notebook is run in (staging, or prod). Defaults to "staging".
 # * training_data_path (required)   - Path to the training data.
 # * experiment_name (required)      - MLflow experiment name for the training runs. Will be created if it doesn't exist.
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 # * model_name (required)           - MLflow registered model name to use for the trained model. Will be created if it
 # *                                   doesn't exist.
+{{else}}
+# * model_name (required)           - Three-level name (<catalog>.<schema>.<model_name>) to register the trained model in Unity Catalog. 
+#  
+{{end -}}
 ##################################################################################
 
 
@@ -39,10 +44,19 @@ dbutils.widgets.text(
     label="MLflow experiment name",
 )
 
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 # MLflow registered model name to use for the trained mode.
 dbutils.widgets.text(
     "model_name", "dev-{{template `model_name` .}}", label="Model Name"
 )
+
+{{else}}
+# Unity Catalog registered model name to use for the trained mode.
+dbutils.widgets.text(
+    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Model Name"
+)
+
+{{end -}}
 
 # Pickup features table name
 dbutils.widgets.text(
@@ -71,6 +85,10 @@ model_name = dbutils.widgets.get("model_name")
 import mlflow
 
 mlflow.set_experiment(experiment_name)
+{{- if (eq .input_include_models_in_unity_catalog "yes") }}
+mlflow.set_registry_uri('databricks-uc')
+
+{{end -}}
 
 # COMMAND ----------
 # DBTITLE 1, Load raw data
