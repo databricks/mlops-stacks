@@ -51,6 +51,7 @@ targets:
                 * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
                 * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
                 * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+      {{ end }}
 
 # Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
 permissions: &permissions
@@ -79,7 +80,7 @@ resources:
       model:
         name: ${var.model_name}
         catalog_name: ${bundle.environment}
-        schema_name: schema_name     
+        schema_name: {{template `schema_name` .}}     
         <<: *grants
         depends_on:
           - resources.jobs.model_training_job.id
