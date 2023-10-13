@@ -20,6 +20,8 @@ AZURE_DEFAULT_PARAMS = {
     "input_include_feature_store": "no",
     "input_include_mlflow_recipes": "no",
     "input_include_models_in_unity_catalog": "no",
+    "input_schema_name": "schema_name",
+    "input_unity_catalog_read_user_group": "account users",
 }
 
 AWS_DEFAULT_PARAMS = {
@@ -90,6 +92,9 @@ def generated_project_dir(
             "input_default_branch": "main",
             "input_release_branch": "release",
             "input_read_user_group": "users",
+            "input_include_models_in_unity_catalog": "no",
+            "input_schema_name": "schema_name",
+            "input_unity_catalog_read_user_group": "account users",            
         },
     )
     return tmpdir
