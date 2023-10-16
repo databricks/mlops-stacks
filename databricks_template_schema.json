@@ -54,35 +54,35 @@
       "default": "users",
       "description": "User group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default:"
     },
-    "input_include_feature_store": {
-      "order": 10,
-      "type": "string",
-      "description": "Whether to include feature store. \nChoose from no, yes",
-      "default": "no"
-    },
-    "input_include_mlflow_recipes": {
-      "order": 11,
-      "type": "string",
-      "description": "Whether to include mlflow recipes. \nChoose from no, yes",
-      "default": "no"
-    },
     "input_include_models_in_unity_catalog": {
-      "order": 12,
+      "order": 10,
       "type": "string",
       "description": "Whether to use the Model Registry with Unity Catalog. \nChoose from no, yes",
       "default": "yes"
     },
     "input_schema_name": {
-      "order": 13,
+      "order": 11,
       "type": "string",
       "description": "Name of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist.",
       "default": "schema_name"
     },
     "input_unity_catalog_read_user_group": {
-      "order": 14,
+      "order": 12,
       "type": "string",
       "default": "account users",
       "description": "User group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in both the staging and prod workspaces. Default:"
+    },
+    "input_include_feature_store": {
+      "order": 13,
+      "type": "string",
+      "description": "Whether to include feature store. \nChoose from no, yes",
+      "default": "no"
+    },
+    "input_include_mlflow_recipes": {
+      "order": 14,
+      "type": "string",
+      "description": "Whether to include mlflow recipes. \nChoose from no, yes",
+      "default": "no"
     }
   }
 }
