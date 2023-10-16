@@ -50,12 +50,12 @@ def deploy(model_uri, env):
             version=version)
         print(f"Assigned alias '{target_alias}' to model version {model_uri}.")
         
-        # remove "challenger" alias if assigning "champion" alias
-        if target_alias == "champion":
-            print(f"Removing 'challenger' alias from model version {model_uri}.")
+        # remove "challenger" alias if assigning "Champion" alias
+        if target_alias == "Champion":
+            print(f"Removing 'Challenger' alias from model version {model_uri}.")
             client.delete_registered_model_alias(
                 name=model_name,
-                alias="challenger")
+                alias="Challenger")
 {{end}}
 
 

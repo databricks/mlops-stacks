@@ -171,7 +171,7 @@ if model_uri == "":
 {{ if (eq .input_include_models_in_unity_catalog "no") }}
 baseline_model_uri = "models:/" + model_name + "/Production"
 {{else}}
-baseline_model_uri = "models:/" + model_name + "@champion"
+baseline_model_uri = "models:/" + model_name + "@Champion"
 {{ end }}
 evaluators = "default"
 assert model_uri != "", "model_uri notebook parameter must be specified"
@@ -311,9 +311,9 @@ with mlflow.start_run(
         mlflow.log_artifact(metrics_file)
         log_to_model_description(run, True)
         {{ if (eq .input_include_models_in_unity_catalog "yes") }}
-        # Assign "challenger" alias to indicate model version has passed validation checks
-        print("Validation checks passed. Assigning 'challenger' alias to model version.")
-        client.set_registered_model_alias(model_name, "challenger", model_version)
+        # Assign "Challenger" alias to indicate model version has passed validation checks
+        print("Validation checks passed. Assigning 'Challenger' alias to model version.")
+        client.set_registered_model_alias(model_name, "Challenger", model_version)
         {{ end }}
     except Exception as err:
         log_to_model_description(run, False)

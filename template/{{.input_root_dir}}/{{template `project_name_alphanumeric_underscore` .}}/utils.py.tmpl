@@ -29,15 +29,15 @@ def get_deployed_model_alias_for_env(env):
     :param env: Current environment
     :return: Model alias
     """
-    # For a model registered in Unituy Catalog to be served, it needs have either a "champion" or "challenger" alias.
+    # For a model registered in Unituy Catalog to be served, it needs have either a "Champion" or "Challenger" alias.
     # ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "applications/machine-learning/manage-model-lifecycle/index.html#transition-a-model-stage")) }}).
-    # For models in dev and staging environments, we assign the model version the "challenger" alias, and in prod we assign the model version 
-    # the "champion" alias.
+    # For models in dev and staging environments, we assign the model version the "Challenger" alias, and in prod we assign the model version 
+    # the "Champion" alias.
     _MODEL_STAGE_FOR_ENV = {
-        "dev": "challenger",
-        "staging": "challenger",
-        "prod": "champion",
-        "test": "champion",
+        "dev": "Challenger",
+        "staging": "Challenger",
+        "prod": "Champion",
+        "test": "Challenger",
     }
     return _MODEL_STAGE_FOR_ENV[env]
 {{end -}}
