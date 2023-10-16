@@ -70,8 +70,7 @@
       "order": 12,
       "type": "string",
       "default": "account users",
-<<<<<<< HEAD
-      "description": "User group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in both the staging and prod workspaces. Default:"
+      "description": "User group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in the Unity Catalog that the staging and prod workspaces can access. Default:"
     },
     "input_include_feature_store": {
       "order": 13,
@@ -84,9 +83,6 @@
       "type": "string",
       "description": "Whether to include mlflow recipes. \nChoose from no, yes",
       "default": "no"
-=======
-      "description": "User group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in the Unity Catalog that the staging and prod workspaces can access. Default:"
->>>>>>> 38859b5ee9a160f1d1ba7f43f1f1574d2cc3a200
     }
   }
 }
