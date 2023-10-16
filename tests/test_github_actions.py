@@ -12,8 +12,8 @@ from utils import (
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize(
-    "include_feature_store, include_mlflow_recipes",
-    [("yes", "no"), ("no", "yes"), ("no", "no")],
+    "include_feature_store, include_mlflow_recipes, include_models_in_unity_catalog",
+    [("yes", "no", "no"), ("no", "yes", "no"), ("no", "no", "yes"), ("no", "no", "no")],
 )
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
