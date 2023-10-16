@@ -70,7 +70,7 @@
       "order": 12,
       "type": "string",
       "description": "Whether to use the Model Registry with Unity Catalog. \nChoose from no, yes",
-      "default": "no"
+      "default": "yes"
     },
     "input_schema_name": {
       "order": 13,
