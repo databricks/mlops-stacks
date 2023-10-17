@@ -87,26 +87,22 @@ model_name = dbutils.widgets.get("model_name")
 import mlflow
 
 mlflow.set_experiment(experiment_name)
-{{- if (eq .input_include_models_in_unity_catalog "yes") }}
 mlflow.set_registry_uri('databricks-uc')
-
-{{end -}}
 
 # COMMAND ----------
 # DBTITLE 1, Load raw data
 
 raw_data = spark.read.format("delta").load(input_table_path)
-display(raw_data)
+raw_data.display()
 
 # COMMAND ----------
 # DBTITLE 1, Helper functions
 
-from pyspark.sql import *
-from pyspark.sql.functions import current_timestamp, to_timestamp, lit
-from pyspark.sql.types import IntegerType, TimestampType
-import math
 from datetime import timedelta, timezone
+import math
 import mlflow.pyfunc
+import pyspark.sql.functions as F
+from pyspark.sql.types import IntegerType
 
 
 def rounded_unix_timestamp(dt, num_minutes=15):
@@ -118,7 +114,7 @@ def rounded_unix_timestamp(dt, num_minutes=15):
     return int((dt + timedelta(seconds=delta)).replace(tzinfo=timezone.utc).timestamp())
 
 
-rounded_unix_timestamp_udf = udf(rounded_unix_timestamp, IntegerType())
+rounded_unix_timestamp_udf = F.udf(rounded_unix_timestamp, IntegerType())
 
 
 def rounded_taxi_data(taxi_data_df):
@@ -127,17 +123,17 @@ def rounded_taxi_data(taxi_data_df):
     taxi_data_df = (
         taxi_data_df.withColumn(
             "rounded_pickup_datetime",
-            to_timestamp(
+            F.to_timestamp(
                 rounded_unix_timestamp_udf(
-                    taxi_data_df["tpep_pickup_datetime"], lit(15)
+                    taxi_data_df["tpep_pickup_datetime"], F.lit(15)
                 )
             ),
         )
         .withColumn(
             "rounded_dropoff_datetime",
-            to_timestamp(
+            F.to_timestamp(
                 rounded_unix_timestamp_udf(
-                    taxi_data_df["tpep_dropoff_datetime"], lit(30)
+                    taxi_data_df["tpep_dropoff_datetime"], F.lit(30)
                 )
             ),
         )
@@ -225,7 +221,7 @@ training_df = training_set.load_df()
 # COMMAND ----------
 
 # Display the training dataframe, and note that it contains both the raw input data and the features from the Feature Store, like `dropoff_is_weekend`
-display(training_df)
+training_df.display()
 
 # COMMAND ----------
 
@@ -235,10 +231,11 @@ display(training_df)
 # COMMAND ----------
 # DBTITLE 1, Train model
 
-from sklearn.model_selection import train_test_split
-from mlflow.tracking import MlflowClient
 import lightgbm as lgb
+from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
+from mlflow.tracking import MlflowClient
+
 
 features_and_label = training_df.columns
 
