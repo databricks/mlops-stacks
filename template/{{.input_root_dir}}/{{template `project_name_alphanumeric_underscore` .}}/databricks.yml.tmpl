@@ -2,15 +2,14 @@
 bundle:
   name: {{template `project_name` .}}
 
-
 variables:
   experiment_name:
     description: Experiment name for the model training.
     default: /Users/${workspace.current_user.userName}/${bundle.target}-{{template `experiment_base_name` .}}
   model_name:
     description: Model name for the model training.
-    default: ${bundle.target}-{{template `model_name` .}}
-
+    {{ if (eq .input_include_models_in_unity_catalog `no`) }}default: ${bundle.target}-{{template `model_name` .}}
+    {{- else -}}default: {{template `model_name` .}}{{end}}
 
 include:
   # Resources folder contains ML artifact resources for the ml project that defines model and experiment

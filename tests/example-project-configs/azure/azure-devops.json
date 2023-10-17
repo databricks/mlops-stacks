@@ -1,6 +1,6 @@
 {
-  "input_root_dir": "example-azure-devops-project",
-  "input_project_name": "example-azure-devops-project",
+  "input_root_dir": "test-azure-devops-project",
+  "input_project_name": "test-azure-devops-project",
   "input_cloud": "azure",
   "input_cicd_platform": "azure_devops",
   "input_databricks_staging_workspace_host": "https://adb-your-staging-workspace.azuredatabricks.net",
@@ -9,5 +9,8 @@
   "input_release_branch": "release",
   "input_read_user_group": "users",
   "input_include_feature_store": "no",
-  "input_include_mlflow_recipes": "no"
+  "input_include_mlflow_recipes": "no",
+  "input_include_models_in_unity_catalog": "yes",
+  "input_schema_name": "test_project_schema_name",
+  "input_unity_catalog_read_user_group": "account users"
 }

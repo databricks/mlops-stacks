@@ -1,14 +1,9 @@
-"""
-This module contains utils shared between different notebooks
-"""
-import json
-import mlflow
-import os
+"""This module contains utils shared between different notebooks"""
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 
 
 def get_deployed_model_stage_for_env(env):
-    """
-    Get the model version stage under which the latest deployed model version can be found
+    """Get the model version stage under which the latest deployed model version can be found
     for the current environment
     :param env: Current environment
     :return: Model version stage
@@ -16,7 +11,7 @@ def get_deployed_model_stage_for_env(env):
     # For a registered model version to be served, it needs to be in either the Staging or Production
     # model registry stage
     # ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "applications/machine-learning/manage-model-lifecycle/index.html#transition-a-model-stage")) }}).
-    # For models in dev and staging, we deploy the model to the "Staging" stage, and in prod we deploy to the
+    # For models in dev and staging environments, we deploy the model to the "Staging" stage, and in prod we deploy to the
     # "Production" stage
     _MODEL_STAGE_FOR_ENV = {
         "dev": "Staging",
@@ -25,3 +20,24 @@ def get_deployed_model_stage_for_env(env):
         "test": "Production",
     }
     return _MODEL_STAGE_FOR_ENV[env]
+{{else}}
+
+
+def get_deployed_model_alias_for_env(env):
+    """Get the registered model alias under which the latest deployed model version can be found
+    for the current environment
+    :param env: Current environment
+    :return: Model alias
+    """
+    # For a model registered in Unity Catalog to be served, it needs have either a "Champion" or "Challenger" alias.
+    # ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "applications/machine-learning/manage-model-lifecycle/index.html#transition-a-model-stage")) }}).
+    # For models in dev and staging environments, we assign the model version the "Challenger" alias, and in prod we assign the model version 
+    # the "Champion" alias.
+    _MODEL_STAGE_FOR_ENV = {
+        "dev": "Challenger",
+        "staging": "Challenger",
+        "prod": "Champion",
+        "test": "Challenger",
+    }
+    return _MODEL_STAGE_FOR_ENV[env]
+{{end -}}

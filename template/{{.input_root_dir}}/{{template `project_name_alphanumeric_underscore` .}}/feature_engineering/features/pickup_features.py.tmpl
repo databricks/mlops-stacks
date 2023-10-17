@@ -2,12 +2,12 @@
 This sample module contains  features logic that can be used to generate and populate tables in Feature Store.
 You should plug in your own features computation logic in the compute_features_fn method below.
 """
-from pyspark.sql.functions import *
+import pyspark.sql.functions as F
 from pyspark.sql.types import FloatType, IntegerType, StringType, TimestampType
 from pytz import timezone
 
 
-@udf(returnType=StringType())
+@F.udf(returnType=StringType())
 def _partition_id(dt):
     # datetime -> "YYYY-MM"
     return f"{dt.year:04d}-{dt.month:02d}"
@@ -15,15 +15,14 @@ def _partition_id(dt):
 
 def _filter_df_by_ts(df, ts_column, start_date, end_date):
     if ts_column and start_date:
-        df = df.filter(col(ts_column) >= start_date)
+        df = df.filter(F.col(ts_column) >= start_date)
     if ts_column and end_date:
-        df = df.filter(col(ts_column) < end_date)
+        df = df.filter(F.col(ts_column) < end_date)
     return df
 
 
 def compute_features_fn(input_df, timestamp_column, start_date, end_date):
-    """
-    Contains logic to compute features.
+    """Contains logic to compute features.
 
     Given an input dataframe and time ranges, this function should compute features, populate an output dataframe and
     return it. This method will be called from a  Feature Store pipeline job and the output dataframe will be written
@@ -45,20 +44,20 @@ def compute_features_fn(input_df, timestamp_column, start_date, end_date):
     df = _filter_df_by_ts(input_df, timestamp_column, start_date, end_date)
     pickupzip_features = (
         df.groupBy(
-            "pickup_zip", window(timestamp_column, "1 hour", "15 minutes")
+            "pickup_zip", F.window(timestamp_column, "1 hour", "15 minutes")
         )  # 1 hour window, sliding every 15 minutes
         .agg(
-            mean("fare_amount").alias("mean_fare_window_1h_pickup_zip"),
-            count("*").alias("count_trips_window_1h_pickup_zip"),
+            F.mean("fare_amount").alias("mean_fare_window_1h_pickup_zip"),
+            F.count("*").alias("count_trips_window_1h_pickup_zip"),
         )
         .select(
-            col("pickup_zip").alias("zip"),
-            unix_timestamp(col("window.end"))
+            F.col("pickup_zip").alias("zip"),
+            F.unix_timestamp(F.col("window.end"))
             .alias(timestamp_column)
             .cast(TimestampType()),
-            _partition_id(to_timestamp(col("window.end"))).alias("yyyy_mm"),
-            col("mean_fare_window_1h_pickup_zip").cast(FloatType()),
-            col("count_trips_window_1h_pickup_zip").cast(IntegerType()),
+            _partition_id(F.to_timestamp(F.col("window.end"))).alias("yyyy_mm"),
+            F.col("mean_fare_window_1h_pickup_zip").cast(FloatType()),
+            F.col("count_trips_window_1h_pickup_zip").cast(IntegerType()),
         )
     )
     return pickupzip_features

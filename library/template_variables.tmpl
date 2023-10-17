@@ -113,6 +113,32 @@
     {{- end -}}
 {{- end }}
 
+{{ define `include_models_in_unity_catalog` -}}
+    {{- if (eq .input_include_models_in_unity_catalog `no`) -}}
+        no
+    {{- else if (eq .input_include_models_in_unity_catalog `yes`) -}}
+        yes
+    {{- else -}}
+        {{ fail `Invalid selection of include_models_in_unity_catalog. Please choose from [no, yes]` }}
+    {{- end -}}
+{{- end }}
+
+{{ define `schema_name` -}}
+    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
+        {{ .input_schema_name }}
+    {{- else -}}
+        {{ "" }}
+    {{- end -}}
+{{- end }}
+
+{{ define `unity_catalog_read_user_group` -}}
+    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
+        {{ .input_unity_catalog_read_user_group }}
+    {{- else -}}
+        {{ "account users" }}
+    {{- end -}}
+{{- end }}
+
 {{ define `cloud_specific_node_type_id` -}}
     {{- if (eq .input_cloud `aws`) -}}
         i3.xlarge

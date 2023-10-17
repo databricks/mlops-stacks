@@ -21,7 +21,6 @@
 #                            notebook) has set a task value with key "model_uri".
 ##################################################################################
 
-
 # List of input args needed to run the notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 #

@@ -19,6 +19,9 @@ AZURE_DEFAULT_PARAMS = {
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
     "input_include_mlflow_recipes": "no",
+    "input_include_models_in_unity_catalog": "no",
+    "input_schema_name": "schema_name",
+    "input_unity_catalog_read_user_group": "account users",
 }
 
 AWS_DEFAULT_PARAMS = {
@@ -39,23 +42,46 @@ def parametrize_by_cloud(fn):
 
 def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
-        "cloud,cicd_platform,include_feature_store, include_mlflow_recipes",
+        "cloud,cicd_platform,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
         [
-            ("aws", "github_actions", "no", "no"),
-            ("aws", "github_actions", "no", "yes"),
-            ("aws", "github_actions", "yes", "no"),
-            ("aws", "github_actions_for_github_enterprise_servers", "no", "no"),
-            ("aws", "github_actions_for_github_enterprise_servers", "no", "yes"),
-            ("aws", "github_actions_for_github_enterprise_servers", "yes", "no"),
-            ("azure", "github_actions", "no", "no"),
-            ("azure", "github_actions", "no", "yes"),
-            ("azure", "github_actions", "yes", "no"),
-            ("azure", "github_actions_for_github_enterprise_servers", "no", "no"),
-            ("azure", "github_actions_for_github_enterprise_servers", "no", "yes"),
-            ("azure", "github_actions_for_github_enterprise_servers", "yes", "no"),
-            ("azure", "azure_devops", "no", "no"),
-            ("azure", "azure_devops", "no", "yes"),
-            ("azure", "azure_devops", "yes", "no"),
+            ("aws", "github_actions", "no", "no", "no"),
+            ("aws", "github_actions", "no", "no", "yes"),
+            ("aws", "github_actions", "no", "yes", "no"),
+            ("aws", "github_actions", "yes", "no", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "yes"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "yes", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "yes", "no", "no"),
+            ("azure", "github_actions", "no", "no", "no"),
+            ("azure", "github_actions", "no", "no", "yes"),
+            ("azure", "github_actions", "no", "yes", "no"),
+            ("azure", "github_actions", "yes", "no", "no"),
+            ("azure", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "no",
+                "no",
+                "yes",
+            ),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "no",
+                "yes",
+                "no",
+            ),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "yes",
+                "no",
+                "no",
+            ),
+            ("azure", "azure_devops", "no", "no", "no"),
+            ("azure", "azure_devops", "no", "no", "yes"),
+            ("azure", "azure_devops", "no", "yes", "no"),
+            ("azure", "azure_devops", "yes", "no", "no"),
         ],
     )
     @wraps(fn)
@@ -73,6 +99,7 @@ def generated_project_dir(
     cicd_platform,
     include_feature_store,
     include_mlflow_recipes,
+    include_models_in_unity_catalog,
 ):
     generate(
         tmpdir,
@@ -89,6 +116,9 @@ def generated_project_dir(
             "input_default_branch": "main",
             "input_release_branch": "release",
             "input_read_user_group": "users",
+            "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
+            "input_schema_name": "schema_name",
+            "input_unity_catalog_read_user_group": "account users",
         },
     )
     return tmpdir

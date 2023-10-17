@@ -12,7 +12,7 @@
 ## Intro
 
 ### databricks CLI bundles
-MLOps-stacks ML resources are configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }}).
+MLOps-stack ML resources are configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }}).
 The bundle setting file must be expressed in YAML format and must contain at minimum the top-level bundle mapping.
 
 The databricks CLI bundles top level is defined by file `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml`.
@@ -130,7 +130,7 @@ To get started, open `{{template `project_name_alphanumeric_underscore` .}}/reso
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
-    spark_version: 12.2.x-cpu-ml-scala2.12
+    spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
       clusterSource: mlops-stack/0.1
@@ -185,7 +185,7 @@ targets:
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
-    spark_version: 12.2.x-cpu-ml-scala2.12
+    spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
       clusterSource: mlops-stack/0.1

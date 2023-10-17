@@ -38,8 +38,21 @@
         {{ fail `Azure DevOps is not supported as a cicd_platform option with cloud=aws. If cloud=aws the currently supported cicd_platform is GitHub Actions.` }}
     {{- end -}}
 
+    - Validate schema_name for invalid characters
+    {{- if eq .input_include_models_in_unity_catalog `yes` -}}
+        {{- if ((regexp `[ ./\\]+`).MatchString .input_schema_name) -}}
+            {{ fail `schema_name contained invalid characters. Valid schema names cannot contain any of the following characters: " ", ".", "\", "/"` }}
+        {{- end -}}
+    {{- end -}}    
+
     - Validate feature store and recipes
     {{- if and (eq .input_include_feature_store `yes`) (eq .input_include_mlflow_recipes `yes`) -}}
         {{ fail `Feature Store cannot be used with MLflow recipes. Please only use one of the two or neither.` }}
     {{- end -}}
+
+    - Validate feature store and recipes
+    {{- if and (eq .input_include_models_in_unity_catalog `yes`) (eq .input_include_mlflow_recipes `yes`) -}}
+        {{ fail `The Model Registry in Unity Catalog cannot be used with MLflow recipes. Please only use one of the two or neither.` }}
+    {{- end -}}
+
 {{- end -}}
