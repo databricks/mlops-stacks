@@ -2,18 +2,18 @@
 This sample module contains features logic that can be used to generate and populate tables in Feature Store. 
 You should plug in your own features computation logic in the compute_features_fn method below.
 """
-from pyspark.sql.functions import *
+import pyspark.sql.functions as F
 from pyspark.sql.types import IntegerType, StringType, TimestampType
 from pytz import timezone
 
 
-@udf(returnType=IntegerType())
+@F.udf(returnType=IntegerType())
 def _is_weekend(dt):
     tz = "America/New_York"
     return int(dt.astimezone(timezone(tz)).weekday() >= 5)  # 5 = Saturday, 6 = Sunday
 
 
-@udf(returnType=StringType())
+@F.udf(returnType=StringType())
 def _partition_id(dt):
     # datetime -> "YYYY-MM"
     return f"{dt.year:04d}-{dt.month:02d}"
@@ -21,15 +21,14 @@ def _partition_id(dt):
 
 def _filter_df_by_ts(df, ts_column, start_date, end_date):
     if ts_column and start_date:
-        df = df.filter(col(ts_column) >= start_date)
+        df = df.filter(F.col(ts_column) >= start_date)
     if ts_column and end_date:
-        df = df.filter(col(ts_column) < end_date)
+        df = df.filter(F.col(ts_column) < end_date)
     return df
 
 
 def compute_features_fn(input_df, timestamp_column, start_date, end_date):
-    """
-    Contains logic to compute features.
+    """Contains logic to compute features.
 
     Given an input dataframe and time ranges, this function should compute features, populate an output dataframe and
     return it. This method will be called from a  Feature Store pipeline job and the output dataframe will be written
@@ -50,16 +49,16 @@ def compute_features_fn(input_df, timestamp_column, start_date, end_date):
     """
     df = _filter_df_by_ts(input_df, timestamp_column, start_date, end_date)
     dropoffzip_features = (
-        df.groupBy("dropoff_zip", window(timestamp_column, "30 minute"))
-        .agg(count("*").alias("count_trips_window_30m_dropoff_zip"))
+        df.groupBy("dropoff_zip", F.window(timestamp_column, "30 minute"))
+        .agg(F.count("*").alias("count_trips_window_30m_dropoff_zip"))
         .select(
-            col("dropoff_zip").alias("zip"),
-            unix_timestamp(col("window.end"))
+            F.col("dropoff_zip").alias("zip"),
+            F.unix_timestamp(F.col("window.end"))
             .alias(timestamp_column)
             .cast(TimestampType()),
-            _partition_id(to_timestamp(col("window.end"))).alias("yyyy_mm"),
-            col("count_trips_window_30m_dropoff_zip").cast(IntegerType()),
-            _is_weekend(col("window.end")).alias("dropoff_is_weekend"),
+            _partition_id(F.to_timestamp(F.col("window.end"))).alias("yyyy_mm"),
+            F.col("count_trips_window_30m_dropoff_zip").cast(IntegerType()),
+            _is_weekend(F.col("window.end")).alias("dropoff_is_weekend"),
         )
     )
     return dropoffzip_features
