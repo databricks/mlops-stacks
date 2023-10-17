@@ -79,7 +79,7 @@ resources:
     registered_models:
       model:
         name: ${var.model_name}
-        catalog_name: ${bundle.environment}
+        catalog_name: ${bundle.target}
         schema_name: {{template `schema_name` .}}     
         <<: *grants
         depends_on:
