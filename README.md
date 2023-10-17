@@ -19,11 +19,11 @@ Your organization can use the default stack as is or customize it as needed, e.g
 adapt individual components to fit your organization's best practices. See the
 [stack customization guide](stack-customization.md) for more details.
 
-Using Databricks MLOps stacks, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
-management, with an easy transition to production. You can also use MLOps stacks as a building block
+Using Databricks MLOps stack, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
+management, with an easy transition to production. You can also use MLOps stack as a building block
 in automation for creating new data science projects with production-grade CI/CD pre-configured.
 
-![MLOps Stacks diagram](doc-images/mlops-stack.png)
+![MLOps Stack diagram](doc-images/mlops-stack.png)
 
 See the [FAQ](#FAQ) for questions on common use cases.
 
@@ -113,7 +113,7 @@ for details on how to do this.
 
 ### Does the MLOps stack cover data (ETL) pipelines?
 
-Since MLOps Stacks is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
+Since MLOps Stack is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
 it's not limited only to ML workflows and assets - it works for assets across the Databricks Lakehouse. For instance, while the existing ML 
 code samples contain feature engineering, training, model validation, deployment and batch inference workflows,
 you can use it for Delta Live Tables pipelines as well.

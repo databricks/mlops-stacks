@@ -204,7 +204,7 @@ def test_generate_project_check_delta_output(
     include_models_in_unity_catalog,
 ):
     """
-    Asserts the behavior of Delta Table-related artifacts when generating Stacks.
+    Asserts the behavior of Delta Table-related artifacts when generating Stack.
     """
     context = {
         "input_project_name": TEST_PROJECT_NAME,
@@ -241,7 +241,7 @@ def test_generate_project_check_feature_store_output(
     include_models_in_unity_catalog,
 ):
     """
-    Asserts the behavior of feature store-related artifacts when generating Stacks.
+    Asserts the behavior of feature store-related artifacts when generating Stack.
     """
     context = {
         "input_project_name": TEST_PROJECT_NAME,
@@ -278,7 +278,7 @@ def test_generate_project_check_recipe_output(
     include_models_in_unity_catalog,
 ):
     """
-    Asserts the behavior of MLflow Recipes-related artifacts when generating Stacks.
+    Asserts the behavior of MLflow Recipes-related artifacts when generating Stack.
     """
     context = {
         "input_project_name": TEST_PROJECT_NAME,

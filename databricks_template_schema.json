@@ -4,7 +4,7 @@
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stack/blob/main/README.md. \n\nProject Name"
+      "description": "Welcome to MLOps Stack. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stack/blob/main/README.md. \n\nProject Name"
     },
     "input_root_dir": {
       "order": 2,
