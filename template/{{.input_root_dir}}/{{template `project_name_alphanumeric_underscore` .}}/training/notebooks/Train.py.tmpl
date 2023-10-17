@@ -98,7 +98,7 @@ mlflow.set_registry_uri('databricks-uc')
 # DBTITLE 1, Load raw data
 
 training_df = spark.read.format("delta").load(input_table_path)
-display(training_df)
+training_df.display()
 
 # COMMAND ----------
 # DBTITLE 1, Helper function
