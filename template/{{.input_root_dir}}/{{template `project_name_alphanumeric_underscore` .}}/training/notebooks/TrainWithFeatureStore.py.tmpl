@@ -62,7 +62,7 @@ dbutils.widgets.text(
 dbutils.widgets.text(
     "pickup_features_table",
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}"feature_store_taxi_example.trip_pickup_features",
-    {{- else -}}"dev.{{template `schema_name` .}}.trip_pickup_features"{{ end }}
+    {{- else -}}"dev.{{template `schema_name` .}}.trip_pickup_features",{{ end }}
     label="Pickup Features Table",
 )
 
