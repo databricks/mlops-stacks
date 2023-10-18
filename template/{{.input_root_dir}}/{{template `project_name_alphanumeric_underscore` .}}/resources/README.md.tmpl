@@ -12,7 +12,7 @@
 ## Intro
 
 ### databricks CLI bundles
-MLOps-stack ML resources are configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }}).
+MLOps Stacks ML resources are configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }}).
 The bundle setting file must be expressed in YAML format and must contain at minimum the top-level bundle mapping.
 
 The databricks CLI bundles top level is defined by file `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml`.
@@ -69,7 +69,7 @@ Alternatively, you can use the other approaches described in the [databricks CLI
 ### Validate and provision ML resource configurations
 1. After installing the databricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the `{{template `project_name_alphanumeric_underscore` .}}` directory.
 2. Run `databricks bundle validate` to validate the Databricks resource configurations. 
-3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{template `project_name_alphanumeric_underscore` .}}/databricks-resource`.
+3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{template `project_name_alphanumeric_underscore` .}}/resources`.
 4. Go to the Databricks dev workspace, check the defined model, experiment and workflows status, and interact with the created workflows.
 
 ### Destroy ML resource configurations
@@ -98,7 +98,7 @@ Follow the next section to configure the input and output data tables for the ba
 ### Setting up the batch inference job
 The batch inference job expects an input Delta table with a schema that your registered model accepts. To use the batch
 inference job, set up such a Delta table in both your staging and prod workspaces.
-Following this, update the batch_inference_job base parameters in `{{template `project_name_alphanumeric_underscore` .}}/databricks-resource/batch-inference-workflow-resource.yml` to pass
+Following this, update the batch_inference_job base parameters in `{{template `project_name_alphanumeric_underscore` .}}/resources/batch-inference-workflow-resource.yml` to pass
 the name of the input Delta table and the name of the output Delta table to which to write batch predictions.
 
 As the batch job will be run with the credentials of the service principal that provisioned it, make sure that the service
@@ -109,7 +109,7 @@ principal corresponding to a particular environment has permissions to read the 
 * `MODIFY` permission for the output table if it pre-dates your job.
 
 ### Setting up model validation
-The model validation stack focuses on building a plug-and-play stack component for continuous deployment (CD) of models 
+The model validation workflow focuses on building a plug-and-play stack component for continuous deployment (CD) of models 
 in staging and prod.
 Its central purpose is to evaluate a registered model and validate its quality before deploying the model to Production/Staging.
 
@@ -133,7 +133,7 @@ new_cluster: &new_cluster
     spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
-      clusterSource: mlops-stack/0.1
+      clusterSource: mlops-stack/0.2
 
 resources:
   jobs:
@@ -188,7 +188,7 @@ new_cluster: &new_cluster
     spark_version: 13.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
     custom_tags:
-      clusterSource: mlops-stack/0.1
+      clusterSource: mlops-stack/0.2
 
 resources:
   jobs:

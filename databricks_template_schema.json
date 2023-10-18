@@ -4,7 +4,7 @@
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "Welcome to MLOps Stack. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stack/blob/main/README.md. \n\nProject Name"
+      "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name"
     },
     "input_root_dir": {
       "order": 2,
@@ -63,8 +63,8 @@
     "input_schema_name": {
       "order": 11,
       "type": "string",
-      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist. Default",
-      "default": "schema_name"
+      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name. Default",
+      "default": "my-mlops-project"
     },
     "input_unity_catalog_read_user_group": {
       "order": 12,

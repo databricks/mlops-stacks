@@ -7,8 +7,8 @@ targets:
           description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
       {{- else -}}
         registered_models:
-          model:
-            comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
 
   test:
     resources:
@@ -17,8 +17,8 @@ targets:
           description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
       {{- else -}}
         registered_models:
-          model:
-            comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
 
   staging:
     resources:
@@ -27,8 +27,8 @@ targets:
           description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
       {{- else -}}
         registered_models:
-          model:
-            comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
 
   prod:
     resources:
@@ -43,14 +43,14 @@ targets:
               * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{- else -}}
         registered_models:
-          model:
-            comment: |
-              Registered model in Unity Catalog for the "mlops-stack-models-uc" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
-              
-              Links:
-                * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
-                * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-                * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+        model:
+          comment: |
+            Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
+            
+            Links:
+              * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
+              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{ end }}
 
 # Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
