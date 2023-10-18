@@ -35,9 +35,9 @@ structure defined in the default stack.
 
 ### Prerequisites
  - Python 3.8+
- - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.208.0
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.208.1
 
-[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.208.0 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.208.1 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 
 Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/databricks-cli-ref.html#install-the-cli) to install and set up databricks CLI. Releases of databricks CLI can be found in the [releases section](https://github.com/databricks/cli/releases) of databricks/cli repository.
 
