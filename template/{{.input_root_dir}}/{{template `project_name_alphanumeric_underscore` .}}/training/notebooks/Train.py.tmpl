@@ -71,7 +71,7 @@ dbutils.widgets.text(
 {{else}}
 # Unity Catalog registered model name to use for the trained model.
 dbutils.widgets.text(
-    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Model Name"
+    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
 )
 
 {{end -}}
@@ -89,6 +89,7 @@ model_name = dbutils.widgets.get("model_name")
 import mlflow
 
 mlflow.set_experiment(experiment_name)
+
 {{- if (eq .input_include_models_in_unity_catalog "yes") }}
 mlflow.set_registry_uri('databricks-uc')
 

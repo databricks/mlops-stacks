@@ -105,7 +105,7 @@ Two Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
   - **[CI]** Performs unit and integration tests<br>
     - Triggered on PR to main
 - **`{{template `project_name` .}}-bundle-cicd.yml`**:<br>
-  - **[CI]** Performs validation of Databricks resources defined under `{{template `project_name_alphanumeric_underscore` .}}/databricks-resource`<br>
+  - **[CI]** Performs validation of Databricks resources defined under `{{template `project_name_alphanumeric_underscore` .}}/resources`<br>
     - Triggered on PR to main<br>
   - **[CD]** Deploys Databricks resources to the staging workspace<br>
     - Triggered on merging into main<br>

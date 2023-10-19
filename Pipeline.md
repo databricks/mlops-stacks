@@ -1,5 +1,5 @@
 # ML Pipeline Structure and Devloop
-The default stack contains an ML pipeline with CI/CD workflows to test and deploy
+MLOps Stacks contains an ML pipeline with CI/CD workflows to test and deploy
 automated model training and batch inference jobs across your dev, staging, and prod Databricks
 workspaces.
 

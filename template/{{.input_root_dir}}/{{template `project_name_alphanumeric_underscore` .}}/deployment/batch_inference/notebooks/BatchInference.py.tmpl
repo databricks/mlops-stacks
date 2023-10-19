@@ -34,7 +34,7 @@ dbutils.widgets.text(
 {{else}}
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Model Name"
+    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
 ){{end}}
 
 # COMMAND ----------
@@ -65,8 +65,7 @@ sys.path.append("../..")
 
 # DBTITLE 1,Define input and output variables
 {{- if (eq .input_include_models_in_unity_catalog "no") }}
-from utils import get_deployed_model_stage_for_env{{else}}
-from utils import get_deployed_model_alias_for_env{{end}}
+from utils import get_deployed_model_stage_for_env{{end}}
 
 env = dbutils.widgets.get("env")
 input_table_name = dbutils.widgets.get("input_table_name")
@@ -78,7 +77,7 @@ assert model_name != "", "model_name notebook parameter must be specified"
 {{- if (eq .input_include_models_in_unity_catalog "no") }}
 stage = get_deployed_model_stage_for_env(env)
 model_uri = f"models:/{model_name}/{stage}"{{else}}
-alias = get_deployed_model_alias_for_env(env)
+alias = "Champion"
 model_uri = f"models:/{model_name}@{alias}"{{end}}
 
 # COMMAND ----------

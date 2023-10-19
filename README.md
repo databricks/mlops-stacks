@@ -1,7 +1,6 @@
-# Databricks MLOps Stack
+# Databricks MLOps Stacks
 
-> **_NOTE:_**  This feature is in [private preview](https://docs.databricks.com/release-notes/release-types.html). The interface/APIs may change and no formal support is available during the preview. However, you can still create new production-grade ML projects using the stack.
-If interested in trying it out, please fill out this [form](https://docs.google.com/forms/d/e/1FAIpQLSfHXCmkbsEURjQQvtUGObgh2D5q1eD4YRHnUxZ0M4Hu0W63WA/viewform), and you’ll be contacted by a Databricks representative.
+> **_NOTE:_**  This feature is in [public preview](https://docs.databricks.com/release-notes/release-types.html).
 
 This repo provides a customizable stack for starting new ML projects
 on Databricks that follow production best-practices out of the box.
@@ -19,11 +18,11 @@ Your organization can use the default stack as is or customize it as needed, e.g
 adapt individual components to fit your organization's best practices. See the
 [stack customization guide](stack-customization.md) for more details.
 
-Using Databricks MLOps stack, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
-management, with an easy transition to production. You can also use MLOps stack as a building block
+Using Databricks MLOps Stacks, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
+management, with an easy transition to production. You can also use MLOps Stacks as a building block
 in automation for creating new data science projects with production-grade CI/CD pre-configured.
 
-![MLOps Stack diagram](doc-images/mlops-stack.png)
+![MLOps Stacks diagram](doc-images/mlops-stacks.png)
 
 See the [FAQ](#FAQ) for questions on common use cases.
 
@@ -31,13 +30,13 @@ See the [FAQ](#FAQ) for questions on common use cases.
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline
 structure defined in the default stack.
 
-## Using this stack
+## Using MLOps Stacks
 
 ### Prerequisites
  - Python 3.8+
- - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.204.0
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.208.1
 
-[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.204.0 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.208.1 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 
 Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/databricks-cli-ref.html#install-the-cli) to install and set up databricks CLI. Releases of databricks CLI can be found in the [releases section](https://github.com/databricks/cli/releases) of databricks/cli repository.
 
@@ -47,7 +46,7 @@ Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/dat
 
 To create a new project, run:
 
-    databricks bundle init https://github.com/databricks/mlops-stack
+    databricks bundle init mlops-stacks
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``input_project_name``: name of the current project
@@ -78,42 +77,41 @@ See the generated ``README.md`` for next steps!
 
 ## FAQ
 
-### Do I need separate dev/staging/prod workspaces to use this stack?
+### Do I need separate dev/staging/prod workspaces to use MLOps Stacks?
 We recommend using separate dev/staging/prod Databricks workspaces for stronger
 isolation between environments. For example, Databricks REST API rate limits
 are applied per-workspace, so if using [Databricks Model Serving](https://docs.databricks.com/applications/mlflow/model-serving.html),
 using separate workspaces can help prevent high load in staging from DOSing your
 production model serving endpoints.
 
-However, you can run the stack against just a single workspace, against a dev and
-staging/prod workspace, etc. Just supply the same workspace URL for
+However, you can create a single workspace stack, by supplying the same workspace URL for
 `input_databricks_staging_workspace_host` and `input_databricks_prod_workspace_host`. If you go this route, we
 recommend using different service principals to manage staging vs prod resources,
 to ensure that CI workloads run in staging cannot interfere with production resources.
 
-### I have an existing ML project. Can I productionize it using this stack?
-Yes. Currently, you can instantiate a new project from the stack and copy relevant components
-into your existing project to productionize it. The stack is modularized, so
+### I have an existing ML project. Can I productionize it using MLOps Stacks?
+Yes. Currently, you can instantiate a new project and copy relevant components
+into your existing project to productionize it. MLOps Stacks is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
  under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources`` 
-and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml`` into your existing project.
+and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml`` into your existing project.
 
-### Can I adopt individual components of the stack?
-For this use case, we recommend instantiating the full stack via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) 
-and copying the relevant stack subdirectories. For example, all ML resource configs
+### Can I adopt individual components of MLOps Stacks?
+For this use case, we recommend instantiating via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) 
+and copying the relevant subdirectories. For example, all ML resource configs
 are defined under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``
-and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/bundle.yml``, while CI/CD is defined e.g. under `.github`
+and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml``, while CI/CD is defined e.g. under `.github`
 if using GitHub Actions, or under `.azure` if using Azure DevOps.
 
-### Can I customize this stack?
+### Can I customize my MLOps Stack?
 Yes. We provide the default stack in this repo as a production-friendly starting point for MLOps.
 However, in many cases you may need to customize the stack to match your organization's
 best practices. See [the stack customization guide](stack-customization.md)
 for details on how to do this.
 
-### Does the MLOps stack cover data (ETL) pipelines?
+### Does the MLOps Stacks cover data (ETL) pipelines?
 
-Since MLOps Stack is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
+Since MLOps Stacks is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
 it's not limited only to ML workflows and assets - it works for assets across the Databricks Lakehouse. For instance, while the existing ML 
 code samples contain feature engineering, training, model validation, deployment and batch inference workflows,
 you can use it for Delta Live Tables pipelines as well.
@@ -127,7 +125,7 @@ Please provide feedback (bug reports, feature requests, etc) via GitHub issues.
 We welcome community contributions. For substantial changes, we ask that you first file a GitHub issue to facilitate
 discussion, before opening a pull request.
 
-This stack is implemented as a [Databricks asset bundle template](https://docs.databricks.com/en/dev-tools/bundles/templates.html)
+MLOps Stacks is implemented as a [Databricks asset bundle template](https://docs.databricks.com/en/dev-tools/bundles/templates.html)
 that generates new projects given user-supplied parameters. Parametrized project code can be found under
 the `{{.input_root_dir}}` directory.
 
@@ -164,10 +162,10 @@ Run integration tests only:
 pytest tests --large-only
 ```
 
-### Previewing stack changes
-When making changes to the stack, it can be convenient to see how those changes affect
-an actual new ML project created from the stack. To do this, you can create an example
-project from your local checkout of the stack, and inspect its contents/run tests within
+### Previewing changes
+When making changes to MLOps Stacks, it can be convenient to see how those changes affect
+a generated new ML project. To do this, you can create an example
+project from your local checkout of the repo, and inspect its contents/run tests within
 the project.
 
 We provide example project configs for Azure (using both GitHub and Azure DevOps) and AWS (using GitHub) under `tests/example-project-configs`.
@@ -175,14 +173,14 @@ To create an example Azure project, using Azure DevOps as the CI/CD platform, ru
 of the example project:
 
 ```
-# Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
-MLOPS_STACK_PATH=~/mlops-stack
-databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/azure/azure-devops.json"
+# Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
+MLOPS_STACKS_PATH=~/mlops-stacks
+databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/azure/azure-devops.json"
 ```
 
 To create an example AWS project, using GitHub Actions for CI/CD, run:
 ```
-# Note: update MLOPS_STACK_PATH to the path to your local checkout of the stack
-MLOPS_STACK_PATH=~/mlops-stack
-databricks bundle init "$MLOPS_STACK_PATH" --config-file "$MLOPS_STACK_PATH/tests/example-project-configs/aws/aws-github.json"
+# Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
+MLOPS_STACKS_PATH=~/mlops-stacks
+databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/aws/aws-github.json"
 ```

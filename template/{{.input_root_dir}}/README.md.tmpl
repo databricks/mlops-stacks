@@ -1,7 +1,7 @@
 # {{ template `root_dir` .}}
 
 This directory contains an ML project based on the default
-[Databricks MLOps Stack](https://github.com/databricks/mlops-stack),
+[Databricks MLOps Stacks](https://github.com/databricks/mlops-stacks),
 defining a production-grade ML pipeline for automated retraining and batch inference of an ML model on tabular data.
 
 See the [Project overview](docs/project-overview.md) for details on the ML pipeline and code structure
@@ -38,7 +38,7 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspaces and service principals.
 
 For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
-1. Create another project from cookiecutter with project name `project2` and root directory name `project2`.
+1. Create another project from `databricks bundle init` with project name `project2` and root directory name `project2`.
 2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
 3. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/` and make sure there's no name conflicts.

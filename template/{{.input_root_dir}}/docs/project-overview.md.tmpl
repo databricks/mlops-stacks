@@ -6,10 +6,10 @@
 This project defines an ML pipeline for automated retraining and batch inference of an ML model
 on tabular data.
 
-See the full pipeline structure below. The [stack README](https://github.com/databricks/mlops-stack/blob/main/Pipeline.md)
+See the full pipeline structure below. The [MLOps Stacks README](https://github.com/databricks/mlops-stacks/blob/main/Pipeline.md)
 contains additional details on how ML pipelines are tested and deployed across each of the dev, staging, prod environments below.
 
-![MLOps Stack diagram](images/mlops-stack-summary.png)
+![MLOps Stacks diagram](images/mlops-stack-summary.png)
 
 
 ## Code structure
@@ -30,7 +30,7 @@ contained in the following files:
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
-│   ├── bundle.yml              <- bundle.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
+│   ├── databricks.yml          <- databricks.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
 {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
