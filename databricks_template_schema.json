@@ -85,5 +85,5 @@
       "default": "no"
     }
   },
-  "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.project_name}}' directory!\n\nPlease refer to the README.md of your project for further instructions on getting started."
+  "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.input_project_name}}' directory!\n\nPlease refer to the README.md of your project for further instructions on getting started."
 }
