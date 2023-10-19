@@ -38,7 +38,6 @@ targets:
             MLflow registered model for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
             
             Links:
-              * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
               * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
               * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{- else -}}
@@ -48,7 +47,6 @@ targets:
             Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
             
             Links:
-              * [Git Repo]($#{var.git_repo_url}): contains ML code for the current project.
               * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
               * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{ end }}
