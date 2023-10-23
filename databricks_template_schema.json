@@ -6,7 +6,7 @@
       "default": "my-mlops-project",
       "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name",
       "pattern": "^[^ .\\/]{3,}$",
-      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \",\", \"/\", \" \" and \".\"."
+      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\"."
     },
     "input_root_dir": {
       "order": 2,
