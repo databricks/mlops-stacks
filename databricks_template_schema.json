@@ -4,7 +4,9 @@
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name"
+      "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name",
+      "pattern": "^[^ .\\/]{3,}$",
+      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \",\", \"/\", \" \" and \".\"."
     },
     "input_root_dir": {
       "order": 2,
@@ -28,13 +30,17 @@
       "order": 5,
       "type": "string",
       "default": "",
-      "description": "\nURL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-staging-workspace.cloud.databricks.com\n"
+      "description": "\nURL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-staging-workspace.cloud.databricks.com\n",
+      "pattern": "^(https.*)?$",
+      "pattern_match_failure_message": "Databricks staging workspace host URLs must start with https. Got invalid workspace host."
     },
     "input_databricks_prod_workspace_host": {
       "order": 6,
       "type": "string",
       "default": "",
-      "description": "\nURL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-prod-workspace.cloud.databricks.com\n"
+      "description": "\nURL of production Databricks workspace. Default: \nAzure - https://adb-xxxx.xx.azuredatabricks.net\nAWS - https://your-prod-workspace.cloud.databricks.com\n",
+      "pattern": "^(https.*)?$",
+      "pattern_match_failure_message": "Databricks production workspace host URLs must start with https. Got invalid workspace host."
     },
     "input_default_branch": {
       "order": 7,
@@ -64,7 +70,9 @@
       "order": 11,
       "type": "string",
       "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name. Default",
-      "default": "my-mlops-project"
+      "default": "my-mlops-project",
+      "pattern": "^[^ .\\/]*$",
+      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\""
     },
     "input_unity_catalog_read_user_group": {
       "order": 12,
