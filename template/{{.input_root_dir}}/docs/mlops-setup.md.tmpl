@@ -80,6 +80,7 @@ to get service principal tokens for staging and prod workspace and follow [Encry
 to add the secrets to GitHub:
 - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
 - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
   {{ end }}
 
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `azure`) }}
@@ -94,6 +95,7 @@ to add the following secrets to GitHub:
 - `STAGING_AZURE_SP_TENANT_ID`
 - `STAGING_AZURE_SP_APPLICATION_ID`
 - `STAGING_AZURE_SP_CLIENT_SECRET`
+Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
   {{ end }}
 
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
