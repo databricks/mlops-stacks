@@ -1,8 +1,5 @@
 # Validate workspace hostname
 {{ define `validation` }}
-    - Validate project name invalid characters
-    {{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` }}
-
     - Validate cicd platform
     {{ if and (eq .input_cloud `aws`) (eq .input_cicd_platform `azure_devops`) -}}
         {{ fail `Azure DevOps is not supported as a cicd_platform option with cloud=aws. If cloud=aws the currently supported cicd_platform is GitHub Actions.` }}
