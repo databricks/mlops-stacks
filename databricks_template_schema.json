@@ -69,7 +69,7 @@
     "input_schema_name": {
       "order": 11,
       "type": "string",
-      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name. Default",
+      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
       "default": "my-mlops-project",
       "pattern": "^[^ .\\/]*$",
       "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\""
