@@ -33,11 +33,6 @@
         {{ fail `Invalid project name. Valid project names must contain at least three alphanumeric characters.` }}
     {{- end -}}
 
-    - Validate cicd platform
-    {{ if and (eq .input_cloud `aws`) (eq .input_cicd_platform `azure_devops`) -}}
-        {{ fail `Azure DevOps is not supported as a cicd_platform option with cloud=aws. If cloud=aws the currently supported cicd_platform is GitHub Actions.` }}
-    {{- end -}}
-
     - Validate schema_name for invalid characters
     {{- if eq .input_include_models_in_unity_catalog `yes` -}}
         {{- if ((regexp `[ ./\\]+`).MatchString .input_schema_name) -}}
