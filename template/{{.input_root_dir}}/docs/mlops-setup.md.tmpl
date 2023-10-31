@@ -129,7 +129,7 @@ git push upstream {{template `default_branch` .}}
 By default, we provide Azure Pipelines where authentication is done using service principals.
 
 #### Requirements:
-- You must be an Azure account admin to add service principals to the account.
+- You must be an account admin to add service principals to the account.
 - You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
   [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
   [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
