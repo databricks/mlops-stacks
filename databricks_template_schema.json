@@ -1,10 +1,11 @@
 {
+  "min_databricks_cli_version": "v0.209.0",
   "properties": {
     "input_project_name": {
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name"
+      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI version v0.209 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md. \n\nProject Name"
     },
     "input_root_dir": {
       "order": 2,
