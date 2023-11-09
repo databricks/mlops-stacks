@@ -116,7 +116,7 @@ Two Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
 
 > Note that these workflows are provided as example CI/CD workflows, and can be easily modified to match your preferred CI/CD order of operations.
 
-Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Azure Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections. Let's add these.
+Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections. Let's add these.
 
 ```
 git add .azure/devops-pipelines/{{template `project_name` .}}-bundle-cicd.yml .azure/devops-pipelines/{{template `project_name` .}}-tests-ci.yml 
@@ -129,7 +129,7 @@ git push upstream {{template `default_branch` .}}
 By default, we provide Azure Pipelines where authentication is done using service principals.
 
 #### Requirements:
-- You must be an Azure account admin to add service principals to the account.
+- You must be an account admin to add service principals to the account.
 - You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
   [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
   [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
@@ -138,6 +138,7 @@ By default, we provide Azure Pipelines where authentication is done using servic
 - Permissions to create Azure DevOps build policies. See the following [prerequisites](https://learn.microsoft.com/azure/devops/repos/git/branch-policies).
 
 #### Steps:
+{{ if (eq .input_cloud `azure`) }}
 1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }}) for details on how to create a service principal.
 1. [Add the staging and production service principals to your Azure Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
 1. Follow ['Get Azure AD tokens for the service principals']({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/api/latest/aad/service-prin-aad-token")) }})
@@ -150,10 +151,22 @@ to get your service principal credentials (tenant id, application id, and client
     - `STAGING_AZURE_SP_TENANT_ID`: tenant ID for the staging service principal
     - `STAGING_AZURE_SP_APPLICATION_ID`: application (client) ID for the staging service principal
     - `STAGING_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
+  {{ end }}
+{{ if (eq .input_cloud `aws`) }}
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
+1. Follow ['Get tokens for the service principals']({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-personal-access-tokens-for-a-service-principal")) }})
+to get your service principal token for both the staging and prod service principals. You will use the token as variables in the project Azure Pipelines.
+1. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these pipelines will use the `{{template `project_name` .}}-tests-ci.yml` script, and the other will use the `{{template `project_name` .}}-bundles-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+1. Create a new variable group called `{{template `project_name` .}} variable group` defining the following secret variables, for more details [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=classic#create-a-variable-group):
+    - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+    - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+  {{ end }}
       - Ensure that the two Azure Pipelines created in the prior step have access to these variables by selecting the name of the pipelines under the 'Pipeline permissions' tab of this variable group.
       - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
 1. Define two [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{template `default_branch` .}}` branch using the two Azure build pipelines created in step 1. This is required so that any PR changes to the `{{template `default_branch` .}}` must build successfully before PRs can complete.
 
+{{ if (eq .input_cloud `azure`) }}
 ### Service connection approach [Recommended in production settings]
 
 #### Requirements:
@@ -196,6 +209,7 @@ The ultimate aim of the service connection approach is to use two separate servi
 
 5. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these Pipelines will use the `{{template `project_name` .}}-tests-ci.yml` script, and the other will use the `{{template `project_name` .}}-bundle-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
 6. Define two build validation branch policies for the `{{template `default_branch` .}}` using the two Azure Pipelines created in step 1. This is required so that any PR changes to the `{{template `default_branch` .}}` must build successfully before PRs can complete.
+  {{ end }}
 {{ end }}
 
 {{- if (eq .input_include_mlflow_recipes `yes`) }}
