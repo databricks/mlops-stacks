@@ -4,9 +4,13 @@ automated model training and batch inference jobs across your dev, staging, and 
 workspaces.
 
 ## Iterating on ML code
-Data scientists can iterate on ML code and file pull requests (PRs), which will trigger unit
-tests and integration tests that run model training code and any other desired
-validation (schema validation, feature testing, etc) in an isolated staging Databricks workspace:
+Data scientists can iterate on ML code and file pull requests (PRs):
+
+<img src="doc-images/mlops-stack-dev.png" style="width: 700px">
+
+This will trigger unit tests and integration tests that run model training 
+code and any other desired validation (schema validation, feature testing, etc) 
+in an isolated staging Databricks workspace:
 
 <img src="doc-images/mlops-stack-pr.png" style="width: 700px">
 
