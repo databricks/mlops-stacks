@@ -5,28 +5,44 @@
 This repo provides a customizable stack for starting new ML projects
 on Databricks that follow production best-practices out of the box.
 
-The default stack in this repo includes three modular components:
+Using Databricks MLOps Stacks, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
+management, with an easy transition to production. You can also use MLOps Stacks as a building block in automation for creating new data science projects with production-grade CI/CD pre-configured.
+
+The default stack in this repo includes three modular components: 
 
 | Component                   | Description                                                                                                                                                           | Why it's useful                                                                                                                                                                         |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                     | Example ML project structure, with unit tested Python modules and notebooks                                                                                           | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
-| ML Resource Configs as Code | ML pipeline resources (training and batch inference jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
-| CI/CD                       | [GitHub Actions](https://github.com/actions) or [Azure DevOps](https://azure.microsoft.com/en-gb/products/devops/) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
-
-
-Your organization can use the default stack as is or customize it as needed, e.g. to add/remove components or
-adapt individual components to fit your organization's best practices. See the
-[stack customization guide](stack-customization.md) for more details.
-
-Using Databricks MLOps Stacks, data scientists can quickly get started iterating on ML code for new projects while ops engineers set up CI/CD and ML service state
-management, with an easy transition to production. You can also use MLOps Stacks as a building block
-in automation for creating new data science projects with production-grade CI/CD pre-configured.
-
-![MLOps Stacks diagram](doc-images/mlops-stacks.png)
+| [ML Code](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/)                     | Example ML project structure ([training](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/training) and [batch inference](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/deployment/batch_inference), etc), with unit tested Python modules and notebooks                                                                                           | Quickly iterate on ML problems, without worrying about refactoring your code into tested modules for productionization later on.                                                        |
+| [ML Resource Configs as Code](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/resources) | ML pipeline resources ([training](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/resources/model-workflow-resource.yml.tmpl) and [batch inference](template/{{.input_root_dir}}/{{template%20`project_name_alphanumeric_underscore`%20.}}/resources/batch-inference-workflow-resource.yml.tmpl) jobs, etc) defined through [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-cli.html)    | Govern, audit, and deploy changes to your ML resources (e.g. "use a larger instance type for automated model retraining") through pull requests, rather than adhoc changes made via UI. |
+| CI/CD([GitHub Actions](template/{{.input_root_dir}}/.github/) or [Azure DevOps](template/{{.input_root_dir}}/.azure/))                       | [GitHub Actions](https://docs.github.com/en/actions) or [Azure DevOps](https://azure.microsoft.com/en-us/products/devops) workflows to test and deploy ML code and resources | Ship ML code faster and with confidence: ensure all production changes are performed through automation and that only tested code is deployed to prod                                   |
 
 See the [FAQ](#FAQ) for questions on common use cases.
 
 ## ML pipeline structure and devloop
+
+An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD workflows to test and deploy automated model training and batch inference jobs across your dev, staging, and prod Databricks workspaces. (##TODO: consider add env naming conventions here)
+
+<img src="doc-images/mlops-stack-summary.png">
+
+Data scientists can iterate on ML code and file pull requests (PRs). This will trigger unit tests and integration tests in an isolated staging Databricks workspace. Model training and batch inference jobs in staging will immediately update to run the latest code when a PR is merged into main. After merging a PR into main, you can cut a new release branch as part of your regularly scheduled release process to promote ML code changes to production.
+
+### ML devloop - develop ML pipelines
+
+(##TODO: add screenrecording 1)
+
+### ML devloop - create a PR and CI
+
+(##TODO: add screenrecording 2)
+
+### ML devloop - merge the PR and deploy to Staging
+
+(##TODO: add screenrecording 3 & 4)
+
+### ML devloop - deploy to Prod
+
+(##TODO: add screenrecording 5)
+
+
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline
 structure defined in the default stack.
 
@@ -42,7 +58,9 @@ Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/dat
 
 [Databricks asset bundles](https://docs.databricks.com/en/dev-tools/bundles/index.html) and [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) are in public preview.
 
-### Starting a new project
+(##TODO: add workspace prep and CICD setup guides)
+
+### Start a new project
 
 To create a new project, run:
 
@@ -74,6 +92,11 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``input_include_mlflow_recipes``: If selected, will provide [MLflow Recipes](https://mlflow.org/docs/latest/recipes.html) stack components, dividing the training pipeline into configurable steps and profiles.
 
 See the generated ``README.md`` for next steps!
+
+## Customize MLOps Stacks
+Your organization can use the default stack as is or customize it as needed, e.g. to add/remove components or
+adapt individual components to fit your organization's best practices. See the
+[stack customization guide](stack-customization.md) for more details.
 
 ## FAQ
 
