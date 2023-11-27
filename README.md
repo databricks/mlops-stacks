@@ -28,19 +28,40 @@ Data scientists can iterate on ML code and file pull requests (PRs). This will t
 
 ### ML devloop - develop ML pipelines
 
-(##TODO: add screenrecording 1)
+
+
+https://github.com/yinxi-db/mlops-stack/assets/80770057/062d1732-4854-482a-b989-2cfcdfc92f6e
+
+
 
 ### ML devloop - create a PR and CI
 
-(##TODO: add screenrecording 2)
+
+
+https://github.com/yinxi-db/mlops-stack/assets/80770057/474d6e4e-42f3-48f1-9950-e25eca9c371e
+
+
 
 ### ML devloop - merge the PR and deploy to Staging
 
-(##TODO: add screenrecording 3 & 4)
+
+
+https://github.com/yinxi-db/mlops-stack/assets/80770057/015338db-8017-4749-93df-531f0524e5e7
+
+
+
+https://github.com/yinxi-db/mlops-stack/assets/80770057/071a821d-b0ee-4cd0-9f5d-01d12120124b
+
+
+
 
 ### ML devloop - deploy to Prod
 
-(##TODO: add screenrecording 5)
+
+
+https://github.com/yinxi-db/mlops-stack/assets/80770057/21cca4d3-127c-4028-9693-766a0a7a8ff9
+
+
 
 
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline
