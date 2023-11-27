@@ -4,18 +4,143 @@ This directory contains an ML project based on the default
 [Databricks MLOps Stacks](https://github.com/databricks/mlops-stacks),
 defining a production-grade ML pipeline for automated retraining and batch inference of an ML model on tabular data.
 
-See the [Project overview](docs/project-overview.md) for details on the ML pipeline and code structure
-in this repo.
+See the full pipeline structure below. The [MLOps Stacks README](https://github.com/databricks/mlops-stacks/blob/main/Pipeline.md)
+contains additional details on how ML pipelines are tested and deployed across each of the dev, staging, prod environments below.
+
+![MLOps Stacks diagram](docs/images/mlops-stack-summary.png)
+
+
+## Code structure
+This project contains the following components:
+
+| Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
+| ML Resource Config as Code | ML pipeline resource config (training and batch inference job schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
+| CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{{ end }}      |
+
+contained in the following files:
+
+```
+{{ template `root_dir` .}}        <- Root directory. Both monorepo and polyrepo are supported.
+│
+├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML resources related to one ML project. 
+│   │
+│   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
+│   │
+│   ├── databricks.yml          <- databricks.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
+│   │
+{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
+│   ├── training                <- Training folder contains Notebook that trains and registers the model.
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Deployment and Batch inference workflows
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+{{ else if (eq .input_include_feature_store `yes`) -}}
+│   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
+│   │
+│   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
+│   │                              The output of these transforms get persisted as Feature Store tables. Most development
+│   │                              work happens here.
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Deployment and Batch inference workflows
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+{{ else -}}
+│   ├── training                <- Folder for model development via MLflow recipes.
+│   │   │
+│   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
+│   │   │                          development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
+│   │   │
+│   │   ├── notebooks           <- Databricks notebook that runs the MLflow recipe, i.e. run the logic in `steps`. Used to
+│   │   │                          drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
+│   │   │                          the notebook.
+│   │   │
+│   │   ├── recipe.yaml         <- The main recipe configuration file that declaratively defines the attributes and behavior
+│   │   │                          of each recipe step, such as the input dataset to use for training a model or the
+│   │   │                          performance criteria for promoting a model to production.
+│   │   │
+│   │   ├── profiles            <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow recipes execution.
+│   │
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Model deployment and endpoint deployment.
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
+│   │
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+{{ end -}}
+│
+{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
+├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows run the notebooks
+                                   under `notebooks` to test and deploy model training code
+{{ else if (eq .input_cicd_platform `azure_devops`) -}}
+├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows run the notebooks
+                                   under `notebooks` to test and deploy model training code
+{{ end -}}
+```
 
 ## Using this repo
-
-##TODO: add screen recording or reprise, start from project overview
 
 The table below links to detailed docs explaining how to use this repo for different use cases.
 
 If you're a data scientist just getting started with this repo for a brand new ML project, we recommend starting with
-the [Project overview](docs/project-overview.md) and
-{{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).
+the {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).
 {{ else }}[ML quickstart](docs/ml-developer-guide.md).{{ end }}
 
 When you're satisfied with initial ML experimentation (e.g. validated that a model with reasonable performance can be
@@ -29,7 +154,6 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 
 | Role                          | Goal                                                                         | Docs                                                                                                                                                                |
 |-------------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| First-time users of this repo | Understand the ML pipeline and code structure in this repo                   | [Project overview](docs/project-overview.md)                                                                                                                        |
 | Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).{{ else }}[ML quickstart](docs/ml-developer-guide.md){{ end }} |
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
 | Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs  | [ML resource config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md)                                                     |
