@@ -79,7 +79,6 @@ Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/dat
 
 [Databricks asset bundles](https://docs.databricks.com/en/dev-tools/bundles/index.html) and [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) are in public preview.
 
-(##TODO: add workspace prep and CICD setup guides)
 
 ### Start a new project
 
