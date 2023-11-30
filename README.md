@@ -20,7 +20,10 @@ See the [FAQ](#FAQ) for questions on common use cases.
 
 ## ML pipeline structure and devloop
 
-An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD workflows to test and deploy automated model training and batch inference jobs across your dev, staging, and prod Databricks workspaces. (##TODO: consider add env naming conventions here)
+An ML solution comprises data, code and models. These assets need to be developed, tested (staging) and deployed (production). In this repository, we use the notion of dev, staging and prod to represent the execution
+environments of each stage. 
+
+An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD workflows to test and deploy automated model training and batch inference jobs across your dev, staging, and prod Databricks workspaces. 
 
 <img src="doc-images/mlops-stack-summary.png">
 
@@ -64,8 +67,7 @@ https://github.com/yinxi-db/mlops-stack/assets/80770057/21cca4d3-127c-4028-9693-
 
 
 
-[See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline
-structure defined in the default stack.
+[See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline structure defined in the default stack. 
 
 ## Using MLOps Stacks
 
