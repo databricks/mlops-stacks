@@ -34,9 +34,9 @@ structure defined in the default stack.
 
 ### Prerequisites
  - Python 3.8+
- - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.209.1
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.210.1
 
-[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.209.1 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.210.1 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 
 Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/databricks-cli-ref.html#install-the-cli) to install and set up databricks CLI. Releases of databricks CLI can be found in the [releases section](https://github.com/databricks/cli/releases) of databricks/cli repository.
 
@@ -93,11 +93,11 @@ to ensure that CI workloads run in staging cannot interfere with production reso
 Yes. Currently, you can instantiate a new project and copy relevant components
 into your existing project to productionize it. MLOps Stacks is modularized, so
 you can e.g. copy just the GitHub Actions workflows under `.github` or ML resource configs
- under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources`` 
+ under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``
 and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml`` into your existing project.
 
 ### Can I adopt individual components of MLOps Stacks?
-For this use case, we recommend instantiating via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) 
+For this use case, we recommend instantiating via [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html)
 and copying the relevant subdirectories. For example, all ML resource configs
 are defined under ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``
 and ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml``, while CI/CD is defined e.g. under `.github`
@@ -112,7 +112,7 @@ for details on how to do this.
 ### Does the MLOps Stacks cover data (ETL) pipelines?
 
 Since MLOps Stacks is based on [databricks CLI bundles](https://docs.databricks.com/dev-tools/cli/bundle-commands.html),
-it's not limited only to ML workflows and assets - it works for assets across the Databricks Lakehouse. For instance, while the existing ML 
+it's not limited only to ML workflows and assets - it works for assets across the Databricks Lakehouse. For instance, while the existing ML
 code samples contain feature engineering, training, model validation, deployment and batch inference workflows,
 you can use it for Delta Live Tables pipelines as well.
 
