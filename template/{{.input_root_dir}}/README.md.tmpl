@@ -41,7 +41,7 @@ contained in the following files:
 │   │   │
 │   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
 │   │   │
-│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │   ├── model_deployment    <- As part of CD workflow, deploy the registered model by assigning it the appropriate alias.
 │   │
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
@@ -70,7 +70,7 @@ contained in the following files:
 │   │   │
 │   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
 │   │   │
-│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │   ├── model_deployment    <- As part of CD workflow, deploy the registered model by assigning it the appropriate alias.
 │   │
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
@@ -127,11 +127,9 @@ contained in the following files:
 {{ end -}}
 │
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows run the notebooks
-                                   under `notebooks` to test and deploy model training code
+├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
-├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows run the notebooks
-                                   under `notebooks` to test and deploy model training code
+├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.
 {{ end -}}
 ```
 
@@ -139,9 +137,12 @@ contained in the following files:
 
 The table below links to detailed docs explaining how to use this repo for different use cases.
 
-If you're a data scientist just getting started with this repo for a brand new ML project, we recommend starting with
+This project comes with example ML code to train, validate and deploy a regression model to predict NYC taxi fares.
+If you're a data scientist just getting started with this repo for a brand new ML project, we recommend 
+adapting the provided example code to your ML problem. Then making and 
+testing ML code changes on Databricks or your local machine. Follow the instructions from
 the {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).
-{{ else }}[ML quickstart](docs/ml-developer-guide.md).{{ end }}
+{{ else }}[ML quickstart](docs/ml-developer-guide.md).{{ end }} 
 
 When you're satisfied with initial ML experimentation (e.g. validated that a model with reasonable performance can be
 trained on your dataset) and ready to deploy production training/inference
@@ -155,9 +156,9 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 | Role                          | Goal                                                                         | Docs                                                                                                                                                                |
 |-------------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).{{ else }}[ML quickstart](docs/ml-developer-guide.md){{ end }} |
+| MLOps / DevOps                | Set up CI/CD for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
 | Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs  | [ML resource config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md)                                                     |
-| MLOps / DevOps                | Set up CI/CD for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 
 ## Monorepo
 
