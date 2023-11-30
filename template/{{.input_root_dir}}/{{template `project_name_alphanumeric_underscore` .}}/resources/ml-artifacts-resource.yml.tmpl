@@ -36,7 +36,7 @@ targets:
         model:
           description: |
             MLflow registered model for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
-            
+
             Links:
               * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
               * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
@@ -45,14 +45,14 @@ targets:
         model:
           comment: |
             Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
-            
+
             Links:
               * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
               * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{ end }}
 
 # Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
-permissions: &permissions
+common_permissions: &permissions
   permissions:
     - level: CAN_READ
       group_name: users
@@ -78,7 +78,7 @@ resources:
       model:
         name: ${var.model_name}
         catalog_name: ${bundle.target}
-        schema_name: {{template `schema_name` .}}     
+        schema_name: {{template `schema_name` .}}
         <<: *grants
         depends_on:
           - resources.jobs.model_training_job.id
