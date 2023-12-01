@@ -72,7 +72,29 @@ for details.
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 {{ end }}
 
-#### Configure SP permissions (#TODO)
+#### Configure SP permissions 
+If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
+For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
+If you want to use different catalog names, please update the targets declared in the [{{template `project_name` .}}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml)
+and [{{template `project_name` .}}/resources/ml-artifacts-resource.yml](../{{template `project_name_alphanumeric_underscore` .}}/resources/ml-artifacts-resource.yml)
+ files. 
+If changing the staging, prod, or test deployment targets, you'll need to update the workflows located in the .github/workflows directory.
+
+The SP must have proper permission in each respective environment and the catalog for the environments.
+
+For the integration test and the ml training job, the SP must have permissions to read the input Delta table and create experiment and models. 
+i.e. for each environment:
+- USE_CATALOG
+- USE_SCHEMA
+- MODIFY
+- CREATE_MODEL
+- CREATE_TABLE.
+
+For the batch inference job, the SP must have permissions to read input Delta table and modify the output Delta table. 
+i.e. for each environment
+- USAGE permissions for the catalog and schema of the input and output table.
+- SELECT permission for the input table.
+- MODIFY permission for the output table if it pre-dates your job.
 
 
 #### Set secrets for CI/CD
