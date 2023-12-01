@@ -72,6 +72,9 @@ for details.
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 {{ end }}
 
+#### Configure SP permissions (#TODO)
+
+
 #### Set secrets for CI/CD
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `aws`) }}
 After creating the service principals and adding them to the respective staging and prod workspaces, follow
