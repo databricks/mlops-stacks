@@ -72,7 +72,7 @@ for details.
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 {{ end }}
 
-#### Configure SP permissions 
+#### Configure Service Principal (SP) permissions 
 If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
 If you want to use different catalog names, please update the targets declared in the [{{template `project_name` .}}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml)
