@@ -11,12 +11,12 @@
 {{ if not (eq .input_release_branch .input_default_branch) -}}
 * [Create release branch](#create-release-branch)
 {{ end -}}
-* [Deploy ML resources and enable production jobs](#deploy-ml-resources-and-enable-production-jobs)
+* [Deploy ML assets and enable production jobs](#deploy-ml-resources-and-enable-production-jobs)
 * [Next steps](#next-steps)
 
 ## Intro
 This page explains how to productionize the current project, setting up CI/CD and
-ML resource deployment, and deploying ML training and inference jobs.
+ML asset deployment, and deploying ML training and inference jobs.
 
 After following this guide, data scientists can follow the [ML Pull Request](ml-pull-request.md) and
 [ML Config](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md)  guides to make changes to ML code or deployed jobs.
@@ -52,7 +52,7 @@ git push upstream {{template `default_branch` .}}
 ### Set up authentication for CI/CD
 #### Set up Service Principal
 {{ if eq .input_cloud `azure` }}
-To authenticate and manage ML resources created by CI/CD, 
+To authenticate and manage ML assets created by CI/CD, 
 [service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }})
 for the project should be created and added to both staging and prod workspaces. Follow
 [Add a service principal to your Azure Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--add-a-service-principal-to-your-azure-databricks-account")) }})
@@ -62,7 +62,7 @@ for details.
 For your convenience, we also have Terraform modules that can be used to [create](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-creation/databricks/latest) or [link](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-linking/databricks/latest) service principals.
 
 {{ else if eq .input_cloud `aws` }}
-To authenticate and manage ML resources created by CI/CD, 
+To authenticate and manage ML assets created by CI/CD, 
 [service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
 for the project should be created and added to both staging and prod workspaces. Follow
 [Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
@@ -277,17 +277,17 @@ git push upstream {{template `release_branch` .}}
 git checkout {{template `default_branch` .}}
 ```
 
-Your production jobs (model training, batch inference) will pull ML code against this branch, while your staging jobs will pull ML code against the `{{template `default_branch` .}}` branch. Note that the `{{template `default_branch` .}}` branch will be the source of truth for ML resource configs and CI/CD workflows.
+Your production jobs (model training, batch inference) will pull ML code against this branch, while your staging jobs will pull ML code against the `{{template `default_branch` .}}` branch. Note that the `{{template `default_branch` .}}` branch will be the source of truth for ML asset configs and CI/CD workflows.
 
 For future ML code changes, iterate against the `{{template `default_branch` .}}` branch and regularly deploy your ML code from staging to production by merging code changes from the `{{template `default_branch` .}}` branch into the `{{template `release_branch` .}}` branch.
 {{ end -}}
 
-## Deploy ML resources and enable production jobs
-Follow the instructions in [{{template `project_name` .}}/resources/README.md](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to deploy ML resources
+## Deploy ML assets and enable production jobs
+Follow the instructions in [{{template `project_name` .}}/resources/README.md](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to deploy ML assets
 and production jobs.
 
 ## Next steps
 After you configure CI/CD and deploy training & inference pipelines, notify data scientists working
 on the current project. They should now be able to follow the
-[ML pull request guide](ml-pull-request.md) and [ML resource config guide](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md)  to propose, test, and deploy
+[ML pull request guide](ml-pull-request.md) and [ML asset config guide](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md)  to propose, test, and deploy
 ML code and pipeline changes to production.

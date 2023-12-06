@@ -34,7 +34,7 @@ resources:
               {{- else -}}output_table_name: ${bundle.target}.{{template `schema_name` .}}.trip_pickup_features{{ end }}
               features_transform_module: pickup_features
               primary_keys: zip
-              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: DropoffFeatures
           job_cluster_key: write_feature_table_job_cluster
@@ -51,7 +51,7 @@ resources:
               {{- else -}}output_table_name: ${bundle.target}.{{template `schema_name` .}}.trip_dropoff_features{{ end }}
               features_transform_module: dropoff_features
               primary_keys: zip
-              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
       schedule:
         quartz_cron_expression: "0 0 7 * * ?" # daily at 7am

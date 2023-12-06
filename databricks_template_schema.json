@@ -51,7 +51,7 @@
       "order": 7,
       "type": "string",
       "default": "main",
-      "description": "\nName of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default"
+      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default"
     },
     "input_release_branch": {
       "order": 8,

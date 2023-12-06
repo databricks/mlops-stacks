@@ -24,7 +24,7 @@ contained in the following files:
 ```
 {{ template `root_dir` .}}        <- Root directory. Both monorepo and polyrepo are supported.
 │
-├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML resources related to one ML project. 
+├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
@@ -46,15 +46,15 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
 {{ else if (eq .input_include_feature_store `yes`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
@@ -75,17 +75,17 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
+│       ├── feature-engineering-workflow-resource.yml  <- ML asset config definition for feature engineering workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
 {{ else -}}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
@@ -115,21 +115,21 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
 │   │
-│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
 {{ end -}}
 │
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.
+├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML assets defined in the `./resources/*` folder with databricks CLI bundles.
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
-├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.
+├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML assets defined in the `./resources/*` folder with databricks CLI bundles.
 {{ end -}}
 ```
 
@@ -150,7 +150,7 @@ pipelines, ask your ops team to follow the [MLOps setup guide](docs/mlops-setup.
 production ML pipelines.
 
 After that, follow the [ML pull request guide](docs/ml-pull-request.md)
-and [ML resource config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
+and [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
 or pipeline resources (e.g. use a larger instance type for model training) via pull request.
 
 | Role                          | Goal                                                                         | Docs                                                                                                                                                                |
@@ -158,7 +158,7 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 | Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).{{ else }}[ML quickstart](docs/ml-developer-guide.md){{ end }} |
 | MLOps / DevOps                | Set up CI/CD for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
-| Data Scientist                | Modify production model ML resources, e.g. model training or inference jobs  | [ML resource config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md)                                                     |
+| Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md)                                                     |
 
 ## Monorepo
 
