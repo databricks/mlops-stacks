@@ -28,7 +28,7 @@ contained in the following files:
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
-│   ├── databricks.yml          <- databricks.yml is the root ML resource config file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
+│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
 {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
