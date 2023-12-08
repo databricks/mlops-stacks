@@ -20,7 +20,7 @@ See the [FAQ](#FAQ) for questions on common use cases.
 
 ## ML pipeline structure and devloop
 
-An ML solution comprises data, code and models. These assets need to be developed, tested (staging) and deployed (production). In this repository, we use the notion of dev, staging and prod to represent the execution
+An ML solution comprises data, code, and models. These assets need to be developed, validated (staging), and deployed (production). In this repository, we use the notion of dev, staging, and prod to represent the execution
 environments of each stage. 
 
 An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD workflows to test and deploy automated model training and batch inference jobs across your dev, staging, and prod Databricks workspaces. 
