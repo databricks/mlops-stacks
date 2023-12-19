@@ -36,6 +36,6 @@ Here's the whole pipeline in one picture:
 
 <img src="doc-images/mlops-stack-summary.png">
 
-For more details on MLOps on Databricks Lakehouse, please read [The Big Book of MLOps: Second Edition](https://www.databricks.com/resources/ebook/the-big-book-of-mlops).
+For more details on MLOps on Databricks Lakehouse, please read [The Big Book of MLOps: Second Edition](https://www.databricks.com/assets/ebook/the-big-book-of-mlops).
 
 [Back to README](README.md)

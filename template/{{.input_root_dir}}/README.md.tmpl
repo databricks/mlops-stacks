@@ -17,7 +17,7 @@ This project contains the following components:
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
 | ML Assets as Code | ML pipeline assets (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
-| CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{{ end }}      |
+| CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and assets {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and assets{{ end }}      |
 
 contained in the following files:
 
@@ -28,7 +28,7 @@ contained in the following files:
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
-│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
+│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and asset config component to be included.
 │   │
 {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
@@ -46,15 +46,15 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
 {{ else if (eq .input_include_feature_store `yes`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
@@ -75,17 +75,17 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── feature-engineering-workflow-resource.yml  <- ML asset config definition for feature engineering workflow
+│       ├── feature-engineering-workflow-asset.yml  <- ML asset config definition for feature engineering workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
 {{ else -}}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
@@ -115,21 +115,21 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
 │   │
-│   ├── resources               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-resource.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-resource.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-resource.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-resource.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
 {{ end -}}
 │
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML assets defined in the `./resources/*` folder with databricks CLI bundles.
+├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
-├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML assets defined in the `./resources/*` folder with databricks CLI bundles.
+├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.
 {{ end -}}
 ```
 
@@ -150,15 +150,15 @@ pipelines, ask your ops team to follow the [MLOps setup guide](docs/mlops-setup.
 production ML pipelines.
 
 After that, follow the [ML pull request guide](docs/ml-pull-request.md)
-and [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
-or pipeline resources (e.g. use a larger instance type for model training) via pull request.
+and [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
+or pipeline assets (e.g. use a larger instance type for model training) via pull request.
 
 | Role                          | Goal                                                                         | Docs                                                                                                                                                                |
 |-------------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).{{ else }}[ML quickstart](docs/ml-developer-guide.md){{ end }} |
 | MLOps / DevOps                | Set up CI/CD for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
-| Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/resources/README.md)                                                     |
+| Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md)                                                     |
 
 ## Monorepo
 

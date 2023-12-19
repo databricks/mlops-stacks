@@ -63,7 +63,7 @@
       "order": 9,
       "type": "string",
       "default": "users",
-      "description": "\nUser group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default"
+      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default"
     },
     "input_include_models_in_unity_catalog": {
       "order": 10,

@@ -31,15 +31,15 @@ targets:
           comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
 
   prod:
-    resources:
+    assets:
       {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
         model:
           description: |
             MLflow registered model for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
             
             Links:
-              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${assets.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${assets.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{- else -}}
         registered_models:
         model:
@@ -47,8 +47,8 @@ targets:
             Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
             
             Links:
-              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
-              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${assets.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${assets.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
       {{ end }}
 
 # Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
@@ -71,8 +71,8 @@ resources:
       name: ${var.model_name}
       <<: *permissions
       depends_on:
-        - resources.jobs.model_training_job.id
-        - resources.jobs.batch_inference_job.id
+        - assets.jobs.model_training_job.id
+        - assets.jobs.batch_inference_job.id
   {{- else -}}
     registered_models:
       model:
@@ -81,8 +81,8 @@ resources:
         schema_name: {{template `schema_name` .}}     
         <<: *grants
         depends_on:
-          - resources.jobs.model_training_job.id
-          - resources.jobs.batch_inference_job.id{{end}}
+          - assets.jobs.model_training_job.id
+          - assets.jobs.batch_inference_job.id{{end}}
 
   experiments:
     experiment:
