@@ -41,7 +41,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - uses: databricks/setup-cli@main
+      - uses: databricks/setup-cli@v0.210.1
       - name: Validate Bundle For Test Deployment Target in Staging Workspace
         id: validate
         run: |

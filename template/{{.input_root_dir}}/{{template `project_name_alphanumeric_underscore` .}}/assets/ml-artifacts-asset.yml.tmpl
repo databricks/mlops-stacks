@@ -52,7 +52,7 @@ targets:
       {{ end }}
 
 # Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
-permissions: &permissions
+common_permissions: &permissions
   permissions:
     - level: CAN_READ
       group_name: users
