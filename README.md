@@ -18,7 +18,7 @@ The default stack in this repo includes three modular components:
 
 See the [FAQ](#FAQ) for questions on common use cases.
 
-## ML pipeline structure and devloop
+## ML pipeline structure and development loops
 
 An ML solution comprises data, code, and models. These assets need to be developed, validated (staging), and deployed (production). In this repository, we use the notion of dev, staging, and prod to represent the execution
 environments of each stage. 
@@ -29,50 +29,46 @@ An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD wor
 
 Data scientists can iterate on ML code and file pull requests (PRs). This will trigger unit tests and integration tests in an isolated staging Databricks workspace. Model training and batch inference jobs in staging will immediately update to run the latest code when a PR is merged into main. After merging a PR into main, you can cut a new release branch as part of your regularly scheduled release process to promote ML code changes to production.
 
-### ML devloop - develop ML pipelines
-
+### Develop ML pipelines
 
 <div align="center">
-    <img src="workflow-examples/mlops_stacks_01_ml_dev.mov">
+    <video width="320" height="240" controls>
+        <source src="workflow-examples/mlops_stacks_01_ml_dev.mov" type="video/mp4">
+    </video>
 </div>
 
 
-### ML devloop - create a PR and CI
-
-
+### Create a PR and CI
 
 <div align="center">
-    <img src="workflow-examples/mlops_stacks_02_create_pr.mov">
+    <video width="320" height="240" controls>
+        <source src="workflow-examples/mlops_stacks_02_create_pr.mov" type="video/mp4">
+    </video>
 </div>
 
 
-
-### ML devloop - merge the PR and deploy to Staging
-
-
+### Merge the PR and deploy to Staging
 
 <div align="center">
-    <img src="workflow-examples/mlops_stacks_03_merge_PR.mov">
+    <video width="320" height="240" controls>
+        <source src="workflow-examples/mlops_stacks_03_merge_PR.mov" type="video/mp4">
+    </video>
+</div>
+
+<div align="center">
+    <video width="320" height="240" controls>
+        <source src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov" type="video/mp4">
+    </video>
 </div>
 
 
+### Deploy to Prod
 
 <div align="center">
-    <img src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov">
+    <video width="320" height="240" controls>
+        <source src="workflow-examples/mlops_stacks_05_release.mov" type="video/mp4">
+    </video>
 </div>
-
-
-
-
-### ML devloop - deploy to Prod
-
-
-
-<div align="center">
-    <img src="workflow-examples/mlops_stacks_05_release.mov">
-</div>
-
-
 
 
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline structure defined in the default stack. 
