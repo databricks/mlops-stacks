@@ -31,44 +31,35 @@ Data scientists can iterate on ML code and file pull requests (PRs). This will t
 
 ### Develop ML pipelines
 
-<div align="center">
-    <video width="320" height="240" controls>
-        <source src="workflow-examples/mlops_stacks_01_ml_dev.mov" type="video/mp4">
-    </video>
-</div>
+<video controls>
+    <source src="workflow-examples/mlops_stacks_01_ml_dev.mov" type="video/mp4">
+</video>
 
 
 ### Create a PR and CI
 
-<div align="center">
-    <video width="320" height="240" controls>
-        <source src="workflow-examples/mlops_stacks_02_create_pr.mov" type="video/mp4">
-    </video>
-</div>
+
+<video controls>
+    <source src="workflow-examples/mlops_stacks_02_create_pr.mov" type="video/mp4">
+</video>
 
 
 ### Merge the PR and deploy to Staging
 
-<div align="center">
-    <video width="320" height="240" controls>
-        <source src="workflow-examples/mlops_stacks_03_merge_PR.mov" type="video/mp4">
-    </video>
-</div>
+<video controls>
+    <source src="workflow-examples/mlops_stacks_03_merge_PR.mov" type="video/mp4">
+</video>
 
-<div align="center">
-    <video width="320" height="240" controls>
-        <source src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov" type="video/mp4">
-    </video>
-</div>
+<video controls>
+    <source src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov" type="video/mp4">
+</video>
 
 
 ### Deploy to Prod
 
-<div align="center">
-    <video width="320" height="240" controls>
-        <source src="workflow-examples/mlops_stacks_05_release.mov" type="video/mp4">
-    </video>
-</div>
+<video controls>
+    <source src="workflow-examples/mlops_stacks_05_release.mov" type="video/mp4">
+</video>
 
 
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline structure defined in the default stack. 
