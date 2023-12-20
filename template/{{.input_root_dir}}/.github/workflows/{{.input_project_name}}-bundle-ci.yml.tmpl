@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
-      - uses: databricks/setup-cli@main
+      - uses: databricks/setup-cli@v0.210.1
       - name: Validate Bundle For Staging
         id: validate
         env:
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
-      - uses: databricks/setup-cli@main
+      - uses: databricks/setup-cli@v0.210.1
       - name: Validate Bundle For Prod
         id: validate
         env:
