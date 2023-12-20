@@ -32,16 +32,18 @@ Data scientists can iterate on ML code and file pull requests (PRs). This will t
 ### ML devloop - develop ML pipelines
 
 
-
-https://github.com/yinxi-db/mlops-stack/assets/80770057/062d1732-4854-482a-b989-2cfcdfc92f6e
-
+<div align="center">
+    <img src="workflow-examples/mlops_stacks_01_ml_dev.mov">
+</div>
 
 
 ### ML devloop - create a PR and CI
 
 
 
-https://github.com/yinxi-db/mlops-stack/assets/80770057/474d6e4e-42f3-48f1-9950-e25eca9c371e
+<div align="center">
+    <img src="workflow-examples/mlops_stacks_02_create_pr.mov">
+</div>
 
 
 
@@ -49,11 +51,15 @@ https://github.com/yinxi-db/mlops-stack/assets/80770057/474d6e4e-42f3-48f1-9950-
 
 
 
-https://github.com/yinxi-db/mlops-stack/assets/80770057/015338db-8017-4749-93df-531f0524e5e7
+<div align="center">
+    <img src="workflow-examples/mlops_stacks_03_merge_PR.mov">
+</div>
 
 
 
-https://github.com/yinxi-db/mlops-stack/assets/80770057/071a821d-b0ee-4cd0-9f5d-01d12120124b
+<div align="center">
+    <img src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov">
+</div>
 
 
 
@@ -62,7 +68,9 @@ https://github.com/yinxi-db/mlops-stack/assets/80770057/071a821d-b0ee-4cd0-9f5d-
 
 
 
-https://github.com/yinxi-db/mlops-stack/assets/80770057/21cca4d3-127c-4028-9693-766a0a7a8ff9
+<div align="center">
+    <img src="workflow-examples/mlops_stacks_05_release.mov">
+</div>
 
 
 

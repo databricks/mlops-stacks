@@ -1,4 +1,4 @@
-# Databricks ML asset Configurations
+# Databricks ML Resource Configurations
 [(back to main README)](../../README.md)
 
 ## Table of contents
@@ -18,7 +18,7 @@ The bundle setting file must be expressed in YAML format and must contain at min
 The databricks CLI bundles top level is defined by file `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml`.
 During databricks CLI bundles deployment, the root config file will be loaded, validated and deployed to workspace provided by the environment together with all the included assets.
 
-ML asset Configurations in this directory:
+ML Resource Configurations in this directory:
  - model workflow (`{{template `project_name_alphanumeric_underscore` .}}/assets/model-workflow-asset.yml`)
  - batch inference workflow (`{{template `project_name_alphanumeric_underscore` .}}/assets/batch-inference-workflow-asset.yml`)
  - monitoring workflow (`{{template `project_name_alphanumeric_underscore` .}}/assets/monitoring-workflow-asset.yml`)
