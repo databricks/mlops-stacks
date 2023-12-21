@@ -1,0 +1,45 @@
+new_cluster: &new_cluster
+  new_cluster:
+    num_workers: 3
+    spark_version: 13.3.x-cpu-ml-scala2.12
+    node_type_id: {{template `cloud_specific_node_type_id` .}}
+    custom_tags:
+      clusterSource: mlops-stack/0.2
+
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+resources:
+  jobs:
+    batch_inference_job:
+      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
+      tasks:
+        - task_key: batch_inference_job
+          <<: *new_cluster
+          notebook_task:
+            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
+            base_parameters:
+              env: ${bundle.target}
+              {{ if (eq .input_include_feature_store `yes`) }}{{ if (eq .input_include_models_in_unity_catalog `yes`) }}input_table_name: ${bundle.target}.{{template `schema_name` .}}.feature_store_inference_input  # TODO: create input table for inference
+              {{- else -}}input_table_name: hive_metastore.default.taxi_scoring_sample_feature_store_inference_input{{ end }}
+              {{- else -}}input_table_name: taxi_scoring_sample  # TODO: create input table for inference{{ end }}
+              {{ if (eq .input_include_models_in_unity_catalog `no`) }}output_table_name: ${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_predictions
+              {{- else -}}output_table_name: ${bundle.target}.{{template `schema_name` .}}.predictions{{ end }}
+              {{ if (eq .input_include_models_in_unity_catalog `no`) }}model_name: ${var.model_name}
+              {{- else -}}model_name: ${bundle.target}.{{template `schema_name` .}}.${var.model_name}{{ end }}
+              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+
+      schedule:
+        quartz_cron_expression: "0 0 11 * * ?" # daily at 11am
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

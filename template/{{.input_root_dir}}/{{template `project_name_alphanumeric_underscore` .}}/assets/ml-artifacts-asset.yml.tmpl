@@ -1,0 +1,91 @@
+# Deployment target specific values
+targets:
+  dev:
+    resources:
+      {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
+        model:
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
+      {{- else -}}
+        registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+
+  test:
+    resources:
+      {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
+        model:
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
+      {{- else -}}
+        registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+
+  staging:
+    resources:
+      {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
+        model:
+          description: MLflow registered model for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.
+      {{- else -}}
+        registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project for ${bundle.target} deployment target.{{end}}
+
+  prod:
+    resources:
+      {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
+        model:
+          description: |
+            MLflow registered model for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
+
+            Links:
+              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+      {{- else -}}
+        registered_models:
+        model:
+          comment: |
+            Registered model in Unity Catalog for the "{{template `project_name` .}}" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
+
+            Links:
+              * [Recurring model training job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job]({{template `databricks_prod_workspace_host` .}}#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+      {{ end }}
+
+# Allow users to read the experiment {{ if (eq .input_include_models_in_unity_catalog `no`) }}and the model{{end}}
+common_permissions: &permissions
+  permissions:
+    - level: CAN_READ
+      group_name: users
+
+{{ if (eq .input_include_models_in_unity_catalog `yes`) }}# Allow users to execute models in Unity Catalog
+grants: &grants
+  grants:
+    - privileges:
+        - EXECUTE
+      principal: {{template `unity_catalog_read_user_group` .}}{{end}}
+
+# Defines model and experiments
+resources:
+  {{ if (eq .input_include_models_in_unity_catalog `no`) }}models:
+    model:
+      name: ${var.model_name}
+      <<: *permissions
+      depends_on:
+        - resources.jobs.model_training_job.id
+        - resources.jobs.batch_inference_job.id
+  {{- else -}}
+    registered_models:
+      model:
+        name: ${var.model_name}
+        catalog_name: ${bundle.target}
+        schema_name: {{template `schema_name` .}}
+        <<: *grants
+        depends_on:
+          - resources.jobs.model_training_job.id
+          - resources.jobs.batch_inference_job.id{{end}}
+
+  experiments:
+    experiment:
+      name: ${var.experiment_name}
+      <<: *permissions
+      description: MLflow Experiment used to track runs for {{template `project_name` .}} project.

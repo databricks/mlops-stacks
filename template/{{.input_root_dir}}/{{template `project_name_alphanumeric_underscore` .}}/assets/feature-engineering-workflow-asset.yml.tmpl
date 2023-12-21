@@ -1,0 +1,66 @@
+new_cluster: &new_cluster
+  new_cluster:
+    num_workers: 3
+    spark_version: 13.3.x-cpu-ml-scala2.12
+    node_type_id: {{template `cloud_specific_node_type_id` .}}
+    custom_tags:
+      clusterSource: mlops-stack/0.2
+
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+resources:
+  jobs:
+    write_feature_table_job:
+      name: ${bundle.target}-{{template `project_name` .}}-write-feature-table-job
+      job_clusters:
+        - job_cluster_key: write_feature_table_job_cluster
+          <<: *new_cluster
+      tasks:
+        - task_key: PickupFeatures
+          job_cluster_key: write_feature_table_job_cluster
+          notebook_task:
+            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            base_parameters:
+              # TODO modify these arguments to reflect your setup.
+              input_table_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
+              # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.
+              input_start_date: ""
+              input_end_date: ""
+              timestamp_column: tpep_pickup_datetime
+              {{ if (eq .input_include_models_in_unity_catalog `no`) }}output_table_name: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
+              {{- else -}}output_table_name: ${bundle.target}.{{template `schema_name` .}}.trip_pickup_features{{ end }}
+              features_transform_module: pickup_features
+              primary_keys: zip
+              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+        - task_key: DropoffFeatures
+          job_cluster_key: write_feature_table_job_cluster
+          notebook_task:
+            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            base_parameters:
+              # TODO: modify these arguments to reflect your setup.
+              input_table_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
+              # TODO: Empty start/end dates will process the whole range. Update this as needed to process recent data.
+              input_start_date: ""
+              input_end_date: ""
+              timestamp_column: tpep_dropoff_datetime
+              {{ if (eq .input_include_models_in_unity_catalog `no`) }}output_table_name: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
+              {{- else -}}output_table_name: ${bundle.target}.{{template `schema_name` .}}.trip_dropoff_features{{ end }}
+              features_transform_module: dropoff_features
+              primary_keys: zip
+              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+      schedule:
+        quartz_cron_expression: "0 0 7 * * ?" # daily at 7am
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

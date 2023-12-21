@@ -3,21 +3,12 @@
 [(back to main README)](../README.md)
 
 ## Table of contents
-* [Initial setup](#initial-setup): adapting the provided example code to your ML problem 
+* [Configure your ML pipeline](#configure-your-ml-pipeline): making and testing ML code changes on Databricks or your local machine.
 * [Iterating on ML code](#iterating-on-ml-code): making and testing ML code changes on Databricks or your local machine.
 * [Next steps](#next-steps)
 
-## Initial setup
-This project comes with [sample ML code]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/workflow-overview-and-notebook.html#example-notebook")) }})
-that illustrates the use of Feature Store to create a model that predicts NYC Yellow Taxi fares.
 
-The subsequent sections explain how to adapt the sample code to your ML problem and quickly get
-started iterating on feature engineering and model training code.
-
-When you're ready  to productionize your ML project, ask your ops team to set up CI/CD and deploy
-production jobs per the [MLOps setup guide](mlops-setup.md).
-
-### Configure your ML pipeline
+## Configure your ML pipeline
 
 The sample ML code consists of the following:
 
@@ -36,17 +27,17 @@ See the example modules' documentation for more information.
 To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
 the feature engineering pipelines.
 1. Implement your feature module, address TODOs in `{{template `project_name_alphanumeric_underscore` .}}/feature_engineering/features` and create unit test in `{{template `project_name_alphanumeric_underscore` .}}/tests/feature_engineering`
-2. Update `{{template `project_name_alphanumeric_underscore` .}}/resources/feature-engineering-workflow-resource.yml`. Fill in notebook parameters for `write_feature_table_job`.
-3. Update training data path in `{{template `project_name_alphanumeric_underscore` .}}/resources/model-workflow-resource.yml`.
+2. Update `{{template `project_name_alphanumeric_underscore` .}}/assets/feature-engineering-workflow-asset.yml`. Fill in notebook parameters for `write_feature_table_job`.
+3. Update training data path in `{{template `project_name_alphanumeric_underscore` .}}/assets/model-workflow-asset.yml`.
 
 We expect most of the development to take place in the `{{template `project_name_alphanumeric_underscore` .}}/feature_engineering` folder.
 
 ## Iterating on ML code
 
-### Deploy ML code and resources to dev workspace using Bundles
+### Deploy ML code and assets to dev workspace using Bundles
 
-Refer to [Local development and dev workspace](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md#local-development-and-dev-workspace)
-to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace.
+Refer to [Local development and dev workspace](../{{template `project_name_alphanumeric_underscore` .}}/assets/README.md#local-development-and-dev-workspace)
+to use databricks CLI bundles to deploy ML code together with ML asset configs to dev workspace.
 
 ### Develop on Databricks using Databricks Repos
 
