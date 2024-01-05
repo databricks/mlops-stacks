@@ -30,36 +30,21 @@ An instantiated project from MLOps Stacks contains an ML pipeline with CI/CD wor
 Data scientists can iterate on ML code and file pull requests (PRs). This will trigger unit tests and integration tests in an isolated staging Databricks workspace. Model training and batch inference jobs in staging will immediately update to run the latest code when a PR is merged into main. After merging a PR into main, you can cut a new release branch as part of your regularly scheduled release process to promote ML code changes to production.
 
 ### Develop ML pipelines
-
-<video controls>
-    <source src="workflow-examples/mlops_stacks_01_ml_dev.mov" type="video/mp4">
-</video>
+https://github.com/databricks/mlops-stacks/assets/87999496/00eed790-70f4-4428-9f18-71771051f92a
 
 
 ### Create a PR and CI
-
-
-<video controls>
-    <source src="workflow-examples/mlops_stacks_02_create_pr.mov" type="video/mp4">
-</video>
+https://github.com/databricks/mlops-stacks/assets/87999496/f5b3c82d-77a5-4ee5-85f5-8f00b026ae05
 
 
 ### Merge the PR and deploy to Staging
+https://github.com/databricks/mlops-stacks/assets/87999496/7239e4d0-2327-4d30-91cc-5e7f8328ef73
 
-<video controls>
-    <source src="workflow-examples/mlops_stacks_03_merge_PR.mov" type="video/mp4">
-</video>
-
-<video controls>
-    <source src="workflow-examples/mlops_stacks_04_deploy_to_staging.mov" type="video/mp4">
-</video>
+https://github.com/databricks/mlops-stacks/assets/87999496/013c0d32-c283-494b-8c3f-2a9a60366207
 
 
 ### Deploy to Prod
-
-<video controls>
-    <source src="workflow-examples/mlops_stacks_05_release.mov" type="video/mp4">
-</video>
+https://github.com/databricks/mlops-stacks/assets/87999496/0d220d55-465e-4a69-bd83-1e66ad2e8464
 
 
 [See this page](Pipeline.md) for detailed description and diagrams of the ML pipeline structure defined in the default stack. 
