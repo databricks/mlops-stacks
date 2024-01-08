@@ -1,12 +1,12 @@
 {
   "welcome_message": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.",
-  "min_databricks_cli_version": "v0.209.1",
+  "min_databricks_cli_version": "v0.210.1",
   "properties": {
     "input_project_name": {
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI versions v0.209 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}\nProject Name",
+      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI versions v0.210 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}\nProject Name",
       "pattern": "^[^ .\\\\/]{3,}$",
       "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\"."
 
@@ -51,7 +51,7 @@
       "order": 7,
       "type": "string",
       "default": "main",
-      "description": "\nName of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default"
+      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default"
     },
     "input_release_branch": {
       "order": 8,
@@ -63,7 +63,7 @@
       "order": 9,
       "type": "string",
       "default": "users",
-      "description": "\nUser group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default"
+      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default"
     },
     "input_include_models_in_unity_catalog": {
       "order": 10,

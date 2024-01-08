@@ -1,5 +1,5 @@
-# This GitHub workflow validates Bundle config (ML resource config and more)
-# defined under {{template `project_name_alphanumeric_underscore` .}}/resources/*
+# This GitHub workflow validates Bundle config (ML asset config and more)
+# defined under {{template `project_name_alphanumeric_underscore` .}}/assets/*
 # and {{template `project_name_alphanumeric_underscore` .}}/databricks.yml, when PRs are merged into the main branch
 name: Bundle validation for {{template `project_name` .}}
 
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
-      - uses: databricks/setup-cli@main
+      - uses: databricks/setup-cli@v0.210.1
       - name: Validate Bundle For Staging
         id: validate
         env:
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
-      - uses: databricks/setup-cli@main
+      - uses: databricks/setup-cli@v0.210.1
       - name: Validate Bundle For Prod
         id: validate
         env:

@@ -12,7 +12,7 @@ This folder contains example ML code to train a regression model to predict NYC 
 [MLflow recipes](https://mlflow.org/docs/latest/recipes.html).
 
 **Note**: MLflow Recipes currently supports regression and classification problems. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
-CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks  under `notebooks` 
+CI/CD and ML asset configs to build production ML pipelines, as long as you provide ML notebooks  under `notebooks` 
 directory of the corresponding component, for example, model training notebooks in `{{template `project_name_alphanumeric_underscore` .}}/training/notebooks`, 
 batch inference notebook in `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks`.
 See code comments in files under `notebooks` for the expected interface & behavior of these notebooks.
@@ -41,10 +41,10 @@ We expect most development to take place in the abovementioned YAML config files
 
 ## Iterating on ML code
 
-### Deploy ML code and resources to dev workspace using Bundles
+### Deploy ML code and assets to dev workspace using Bundles
 
-Refer to [Local development and dev workspace](../resources/README.md#local-development-and-dev-workspace)
-to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace. 
+Refer to [Local development and dev workspace](../assets/README.md#local-development-and-dev-workspace)
+to use databricks CLI bundles to deploy ML code together with ML asset configs to dev workspace. 
 
 ### Develop on Databricks using Databricks Repos
 
