@@ -87,7 +87,7 @@ resources:
               # The string name of a column from data that contains evaluation labels.
               # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: targets
-              targets: mean_squared_error{{ end }}
+              targets: fare_amount{{ end }}
               # Specifies the name of the function in {{template `project_name` .}}/training_validation_deployment/validation/validation.py that returns custom metrics.
               # TODO(optional): custom_metrics_loader_function
               custom_metrics_loader_function: custom_metrics

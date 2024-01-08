@@ -131,6 +131,7 @@ from mlflow.tracking.client import MlflowClient
 client = MlflowClient()
 {{else}}
 client = MlflowClient(registry_uri="databricks-uc")
+mlflow.set_registry_uri('databricks-uc')
 {{ end }}
 # set experiment
 experiment_name = dbutils.widgets.get("experiment_name")
