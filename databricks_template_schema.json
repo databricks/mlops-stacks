@@ -1,12 +1,12 @@
 {
   "welcome_message": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.",
-  "min_databricks_cli_version": "v0.210.1",
+  "min_databricks_cli_version": "v0.211.0",
   "properties": {
     "input_project_name": {
       "order": 1,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI versions v0.210 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}\nProject Name",
+      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI versions v0.211 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}\nProject Name",
       "pattern": "^[^ .\\\\/]{3,}$",
       "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\"."
 
@@ -78,13 +78,27 @@
       "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
       "default": "my-mlops-project",
       "pattern": "^[^ .\\/]*$",
-      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\""
+      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\"",
+      "skip_prompt_if": {
+        "properties": {
+          "input_include_models_in_unity_catalog": {
+            "const": "no"
+          }
+        }
+      }
     },
     "input_unity_catalog_read_user_group": {
       "order": 12,
       "type": "string",
       "default": "account users",
-      "description": "\nUser group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in the Unity Catalog that the staging and prod workspaces can access. Default"
+      "description": "\nUser group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in the Unity Catalog that the staging and prod workspaces can access. Default",
+      "skip_prompt_if": {
+        "properties": {
+          "input_include_models_in_unity_catalog": {
+            "const": "no"
+          }
+        }
+      }
     },
     "input_include_feature_store": {
       "order": 13,
@@ -98,7 +112,14 @@
       "type": "string",
       "description": "\nWhether to include MLflow Recipes",
       "default": "no",
-      "enum": ["no", "yes"]
+      "enum": ["no", "yes"],
+      "skip_prompt_if": {
+        "properties": {
+          "input_include_models_in_unity_catalog": {
+            "const": "yes"
+          }
+        }
+      }
     }
   },
   "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.input_project_name}}' directory!\n\nPlease refer to the README.md of your project for further instructions on getting started."
