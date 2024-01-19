@@ -50,7 +50,7 @@ The model training notebook uses these Feature Store tables as inputs to train, 
 {{end}}. 
 The fitted model along with its metrics and params will also be logged to an MLflow run. 
 To debug failed integration test runs, click into the Databricks job run
-URL printed in the test logs. The executed notebook of the job run will contain a link to the MLflow model training run. You can also use the Experiments page of the workspace
+URL printed in the test logs. The executed notebook of the job run will contain a link to the MLflow model training run, which you can use with the Experiments page in the workspace
 to view training metrics or fetch and debug the model as needed.
 {{- else }}
 The integration test runs the model training notebook in the staging workspace, training, validating,
