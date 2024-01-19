@@ -55,7 +55,7 @@ to view training metrics or fetch and debug the model as needed.
 {{- else }}
 The integration test runs the model training notebook in the staging workspace, training, validating,
 and registering a new model version in 
-{{ if (eq .input_include_models_in_unity_catalog `no`) }} workspace model registry
+{{ if (eq .input_include_models_in_unity_catalog `no`) }} the workspace model registry
 {{- else -}} UC
 {{end}}.
 The fitted model along with its metrics and params
