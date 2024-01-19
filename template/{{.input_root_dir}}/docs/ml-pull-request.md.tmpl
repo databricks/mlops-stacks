@@ -45,7 +45,7 @@ to address any test failures.
 The integration test runs the feature engineering and model training notebooks as a multi-task Databricks Job in the staging workspace.
 It reads input data, performs feature transforms, and writes outputs to Feature Store tables in the staging workspace. 
 The model training notebook uses these Feature Store tables as inputs to train, validate and register a new model version in 
-{{ if (eq .input_include_models_in_unity_catalog `no`) }} workspace model registry
+{{ if (eq .input_include_models_in_unity_catalog `no`) }} the workspace model registry
 {{- else -}} UC
 {{end}}. 
 The fitted model along with its metrics and params will also be logged to an MLflow run. 
