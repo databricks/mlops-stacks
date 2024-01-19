@@ -34,7 +34,7 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a  
 {{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}} 
-[workflow](../.github/workflows/{{template `project_name` .}}-run-tests{{ if (eq .input_include_feature_store `yes`) }}-fs{{ end }}.yml)
+ [workflow](../.github/workflows/{{template `project_name` .}}-run-tests{{ if (eq .input_include_feature_store `yes`) }}-fs{{ end }}.yml)
 {{- else if (eq .input_cicd_platform `azure_devops`) -}}
 [Azure DevOps Pipeline](../.azure/devops-pipelines/{{template `project_name` .}}-tests-ci.yml)
 {{ end }} 
@@ -44,21 +44,24 @@ to address any test failures.
 {{ if (eq .input_include_feature_store `yes`) }}
 The integration test runs the feature engineering and model training notebooks as a multi-task Databricks Job in the staging workspace.
 It reads input data, performs feature transforms, and writes outputs to Feature Store tables in the staging workspace. 
-The model training notebook uses these Feature Store tables as inputs to train, validate and register a new model version in the model registry. 
+The model training notebook uses these Feature Store tables as inputs to train, validate and register a new model version in 
+{{ if (eq .input_include_models_in_unity_catalog `no`) }} the workspace model registry
+{{- else -}} UC
+{{end}}. 
 The fitted model along with its metrics and params will also be logged to an MLflow run. 
 To debug failed integration test runs, click into the Databricks job run
-URL printed in the test logs. The job run page will contain a link to the MLflow model training run, which you can use
+URL printed in the test logs. The executed notebook of the job run will contain a link to the MLflow model training run, which you can use with the Experiments page in the workspace
 to view training metrics or fetch and debug the model as needed.
 {{- else }}
 The integration test runs the model training notebook in the staging workspace, training, validating,
-and registering a new model version in the model registry. The fitted model along with its metrics and params
+and registering a new model version in 
+{{ if (eq .input_include_models_in_unity_catalog `no`) }} the workspace model registry
+{{- else -}} UC
+{{end}}.
+The fitted model along with its metrics and params
 will also be logged to an MLflow run. To debug failed integration test runs, click into the Databricks job run
-URL printed in the test logs. The job run page will contain a link to the MLflow model training run:
-
-![Link to MLFlow Run](images/MLFlowRunLink.png)
-
-Click the MLflow run link to view training metrics or fetch and debug the model as needed.
-
+URL printed in the test logs. The executed notebook of the job run will contain a link to the MLflow model training run. You can also use the Experiments page in the workspace
+to view training metrics or fetch and debug the model as needed.
 {{ end }}
 
 ## Merging your pull request
@@ -81,8 +84,13 @@ jobs in staging and production will automatically use your updated ML code.
 {{- end }}
 
 You can track the state of the ML pipelines for the current project from the MLflow registered model UI. Links:
-* [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}#mlflow/models/staging-{{template `model_name` .}})
-* [Prod workspace registered model]({{template `databricks_prod_workspace_host` .}}#mlflow/models/prod-{{template `model_name` .}})
+{{ if (eq .input_include_models_in_unity_catalog `no`) }}
+* [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}/ml/models/staging-{{template `model_name` .}})
+* [Prod workspace registered model]({{template `databricks_prod_workspace_host` .}}/ml/models/prod-{{template `model_name` .}})
+{{- else -}} 
+* [Staging model in UC]({{template `databricks_staging_workspace_host` .}}/explore/data/models/staging/{{template `project_name` .}}/{{template `model_name` .}})
+* [Prod model in UC]({{template `databricks_prod_workspace_host` .}}/explore/data/models/prod/{{template `project_name` .}}/{{template `model_name` .}})
+{{end}}. 
 
 In both the staging and prod workspaces, the MLflow registered model contains links to:
 * The model versions produced through automated retraining
