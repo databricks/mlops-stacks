@@ -12,8 +12,10 @@
         azure
     {{- else if eq .input_cloud `aws` -}}
         aws
+    {{- else if eq .input_cloud `gcp` -}}
+        gcp
     {{- else -}}
-        {{ fail `Invalid selection of cloud. Please choose from [azure, aws]` }}
+        {{ fail `Invalid selection of cloud. Please choose from [azure, aws, gcp]` }}
     {{- end -}}
 {{- end}}
 
@@ -37,6 +39,8 @@
             https://adb-xxxx.xx.azuredatabricks.net
         {{- else if eq .input_cloud `aws` -}}
             https://your-prod-workspace.cloud.databricks.com
+        {{- else if eq .input_cloud `gcp` -}}
+            https://your-prod-workspace.cloud.databricks.com
         {{- end -}}
     {{- end -}}
 {{- end }}
@@ -48,6 +52,8 @@
         {{- if eq .input_cloud `azure` -}}
             https://adb-xxxx.xx.azuredatabricks.net
         {{- else if eq .input_cloud `aws` -}}
+            https://your-staging-workspace.cloud.databricks.com
+        {{- else if eq .input_cloud `gcp` -}}
             https://your-staging-workspace.cloud.databricks.com
         {{- end -}}
     {{- end -}}
@@ -63,6 +69,8 @@
             https://adb-xxxx.xx.azuredatabricks.net
         {{- else if eq .input_cloud `aws` -}}
             https://your-prod-workspace.cloud.databricks.com
+        {{- else if eq .input_cloud `gcp` -}}
+            https://your-prod-workspace.cloud.databricks.com
         {{- end -}}
     {{- end -}}
 {{- end }}
@@ -76,6 +84,8 @@
         {{- if eq .input_cloud `azure` -}}
             https://adb-xxxx.xx.azuredatabricks.net
         {{- else if eq .input_cloud `aws` -}}
+            https://your-staging-workspace.cloud.databricks.com
+        {{- else if eq .input_cloud `gcp` -}}
             https://your-staging-workspace.cloud.databricks.com
         {{- end -}}
     {{- end -}}
@@ -144,6 +154,8 @@
         i3.xlarge
     {{- else if (eq .input_cloud `azure`) -}}
         Standard_D3_v2
+    {{- else if (eq .input_cloud `gcp`) -}}
+        n2-highmem-4
     {{- else -}}
         {{ fail `Unknown cloud platform` }}
     {{- end -}}

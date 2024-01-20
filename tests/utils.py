@@ -30,10 +30,16 @@ AWS_DEFAULT_PARAMS = {
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
 
+GCP_DEFAULT_PARAMS = {
+    **AZURE_DEFAULT_PARAMS,
+    "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
+    "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
+}
+
 
 def parametrize_by_cloud(fn):
     @wraps(fn)
-    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure", "gcp"])
     def wrapper(*args, **kwargs):
         return fn(*args, **kwargs)
 
@@ -44,6 +50,10 @@ def parametrize_by_project_generation_params(fn):
     @pytest.mark.parametrize(
         "cloud,cicd_platform,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
         [
+            ("gcp", "github_actions", "no", "no", "no"),
+            ("gcp", "github_actions", "no", "no", "yes"),
+            ("gcp", "github_actions", "no", "yes", "no"),
+            ("gcp", "github_actions", "yes", "no", "no"),
             ("aws", "github_actions", "no", "no", "no"),
             ("aws", "github_actions", "no", "no", "yes"),
             ("aws", "github_actions", "no", "yes", "no"),
@@ -155,7 +165,7 @@ def generate(directory, databricks_cli, context):
     params = {
         **(
             AWS_DEFAULT_PARAMS
-            if context.get("input_cloud") == "aws"
+            if (context.get("input_cloud") == "aws") | (context.get("input_cloud") == "gcp")
             else AZURE_DEFAULT_PARAMS
         ),
         **context,

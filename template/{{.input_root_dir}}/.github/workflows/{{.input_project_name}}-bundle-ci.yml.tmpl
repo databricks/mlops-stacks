@@ -15,6 +15,9 @@ env:
   {{ if (eq .input_cloud `aws`) -}}
   STAGING_WORKSPACE_TOKEN: {{`${{ secrets.STAGING_WORKSPACE_TOKEN }}`}}
   PROD_WORKSPACE_TOKEN: {{`${{ secrets.PROD_WORKSPACE_TOKEN }}`}}
+  {{- else if (eq .input_cloud `gcp`) -}}
+  STAGING_WORKSPACE_TOKEN: {{`${{ secrets.STAGING_WORKSPACE_TOKEN }}`}}
+  PROD_WORKSPACE_TOKEN: {{`${{ secrets.PROD_WORKSPACE_TOKEN }}`}}
   {{- else if (eq .input_cloud `azure`) -}}
   STAGING_ARM_TENANT_ID: {{`${{ secrets.STAGING_AZURE_SP_TENANT_ID }}`}}
   STAGING_ARM_CLIENT_ID: {{`${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}`}}
@@ -37,6 +40,8 @@ jobs:
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
+          DATABRICKS_TOKEN: {{`${{ env.STAGING_WORKSPACE_TOKEN }}`}}
+          {{- else if (eq .input_cloud `gcp`) -}}
           DATABRICKS_TOKEN: {{`${{ env.STAGING_WORKSPACE_TOKEN }}`}}
           {{- else if (eq .input_cloud `azure`) -}}
           ARM_TENANT_ID: {{`${{ env.STAGING_ARM_TENANT_ID }}`}}
@@ -81,6 +86,8 @@ jobs:
         id: validate
         env:
           {{ if (eq .input_cloud `aws`) -}}
+          DATABRICKS_TOKEN: {{`${{ env.PROD_WORKSPACE_TOKEN }}`}}
+          {{- else if (eq .input_cloud `gcp`) -}}
           DATABRICKS_TOKEN: {{`${{ env.PROD_WORKSPACE_TOKEN }}`}}
           {{- else if (eq .input_cloud `azure`) -}}
           ARM_TENANT_ID: {{`${{ env.PROD_ARM_TENANT_ID }}`}}

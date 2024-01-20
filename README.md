@@ -71,7 +71,7 @@ To create a new project, run:
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``input_project_name``: name of the current project
  * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
- * ``input_cloud``: Cloud provider you use with Databricks (AWS or Azure), note GCP is not supported at this time.
+ * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP).
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
 
 Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
@@ -208,4 +208,11 @@ To create an example AWS project, using GitHub Actions for CI/CD, run:
 # Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
 MLOPS_STACKS_PATH=~/mlops-stacks
 databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/aws/aws-github.json"
+```
+
+To create an example GCP project, using GitHub Actions for CI/CD, run:
+```
+# Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
+MLOPS_STACKS_PATH=~/mlops-stacks
+databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/gcp/gcp-github.json"
 ```
