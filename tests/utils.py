@@ -53,6 +53,7 @@ def parametrize_by_project_generation_params(fn):
         "cicd_platform",
         [
 <<<<<<< HEAD
+<<<<<<< HEAD
             ("gcp", "github_actions", "no", "no", "no"),
             ("gcp", "github_actions", "no", "no", "yes"),
             ("gcp", "github_actions", "no", "yes", "no"),
@@ -96,6 +97,8 @@ def parametrize_by_project_generation_params(fn):
             ("azure", "azure_devops", "no", "yes", "no"),
             ("azure", "azure_devops", "yes", "no", "no"),
 =======
+=======
+>>>>>>> 0ac7409 (adding gcp in testing)
             "github_actions",
             "github_actions_for_github_enterprise_servers",
             "azure_devops",
@@ -115,7 +118,54 @@ def parametrize_by_project_generation_params(fn):
             ("Project_Only", "yes", "no", "no"),
             ("Project_Only", "yes", "no", "yes"),
             ("CICD_Only", "no", "no", "no"),
+<<<<<<< HEAD
 >>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
+=======
+=======
+            ("gcp", "github_actions", "no", "no", "no"),
+            ("gcp", "github_actions", "no", "no", "yes"),
+            ("gcp", "github_actions", "no", "yes", "no"),
+            ("gcp", "github_actions", "yes", "no", "no"),
+            ("aws", "github_actions", "no", "no", "no"),
+            ("aws", "github_actions", "no", "no", "yes"),
+            ("aws", "github_actions", "no", "yes", "no"),
+            ("aws", "github_actions", "yes", "no", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "yes"),
+            ("aws", "github_actions_for_github_enterprise_servers", "no", "yes", "no"),
+            ("aws", "github_actions_for_github_enterprise_servers", "yes", "no", "no"),
+            ("azure", "github_actions", "no", "no", "no"),
+            ("azure", "github_actions", "no", "no", "yes"),
+            ("azure", "github_actions", "no", "yes", "no"),
+            ("azure", "github_actions", "yes", "no", "no"),
+            ("azure", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "no",
+                "no",
+                "yes",
+            ),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "no",
+                "yes",
+                "no",
+            ),
+            (
+                "azure",
+                "github_actions_for_github_enterprise_servers",
+                "yes",
+                "no",
+                "no",
+            ),
+            ("azure", "azure_devops", "no", "no", "no"),
+            ("azure", "azure_devops", "no", "no", "yes"),
+            ("azure", "azure_devops", "no", "yes", "no"),
+            ("azure", "azure_devops", "yes", "no", "no"),
+>>>>>>> 2479649 (adding gcp in testing)
+>>>>>>> 0ac7409 (adding gcp in testing)
         ],
     )
     @wraps(fn)

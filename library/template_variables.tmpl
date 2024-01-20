@@ -1,5 +1,9 @@
 # define template variables
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 0ac7409 (adding gcp in testing)
 {{ define `root_dir` -}}
     {{ .input_root_dir }}
 {{- end }}
@@ -60,8 +64,12 @@
     {{- end -}}
 {{- end }}
 
+<<<<<<< HEAD
 =======
 >>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
+=======
+>>>>>>> 2479649 (adding gcp in testing)
+>>>>>>> 0ac7409 (adding gcp in testing)
 {{ define `databricks_prod_workspace_host` -}}
     {{- if not (eq (print .input_databricks_prod_workspace_host) "") -}}
         {{- with url (print .input_databricks_prod_workspace_host) -}}

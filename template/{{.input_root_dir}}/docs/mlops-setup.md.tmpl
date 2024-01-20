@@ -150,6 +150,15 @@ Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/ac
 >>>>>>> c9c6f6a (Minor bug Fixes (#149))
   {{ end }}
 
+{{ else if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `gcp`) }}
+After creating the service principals and adding them to the respective staging and prod workspaces, follow
+[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
+to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the secrets to GitHub:
+- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
+
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `azure`) }}
 After creating the service principals and adding them to the respective staging and prod workspaces, refer to
 [Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--manage-access-tokens-for-a-service-principal")) }})
@@ -243,6 +252,7 @@ to get your service principal token for both the staging and prod service princi
 {{ else }}
     - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
 <<<<<<< HEAD
+<<<<<<< HEAD
 {{ else if (eq .input_cloud `gcp`) }}
 1. Create two service principals - one to be used for deploying and running staging assets, and one to be used for deploying and running production assets. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details on how to create a service principal.
 1. [Add the staging and production service principals to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
@@ -257,13 +267,33 @@ to get your service principal token for both the staging and prod service princi
       - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
 1. Define two [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{template `default_branch` .}}` branch using the two Azure build pipelines created in step 1. This is required so that any PR changes to the `{{template `default_branch` .}}` must build successfully before PRs can complete.
 =======
+=======
+>>>>>>> 0ac7409 (adding gcp in testing)
     - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
 {{ end }}
   - Ensure that the Azure Pipelines created in the prior step have access to these variables by selecting the name of the pipelines under the 'Pipeline permissions' tab of this variable group.
   - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
 1. Define [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{ .input_default_branch }}` branch using the Azure build pipelines created in step 1. This is required so that any PR changes to the `{{ .input_default_branch }}` must build successfully before PRs can complete. 
 In the case of a monorepo, where there are multiple projects under a single repository, set a [path filter](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#path-filters) on the build validation policies, such that devops pipelines are only triggered when there are changes to the respective projects (e.g. the path filter would be `/project1/*` to trigger a devops pipeline when changes are made to _only_ files under the `project1` folder).
+<<<<<<< HEAD
 >>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
+=======
+=======
+{{ else if (eq .input_cloud `gcp`) }}
+1. Create two service principals - one to be used for deploying and running staging assets, and one to be used for deploying and running production assets. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
+1. Follow ['Get tokens for the service principals']({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-personal-access-tokens-for-a-service-principal")) }})
+to get your service principal token for both the staging and prod service principals. You will use the token as variables in the project Azure Pipelines.
+1. Create two separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. One of these pipelines will use the `{{template `project_name` .}}-tests-ci.yml` script, and the other will use the `{{template `project_name` .}}-bundles-cicd.yml` script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+1. Create a new variable group called `{{template `project_name` .}} variable group` defining the following secret variables, for more details [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=classic#create-a-variable-group):
+    - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+    - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+  {{ end }}
+      - Ensure that the two Azure Pipelines created in the prior step have access to these variables by selecting the name of the pipelines under the 'Pipeline permissions' tab of this variable group.
+      - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
+1. Define two [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{template `default_branch` .}}` branch using the two Azure build pipelines created in step 1. This is required so that any PR changes to the `{{template `default_branch` .}}` must build successfully before PRs can complete.
+>>>>>>> 2479649 (adding gcp in testing)
+>>>>>>> 0ac7409 (adding gcp in testing)
 
 {{ if (eq .input_cloud `azure`) }}
 ### Service connection approach [Recommended in production settings]

@@ -49,7 +49,60 @@
       "type": "string",
       "description": "\nSelect CICD platform",
       "default": "github_actions",
+<<<<<<< HEAD
       "enum": ["github_actions", "github_actions_for_github_enterprise_servers", "azure_devops"],
+=======
+      "enum": ["github_actions", "github_actions_for_github_enterprise_servers", "azure_devops"]
+    },
+    "input_databricks_staging_workspace_host": {
+      "order": 5,
+      "type": "string",
+      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-staging-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-staging-workspace.cloud.databricks.com{{end}}",
+      "description": "\nURL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default",
+      "pattern": "^(https.*)?$",
+      "pattern_match_failure_message": "Databricks staging workspace host URLs must start with https. Got invalid workspace host."
+    },
+    "input_databricks_prod_workspace_host": {
+      "order": 6,
+      "type": "string",
+      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-prod-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-prod-workspace.cloud.databricks.com{{end}}",
+      "description": "\nURL of production Databricks workspace. Default",
+      "pattern": "^(https.*)?$",
+      "pattern_match_failure_message": "Databricks production workspace host URLs must start with https. Got invalid workspace host."
+    },
+    "input_default_branch": {
+      "order": 7,
+      "type": "string",
+      "default": "main",
+      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default"
+    },
+    "input_release_branch": {
+      "order": 8,
+      "type": "string",
+      "default": "release",
+      "description": "\nName of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default"
+    },
+    "input_read_user_group": {
+      "order": 9,
+      "type": "string",
+      "default": "users",
+      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default"
+    },
+    "input_include_models_in_unity_catalog": {
+      "order": 10,
+      "type": "string",
+      "description": "\nWhether to use the Model Registry with Unity Catalog",
+      "default": "yes",
+      "enum": ["yes", "no"]
+    },
+    "input_schema_name": {
+      "order": 11,
+      "type": "string",
+      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
+      "default": "my-mlops-project",
+      "pattern": "^[^ .\\/]*$",
+      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\"",
+>>>>>>> 2479649 (adding gcp in testing)
       "skip_prompt_if": {
         "properties": {
           "input_setup_cicd_and_project": {

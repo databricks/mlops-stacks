@@ -69,11 +69,14 @@ To create a new project, run:
     databricks bundle init mlops-stacks
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``input_project_name``: name of the current project
  * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
  * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP).
 =======
+=======
+>>>>>>> 0ac7409 (adding gcp in testing)
 This will prompt for parameters for initialization. Some of these parameters are required to get started:
  * ``input_setup_cicd_and_project`` : If both CI/CD and the project should be set up, or only one of them. 
    * ``CICD_and_Project`` - Setup both CI/CD and project, the default option.
@@ -85,7 +88,16 @@ This will prompt for parameters for initialization. Some of these parameters are
  * ``input_cloud``: Cloud provider you use with Databricks (AWS or Azure), note GCP is not supported at this time.
 
 Others must be correctly specified for CI/CD to work:
+<<<<<<< HEAD
 >>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
+=======
+=======
+This will prompt for parameters for project initialization. Some of these parameters are required to get started:
+ * ``input_project_name``: name of the current project
+ * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
+ * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP).
+>>>>>>> 2479649 (adding gcp in testing)
+>>>>>>> 0ac7409 (adding gcp in testing)
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
  * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
    We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
