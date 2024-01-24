@@ -25,9 +25,15 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 >>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
+=======
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
+=======
+>>>>>>> 774a1bf (template update)
+>>>>>>> 376d3b5 (template update)
 {{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}} 
 [workflow](../.github/workflows/{{ .input_project_name }}-run-tests.yml)
 {{- else if (eq .input_cicd_platform `azure_devops`) -}}
