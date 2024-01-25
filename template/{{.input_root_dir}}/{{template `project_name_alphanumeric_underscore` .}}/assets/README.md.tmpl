@@ -30,7 +30,7 @@ ML Resource Configurations in this directory:
 The ML assets can be deployed to databricks workspace based on the databricks CLI bundles deployment config.
 Deployment configs of different deployment targets share the general ML asset configurations with added ability to specify deployment target specific values (workspace URI, model name, jobs notebook parameters, etc).
 
-{{- if (eq .input_setup_cicd_and_project `no`) }}
+{{- if (eq .input_setup_cicd_and_project `Project_Only`) }}
 
 NOTE: This project was not setup with CI/CD workflows. You can setup CI/CD with a new initialization of MLOps Stacks. The rest of this section only applies if you are using a monorepo setup with CI/CD previously or have setup CI/CD otherwise.
 {{- else }}
@@ -42,7 +42,7 @@ This project ships with CI/CD workflows for developing and deploying ML asset co
 For Model Registry in Unity Catalog, we expect a catalog to exist with the name of the deployment target by default. For example, if the deployment target is `dev`, we expect a catalog named `dev` to exist in the workspace. 
 If you want to use different catalog names, please update the `targets` declared in the `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml` and `{{template `project_name_alphanumeric_underscore` .}}/assets/ml-artifacts-asset.yml` files.
 If changing the `staging`, `prod`, or `test` deployment targets, you'll need to update the 
-{{- if (eq .input_setup_cicd_and_project `no`) }} workflows located in the root directory if in a monorepo setup with CI/CD. Otherwise you can setup CI/CD with a new initialization of MLOps Stacks.
+{{- if (eq .input_setup_cicd_and_project `Project_Only`) }} workflows located in the root directory if in a monorepo setup with CI/CD. Otherwise you can setup CI/CD with a new initialization of MLOps Stacks.
 {{- else if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }} workflows located in the `.github/workflows` directory.
 {{- else if (eq .input_cicd_platform `azure_devops`) }}  pipelines located in the `azure-pipelines` directory.{{- end }}
 {{- end }}
@@ -65,7 +65,7 @@ Upon merging a PR to the {{ .input_default_branch }} branch, the {{ .input_defau
 Upon merging code into the release branch, the release branch content will be deployed to prod workspace with `prod` environment asset configurations.
 
 
-{{- if (eq .input_setup_cicd_and_project `yes`) }}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ![ML asset config diagram](../../docs/images/mlops-stack-deploy.png)
 {{- end }}
 
@@ -93,7 +93,7 @@ Alternatively, you can use the other approaches described in the [databricks CLI
 ### Destroy ML asset configurations
 After development is done, you can run `databricks bundle destroy` to destroy (remove) the defined Databricks assets in the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML assets.
 
-{{- if (eq .input_setup_cicd_and_project `yes`) }}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ## Set up CI/CD
 Please refer to [mlops-setup](../../docs/mlops-setup.md#configure-cicd) for instructions to set up CI/CD.
 
@@ -237,7 +237,7 @@ To test out a config change, simply edit one of the fields above. For example, i
 Then follow [Local development and dev workspace](#local-development-and-dev-workspace) to deploy the change to the dev workspace.
 Alternatively you can open a PR. Continuous integration will then validate the updated config and deploy tests to the to staging workspace.
 
-{{- if (eq .input_setup_cicd_and_project `yes`) }}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ## Deploy config changes
 
 ### Dev workspace deployment

@@ -68,23 +68,20 @@ To create a new project, run:
 
     databricks bundle init mlops-stacks
 
-This will prompt for parameters for project initialization. Some of these parameters are required to get started:
- * ``input_project_name``: name of the current project
+This will prompt for parameters for initialization. Some of these parameters are required to get started:
  * ``input_setup_cicd_and_project`` : If both CI/CD and the project should be set up, or only one of them. 
-   * ``CICD_and_Project``
-   * ``Project_Only``
-   * ``CICD_Only``
-   * ``Setup_Monorepo``
+   * ``CICD_and_Project`` - Setup both CI/CD and project, the default option.
+   * ``Project_Only`` - Setup project only, easiest for Data Scientists to get started with.
+   * ``CICD_Only`` - Setup CI/CD only, likely for monorepo setups or setting up CI/CD on an already initialized project.
    We expect Data Scientists to specify ``Project_Only`` to get 
-   started in a development capacity, and when ready to move the project to Staging/Production, CI/CD can be set up. We expect that step to be done by Machine Learning Engineers (MLEs) who can specify ``CICD_Only`` during initialization
- * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
+   started in a development capacity, and when ready to move the project to Staging/Production, CI/CD can be set up. We expect that step to be done by Machine Learning Engineers (MLEs) who can specify ``CICD_Only`` during initialization and use the provided workflow to setup CI/CD for one or more projects.
+ * ``input_project_name``: name of the current project
+ * ``input_root_dir``: name of the root directory. For initialization options besides ``CICD_Only``, this defaults to ``input_project_name``.
  * ``input_cloud``: Cloud provider you use with Databricks (AWS or Azure), note GCP is not supported at this time.
+ * ``input_include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML asset configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training. 
+
+Others must be correctly specified for CI/CD to work:
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
-
-Others must be correctly specified for CI/CD to work, and so can be left at their default values until you're
-ready to productionize a model. We recommend specifying any known parameters upfront (e.g. if you know
-``input_databricks_staging_workspace_host``, it's better to specify it upfront):
-
  * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
    We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view and debug CI test results
@@ -93,11 +90,12 @@ ready to productionize a model. We recommend specifying any known parameters upf
  * ``input_default_branch``: Name of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged.
  * ``input_release_branch``: Name of the release branch. The production jobs (model training, batch inference) defined in this
     repo pull ML code from this branch.
+
+Or used for project initialization:
  * ``input_read_user_group``: User group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Defaults to "users", which grants read permission to all users in the staging/prod workspaces. You can specify a custom group name e.g. to restrict read permissions to members of the team working on the current ML project.
   * ``input_include_models_in_unity_catalog``: If selected, models will be registered to [Unity Catalog](https://docs.databricks.com/en/mlflow/models-in-uc.html#models-in-unity-catalog). Models will be registered under a three-level namespace of `<catalog>.<schema_name>.<model_name>`, according the the target environment in which the model registration code is executed. Thus, if model registration code runs in the `prod` environment, the model will be registered to the `prod` catalog under the namespace `<prod>.<schema>.<model_name>`. This assumes that the respective catalogs exist in Unity Catalog (e.g. `dev`, `staging` and `prod` catalogs). Target environment names, and catalogs to be used are defined in the Databricks bundles files, and can be updated as needed.
  * ``input_schema_name``: If using [Models in Unity Catalog](https://docs.databricks.com/en/mlflow/models-in-uc.html#models-in-unity-catalog), specify the name of the schema under which the models should be registered, but we recommend keeping the name the same as the project name. We default to using the same `schema_name` across catalogs, thus this schema must exist in each catalog used. For example, the training pipeline when executed in the staging environment will register the model to `staging.<schema_name>.<model_name>`, whereas the same pipeline executed in the prod environment will register the mode to `prod.<schema_name>.<model_name>`. Also, be sure that the service principals in each respective environment have the right permissions to access this schema, which would be `USE_CATALOG`, `USE_SCHEMA`, `MODIFY`, `CREATE_MODEL`, and `CREATE_TABLE`.
  * ``input_unity_catalog_read_user_group``: If using [Models in Unity Catalog](https://docs.databricks.com/en/mlflow/models-in-uc.html#models-in-unity-catalog), define the name of the user group to grant `EXECUTE` (read & use model) privileges for the registered model. Defaults to "account users".
- * ``input_include_feature_store``: If selected, will provide [Databricks Feature Store](https://docs.databricks.com/machine-learning/feature-store/index.html) stack components including: project structure and sample feature Python modules, feature engineering notebooks, ML asset configs to provision and manage Feature Store jobs, and automated integration tests covering feature engineering and training.
  * ``input_include_mlflow_recipes``: If selected, will provide [MLflow Recipes](https://mlflow.org/docs/latest/recipes.html) stack components, dividing the training pipeline into configurable steps and profiles.
 
 See the generated ``README.md`` for next steps!

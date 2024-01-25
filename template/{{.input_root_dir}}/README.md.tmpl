@@ -15,8 +15,10 @@ This project contains the following components:
 
 | Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                             |
 | ML Assets as Code | ML pipeline assets (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
+{{ end }}
 | CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and assets {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and assets{{ end }}      |
 
 contained in the following files:
@@ -24,6 +26,7 @@ contained in the following files:
 ```
 {{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
 │
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 ├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
@@ -125,64 +128,59 @@ contained in the following files:
 │       │
 │       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
 {{ end -}}
+{{ end }}
 │
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-├── .github                     <- Configuration folder for CI/CD using GitHub Actions. The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.
+├── .github                     <- Configuration folder for CI/CD using GitHub Actions. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.{{ end }}
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
-├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.
+├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.{{ end }}
 {{ end -}}
+|
+|── docs                        <- Contains documentation for the repo.
+|
+|── cicd.tar.gz                 <- Contains CI/CD bundle that should be deployed by {{.input_root_dir}}-deploy-cicd.yml to set up CI/CD for projects.
 ```
 
 ## Using this repo
 
 The table below links to detailed docs explaining how to use this repo for different use cases.
 
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 This project comes with example ML code to train, validate and deploy a regression model to predict NYC taxi fares.
 If you're a data scientist just getting started with this repo for a brand new ML project, we recommend 
 adapting the provided example code to your ML problem. Then making and 
 testing ML code changes on Databricks or your local machine. Follow the instructions from
-the {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).
-{{ else }}[ML quickstart](docs/ml-developer-guide.md).{{ end }} 
+the [project README](./{{template `project_name_alphanumeric_underscore` .}}/README.md).
+{{ end }} 
 
-When you're satisfied with initial ML experimentation (e.g. validated that a model with reasonable performance can be
-trained on your dataset) and ready to deploy production training/inference
+When you're ready to deploy production training/inference
 pipelines, ask your ops team to follow the [MLOps setup guide](docs/mlops-setup.md) to configure CI/CD and deploy 
 production ML pipelines.
 
 After that, follow the [ML pull request guide](docs/ml-pull-request.md)
-and [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md) to propose, test, and deploy changes to production ML code (e.g. update model parameters)
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} and [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md) {{ end }} to propose, test, and deploy changes to production ML code (e.g. update model parameters)
 or pipeline assets (e.g. use a larger instance type for model training) via pull request.
 
 | Role                          | Goal                                                                         | Docs                                                                                                                                                                |
 |-------------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](docs/ml-developer-guide-fs.md).{{ else }}[ML quickstart](docs/ml-developer-guide.md){{ end }} |
+| Data Scientist                | Get started writing ML code for a brand new project                          | {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[project README](./{{template `project_name_alphanumeric_underscore` .}}/README.md) {{ else }} README when project is initialized {{ end }}|
 | MLOps / DevOps                | Set up CI/CD for the current ML project   | [MLOps setup guide](docs/mlops-setup.md)                                                                                                                            |
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
-| Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md)                                                     |
+| Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md) {{ else }} ML assets README when project is initialized {{ end }} |
 
-## Setting up CI/CD for multiple projects
+## Setting up CI/CD
+This stack comes with a workflow to set up CI/CD for projects that can be found in
+{{ if (eq .input_cicd_platform `azure_devops`)}}
+`.azure/devops-pipelines/{{ .input_root_dir }}-deploy-cicd.yml`.
+{{ else }}
+`.github/workflows/{{ .input_root_dir }}-deploy-cicd.yml`.
+{{ end }}
 
-It's possible to use the repo as a monorepo that contains multiple projects if all projects share the same workspaces and service principals.
+To set up CI/CD for projects that were created through MLOps Stacks with the `Project_Only` parameter, 
+run the abovementioned workflow, specifying the `project_name` as a parameter. This workflow assumes that 
+all steps in the [MLOps Setup Guide]((./docs/mlops-setup.md#Steps) have been completed.
 
-For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
-1. Create another project from `databricks bundle init` with project name `project2` and root directory name `monorepo_root_dir`, while specifying 'no' for the 'Setup CI/CD' prompt.
-{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-2. Duplicate the YAML files in `monorepo_root_dir/.github/workflows/` that start with `project1-`, and be sure to change `project1` to `project2` for:
-    - File names
-    - The `'working-directory'` parameter in each file
-    - The `'pull_request'` `'paths'` parameter in the CI and tests workflow files
-{{- else if (eq .input_cicd_platform `azure_devops`) }}
-2. Duplicate the YAML files in `monorepo_root_dir/.azure/devops-pipelines/`, and be sure to change `project1` to `project2` for:
-    - File names
-    - The `'workingDirectory'` global variable in each file
-    - The `'trigger'` `'paths'` `'include'` parameter in each file
-3. Follow the [Steps](./docs/mlops-setup.md#Steps) in docs/mlops-setup.md to make sure the pipelines are linked correctly in the ADO portal and the build validation branch policies are updated accordingly as well.
-{{ end -}}
-
-NOTE: If the second project uses a different CI/CD platform or feature store configuration, then the project will need to go through the full CI/CD setup process
-by running the initialization again but specifying 'yes' for the 'Setup CI/CD' prompt and keeping the other parameters the same. 
-{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-After initialization, copy the workflows from `project_2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`.
-{{- else if (eq .input_cicd_platform `azure_devops`) }}
-After initialization, copy the workflows from `project_2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/`.
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+NOTE: This project has already been initialized with an instantiation of the above workflow, so there's no
+need to run it again for project `{{.input_project_name}}`.
 {{ end -}}
