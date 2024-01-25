@@ -30,22 +30,11 @@
       "default": "{{ .input_project_name }}",
       "description": "\nRoot directory name. For monorepos, this is the name of the root directory that contains all the projects. Default",
       "skip_prompt_if": {
-        "anyOf":[
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_and_Project"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "Project_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_and_Project"
           }
-        ]
+        }
       }
     },
     "input_cloud": {
@@ -242,5 +231,5 @@
       }
     }
   },
-  "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.input_root_dir}}/{{.input_project_name}}' directory!\n\nPlease refer to the README.md of your project for further instructions on getting started."
+  "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.input_root_dir}}{{if not (eq .input_setup_cicd_and_project `CICD_Only`) }}/{{.input_project_name}}{{end}}' directory!\n\nPlease refer to the README.md for further instructions on getting started."
 }
