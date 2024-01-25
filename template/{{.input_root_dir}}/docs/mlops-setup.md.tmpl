@@ -113,19 +113,20 @@ After creating the service principals and adding them to the respective staging 
 [Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
 to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 to add the secrets to GitHub:
-- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
-- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+- `STAGING_WORKSPACE_TOKEN` : Service principal token for staging workspace.
+- `PROD_WORKSPACE_TOKEN` : Service principal token for prod workspace.
 Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
   {{ end }}
 
-{{ else if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `gcp`) }}
+{{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `gcp`) }}
 After creating the service principals and adding them to the respective staging and prod workspaces, follow
 [Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
 to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 to add the secrets to GitHub:
-- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
-- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+- `STAGING_WORKSPACE_TOKEN` : Service principal token for staging workspace.
+- `PROD_WORKSPACE_TOKEN` : Service principal token for prod workspace.
 Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
+  {{ end }}
 
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `azure`) }}
 After creating the service principals and adding them to the respective staging and prod workspaces, refer to
