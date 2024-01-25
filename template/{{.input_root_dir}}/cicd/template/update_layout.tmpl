@@ -1,0 +1,13 @@
+{{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
+    {{ skip `.azure` }}
+{{ else if (eq .input_cicd_platform `azure_devops`) }}
+    {{ skip `.github` }}
+{{ end }}
+
+{{ if (eq .input_include_feature_store `yes`) }}
+    {{ skip (printf `%s/%s-%s` `.github/workflows` .input_project_name `run-tests.yml`) }}
+{{ else }}
+    {{ skip (printf `%s/%s-%s` `.github/workflows` .input_project_name `run-tests-fs.yml`) }}
+{{ end }}
+
+{{ skip `update_layout` }}

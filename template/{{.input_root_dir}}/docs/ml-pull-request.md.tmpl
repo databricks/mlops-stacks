@@ -34,9 +34,9 @@ is planned for the future.
 ## Viewing test status and debug logs
 Opening a pull request will trigger a  
 {{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}} 
- [workflow](../.github/workflows/{{template `project_name` .}}-run-tests{{ if (eq .input_include_feature_store `yes`) }}-fs{{ end }}.yml)
+[workflow](../.github/workflows/{{ .input_project_name }}-run-tests{{ if (eq .input_include_feature_store `yes`) }}-fs{{ end }}.yml)
 {{- else if (eq .input_cicd_platform `azure_devops`) -}}
-[Azure DevOps Pipeline](../.azure/devops-pipelines/{{template `project_name` .}}-tests-ci.yml)
+[Azure DevOps Pipeline](../.azure/devops-pipelines/{{ .input_project_name }}-tests-ci.yml)
 {{ end }} 
 that runs unit and integration tests for the{{ if (eq .input_include_feature_store `yes`) }} feature engineering and{{ end }} model training pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
@@ -75,7 +75,7 @@ jobs in staging will automatically use your updated ML code.
 
 You may want to wait to confirm that
 the staging jobs succeed, then repeat the workflow above to open a pull request against the
-`{{template `release_branch` .}}` branch to promote your ML code to production. Once your pull request against `{{template `release_branch` .}}`
+`{{ .input_release_branch }}` branch to promote your ML code to production. Once your pull request against `{{ .input_release_branch }}`
 merges, production jobs will also automatically include your changes. 
 
 {{- else }}

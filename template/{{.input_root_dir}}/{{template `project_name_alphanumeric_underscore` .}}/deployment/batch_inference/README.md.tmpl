@@ -48,7 +48,7 @@ df = spark.table(
 
 df.write.mode("overwrite").saveAsTable(
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}name="hive_metastore.default.taxi_scoring_sample"
-    {{- else -}}name="<catalog>.{{template `schema_name` .}}.feature_store_inference_input"{{ end }}
+    {{- else -}}name="<catalog>.{{ .input_schema_name }}.feature_store_inference_input"{{ end }}
 )
 ```
 {{ end }}

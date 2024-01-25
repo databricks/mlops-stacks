@@ -22,7 +22,7 @@ See the example modules' documentation for more information.
 * Feature engineering notebook, `{{template `project_name_alphanumeric_underscore` .}}/feature_engineering/notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
 * Training notebook that [trains]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/train-models-with-feature-store.html")) }} ) a regression model by creating a training dataset using the Feature Store client.
 * Model deployment and batch inference notebooks that deploy and use the trained model. 
-* An automated integration test is provided (in `.github/workflows/{{template `project_name` .}}-run-tests-fs.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
+* An automated integration test is provided (in `.github/workflows/{{ .input_project_name }}-run-tests-fs.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
 
 To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
 the feature engineering pipelines.
@@ -57,12 +57,12 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * Follow the [UI workflow]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later")) }})
   for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
 * Install the `dbx` CLI via `pip install --upgrade dbx`
-* Run `databricks configure --profile {{template `project_name` .}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
+* Run `databricks configure --profile {{ .input_project_name }}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
   This should prompt you to enter an API token
 * [Create a personal access token]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/auth.html#personal-access-tokens-for-users")) }})
   in your dev workspace and paste it into the prompt from the previous step
 * From within the root directory of the current project, use the [dbx sync](https://dbx.readthedocs.io/en/latest/guides/python/devloop/mixed/#using-dbx-sync-repo-for-local-to-repo-synchronization) tool to copy code files from your local machine into the Repo by running
-  `dbx sync repo --profile {{template `project_name` .}}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
+  `dbx sync repo --profile {{ .input_project_name }}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
 #### Running code on Databricks
 You can iterate on ML code by running the provided `{{template `project_name_alphanumeric_underscore` .}}/feature_engineering/notebooks/GenerateAndWriteFeatures.py` notebook on Databricks using

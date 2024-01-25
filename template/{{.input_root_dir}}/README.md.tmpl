@@ -1,4 +1,4 @@
-# {{ template `root_dir` .}}
+# {{ .input_root_dir }}
 
 This directory contains an ML project based on the default
 [Databricks MLOps Stacks](https://github.com/databricks/mlops-stacks),
@@ -22,7 +22,7 @@ This project contains the following components:
 contained in the following files:
 
 ```
-{{ template `root_dir` .}}        <- Root directory. Both monorepo and polyrepo are supported.
+{{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
 │
 ├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
 │   │
@@ -160,17 +160,29 @@ or pipeline assets (e.g. use a larger instance type for model training) via pull
 | Data Scientist                | Update production ML code (e.g. model training logic) for an existing project | [ML pull request guide](docs/ml-pull-request.md)                                                                                                                    |
 | Data Scientist                | Modify production model ML assets, e.g. model training or inference jobs  | [ML asset config guide]({{template `project_name_alphanumeric_underscore` .}}/assets/README.md)                                                     |
 
-## Monorepo
+## Setting up CI/CD for multiple projects
 
-It's possible to use the repo as a monorepo that contains multiple projects. All projects share the same workspaces and service principals.
+It's possible to use the repo as a monorepo that contains multiple projects if all projects share the same workspaces and service principals.
 
 For example, assuming there's existing repo with root directory name `monorepo_root_dir` and project name `project1`
-1. Create another project from `databricks bundle init` with project name `project2` and root directory name `project2`.
-2. Copy the internal directory `project2/project2` to root directory of existing repo `monorepo_root_dir/project2`.
+1. Create another project from `databricks bundle init` with project name `project2` and root directory name `monorepo_root_dir`, while specifying 'no' for the 'Setup CI/CD' prompt.
 {{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-3. Copy yaml files from `project2/.github/workflows/` to `monorepo_root_dir/.github/workflows/` and make sure there's no name conflicts.
-{{ end -}}
-{{- if (eq .input_cicd_platform `azure_devops`) }}
-3. Copy yaml files from `project2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/` and make sure there's no name conflicts.
+2. Duplicate the YAML files in `monorepo_root_dir/.github/workflows/` that start with `project1-`, and be sure to change `project1` to `project2` for:
+    - File names
+    - The `'working-directory'` parameter in each file
+    - The `'pull_request'` `'paths'` parameter in the CI and tests workflow files
+{{- else if (eq .input_cicd_platform `azure_devops`) }}
+2. Duplicate the YAML files in `monorepo_root_dir/.azure/devops-pipelines/`, and be sure to change `project1` to `project2` for:
+    - File names
+    - The `'workingDirectory'` global variable in each file
+    - The `'trigger'` `'paths'` `'include'` parameter in each file
+3. Follow the [Steps](./docs/mlops-setup.md#Steps) in docs/mlops-setup.md to make sure the pipelines are linked correctly in the ADO portal and the build validation branch policies are updated accordingly as well.
 {{ end -}}
 
+NOTE: If the second project uses a different CI/CD platform or feature store configuration, then the project will need to go through the full CI/CD setup process
+by running the initialization again but specifying 'yes' for the 'Setup CI/CD' prompt and keeping the other parameters the same. 
+{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
+After initialization, copy the workflows from `project_2/.github/workflows/` to `monorepo_root_dir/.github/workflows/`.
+{{- else if (eq .input_cicd_platform `azure_devops`) }}
+After initialization, copy the workflows from `project_2/.azure/devops-pipelines/` to `monorepo_root_dir/.azure/devops-pipelines/`.
+{{ end -}}

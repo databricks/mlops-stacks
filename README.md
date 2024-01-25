@@ -55,7 +55,7 @@ https://github.com/databricks/mlops-stacks/assets/87999496/0d220d55-465e-4a69-bd
  - Python 3.8+
  - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.211.0
 
-[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) v0.211.0 contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
+[Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 
 Please follow [the instruction](https://docs.databricks.com/en/dev-tools/cli/databricks-cli-ref.html#install-the-cli) to install and set up databricks CLI. Releases of databricks CLI can be found in the [releases section](https://github.com/databricks/cli/releases) of databricks/cli repository.
 
@@ -70,6 +70,13 @@ To create a new project, run:
 
 This will prompt for parameters for project initialization. Some of these parameters are required to get started:
  * ``input_project_name``: name of the current project
+ * ``input_setup_cicd_and_project`` : If both CI/CD and the project should be set up, or only one of them. 
+   * ``CICD_and_Project``
+   * ``Project_Only``
+   * ``CICD_Only``
+   * ``Setup_Monorepo``
+   We expect Data Scientists to specify ``Project_Only`` to get 
+   started in a development capacity, and when ready to move the project to Staging/Production, CI/CD can be set up. We expect that step to be done by Machine Learning Engineers (MLEs) who can specify ``CICD_Only`` during initialization
  * ``input_root_dir``: name of the root directory. It is recommended to use the name of the current project as the root directory name, except in the case of a monorepo with other projects where the name of the monorepo should be used instead.
  * ``input_cloud``: Cloud provider you use with Databricks (AWS or Azure), note GCP is not supported at this time.
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)

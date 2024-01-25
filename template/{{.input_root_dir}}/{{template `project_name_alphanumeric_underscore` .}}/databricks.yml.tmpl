@@ -1,6 +1,6 @@
 # The name of the bundle. run `databricks bundle schema` to see the full bundle settings schema.
 bundle:
-  name: {{template `project_name` .}}
+  name: {{ .input_project_name }}
 
 variables:
   experiment_name:

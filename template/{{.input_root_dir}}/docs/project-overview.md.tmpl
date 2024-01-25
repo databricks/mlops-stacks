@@ -24,7 +24,7 @@ This project contains the following components:
 contained in the following files:
 
 ```
-{{ template `root_dir` .}}        <- Root directory. Both monorepo and polyrepo are supported.
+{{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
 │
 ├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
 │   │

@@ -2,6 +2,26 @@
 {{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` -}}
 {{ $root_dir := .input_root_dir}}
 
+{{ if (eq .input_setup_cicd_and_project `Project_Only`) }}
+    {{ skip (printf `%s/%s` $root_dir `.azure`) }}
+    {{ skip (printf `%s/%s` $root_dir `.github`) }}
+    {{ skip (printf `%s/%s` $root_dir `docs`) }}
+    {{ skip (printf `%s/%s` $root_dir `.gitignore`) }}
+    {{ skip (printf `%s/%s` $root_dir `README.md`) }}
+    {{ skip (printf `%s/%s` $root_dir `test-requirements.txt`) }}
+    {{ skip (printf `%s/%s` $root_dir `cicd.tar.gz`) }}
+    {{ skip (printf `%s/%s` $root_dir `cicd_params.json`) }}
+{{ else if (eq .input_setup_cicd_and_project `CICD_Only`) }}
+    {{ skip (printf `%s/%s` $root_dir $project_name_alphanumeric_underscore) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests-fs.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-ci.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-cd-prod.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-cd-staging.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.azure/devops-pipelines` .input_project_name `tests-ci.yml`) }}
+    {{ skip (printf `%s/%s/%s-%s` $root_dir `.azure/devops-pipelines` .input_project_name `bundle-cicd.yml`) }}
+{{ end }}
+
 {{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
     {{ skip (printf `%s/%s` $root_dir `.azure`) }}
 {{ else if (eq .input_cicd_platform `azure_devops`) }}
@@ -29,6 +49,9 @@
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/Train.py`) }}
     # recipe_paths
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/steps`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/data`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/__init__.py`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
@@ -44,6 +67,9 @@
 {{ else }}
     # recipe_paths
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/steps`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/data`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/__init__.py`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
@@ -67,5 +93,6 @@
 {{ end }}
 
 # Remove template files
+{{ skip (printf `%s/%s` $root_dir `cicd`) }}
 {{ skip `update_layout` }}
 {{ skip `run_validations` }}

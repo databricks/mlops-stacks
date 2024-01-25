@@ -71,7 +71,7 @@ dbutils.widgets.text(
 {{else}}
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
+    "model_name", "dev.{{ .input_schema_name }}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
 )
 
 {{end -}}
@@ -80,7 +80,7 @@ dbutils.widgets.text(
 dbutils.widgets.text(
     "pickup_features_table",
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}"feature_store_taxi_example.trip_pickup_features",
-    {{- else -}}"dev.{{template `schema_name` .}}.trip_pickup_features",{{ end }}
+    {{- else -}}"dev.{{ .input_schema_name }}.trip_pickup_features",{{ end }}
     label="Pickup Features Table",
 )
 
@@ -88,7 +88,7 @@ dbutils.widgets.text(
 dbutils.widgets.text(
     "dropoff_features_table",
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}"feature_store_taxi_example.trip_dropoff_features",
-    {{- else -}}"dev.{{template `schema_name` .}}.trip_dropoff_features",{{ end }}
+    {{- else -}}"dev.{{ .input_schema_name }}.trip_dropoff_features",{{ end }}
     label="Dropoff Features Table",
 )
 
