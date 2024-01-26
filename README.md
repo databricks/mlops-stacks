@@ -165,7 +165,7 @@ dependencies listed in `dev-requirements.txt`:
 
 ### Running the tests
 **NOTE**: This section is for open-source developers contributing to the default stack
-in this repo.  If you are working on an ML project using the stack (e.g. if you ran `databricks bundle init`
+in this repo.  If you are working on a ML project using the stack (e.g. if you ran `databricks bundle init`
 to start a new project), see the `README.md` within your generated
 project directory for detailed instructions on how to make and test changes.
 
