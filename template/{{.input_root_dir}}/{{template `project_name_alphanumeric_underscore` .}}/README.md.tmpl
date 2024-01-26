@@ -147,7 +147,7 @@ See the example modules' documentation for more information.
 * Feature engineering notebook, `feature_engineering/notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
 * Training notebook that [trains]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/train-models-with-feature-store.html")) }} ) a regression model by creating a training dataset using the Feature Store client.
 * Model deployment and batch inference notebooks that deploy and use the trained model. 
-* An automated integration test is provided (in `.github/workflows/{{ .input_project_name }}-run-tests-fs.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
+* An automated integration test is provided (in `.github/workflows/{{ .input_project_name }}-run-tests.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
 
 To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
 the feature engineering pipelines.
@@ -192,16 +192,16 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * From within the root directory of the current project, use the [dbx sync](https://dbx.readthedocs.io/en/latest/guides/python/devloop/mixed/#using-dbx-sync-repo-for-local-to-repo-synchronization) tool to copy code files from your local machine into the Repo by running
   `dbx sync repo --profile {{ .input_project_name }}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
+{{ if (eq .input_include_feature_store `yes`) }}
+### Develop locally
+
+You can iterate on the feature transform modules locally in your favorite IDE before running them on Databricks.  
+
 #### Running code on Databricks
 You can iterate on ML code by running the provided `feature_engineering/notebooks/GenerateAndWriteFeatures.py` notebook on Databricks using
 [Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
 the feature transforms code defined under ``features``. You can use multiple browser tabs to edit
 logic in `features` and run the feature engineering pipeline in the `GenerateAndWriteFeatures.py` notebook.
-
-{{ if (eq .input_include_feature_store `yes`) }}
-### Develop locally
-
-You can iterate on the feature transform modules locally in your favorite IDE before running them on Databricks.  
 
 #### Prerequisites
 * Python 3.8+

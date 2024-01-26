@@ -1,4 +1,4 @@
-name: ML Code Tests for {{ .input_project_name }}
+name: {{ if (eq .input_include_feature_store `yes`) }}Feature and {{end}}Training Unit and Integration Tests for {{ .input_project_name }}
 on:
   workflow_dispatch:
   pull_request:
@@ -18,8 +18,6 @@ env:
   ARM_CLIENT_SECRET: {{`${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}`}}
   {{- end }}
 
-concurrency: {{ .input_project_name }}-feature-training-integration-test-staging
-
 jobs:
   unit_tests:
     runs-on: ubuntu-latest
@@ -28,6 +26,13 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      {{ if (eq .input_include_feature_store `yes`) }}
+      # Feature store tests bring up a local Spark session, so Java is required.
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      {{ end }}
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
@@ -52,6 +57,12 @@ jobs:
         id: deploy
         run: |
           databricks bundle deploy -t test
+      {{ if (eq .input_include_feature_store `yes`) }}
+      - name: Run Feature Engineering Workflow for Test Deployment Target in Staging Workspace
+        id: feature_engineering
+        run: |
+          databricks bundle run write_feature_table_job -t test
+      {{ end }}
       - name: Run Training Workflow for Test Deployment Target in Staging Workspace
         id: training
         run: |

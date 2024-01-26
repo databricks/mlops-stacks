@@ -26,24 +26,24 @@
       "description": "Release Branch",
       "type": "string"
     },
-    "input_include_feature_store": {
-      "order": 6,
-      "description": "Use Feature Store (yes) or not (no)",
-      "type": "string"
-    },
     "cloud_specific_node_type_id": {
-      "order": 7,
+      "order": 6,
       "description": "Cloud Specific Node Type ID",
       "type": "string"
     },
     "input_cli_version": {
-      "order": 8,
+      "order": 7,
       "description": "CLI Version",
       "type": "string"
     },
     "input_project_name": {
-      "order": 9,
+      "order": 8,
       "description": "Project Name",
+      "type": "string"
+    },
+    "input_include_feature_store": {
+      "order": 9,
+      "description": "Use Feature Store (yes) or not (no)",
       "type": "string"
     }
   },

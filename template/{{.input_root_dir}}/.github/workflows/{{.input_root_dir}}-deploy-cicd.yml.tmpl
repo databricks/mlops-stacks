@@ -28,11 +28,16 @@ jobs:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
           token: {{`${{ secrets.WORKFLOW_TOKEN }}`}}
       - uses: databricks/setup-cli@{{template `cli_version` .}}
-      - name: Unzip Bundle and Append Project Name to Input JSON
+      - name: Unzip Bundle and Append Parameters to Input JSON
         id: unzip
         run: |
           tar -xzvf cicd.tar.gz
           echo "`jq '. += {"input_project_name":"{{`${{ github.event.inputs.project_name }}`}}"}' cicd_params.json`" > cicd_params.json
+          echo "`jq -s '.[0] + .[1]' cicd_params.json {{`${{ github.event.inputs.project_name }}`}}/fs_param.json`" > cicd_params.json
+      - name: Update databricks.yml
+        id: update
+        run: |
+          echo -e "  staging:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> {{`${{ github.event.inputs.project_name }}`}}/databricks.yml
       - name: Initialize Bundle
         id: initialize
         run: |
@@ -45,7 +50,7 @@ jobs:
           git config --global user.name "Deploy CICD Bot"
           git config --global user.email "noreply-cicd-bot@databricks.com"
           git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}
-          git add .github
+          git add .github {{`${{ github.event.inputs.project_name }}`}}/databricks.yml
           git commit -m "Add CICD for {{`${{ github.event.inputs.project_name }}`}}"
           git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}
       - name: Create Pull Request

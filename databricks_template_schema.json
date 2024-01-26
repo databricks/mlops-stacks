@@ -196,7 +196,14 @@
       "type": "string",
       "description": "\nWhether to include Feature Store",
       "default": "no",
-      "enum": ["no", "yes"]
+      "enum": ["no", "yes"],
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
+          }
+        }
+      }
     },
     "input_include_mlflow_recipes": {
       "order": 15,
