@@ -26,7 +26,7 @@ env:
 jobs:
   prod:
     concurrency: {{ .input_project_name }}-prod-bundle-job
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: databricks/setup-cli@{{template `cli_version` .}}

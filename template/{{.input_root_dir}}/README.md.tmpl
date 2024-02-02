@@ -33,7 +33,7 @@ contained in the following files:
 │   │
 │   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and asset config component to be included.
 │   │
-{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
+{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
 │   │
 │   ├── validation              <- Optional model validation step before deploying a model.
@@ -58,7 +58,7 @@ contained in the following files:
 │       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
-{{ else if (eq .input_include_feature_store `yes`) -}}
+{{ else if (eq .input_include_feature_store `yes`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
 │   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
@@ -89,7 +89,7 @@ contained in the following files:
 │       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
-{{ else -}}
+{{ else }}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
@@ -127,18 +127,18 @@ contained in the following files:
 │       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
-{{ end -}}
+{{ end }}
 {{ end }}
 │
-{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
+{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }}
 ├── .github                     <- Configuration folder for CI/CD using GitHub Actions. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.{{ end }}
-{{ else if (eq .input_cicd_platform `azure_devops`) -}}
+{{ else if (eq .input_cicd_platform `azure_devops`) }}
 ├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML assets defined in the `./assets/*` folder with databricks CLI bundles.{{ end }}
-{{ end -}}
-|
-|── docs                        <- Contains documentation for the repo.
-|
-|── cicd.tar.gz                 <- Contains CI/CD bundle that should be deployed by {{.input_root_dir}}-deploy-cicd.yml to set up CI/CD for projects.
+{{ end }}
+│
+├── docs                        <- Contains documentation for the repo.
+│
+├── cicd.tar.gz                 <- Contains CI/CD bundle that should be deployed by deploy-cicd.yml to set up CI/CD for projects.
 ```
 
 ## Using this repo
@@ -171,14 +171,14 @@ or pipeline assets (e.g. use a larger instance type for model training) via pull
 ## Setting up CI/CD
 This stack comes with a workflow to set up CI/CD for projects that can be found in
 {{ if (eq .input_cicd_platform `azure_devops`)}}
-`.azure/devops-pipelines/{{ .input_root_dir }}-deploy-cicd.yml`.
+`.azure/devops-pipelines/deploy-cicd.yml`.
 {{ else }}
-`.github/workflows/{{ .input_root_dir }}-deploy-cicd.yml`.
+`.github/workflows/deploy-cicd.yml`.
 {{ end }}
 
 To set up CI/CD for projects that were created through MLOps Stacks with the `Project_Only` parameter, 
 run the abovementioned workflow, specifying the `project_name` as a parameter. This workflow assumes that 
-all steps in the [MLOps Setup Guide]((./docs/mlops-setup.md#Steps) have been completed.
+all steps in the [MLOps Setup Guide](./docs/mlops-setup.md#Steps) have been completed.
 
 {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 NOTE: This project has already been initialized with an instantiation of the above workflow, so there's no

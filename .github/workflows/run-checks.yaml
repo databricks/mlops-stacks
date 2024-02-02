@@ -13,9 +13,7 @@ jobs:
         run: |
           # Install act
           curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
-          echo "-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
-          -P ubuntu-20.04=ghcr.io/catthehacker/ubuntu:act-20.04
-          -P ubuntu-18.04=ghcr.io/catthehacker/ubuntu:act-18.04" > ~/.actrc
+          echo "-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest" > ~/.actrc
           echo "PATH=$PATH:$(pwd)/bin" >> "$GITHUB_ENV"
       - name: Install Python dependencies
         run: |
