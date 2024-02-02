@@ -35,7 +35,7 @@ jobs:
         run: |
           tar -xzvf cicd.tar.gz
           INPUT_CLOUD_1=$(jq -r '.input_cloud' cicd_params.json)
-          INPUT_CLOUD_2=$(jq -r '.input_cloud' {{`${{ github.event.inputs.project_name }}`}}/project_params.json.json)
+          INPUT_CLOUD_2=$(jq -r '.input_cloud' {{`${{ github.event.inputs.project_name }}`}}/project_params.json)
           if [ "$INPUT_CLOUD_1" != "$INPUT_CLOUD_2" ]; then
             echo "Error: CICD cloud '$INPUT_CLOUD_1' does not match project cloud '$INPUT_CLOUD_2'"
             exit 1
