@@ -5,13 +5,14 @@
 * [Intro](#intro)
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
 * [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ end }})
-{{- if (eq .input_include_mlflow_recipes `yes`) }}
+{{- if and (eq .input_setup_cicd_and_project `CICD_and_Project`) (eq .input_include_mlflow_recipes `yes`) }}
 * [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){{ end }}
 * [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
 {{ if not (eq .input_release_branch .input_default_branch) -}}
 * [Create release branch](#create-release-branch)
 {{ end -}}
-* [Deploy ML assets and enable production jobs](#deploy-ml-assets-and-enable-production-jobs)
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
+* [Deploy ML assets and enable production jobs](#deploy-ml-assets-and-enable-production-jobs){{ end }}
 * [Next steps](#next-steps)
 
 ## Intro
@@ -79,9 +80,8 @@ For your convenience, we also have a [Terraform module](https://registry.terrafo
 #### Configure Service Principal (SP) permissions 
 If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
-If you want to use different catalog names, please update the targets declared in the [{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml)
-and [{{ .input_project_name }}/assets/ml-artifacts-asset.yml](../{{template `project_name_alphanumeric_underscore` .}}/assets/ml-artifacts-asset.yml)
- files. 
+If you want to use different catalog names, please update the targets declared in the {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml)
+and [{{ .input_project_name }}/assets/ml-artifacts-asset.yml](../{{template `project_name_alphanumeric_underscore` .}}/assets/ml-artifacts-asset.yml) {{ else }} `databricks.yml` and `assets/ml-artifacts-asset.yml` {{ end }} files. 
 If changing the staging, prod, or test deployment targets, you'll need to update the workflows located in the .github/workflows directory.
 
 The SP must have proper permission in each respective environment and the catalog for the environments.
