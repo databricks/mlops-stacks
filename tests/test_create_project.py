@@ -56,7 +56,7 @@ def assert_no_disallowed_strings_in_files(
     if exclude_path_matches is None:
         exclude_path_matches = []
     # Exclude binary files like pngs from being string-matched
-    exclude_path_matches = exclude_path_matches + [".png", ".parquet", + ".tar.gz"]
+    exclude_path_matches = exclude_path_matches + [".png", ".parquet", ".tar.gz"]
     for path in file_paths:
         assert os.path.exists(path), "Provided nonexistent path to test: %s" % path
 
