@@ -1,13 +1,15 @@
 # Databricks ML Resource Configurations
-[(back to main README)](../../README.md)
+[(back to project README)](../README.md)
 
 ## Table of contents
 * [Intro](#intro)
 * [Local development and dev workspace](#local-development-and-dev-workspace)
+* [Develop and test config changes](#develop-and-test-config-changes)
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 * [CI/CD](#set-up-cicd)
 * [Deploy initial ML assets](#deploy-initial-ml-assets)
-* [Develop and test config changes](#develop-and-test-config-changes)
 * [Deploy config changes](#deploy-config-changes)
+{{- end }}
 
 ## Intro
 
