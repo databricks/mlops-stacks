@@ -8,28 +8,20 @@ from utils import (
 )
 
 
-def parametrize_by_params(fn):
-    @wraps(fn)
-    @pytest.mark.parametrize(
-        "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
-        [
-            ("CICD_and_Project", "no", "no", "no"),
-            ("CICD_and_Project", "no", "no", "yes"),
-            ("CICD_and_Project", "no", "yes", "no"),
-            ("CICD_and_Project", "yes", "no", "no"),
-            ("CICD_and_Project", "yes", "no", "yes"),
-        ],
-    )
-    def wrapper(*args, **kwargs):
-        return fn(*args, **kwargs)
-
-    return wrapper
-
-
 @pytest.mark.parametrize(
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
-@parametrize_by_params
+@pytest.mark.parametrize(
+    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    [
+        ("CICD_and_Project", "no", "no", "no"),
+        ("CICD_and_Project", "no", "no", "yes"),
+        ("CICD_and_Project", "no", "yes", "no"),
+        ("CICD_and_Project", "yes", "no", "no"),
+        ("CICD_and_Project", "yes", "no", "yes"),
+        ("CICD_Only", "no", "no", "no"),
+    ],
+)
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing
@@ -51,7 +43,16 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
-@parametrize_by_params
+@pytest.mark.parametrize(
+    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    [
+        ("CICD_and_Project", "no", "no", "no"),
+        ("CICD_and_Project", "no", "no", "yes"),
+        ("CICD_and_Project", "no", "yes", "no"),
+        ("CICD_and_Project", "yes", "no", "no"),
+        ("CICD_and_Project", "yes", "no", "yes"),
+    ],
+)
 @parametrize_by_cloud
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
