@@ -13,12 +13,8 @@
     {{ skip (printf `%s/%s` $root_dir `cicd_params.json`) }}
 {{ else if (eq .input_setup_cicd_and_project `CICD_Only`) }}
     {{ skip (printf `%s/%s` $root_dir $project_name_alphanumeric_underscore) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `run-tests.yml`) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-ci.yml`) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-cd-prod.yml`) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.github/workflows` .input_project_name `bundle-cd-staging.yml`) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.azure/devops-pipelines` .input_project_name `tests-ci.yml`) }}
-    {{ skip (printf `%s/%s/%s-%s` $root_dir `.azure/devops-pipelines` .input_project_name `bundle-cicd.yml`) }}
+    {{ skip (printf `%s/%s/%s-*` $root_dir `.github/workflows` .input_project_name) }}
+    {{ skip (printf `%s/%s/%s-*` $root_dir `.azure/devops-pipelines` .input_project_name) }}
 {{ end }}
 
 {{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
