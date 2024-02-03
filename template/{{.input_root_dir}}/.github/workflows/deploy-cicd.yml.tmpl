@@ -37,11 +37,11 @@ jobs:
           INPUT_CLOUD_1=$(jq -r '.input_cloud' cicd_params.json)
           INPUT_CLOUD_2=$(jq -r '.input_cloud' {{`${{ github.event.inputs.project_name }}`}}/project_params.json)
           if [ "$INPUT_CLOUD_1" != "$INPUT_CLOUD_2" ]; then
-            echo "Error: CICD cloud '$INPUT_CLOUD_1' does not match project cloud '$INPUT_CLOUD_2'"
+            printf "Error: CICD cloud '%s' does not match project cloud '%s'\n" "$INPUT_CLOUD_1" "$INPUT_CLOUD_2"
             exit 1
           fi
-          echo "`jq '. += {"input_project_name":"{{`${{ github.event.inputs.project_name }}`}}"}' cicd_params.json`" > cicd_params.json
-          echo "`jq -s '.[0] + .[1]' cicd_params.json {{`${{ github.event.inputs.project_name }}`}}/project_params.json`" > cicd_params.json
+          printf '%s' "$(jq '. += {"input_project_name":"{{`${{ github.event.inputs.project_name }}`}}"}' cicd_params.json)" > cicd_params.json
+          printf '%s' "$(jq -s '.[0] + .[1]' cicd_params.json {{`${{ github.event.inputs.project_name }}`}}/project_params.json)" > cicd_params.json
       - name: Update databricks.yml
         id: update
         run: |
