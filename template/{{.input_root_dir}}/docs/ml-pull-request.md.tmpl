@@ -79,8 +79,8 @@ You can track the state of the ML pipelines for the current project from the MLf
 * [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}/ml/models/staging-{{template `model_name` .}})
 * [Prod workspace registered model]({{template `databricks_prod_workspace_host` .}}/ml/models/prod-{{template `model_name` .}})
 {{- else -}} 
-* [Staging model in UC]({{template `databricks_staging_workspace_host` .}}/explore/data/models/staging/{{template `project_name` .}}/{{template `model_name` .}})
-* [Prod model in UC]({{template `databricks_prod_workspace_host` .}}/explore/data/models/prod/{{template `project_name` .}}/{{template `model_name` .}})
+* [Staging model in UC]({{template `databricks_staging_workspace_host` .}}/explore/data/models/staging/{{.input_project_name}}/{{template `model_name` .}})
+* [Prod model in UC]({{template `databricks_prod_workspace_host` .}}/explore/data/models/prod/{{.input_project_name}}/{{template `model_name` .}})
 {{end}}. 
 
 In both the staging and prod workspaces, the MLflow registered model contains links to:

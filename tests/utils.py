@@ -87,7 +87,6 @@ def generated_project_dir(
 ):
     params = {
         "input_setup_cicd_and_project": setup_cicd_and_project,
-        "input_project_name": "my-mlops-project",
         "input_root_dir": "my-mlops-project",
         "input_cloud": cloud,
     }
@@ -101,7 +100,7 @@ def generated_project_dir(
                 "input_release_branch": "release",
             }
         )
-    elif setup_cicd_and_project != "CICD_Only":
+    if setup_cicd_and_project != "CICD_Only":
         params.update(
             {
                 "input_project_name": "my-mlops-project",
