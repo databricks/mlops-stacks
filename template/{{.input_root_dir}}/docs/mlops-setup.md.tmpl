@@ -144,7 +144,9 @@ Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
 - **`deploy-cicd.yml`**:<br>
   - Generates the other CICD pipelines mentioned below for projects<br>
     - Manually triggered with `project_name` as parameter
-> Note that this workflow will need to be triggered for each project to set up its CI/CD.  
+> Note that this workflow will need to be triggered for each project to set up its CI/CD.  In order to run the `Push CICD Bundle to a New Branch` step in the workflow, the project needs to enable the Build Service to be able to contribute and create a branch for the project,
+i.e when the deploy CI/CD pipeline is triggered, the build service that runs this pipeline needs the necessary permissions to be able to push. To do this, go to Project Settings -> Repositories -> Security -> Select <project_name> Build Service under users and 
+set "Contribute", "Create Branch", and "Contribute to pull requests" to "Allow".
 
 Project-Specific pipelines:
 - **`{{ .input_project_name }}-tests-ci.yml`**:<br>
