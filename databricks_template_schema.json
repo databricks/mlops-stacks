@@ -12,7 +12,7 @@
     "input_project_name": {
       "order": 2,
       "type": "string",
-      "default": "my-mlops-project",
+      "default": "my_mlops_project",
       "description": "\nProject Name. Default",
       "pattern": "^[^ .\\\\/]{3,}$",
       "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\".",
