@@ -51,7 +51,7 @@ MLOps Stacks provides example ML code.
 You may want to customize the example code, e.g. further prune it down into a skeleton for data scientists
 to fill out.
 
-If you customize this component, you can still use the CI/CD and ML asset components to build production ML pipelines, as long as you provide ML
+If you customize this component, you can still use the CI/CD and ML resource components to build production ML pipelines, as long as you provide ML
 notebooks with the expected interface. For example, model training under ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/`` and inference under
 ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/``. See code comments in the notebook files for the expected interface & behavior of these notebooks.
 
@@ -63,18 +63,18 @@ MLOps Stacks currently has the following sub-components for CI/CD:
 * Logic to trigger model deployment through REST API calls to your CD system, when model training completes.
   This logic is currently captured in ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/deployment/model_deployment/notebooks/ModelDeployment.py``
 
-### ML asset configs
-Root ML asset config file can be found as ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml``. 
-It defines the ML config assets to be included and workspace host for each deployment target.
+### ML resource configs
+Root ML resource config file can be found as ``{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/databricks.yml``. 
+It defines the ML config resources to be included and workspace host for each deployment target.
 
-ML asset configs (databricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
-``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/assets``, along with docs.
+ML resource configs (databricks CLI bundles code definitions of ML jobs, experiments, models etc) can be found under 
+``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources``, along with docs.
 
 You can update this component to customize the default ML pipeline structure for new ML projects in your organization,
 e.g. add additional model inference jobs or modify the default instance type used in ML jobs.
 
 When updating this component, you may want to update developer-facing docs in
-``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/assets/README.md``.
+``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/resources/README.md``.
 
 ### Docs
 After making customizations, make any changes needed to

@@ -5,7 +5,7 @@ import json
 import subprocess
 from functools import wraps
 
-ASSET_TEMPLATE_ROOT_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
+RESOURCE_TEMPLATE_ROOT_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
 
 AZURE_DEFAULT_PARAMS = {
     "input_setup_cicd_and_project": "CICD_and_Project",
@@ -212,7 +212,7 @@ def generate(directory, databricks_cli, context):
         check=True,
     )
     subprocess.run(
-        f"{databricks_cli} bundle init {ASSET_TEMPLATE_ROOT_DIRECTORY} --config-file {config_file} --output-dir {directory}",
+        f"{databricks_cli} bundle init {RESOURCE_TEMPLATE_ROOT_DIRECTORY} --config-file {config_file} --output-dir {directory}",
         shell=True,
         check=True,
     )
