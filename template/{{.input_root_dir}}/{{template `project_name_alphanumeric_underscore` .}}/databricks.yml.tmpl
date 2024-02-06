@@ -12,10 +12,10 @@ variables:
     {{- else -}}default: {{template `model_name` .}}{{end}}
 
 include:
-  # Assets folder contains ML artifact assets for the ml project that defines model and experiment
-  # And workflows assets for the ml project including model training -> validation -> deployment,
+  # Resources folder contains ML artifact resources for the ML project that defines model and experiment
+  # And workflows resources for the ML project including model training -> validation -> deployment,
   # {{- if (eq .input_include_feature_store `yes`) }} feature engineering, {{ end }} batch inference, data monitoring, metric refresh, alerts and triggering retraining
-  - ./assets/*.yml
+  - ./resources/*.yml
 
 # Deployment Target specific values for workspace
 targets:

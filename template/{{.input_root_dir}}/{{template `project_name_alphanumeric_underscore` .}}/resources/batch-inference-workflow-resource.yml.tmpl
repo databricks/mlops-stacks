@@ -29,7 +29,7 @@ resources:
               {{- else -}}output_table_name: ${bundle.target}.{{ .input_schema_name }}.predictions{{ end }}
               {{ if (eq .input_include_models_in_unity_catalog `no`) }}model_name: ${var.model_name}
               {{- else -}}model_name: ${bundle.target}.{{ .input_schema_name }}.${var.model_name}{{ end }}
-              # git source information of current ML asset deployment. It will be persisted as part of the workflow run
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
       schedule:
