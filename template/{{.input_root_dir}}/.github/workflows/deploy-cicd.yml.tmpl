@@ -31,7 +31,7 @@ jobs:
       - name: Convert Project Name to Only Alphanumeric Characters
         run: |
           PROJECT_NAME_ALPHA=$(echo "{{`${{ github.event.inputs.project_name }}`}}" | tr ' -' '_')
-          echo "PROJECT_NAME_ALPHA=$PROJECT_NAME_ALPHA" >> $GITHUB_ENV
+          echo "PROJECT_NAME_ALPHA=$PROJECT_NAME_ALPHA" >> "$GITHUB_ENV"
       - name: Install jq
         run: sudo apt-get install jq
       - name: Unzip Bundle and Append Parameters to Input JSON
@@ -45,7 +45,7 @@ jobs:
             exit 1
           fi
           printf '%s' "$(jq '. += {"input_project_name":"{{`${{ github.event.inputs.project_name }}`}}"}' cicd_params.json)" > cicd_params.json
-          printf '%s' "$(jq -s '.[0] + .[1]' cicd_params.json $PROJECT_NAME_ALPHA/project_params.json)" > cicd_params.json
+          printf '%s' "$(jq -s '.[0] + .[1]' cicd_params.json "$PROJECT_NAME_ALPHA/project_params.json")" > cicd_params.json
       - name: Update databricks.yml
         id: update
         run: |
