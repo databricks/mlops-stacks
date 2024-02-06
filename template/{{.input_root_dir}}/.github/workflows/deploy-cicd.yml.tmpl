@@ -30,7 +30,8 @@ jobs:
       - uses: databricks/setup-cli@{{template `cli_version` .}}
       - name: Convert Project Name to Only Alphanumeric Characters
         run: |
-          echo "PROJECT_NAME_ALPHA=$(echo "{{`${{ github.event.inputs.project_name }}`}}" | tr ' -' '_')" >> $GITHUB_ENV
+          PROJECT_NAME_ALPHA=$(echo "{{`${{ github.event.inputs.project_name }}`}}" | tr ' -' '_')
+          echo "PROJECT_NAME_ALPHA=$PROJECT_NAME_ALPHA" >> $GITHUB_ENV
       - name: Install jq
         run: sudo apt-get install jq
       - name: Unzip Bundle and Append Parameters to Input JSON
@@ -38,7 +39,7 @@ jobs:
         run: |
           tar -xzvf cicd.tar.gz
           INPUT_CLOUD_1=$(jq -r '.input_cloud' cicd_params.json)
-          INPUT_CLOUD_2=$(jq -r '.input_cloud' $PROJECT_NAME_ALPHA/project_params.json)
+          INPUT_CLOUD_2=$(jq -r '.input_cloud' "$PROJECT_NAME_ALPHA/project_params.json")
           if [ "$INPUT_CLOUD_1" != "$INPUT_CLOUD_2" ]; then
             printf "Error: CICD cloud '%s' does not match project cloud '%s'\n" "$INPUT_CLOUD_1" "$INPUT_CLOUD_2"
             exit 1
@@ -48,7 +49,7 @@ jobs:
       - name: Update databricks.yml
         id: update
         run: |
-          echo -e "  staging:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> $PROJECT_NAME_ALPHA/databricks.yml
+          echo -e "  staging:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$PROJECT_NAME_ALPHA/databricks.yml"
       - name: Initialize Bundle
         id: initialize
         run: |
@@ -61,7 +62,7 @@ jobs:
           git config --global user.name "Deploy CICD Bot"
           git config --global user.email "noreply-cicd-bot@databricks.com"
           git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}
-          git add .github $PROJECT_NAME_ALPHA/databricks.yml
+          git add .github "$PROJECT_NAME_ALPHA/databricks.yml"
           git commit -m "Add CICD for {{`${{ github.event.inputs.project_name }}`}}"
           git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}
       - name: Create Pull Request
