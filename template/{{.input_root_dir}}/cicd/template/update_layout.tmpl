@@ -1,0 +1,7 @@
+{{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
+    {{ skip `.azure` }}
+{{ else if (eq .input_cicd_platform `azure_devops`) }}
+    {{ skip `.github` }}
+{{ end }}
+
+{{ skip `update_layout` }}

@@ -1,0 +1,9 @@
+{
+  "input_root_dir": "{{ .input_root_dir }}",
+  "input_cloud": "{{ .input_cloud }}",
+  "input_cicd_platform": "{{ .input_cicd_platform }}",
+  "input_default_branch": "{{ .input_default_branch }}",
+  "input_release_branch": "{{ .input_release_branch }}",
+  "cloud_specific_node_type_id": "{{template `cli_version` .}}",
+  "input_cli_version": "{{template `cli_version` .}}"
+}

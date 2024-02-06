@@ -1,5 +1,220 @@
-# {{template `project_name` .}}
+# {{ .input_project_name }}
+This project comes with example ML code to train, validate and deploy a regression model to predict NYC taxi fares.
+If you're a data scientist just getting started with this repo for a brand new ML project, we recommend 
+adapting the provided example code to your ML problem. Then making and 
+testing ML code changes on Databricks or your local machine.
 
-This directory contains python code, notebooks and ML asset configs related to one ML project.
+## Table of contents
+* [Code structure](#code-structure): structure of this project.
+{{ if (eq .input_include_feature_store `yes`) }}
+* [Configure your ML pipeline](#configure-your-ml-pipeline): making and testing ML code changes on Databricks or your local machine.
+{{ end }}
+* [Iterating on ML code](#iterating-on-ml-code): making and testing ML code changes on Databricks or your local machine.
+* [Next steps](#next-steps)
 
-See the [Project overview](../docs/project-overview.md) for details on code structure of project directory.
+This directory contains an ML project based on the default
+[Databricks MLOps Stacks](https://github.com/databricks/mlops-stacks),
+defining a production-grade ML pipeline for automated retraining and batch inference of an ML model on tabular data.
+
+## Code structure
+This project contains the following components:
+
+| Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
+| ML Assets as Code | ML pipeline assets (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
+
+contained in the following files:
+
+```
+{{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
+│
+├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
+│   │
+│   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
+│   │
+│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and asset config component to be included.
+│   │
+{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
+│   ├── training                <- Training folder contains Notebook that trains and registers the model.
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Deployment and Batch inference workflows
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, deploy the registered model by assigning it the appropriate alias.
+│   │
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+{{ else if (eq .input_include_feature_store `yes`) -}}
+│   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
+│   │
+│   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
+│   │                              The output of these transforms get persisted as Feature Store tables. Most development
+│   │                              work happens here.
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Deployment and Batch inference workflows
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, deploy the registered model by assigning it the appropriate alias.
+│   │
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
+│   │
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       │
+│       ├── feature-engineering-workflow-asset.yml  <- ML asset config definition for feature engineering workflow
+│       │
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+{{ else -}}
+│   ├── training                <- Folder for model development via MLflow recipes.
+│   │   │
+│   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
+│   │   │                          development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
+│   │   │
+│   │   ├── notebooks           <- Databricks notebook that runs the MLflow recipe, i.e. run the logic in `steps`. Used to
+│   │   │                          drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
+│   │   │                          the notebook.
+│   │   │
+│   │   ├── recipe.yaml         <- The main recipe configuration file that declaratively defines the attributes and behavior
+│   │   │                          of each recipe step, such as the input dataset to use for training a model or the
+│   │   │                          performance criteria for promoting a model to production.
+│   │   │
+│   │   ├── profiles            <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow recipes execution.
+│   │
+│   │
+│   ├── validation              <- Optional model validation step before deploying a model.
+│   │
+│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
+│   │
+│   ├── deployment              <- Model deployment and endpoint deployment.
+│   │   │
+│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
+│   │   │
+│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
+│   │
+│   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
+│   │
+│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│       │
+│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       │
+│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       │
+│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       │
+│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+{{ end -}}
+```
+
+{{ if (eq .input_include_feature_store `yes`) }}
+## Configure your ML pipeline
+
+The sample ML code consists of the following:
+
+* Feature computation modules under `feature_engineering` folder. 
+These sample module contains features logic that can be used to generate and populate tables in Feature Store.
+In each module, there is `compute_features_fn` method that you need to implement. This should compute a features dataframe
+(each column being a separate feature), given the input dataframe, timestamp column and time-ranges. 
+The output dataframe will be persisted in a [time-series Feature Store table]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/time-series.html")) }}).
+See the example modules' documentation for more information.
+* Python unit tests for feature computation modules in `tests/feature_engineering` folder.
+* Feature engineering notebook, `feature_engineering/notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
+* Training notebook that [trains]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/train-models-with-feature-store.html")) }} ) a regression model by creating a training dataset using the Feature Store client.
+* Model deployment and batch inference notebooks that deploy and use the trained model. 
+* An automated integration test is provided (in `.github/workflows/{{ .input_project_name }}-run-tests.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
+
+To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
+the feature engineering pipelines.
+1. Implement your feature module, address TODOs in `feature_engineering/features` and create unit test in `tests/feature_engineering`
+2. Update `assets/feature-engineering-workflow-asset.yml`. Fill in notebook parameters for `write_feature_table_job`.
+3. Update training data path in `assets/model-workflow-asset.yml`.
+
+We expect most of the development to take place in the `feature_engineering` folder.
+
+{{ end }}
+## Iterating on ML code
+
+### Deploy ML code and assets to dev workspace using Bundles
+
+Refer to [Local development and dev workspace](./assets/README.md#local-development-and-dev-workspace)
+to use databricks CLI bundles to deploy ML code together with ML asset configs to dev workspace.
+
+This will allow you to develop locally and use databricks CLI bundles to deploy to your dev workspace to test out code and config changes.
+
+### Develop on Databricks using Databricks Repos
+
+#### Prerequisites
+You'll need:
+* Access to run commands on a cluster running Databricks Runtime ML version 11.0 or above in your dev Databricks workspace
+* To set up [Databricks Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}): see instructions below
+
+#### Configuring Databricks Repos
+To use Repos, [set up git integration]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/repos-setup.html")) }}) in your dev workspace.
+
+If the current project has already been pushed to a hosted Git repo, follow the
+[UI workflow]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later")) }})
+to clone it into your dev workspace and iterate. 
+
+Otherwise, e.g. if iterating on ML code for a new project, follow the steps below:
+* Follow the [UI workflow]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later")) }})
+  for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
+* Install the `dbx` CLI via `pip install --upgrade dbx`
+* Run `databricks configure --profile {{ .input_project_name }}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
+  This should prompt you to enter an API token
+* [Create a personal access token]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/auth.html#personal-access-tokens-for-users")) }})
+  in your dev workspace and paste it into the prompt from the previous step
+* From within the root directory of the current project, use the [dbx sync](https://dbx.readthedocs.io/en/latest/guides/python/devloop/mixed/#using-dbx-sync-repo-for-local-to-repo-synchronization) tool to copy code files from your local machine into the Repo by running
+  `dbx sync repo --profile {{ .input_project_name }}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
+
+{{ if (eq .input_include_feature_store `yes`) }}
+### Develop locally
+
+You can iterate on the feature transform modules locally in your favorite IDE before running them on Databricks.  
+
+#### Running code on Databricks
+You can iterate on ML code by running the provided `feature_engineering/notebooks/GenerateAndWriteFeatures.py` notebook on Databricks using
+[Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
+the feature transforms code defined under ``features``. You can use multiple browser tabs to edit
+logic in `features` and run the feature engineering pipeline in the `GenerateAndWriteFeatures.py` notebook.
+
+#### Prerequisites
+* Python 3.8+
+* Install feature engineering code and test dependencies via `pip install -I -r requirements.txt` from project root directory.
+* The features transform code uses PySpark and brings up a local Spark instance for testing, so [Java (version 8 and later) is required](https://spark.apache.org/docs/latest/#downloading). 
+#### Run unit tests
+You can run unit tests for your ML code via `pytest tests`.
+
+{{ end }}
+## Next Steps
+When you're satisfied with initial ML experimentation (e.g. validated that a model with reasonable performance can be
+trained on your dataset) and ready to deploy production training/inference
+pipelines, ask your ops team to set up CI/CD for the current ML project if they haven't already. CI/CD can be set up as part of the 
+MLOps Stacks initialization even if it was skipped in this case, or this project can be added to a repo setup with CI/CD already,
+following the directions under "Setting up CI/CD" in the repo root directory README.
+More details can be found on the homepage [MLOps Stacks README](https://github.com/databricks/mlops-stacks/blob/main/README.md).

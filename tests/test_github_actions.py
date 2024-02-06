@@ -1,10 +1,10 @@
 import subprocess
 import pytest
+from functools import wraps
 from utils import (
     databricks_cli,
     generated_project_dir,
     parametrize_by_cloud,
-    parametrize_by_project_generation_params,
 )
 
 
@@ -12,8 +12,15 @@ from utils import (
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize(
-    "include_feature_store, include_mlflow_recipes, include_models_in_unity_catalog",
-    [("yes", "no", "no"), ("no", "yes", "no"), ("no", "no", "yes"), ("no", "no", "no")],
+    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    [
+        ("CICD_and_Project", "no", "no", "no"),
+        ("CICD_and_Project", "no", "no", "yes"),
+        ("CICD_and_Project", "no", "yes", "no"),
+        ("CICD_and_Project", "yes", "no", "no"),
+        ("CICD_and_Project", "yes", "no", "yes"),
+        ("CICD_Only", "no", "no", "no"),
+    ],
 )
 @parametrize_by_cloud
 def test_generated_yaml_format(cicd_platform, generated_project_dir):
@@ -36,10 +43,15 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
 @pytest.mark.parametrize(
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
-@pytest.mark.parametrize("include_feature_store", ["no"])
 @pytest.mark.parametrize(
-    "include_mlflow_recipes, include_models_in_unity_catalog",
-    [("yes", "no"), ("no", "yes"), ("no", "no")],
+    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    [
+        ("CICD_and_Project", "no", "no", "no"),
+        ("CICD_and_Project", "no", "no", "yes"),
+        ("CICD_and_Project", "no", "yes", "no"),
+        ("CICD_and_Project", "yes", "no", "no"),
+        ("CICD_and_Project", "yes", "no", "yes"),
+    ],
 )
 @parametrize_by_cloud
 def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
@@ -50,30 +62,6 @@ def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
         """
         git init
         act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests.yml -j "unit_tests"
-        """,
-        shell=True,
-        check=True,
-        executable="/bin/bash",
-        cwd=(generated_project_dir / "my-mlops-project"),
-    )
-
-
-@pytest.mark.large
-@pytest.mark.parametrize(
-    "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
-)
-@pytest.mark.parametrize("include_feature_store", ["yes"])
-@pytest.mark.parametrize("include_mlflow_recipes", ["no"])
-@pytest.mark.parametrize("include_models_in_unity_catalog", ["no"])
-@parametrize_by_cloud
-def test_run_unit_tests_feature_store_workflow(cicd_platform, generated_project_dir):
-    """Test that the GitHub workflow for running unit tests passes for feature store"""
-    # We only test the unit test workflow, as it's the only one that doesn't require
-    # Databricks REST API
-    subprocess.run(
-        """
-        git init
-        act -s GITHUB_TOKEN workflow_dispatch --workflows .github/workflows/my-mlops-project-run-tests-fs.yml -j "unit_tests"
         """,
         shell=True,
         check=True,

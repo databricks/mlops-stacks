@@ -1,4 +1,5 @@
 # define template variables
+<<<<<<< HEAD
 {{ define `root_dir` -}}
     {{ .input_root_dir }}
 {{- end }}
@@ -59,6 +60,8 @@
     {{- end -}}
 {{- end }}
 
+=======
+>>>>>>> a684031 (Fix Monorepo Setup & Separate by Role (#133))
 {{ define `databricks_prod_workspace_host` -}}
     {{- if not (eq (print .input_databricks_prod_workspace_host) "") -}}
         {{- with url (print .input_databricks_prod_workspace_host) -}}
@@ -91,63 +94,6 @@
     {{- end -}}
 {{- end }}
 
-{{ define `default_branch` -}}
-    {{ .input_default_branch }}
-{{- end }}
-
-{{ define `release_branch` -}}
-    {{ .input_release_branch }}
-{{- end }}
-
-{{ define `read_user_group` -}}
-    {{ .input_read_user_group }}
-{{- end }}
-
-{{ define `include_feature_store` -}}
-    {{- if (eq .input_include_feature_store `no`) -}}
-        no
-    {{- else if (eq .input_include_feature_store `yes`) -}}
-        yes
-    {{- else -}}
-        {{fail `Invalid selection of include_feature_store. Please choose from [no, yes]`}}
-    {{- end -}}
-{{- end }}
-
-{{ define `include_mlflow_recipes` -}}
-    {{- if (eq .input_include_mlflow_recipes `no`) -}}
-        no
-    {{- else if (eq .input_include_mlflow_recipes `yes`) -}}
-        yes
-    {{- else -}}
-        {{ fail `Invalid selection of include_mlflow_recipes. Please choose from [no, yes]` }}
-    {{- end -}}
-{{- end }}
-
-{{ define `include_models_in_unity_catalog` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `no`) -}}
-        no
-    {{- else if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        yes
-    {{- else -}}
-        {{ fail `Invalid selection of include_models_in_unity_catalog. Please choose from [no, yes]` }}
-    {{- end -}}
-{{- end }}
-
-{{ define `schema_name` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        {{ .input_schema_name }}
-    {{- else -}}
-        {{ "" }}
-    {{- end -}}
-{{- end }}
-
-{{ define `unity_catalog_read_user_group` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        {{ .input_unity_catalog_read_user_group }}
-    {{- else -}}
-        {{ "account users" }}
-    {{- end -}}
-{{- end }}
 
 {{ define `cloud_specific_node_type_id` -}}
     {{- if (eq .input_cloud `aws`) -}}
@@ -161,16 +107,6 @@
     {{- end -}}
 {{- end -}}
 
-{{define `framework` -}}
-    {{- if (eq .input_include_feature_store `yes`) -}}
-        fs
-    {{- else if (eq .input_include_mlflow_recipes `yes`) -}}
-        recipes
-    {{- else -}}
-        delta
-    {{- end -}}
-{{- end }}
-
 {{ define `model_name` -}}
     {{ .input_project_name }}-model
 {{- end }}
@@ -179,10 +115,10 @@
     {{ .input_project_name }}-experiment
 {{- end }}
 
-{{ define `service_principal_group` -}}
-    {{ .input_project_name }}-service-principals
-{{- end }}
-
 {{ define `project_name_alphanumeric_underscore` -}}
     {{- (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString (print .input_project_name) ``) `_` -}}
+{{- end }}
+
+{{ define `cli_version` -}}
+    v0.212.2
 {{- end }}

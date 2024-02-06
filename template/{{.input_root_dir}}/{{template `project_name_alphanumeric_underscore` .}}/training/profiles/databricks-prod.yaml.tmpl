@@ -36,4 +36,4 @@ PREDICT_OUTPUT_CONFIG:
   # Specify the output format of the batch scoring predict step
   using: table
   # TODO: Specify the name of the output table for batch inference in your prod workspace here
-  location: "{{template `project_name` .}}_batch_scoring"
+  location: "{{ .input_project_name }}_batch_scoring"

@@ -21,6 +21,14 @@ jobs:
         run: |
             python -m pip install --upgrade pip
             pip install -r dev-requirements.txt
+      - name: Generate CICD Zip
+        run: |
+          cd template/{{.input_root_dir}}
+          cp --parents .github/workflows/\{\{.input_project_name\}\}-* cicd/template
+          cp --parents .azure/devops-pipelines/\{\{.input_project_name\}\}-* cicd/template
+          tar -czvf cicd.tar.gz cicd
+          rm -rf cicd/template/.github cicd/template/.azure
+          cd ../..
       - name: Run tests with pytest
         run: |
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}

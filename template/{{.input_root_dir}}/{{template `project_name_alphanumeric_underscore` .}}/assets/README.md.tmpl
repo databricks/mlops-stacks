@@ -1,13 +1,15 @@
 # Databricks ML Resource Configurations
-[(back to main README)](../../README.md)
+[(back to project README)](../README.md)
 
 ## Table of contents
 * [Intro](#intro)
 * [Local development and dev workspace](#local-development-and-dev-workspace)
+* [Develop and test config changes](#develop-and-test-config-changes)
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 * [CI/CD](#set-up-cicd)
 * [Deploy initial ML assets](#deploy-initial-ml-assets)
-* [Develop and test config changes](#develop-and-test-config-changes)
 * [Deploy config changes](#deploy-config-changes)
+{{- end }}
 
 ## Intro
 
@@ -30,14 +32,20 @@ ML Resource Configurations in this directory:
 The ML assets can be deployed to databricks workspace based on the databricks CLI bundles deployment config.
 Deployment configs of different deployment targets share the general ML asset configurations with added ability to specify deployment target specific values (workspace URI, model name, jobs notebook parameters, etc).
 
+{{- if (eq .input_setup_cicd_and_project `Project_Only`) }}
+
+NOTE: This project was not setup with CI/CD workflows. You can setup CI/CD with a new initialization of MLOps Stacks. The rest of this section only applies if you are using a monorepo setup with CI/CD previously or have setup CI/CD otherwise.
+{{- else }}
 This project ships with CI/CD workflows for developing and deploying ML asset configurations based on deployment config.
+{{- end }}
 
 {{- if (eq .input_include_models_in_unity_catalog "yes") }}
 
-NOTE: For Model Registry in Unity Catalog, we expect a catalog to exist with the name of the deployment target by default. For example, if the deployment target is `dev`, we expect a catalog named `dev` to exist in the workspace. 
+For Model Registry in Unity Catalog, we expect a catalog to exist with the name of the deployment target by default. For example, if the deployment target is `dev`, we expect a catalog named `dev` to exist in the workspace. 
 If you want to use different catalog names, please update the `targets` declared in the `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml` and `{{template `project_name_alphanumeric_underscore` .}}/assets/ml-artifacts-asset.yml` files.
 If changing the `staging`, `prod`, or `test` deployment targets, you'll need to update the 
-{{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }} workflows located in the `.github/workflows` directory.
+{{- if (eq .input_setup_cicd_and_project `Project_Only`) }} workflows located in the root directory if in a monorepo setup with CI/CD. Otherwise you can setup CI/CD with a new initialization of MLOps Stacks.
+{{- else if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }} workflows located in the `.github/workflows` directory.
 {{- else if (eq .input_cicd_platform `azure_devops`) }}  pipelines located in the `azure-pipelines` directory.{{- end }}
 {{- end }}
 
@@ -45,21 +53,23 @@ If changing the `staging`, `prod`, or `test` deployment targets, you'll need to 
 | Deployment Target | Description                                                                                                                                                                                                                           | Databricks Workspace | Model Name                          | Experiment Name                                |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|-------------------------------------|------------------------------------------------|
 | dev         | The `dev` deployment target is used by ML engineers to deploy ML assets to development workspace with `dev` configs. The config is for ML project development purposes.                                                           | dev workspace        | dev-{{template `model_name` .}}     | /dev-{{template `experiment_base_name` .}}     |
-| staging     | The `staging` deployment target is part of the CD pipeline. Latest {{template `default_branch` .}} content will be deployed to staging workspace with `staging` config.                                                             | staging workspace    | staging-{{template `model_name` .}} | /staging-{{template `experiment_base_name` .}} |
-| prod        | The `prod` deployment target is part of the CD pipeline. Latest {{template `release_branch` .}} content will be deployed to prod workspace with `prod` config.                                                                      | prod workspace       | prod-{{template `model_name` .}}    | /prod-{{template `experiment_base_name` .}}    |
-| test        | The `test` deployment target is part of the CI pipeline. For changes targeting the {{template `default_branch` .}} branch, upon making a PR, an integration test will be triggered and ML assets deployed to the staging workspace defined under `test` deployment target. | staging workspace    | test-{{template `model_name` .}}    | /test-{{template `experiment_base_name` .}}    |
+| staging     | The `staging` deployment target is part of the CD pipeline. Latest {{ .input_default_branch }} content will be deployed to staging workspace with `staging` config.                                                             | staging workspace    | staging-{{template `model_name` .}} | /staging-{{template `experiment_base_name` .}} |
+| prod        | The `prod` deployment target is part of the CD pipeline. Latest {{ .input_release_branch }} content will be deployed to prod workspace with `prod` config.                                                                      | prod workspace       | prod-{{template `model_name` .}}    | /prod-{{template `experiment_base_name` .}}    |
+| test        | The `test` deployment target is part of the CI pipeline. For changes targeting the {{ .input_default_branch }} branch, upon making a PR, an integration test will be triggered and ML assets deployed to the staging workspace defined under `test` deployment target. | staging workspace    | test-{{template `model_name` .}}    | /test-{{template `experiment_base_name` .}}    |
 
 During ML code development, you can deploy local ML asset configurations together with ML code to the a Databricks workspace to run the training, model validation or batch inference pipelines. The deployment will use `dev` config by default.
 
-You can open a PR (pull request) to modify ML code or the asset config against {{template `default_branch` .}} branch.
+You can open a PR (pull request) to modify ML code or the asset config against {{ .input_default_branch }} branch.
 The PR will trigger Python unit tests, followed by an integration test executed on the staging workspace, as defined under the `test` environment asset. 
 
-Upon merging a PR to the {{template `default_branch` .}} branch, the {{template `default_branch` .}} branch content will be deployed to the staging workspace with `staging` environment asset configurations.
+Upon merging a PR to the {{ .input_default_branch }} branch, the {{ .input_default_branch }} branch content will be deployed to the staging workspace with `staging` environment asset configurations.
 
 Upon merging code into the release branch, the release branch content will be deployed to prod workspace with `prod` environment asset configurations.
 
 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ![ML asset config diagram](../../docs/images/mlops-stack-deploy.png)
+{{- end }}
 
 ## Local development and dev workspace
 
@@ -85,6 +95,7 @@ Alternatively, you can use the other approaches described in the [databricks CLI
 ### Destroy ML asset configurations
 After development is done, you can run `databricks bundle destroy` to destroy (remove) the defined Databricks assets in the dev workspace. Any model version with `Production` or `Staging` stage will prevent the model from being deleted. Please update the version stage to `None` or `Archived` before destroying the ML assets.
 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ## Set up CI/CD
 Please refer to [mlops-setup](../../docs/mlops-setup.md#configure-cicd) for instructions to set up CI/CD.
 
@@ -96,14 +107,15 @@ git add .
 git commit -m "Add ML asset config and ML code"
 git push upstream add-ml-asset-config-and-code
 ```
-Open a pull request to merge the pushed branch into the `{{template `default_branch` .}}` branch.
+Open a pull request to merge the pushed branch into the `{{ .input_default_branch }}` branch.
 Upon creating this PR, the CI workflows will be triggered.
 These CI workflow will run unit and integration tests of the ML code, 
 in addition to validating the Databricks assets to be deployed to both staging and prod workspaces.
-Once CI passes, merge the PR into the `{{template `default_branch` .}}` branch. This will deploy an initial set of Databricks assets to the staging workspace.
-assets will be deployed to the prod workspace on pushing code to the `{{template `release_branch` .}}` branch.
+Once CI passes, merge the PR into the `{{ .input_default_branch }}` branch. This will deploy an initial set of Databricks assets to the staging workspace.
+assets will be deployed to the prod workspace on pushing code to the `{{ .input_release_branch }}` branch.
 
 Follow the next section to configure the input and output data tables for the batch inference job.
+{{- end }}
 
 ### Setting up the batch inference job
 The batch inference job expects an input Delta table with a schema that your registered model accepts. To use the batch
@@ -148,7 +160,7 @@ new_cluster: &new_cluster
 resources:
   jobs:
     batch_inference_job:
-      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
+      name: ${bundle.target}-{{ .input_project_name }}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
           <<: *new_cluster
@@ -160,12 +172,12 @@ resources:
               ...
 ```
 
-The example above defines a Databricks job with name `${bundle.target}-{{template `project_name` .}}-batch-inference-job`
+The example above defines a Databricks job with name `${bundle.target}-{{ .input_project_name }}-batch-inference-job`
 that runs the notebook under `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/BatchInference.py` to regularly apply your ML model for batch inference. 
 
 At the start of the asset definition, we declared an anchor `new_cluster` that will be referenced and used later. For more information about anchors in yaml schema, please refer to the [yaml documentation](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases).
 
-We specify a `batch_inference_job` under `assets/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.target}-{{template `project_name` .}}-batch-inference-job`.
+We specify a `batch_inference_job` under `assets/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.target}-{{ .input_project_name }}-batch-inference-job`.
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
 After setting up databricks CLI, you can run command `databricks bundle schema`  to learn more about databricks CLI bundles schema.
 
@@ -173,8 +185,8 @@ The notebook_path is the relative path starting from the asset yaml file.
 
 ### Environment config based variables
 The `${bundle.target}` will be replaced by the environment config name during the bundle deployment. For example, during the deployment of a `test` environment config, the job name will be
-`test-{{template `project_name` .}}-batch-inference-job`. During the deployment of the `staging` environment config, the job name will be
-`staging-{{template `project_name` .}}-batch-inference-job`.
+`test-{{ .input_project_name }}-batch-inference-job`. During the deployment of the `staging` environment config, the job name will be
+`staging-{{ .input_project_name }}-batch-inference-job`.
 
 
 To use different values based on different environment, you can use bundle variables based on the given target, for example,
@@ -203,7 +215,7 @@ new_cluster: &new_cluster
 resources:
   jobs:
     batch_inference_job:
-      name: ${bundle.target}-{{template `project_name` .}}-batch-inference-job
+      name: ${bundle.target}-{{ .input_project_name }}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
           <<: *new_cluster
@@ -227,18 +239,20 @@ To test out a config change, simply edit one of the fields above. For example, i
 Then follow [Local development and dev workspace](#local-development-and-dev-workspace) to deploy the change to the dev workspace.
 Alternatively you can open a PR. Continuous integration will then validate the updated config and deploy tests to the to staging workspace.
 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 ## Deploy config changes
 
 ### Dev workspace deployment
 Please refer to [Local development and dev workspace](#local-development-and-dev-workspace).
 
 ### Test workspace deployment(CI)
-After setting up CI/CD, PRs against the {{template `default_branch` .}} branch will trigger CI workflows to run unit tests, integration test and asset validation.
+After setting up CI/CD, PRs against the {{ .input_default_branch }} branch will trigger CI workflows to run unit tests, integration test and asset validation.
 The integration test will deploy MLflow model, MLflow experiment and Databricks workflow assets defined under the `test` environment asset config to the staging workspace. The integration test then triggers a run of the model workflow to verify the ML code. 
 
 ### Staging and Prod workspace deployment(CD)
-After merging a PR to the {{template `default_branch` .}} branch, continuous deployment automation will deploy the `staging` assets to the staging workspace.
+After merging a PR to the {{ .input_default_branch }} branch, continuous deployment automation will deploy the `staging` assets to the staging workspace.
 
-When you about to cut a release, you can create and merge a PR to merge changes from {{template `default_branch` .}} to {{template `release_branch` .}}. Continuous deployment automation will deploy `prod` assets to the prod workspace.
+When you about to cut a release, you can create and merge a PR to merge changes from {{ .input_default_branch }} to {{ .input_release_branch }}. Continuous deployment automation will deploy `prod` assets to the prod workspace.
+{{- end }}
 
-[Back to main project README](../../README.md)
+[Back to project README](../README.md)

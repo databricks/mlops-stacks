@@ -1,6 +1,6 @@
 # ML Developer Guide using MLflow Recipes
 
-[(back to main README)](../../README.md)
+[(back to project README)](../README.md)
 
 ## Table of contents
 * [Initial setup](#initial-setup): adapting the provided example code to your ML problem
@@ -20,7 +20,7 @@ See code comments in files under `notebooks` for the expected interface & behavi
 If you're not using MLflow Recipes, you can still follow the docs below to develop your ML code, skipping sections
 that are targeted at MLflow Recipes users. Then, when you're ready
 to productionize your ML project, ask your ops team to set up CI/CD and deploy
-production jobs per the [MLOps setup guide](../../docs/mlops-setup.md).
+production jobs{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`) }} per the [MLOps setup guide](../../docs/mlops-setup.md){{end}}.
 
 ### Configure your ML pipeline
 **This section assumes use of MLflow Recipes**.
@@ -64,12 +64,12 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 * Follow the [UI workflow]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later")) }})
   for creating a repo, but uncheck the "Create repo by cloning a Git repository" checkbox.
 * Install the `dbx` CLI via `pip install --upgrade dbx`
-* Run `databricks configure --profile {{template `project_name` .}}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
+* Run `databricks configure --profile {{ .input_project_name }}-dev --token --host <your-dev-workspace-url>`, passing the URL of your dev workspace.
   This should prompt you to enter an API token
 * [Create a personal access token]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/auth.html#personal-access-tokens-for-users")) }})
   in your dev workspace and paste it into the prompt from the previous step
 * From within the root directory of the current project, use the [dbx sync](https://dbx.readthedocs.io/en/latest/guides/python/devloop/mixed/#using-dbx-sync-repo-for-local-to-repo-synchronization) tool to copy code files from your local machine into the Repo by running
-  `dbx sync repo --profile {{template `project_name` .}}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
+  `dbx sync repo --profile {{ .input_project_name }}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
 #### Running code on Databricks
 You can iterate on ML code by running the provided `{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/TrainWithMLflowRecipes.py` notebook on Databricks using
@@ -112,12 +112,21 @@ Then, open a browser tab pointing to [http://127.0.0.1:5000](http://127.0.0.1:50
 You can run unit tests for your ML code via `pytest tests`.
 
 ## Next Steps
-If you're iterating on ML code for an existing, already-deployed ML project, follow [Submitting a Pull Request](../../docs/ml-pull-request.md)
+If you're iterating on ML code for an existing, already-deployed ML project, 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
+follow [Submitting a Pull Request](../../docs/ml-pull-request.md)
+{{- else }}
+ask your ops team to set up CI/CD by initializing MLOps Stacks with the `CICD_Only` parameter
+{{- end }}
 to submit your code for testing and production deployment.
 
 Otherwise, if exploring a new ML problem and satisfied with the results (e.g. you were able to train
 a model with reasonable performance on your dataset), you may be ready to productionize your pipeline.
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 To do this, follow the [MLOps Setup Guide](../../docs/mlops-setup.md) to set up CI/CD and deploy
 production training/inference pipelines.
+{{- else }}
+To do this, ask your ops team to set up CI/CD by initializing MLOps Stacks with the `CICD_Only` parameter.
+{{- end }}
 
-[(back to main README)](../../README.md)
+[(back to project README)](../README.md)
