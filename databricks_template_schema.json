@@ -92,7 +92,7 @@
       "order": 8,
       "type": "string",
       "default": "main",
-      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default",
+      "description": "\nName of the default branch, where the prod and staging ML resources are deployed from and the latest ML code is staged. Default",
       "skip_prompt_if": {
         "properties": {
           "input_setup_cicd_and_project": {
@@ -118,7 +118,7 @@
       "order": 10,
       "type": "string",
       "default": "users",
-      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default",
+      "description": "\nUser group name to give READ permissions to for project resources (ML jobs, integration test job runs, and machine learning resources). A group with this name must exist in both the staging and prod workspaces. Default",
       "skip_prompt_if": {
         "properties": {
           "input_setup_cicd_and_project": {

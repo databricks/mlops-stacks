@@ -22,18 +22,18 @@ This project contains the following components:
 | Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                                  |
-| ML Assets as Code | ML pipeline assets (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
+| ML Resources as Code | ML pipeline resources (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
 
 contained in the following files:
 
 ```
 {{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
 │
-├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML assets related to one ML project. 
+├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML resources related to one ML project. 
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
-│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and asset config component to be included.
+│   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
 {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
@@ -51,15 +51,15 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {{ else if (eq .input_include_feature_store `yes`) -}}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
@@ -80,17 +80,17 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including the modules under `features`.
 │   │
-│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
-│       ├── feature-engineering-workflow-asset.yml  <- ML asset config definition for feature engineering workflow
+│       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
 │       │
-│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {{ else -}}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
@@ -120,15 +120,15 @@ contained in the following files:
 │   │
 │   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
 │   │
-│   ├── assets               <- ML asset (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
+│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
 │       │
-│       ├── model-workflow-asset.yml                <- ML asset config definition for model training, validation, deployment workflow
+│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
 │       │
-│       ├── batch-inference-workflow-asset.yml      <- ML asset config definition for batch inference workflow
+│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
-│       ├── ml-artifacts-asset.yml                  <- ML asset config definition for model and experiment
+│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
-│       ├── monitoring-workflow-asset.yml           <- ML asset config definition for data monitoring workflow
+│       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
 {{ end -}}
 ```
 
@@ -152,18 +152,18 @@ See the example modules' documentation for more information.
 To adapt this sample code for your use case, implement your own feature module, specifying configs such as input Delta tables/dataset path(s) to use when developing
 the feature engineering pipelines.
 1. Implement your feature module, address TODOs in `feature_engineering/features` and create unit test in `tests/feature_engineering`
-2. Update `assets/feature-engineering-workflow-asset.yml`. Fill in notebook parameters for `write_feature_table_job`.
-3. Update training data path in `assets/model-workflow-asset.yml`.
+2. Update `resources/feature-engineering-workflow-resource.yml`. Fill in notebook parameters for `write_feature_table_job`.
+3. Update training data path in `resources/model-workflow-resource.yml`.
 
 We expect most of the development to take place in the `feature_engineering` folder.
 
 {{ end }}
 ## Iterating on ML code
 
-### Deploy ML code and assets to dev workspace using Bundles
+### Deploy ML code and resources to dev workspace using Bundles
 
-Refer to [Local development and dev workspace](./assets/README.md#local-development-and-dev-workspace)
-to use databricks CLI bundles to deploy ML code together with ML asset configs to dev workspace.
+Refer to [Local development and dev workspace](./resources/README.md#local-development-and-dev-workspace)
+to use databricks CLI bundles to deploy ML code together with ML resource configs to dev workspace.
 
 This will allow you to develop locally and use databricks CLI bundles to deploy to your dev workspace to test out code and config changes.
 
