@@ -146,8 +146,8 @@
       "type": "string",
       "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
       "default": "{{ .input_project_name }}",
-      "pattern": "^[^ .\\/]*$",
-      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\"",
+      "pattern": "^[^ .\\-\\/]*$",
+      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"-\", \"\\\", \"/\"",
       "skip_prompt_if": {
         "anyOf":[
           {
