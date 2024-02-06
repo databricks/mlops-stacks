@@ -28,8 +28,8 @@
 #                                             Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # * targets                                 - The string name of a column from data that contains evaluation labels.
 #                                             Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate{{ end }}
-# * custom_metrics_loader_function          - Specifies the name of the function in {{template `project_name` .}}/validation/validation.py that returns custom metrics.
-# * validation_thresholds_loader_function   - Specifies the name of the function in {{template `project_name` .}}/validation/validation.py that returns model validation thresholds.
+# * custom_metrics_loader_function          - Specifies the name of the function in {{ .input_project_name }}/validation/validation.py that returns custom metrics.
+# * validation_thresholds_loader_function   - Specifies the name of the function in {{ .input_project_name }}/validation/validation.py that returns model validation thresholds.
 #
 # For details on mlflow evaluate API, see doc https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
 # For details and examples about performing model validation, see the Model Validation documentation https://mlflow.org/docs/latest/models.html#model-validation
@@ -84,7 +84,7 @@ dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Ev
 {{- if (eq .input_include_models_in_unity_catalog "no") }}
 dbutils.widgets.text("model_name", "dev-{{template `model_name` .}}", "Model Name")
 {{else}}
-dbutils.widgets.text("model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", "Full (Three-Level) Model Name")
+dbutils.widgets.text("model_name", "dev.{{ .input_schema_name }}.{{template `model_name` .}}", "Full (Three-Level) Model Name")
 {{end -}}
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 

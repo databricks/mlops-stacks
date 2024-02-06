@@ -2,12 +2,12 @@
 # defined under {{template `project_name_alphanumeric_underscore` .}}/assets/*
 # and {{template `project_name_alphanumeric_underscore` .}}/databricks.yml with staging deployment target configs,
 # when PRs are merged into the default branch
-name: Bundle Deployment for {{template `project_name` .}} Staging
+name: Bundle Deployment for {{ .input_project_name }} Staging
 
 on:
   push:
     branches:
-      - '{{template `default_branch` .}}'
+      - '{{ .input_default_branch }}'
   workflow_dispatch:
 
 defaults:
@@ -25,11 +25,11 @@ env:
 
 jobs:
   staging:
-    concurrency: {{template `project_name` .}}-staging-bundle-job
-    runs-on: ubuntu-22.04
+    concurrency: {{ .input_project_name }}-staging-bundle-job
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: databricks/setup-cli@v0.211.0
+      - uses: databricks/setup-cli@{{template `cli_version` .}}
       - name: Validate Bundle For Staging
         id: validate
         run: |

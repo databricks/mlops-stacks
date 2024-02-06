@@ -1,9 +1,2 @@
-# Validate workspace hostname
 {{ define `validation` }}
-
-    - Validate feature store and recipes
-    {{- if and (eq .input_include_feature_store `yes`) (eq .input_include_mlflow_recipes `yes`) -}}
-        {{ fail `Feature Store cannot be used with MLflow recipes. Please only use one of the two or neither.` }}
-    {{- end -}}
-
 {{- end -}}

@@ -6,19 +6,10 @@
 ML assets, per the [MLOps setup guide](mlops-setup.md).
 
 ## Table of contents
-* [Intro](#intro)
 * [Opening a pull request](#opening-a-pull-request)
 * [Viewing test status and debug logs](#viewing-test-status-and-debug-logs)
 * [Merging your pull request](#merging-your-pull-request)
 * [Next steps](#next-steps)
-
-## Intro
-After following the
-{{ if (eq .input_include_feature_store `yes`) }}[ML quickstart](ml-developer-guide-fs.md).
-{{ else }}[ML quickstart](ml-developer-guide.md).{{ end }}
-to iterate on ML code, the next step is to get
-your updated code merged back into the repo for production use. This page walks you through the workflow
-for doing so via a pull request.
 
 ## Opening a pull request
 
@@ -32,13 +23,17 @@ of the Git repo. Support for running tests against pull requests from repo forks
 is planned for the future.
 
 ## Viewing test status and debug logs
-Opening a pull request will trigger a  
+Opening a pull request will trigger a 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 {{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}} 
- [workflow](../.github/workflows/{{template `project_name` .}}-run-tests{{ if (eq .input_include_feature_store `yes`) }}-fs{{ end }}.yml)
+[workflow](../.github/workflows/{{ .input_project_name }}-run-tests.yml)
 {{- else if (eq .input_cicd_platform `azure_devops`) -}}
-[Azure DevOps Pipeline](../.azure/devops-pipelines/{{template `project_name` .}}-tests-ci.yml)
-{{ end }} 
-that runs unit and integration tests for the{{ if (eq .input_include_feature_store `yes`) }} feature engineering and{{ end }} model training pipeline on Databricks against a test dataset.
+[Azure DevOps Pipeline](../.azure/devops-pipelines/{{ .input_project_name }}-tests-ci.yml)
+{{- end }} 
+{{- else }}
+workflow
+{{- end }} 
+that runs unit and integration tests for the model training (and feature engineering if added) pipeline on Databricks against a test dataset.
 You can view test status and debug logs from the pull request UI, and push new commits to your pull request branch
 to address any test failures.
 {{ if (eq .input_include_feature_store `yes`) }}
@@ -70,12 +65,12 @@ and then merge it into the upstream repo.
 
 ## Next Steps
 {{- if (eq .input_default_branch .input_release_branch) }}
-After merging your pull request, subsequent runs of the {{ if (eq .input_include_feature_store `yes`) }}feature engineering,{{ end }} model training and batch inference
+After merging your pull request, subsequent runs of the model training, feature engineering if added, and batch inference
 jobs in staging will automatically use your updated ML code.
 
 You may want to wait to confirm that
 the staging jobs succeed, then repeat the workflow above to open a pull request against the
-`{{template `release_branch` .}}` branch to promote your ML code to production. Once your pull request against `{{template `release_branch` .}}`
+`{{ .input_release_branch }}` branch to promote your ML code to production. Once your pull request against `{{ .input_release_branch }}`
 merges, production jobs will also automatically include your changes. 
 
 {{- else }}
@@ -88,8 +83,8 @@ You can track the state of the ML pipelines for the current project from the MLf
 * [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}/ml/models/staging-{{template `model_name` .}})
 * [Prod workspace registered model]({{template `databricks_prod_workspace_host` .}}/ml/models/prod-{{template `model_name` .}})
 {{- else -}} 
-* [Staging model in UC]({{template `databricks_staging_workspace_host` .}}/explore/data/models/staging/{{template `project_name` .}}/{{template `model_name` .}})
-* [Prod model in UC]({{template `databricks_prod_workspace_host` .}}/explore/data/models/prod/{{template `project_name` .}}/{{template `model_name` .}})
+* [Staging model in UC]({{template `databricks_staging_workspace_host` .}}/explore/data/models/staging/{{.input_project_name}}/{{template `model_name` .}})
+* [Prod model in UC]({{template `databricks_prod_workspace_host` .}}/explore/data/models/prod/{{.input_project_name}}/{{template `model_name` .}})
 {{end}}. 
 
 In both the staging and prod workspaces, the MLflow registered model contains links to:

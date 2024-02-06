@@ -1,0 +1,51 @@
+{
+  "welcome_message": "Please use the provided deploy CICD workflow to initialize this bundle.",
+  "properties": {
+    "input_root_dir": {
+      "order": 1,
+      "description": "Root Directory",
+      "type": "string"
+    },
+    "input_cloud": {
+      "order": 2,
+      "description": "Cloud",
+      "type": "string"
+    },
+    "input_cicd_platform": {
+      "order": 3,
+      "description": "CICD Platform",
+      "type": "string"
+    },
+    "input_default_branch": {
+      "order": 4,
+      "description": "Default Branch",
+      "type": "string"
+    },
+    "input_release_branch": {
+      "order": 5,
+      "description": "Release Branch",
+      "type": "string"
+    },
+    "cloud_specific_node_type_id": {
+      "order": 6,
+      "description": "Cloud Specific Node Type ID",
+      "type": "string"
+    },
+    "input_cli_version": {
+      "order": 7,
+      "description": "CLI Version",
+      "type": "string"
+    },
+    "input_project_name": {
+      "order": 8,
+      "description": "Project Name",
+      "type": "string"
+    },
+    "input_include_feature_store": {
+      "order": 9,
+      "description": "Use Feature Store (yes) or not (no)",
+      "type": "string"
+    }
+  },
+  "success_message" : "\n✨ CICD files for your MLOps Project '{{.input_project_name}}' have been initialized!"
+}

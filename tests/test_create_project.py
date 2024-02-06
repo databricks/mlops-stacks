@@ -56,7 +56,7 @@ def assert_no_disallowed_strings_in_files(
     if exclude_path_matches is None:
         exclude_path_matches = []
     # Exclude binary files like pngs from being string-matched
-    exclude_path_matches = exclude_path_matches + [".png", ".parquet"]
+    exclude_path_matches = exclude_path_matches + [".png", ".parquet", ".tar.gz"]
     for path in file_paths:
         assert os.path.exists(path), "Provided nonexistent path to test: %s" % path
 
@@ -160,6 +160,7 @@ def test_generate_project_with_default_values(
     databricks_cli,
     cloud,
     cicd_platform,
+    setup_cicd_and_project,
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
@@ -193,12 +194,39 @@ def test_generate_project_with_default_values(
         assert f"{param}={value}" in test_file_contents
 
 
+def prepareContext(
+    cloud,
+    cicd_platform,
+    setup_cicd_and_project,
+    include_feature_store,
+    include_mlflow_recipes,
+    include_models_in_unity_catalog,
+):
+    context = {
+        "input_setup_cicd_and_project": setup_cicd_and_project,
+        "input_project_name": TEST_PROJECT_NAME,
+        "input_root_dir": TEST_PROJECT_NAME,
+        "input_cloud": cloud,
+        "input_cicd_platform": cicd_platform,
+    }
+    if include_feature_store != "":
+        context["input_include_feature_store"] = include_feature_store
+    if include_mlflow_recipes != "":
+        context["input_include_mlflow_recipes"] = include_mlflow_recipes
+    if include_models_in_unity_catalog != "":
+        context[
+            "input_include_models_in_unity_catalog"
+        ] = include_models_in_unity_catalog
+    return context
+
+
 @parametrize_by_project_generation_params
 def test_generate_project_check_delta_output(
     tmpdir,
     databricks_cli,
     cloud,
     cicd_platform,
+    setup_cicd_and_project,
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
@@ -206,15 +234,14 @@ def test_generate_project_check_delta_output(
     """
     Asserts the behavior of Delta Table-related artifacts when generating MLOps Stacks.
     """
-    context = {
-        "input_project_name": TEST_PROJECT_NAME,
-        "input_root_dir": TEST_PROJECT_NAME,
-        "input_cloud": cloud,
-        "input_cicd_platform": cicd_platform,
-        "input_include_feature_store": include_feature_store,
-        "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
-    }
+    context = prepareContext(
+        cloud,
+        cicd_platform,
+        setup_cicd_and_project,
+        include_feature_store,
+        include_mlflow_recipes,
+        include_models_in_unity_catalog,
+    )
     generate(tmpdir, databricks_cli, context=context)
     delta_notebook_path = (
         tmpdir
@@ -224,7 +251,11 @@ def test_generate_project_check_delta_output(
         / "notebooks"
         / "Train.py"
     )
-    if include_mlflow_recipes == "no" and include_feature_store == "no":
+    if (
+        setup_cicd_and_project != "CICD_Only"
+        and include_mlflow_recipes == "no"
+        and include_feature_store == "no"
+    ):
         assert os.path.isfile(delta_notebook_path)
     else:
         assert not os.path.isfile(delta_notebook_path)
@@ -236,6 +267,7 @@ def test_generate_project_check_feature_store_output(
     databricks_cli,
     cloud,
     cicd_platform,
+    setup_cicd_and_project,
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
@@ -243,15 +275,14 @@ def test_generate_project_check_feature_store_output(
     """
     Asserts the behavior of feature store-related artifacts when generating MLOps Stacks.
     """
-    context = {
-        "input_project_name": TEST_PROJECT_NAME,
-        "input_root_dir": TEST_PROJECT_NAME,
-        "input_cloud": cloud,
-        "input_cicd_platform": cicd_platform,
-        "input_include_feature_store": include_feature_store,
-        "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
-    }
+    context = prepareContext(
+        cloud,
+        cicd_platform,
+        setup_cicd_and_project,
+        include_feature_store,
+        include_mlflow_recipes,
+        include_models_in_unity_catalog,
+    )
     generate(tmpdir, databricks_cli, context=context)
     fs_notebook_path = (
         tmpdir
@@ -261,7 +292,7 @@ def test_generate_project_check_feature_store_output(
         / "notebooks"
         / "GenerateAndWriteFeatures.py"
     )
-    if include_feature_store == "yes":
+    if setup_cicd_and_project != "CICD_Only" and include_feature_store == "yes":
         assert os.path.isfile(fs_notebook_path)
     else:
         assert not os.path.isfile(fs_notebook_path)
@@ -273,6 +304,7 @@ def test_generate_project_check_recipe_output(
     databricks_cli,
     cloud,
     cicd_platform,
+    setup_cicd_and_project,
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
@@ -280,15 +312,14 @@ def test_generate_project_check_recipe_output(
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating MLOps Stacks.
     """
-    context = {
-        "input_project_name": TEST_PROJECT_NAME,
-        "input_root_dir": TEST_PROJECT_NAME,
-        "input_cloud": cloud,
-        "input_cicd_platform": cicd_platform,
-        "input_include_feature_store": include_feature_store,
-        "input_include_mlflow_recipes": include_mlflow_recipes,
-        "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
-    }
+    context = prepareContext(
+        cloud,
+        cicd_platform,
+        setup_cicd_and_project,
+        include_feature_store,
+        include_mlflow_recipes,
+        include_models_in_unity_catalog,
+    )
     generate(tmpdir, databricks_cli, context=context)
     recipe_notebook_path = (
         tmpdir
@@ -298,7 +329,7 @@ def test_generate_project_check_recipe_output(
         / "notebooks"
         / "TrainWithMLflowRecipes.py"
     )
-    if include_mlflow_recipes == "yes":
+    if setup_cicd_and_project != "CICD_Only" and include_mlflow_recipes == "yes":
         assert os.path.isfile(recipe_notebook_path)
     else:
         assert not os.path.isfile(recipe_notebook_path)

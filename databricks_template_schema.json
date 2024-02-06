@@ -1,126 +1,242 @@
 {
   "welcome_message": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.",
-  "min_databricks_cli_version": "v0.211.0",
+  "min_databricks_cli_version": "v0.212.2",
   "properties": {
-    "input_project_name": {
+    "input_setup_cicd_and_project": {
       "order": 1,
       "type": "string",
-      "default": "my-mlops-project",
-      "description": "{{if false}}\n\nERROR: This template is no longer supported supported by CLI versions v0.211 and lower.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI.\n\n\n{{end}}\nProject Name",
-      "pattern": "^[^ .\\\\/]{3,}$",
-      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\"."
-
+      "description": "{{if false}}\n\nERROR: This template is not supported by your current Databricks CLI version.\nPlease hit control-C and go to https://docs.databricks.com/en/dev-tools/cli/install.html for instructions on upgrading the CLI to the minimum version supported by MLOps Stacks.\n\n\n{{end}}\nSelect if both CI/CD and the Project should be set up, or only one of them. You can always set up the other later by running initialization again",
+      "default": "CICD_and_Project",
+      "enum": ["CICD_and_Project", "Project_Only", "CICD_Only"]
     },
-    "input_root_dir": {
+    "input_project_name": {
       "order": 2,
       "type": "string",
       "default": "my-mlops-project",
-      "description": "\nRoot directory name. Use a name different from the project name if you intend to use monorepo"
+      "description": "\nProject Name. Default",
+      "pattern": "^[^ .\\\\/]{3,}$",
+      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\".",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
+          }
+        }
+      }
+    },
+    "input_root_dir": {
+      "order": 3,
+      "type": "string",
+      "default": "{{ .input_project_name }}",
+      "description": "\nRoot directory name. For monorepos, this is the name of the root directory that contains all the projects. Default",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_and_Project"
+          }
+        }
+      }
     },
     "input_cloud": {
-      "order": 3,
+      "order": 4,
       "type": "string",
       "description": "\nSelect cloud",
       "default": "azure",
       "enum": ["azure", "aws"]
     },
     "input_cicd_platform": {
-      "order": 4,
+      "order": 5,
       "type": "string",
       "description": "\nSelect CICD platform",
       "default": "github_actions",
-      "enum": ["github_actions", "github_actions_for_github_enterprise_servers", "azure_devops"]
+      "enum": ["github_actions", "github_actions_for_github_enterprise_servers", "azure_devops"],
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
+          }
+        }
+      }
     },
     "input_databricks_staging_workspace_host": {
-      "order": 5,
+      "order": 6,
       "type": "string",
       "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-staging-workspace.cloud.databricks.com{{end}}",
       "description": "\nURL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production. Default",
       "pattern": "^(https.*)?$",
-      "pattern_match_failure_message": "Databricks staging workspace host URLs must start with https. Got invalid workspace host."
+      "pattern_match_failure_message": "Databricks staging workspace host URLs must start with https. Got invalid workspace host.",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
+          }
+        }
+      }
     },
     "input_databricks_prod_workspace_host": {
-      "order": 6,
+      "order": 7,
       "type": "string",
       "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-prod-workspace.cloud.databricks.com{{end}}",
       "description": "\nURL of production Databricks workspace. Default",
       "pattern": "^(https.*)?$",
-      "pattern_match_failure_message": "Databricks production workspace host URLs must start with https. Got invalid workspace host."
-    },
-    "input_default_branch": {
-      "order": 7,
-      "type": "string",
-      "default": "main",
-      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default"
-    },
-    "input_release_branch": {
-      "order": 8,
-      "type": "string",
-      "default": "release",
-      "description": "\nName of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default"
-    },
-    "input_read_user_group": {
-      "order": 9,
-      "type": "string",
-      "default": "users",
-      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default"
-    },
-    "input_include_models_in_unity_catalog": {
-      "order": 10,
-      "type": "string",
-      "description": "\nWhether to use the Model Registry with Unity Catalog",
-      "default": "yes",
-      "enum": ["yes", "no"]
-    },
-    "input_schema_name": {
-      "order": 11,
-      "type": "string",
-      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
-      "default": "my-mlops-project",
-      "pattern": "^[^ .\\/]*$",
-      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\"",
+      "pattern_match_failure_message": "Databricks production workspace host URLs must start with https. Got invalid workspace host.",
       "skip_prompt_if": {
         "properties": {
-          "input_include_models_in_unity_catalog": {
-            "const": "no"
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
           }
         }
       }
     },
-    "input_unity_catalog_read_user_group": {
+    "input_default_branch": {
+      "order": 8,
+      "type": "string",
+      "default": "main",
+      "description": "\nName of the default branch, where the prod and staging ML assets are deployed from and the latest ML code is staged. Default",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
+          }
+        }
+      }
+    },
+    "input_release_branch": {
+      "order": 9,
+      "type": "string",
+      "default": "release",
+      "description": "\nName of the release branch. The production jobs (model training, batch inference) defined in this stack pull ML code from this branch. Default",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
+          }
+        }
+      }
+    },
+    "input_read_user_group": {
+      "order": 10,
+      "type": "string",
+      "default": "users",
+      "description": "\nUser group name to give READ permissions to for project assets (ML jobs, integration test job runs, and machine learning assets). A group with this name must exist in both the staging and prod workspaces. Default",
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
+          }
+        }
+      }
+    },
+    "input_include_models_in_unity_catalog": {
+      "order": 11,
+      "type": "string",
+      "description": "\nWhether to use the Model Registry with Unity Catalog",
+      "default": "yes",
+      "enum": ["yes", "no"],
+      "skip_prompt_if": {
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
+          }
+        }
+      }
+    },
+    "input_schema_name": {
       "order": 12,
+      "type": "string",
+      "description": "\nName of schema to use when registering a model in Unity Catalog. \nNote that this schema must already exist, and we recommend keeping the name the same as the project name as well as giving the service principals the right access. Default",
+      "default": "{{ .input_project_name }}",
+      "pattern": "^[^ .\\/]*$",
+      "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"\\\", \"/\"",
+      "skip_prompt_if": {
+        "anyOf":[
+          {
+            "properties": {
+              "input_include_models_in_unity_catalog": {
+                "const": "no"
+              }
+            }
+          },
+          {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "input_unity_catalog_read_user_group": {
+      "order": 13,
       "type": "string",
       "default": "account users",
       "description": "\nUser group name to give EXECUTE privileges to models in Unity Catalog. A group with this name must exist in the Unity Catalog that the staging and prod workspaces can access. Default",
       "skip_prompt_if": {
+        "anyOf":[
+          {
+            "properties": {
+              "input_include_models_in_unity_catalog": {
+                "const": "no"
+              }
+            }
+          },
+          {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "input_include_feature_store": {
+      "order": 14,
+      "type": "string",
+      "description": "\nWhether to include Feature Store",
+      "default": "no",
+      "enum": ["no", "yes"],
+      "skip_prompt_if": {
         "properties": {
-          "input_include_models_in_unity_catalog": {
-            "const": "no"
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
           }
         }
       }
     },
-    "input_include_feature_store": {
-      "order": 13,
-      "type": "string",
-      "description": "\nWhether to include Feature Store",
-      "default": "no",
-      "enum": ["no", "yes"]
-    },
     "input_include_mlflow_recipes": {
-      "order": 14,
+      "order": 15,
       "type": "string",
       "description": "\nWhether to include MLflow Recipes",
       "default": "no",
       "enum": ["no", "yes"],
       "skip_prompt_if": {
-        "properties": {
-          "input_include_models_in_unity_catalog": {
-            "const": "yes"
+        "anyOf":[
+          {
+            "properties": {
+              "input_include_models_in_unity_catalog": {
+                "const": "yes"
+              }
+            }
+          },
+          {
+            "properties": {
+              "input_include_feature_store": {
+                "const": "yes"
+              }
+            }
+          },
+          {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
           }
-        }
+        ]
       }
     }
   },
-  "success_message" : "\n✨ Your MLOps Stack has been created in the '{{.input_project_name}}' directory!\n\nPlease refer to the README.md of your project for further instructions on getting started."
+  "success_message" : "\n*** Your MLOps Stack has been created in the '{{.input_root_dir}}{{if not (eq .input_setup_cicd_and_project `CICD_Only`) }}/{{.input_project_name}}{{end}}' directory! ***\n\nPlease refer to the README.md for further instructions on getting started."
 }

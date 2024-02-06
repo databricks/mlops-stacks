@@ -1,0 +1,36 @@
+name: Generate CICD Zip
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'template/{{.input_root_dir}}/.github/workflows/{{.input_project_name}}**'
+      - 'template/{{.input_root_dir}}/.azure/devops-pipelines/{{.input_project_name}}**'
+
+defaults:
+  run:
+    working-directory: template/{{.input_root_dir}}
+
+
+jobs:
+  generate-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Generate CICD Zip
+        run: |
+          cp --parents .github/workflows/\{\{.input_project_name\}\}-* cicd/template
+          cp --parents .azure/devops-pipelines/\{\{.input_project_name\}\}-* cicd/template
+          tar -czvf cicd.tar.gz cicd
+      - name: Commit Zip Back to Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ARPIT_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "eng-mlops-outerloop-team@databricks.com"
+          git config --global url.https://${{ secrets.ARPIT_TOKEN }}@github.com/.insteadOf https://github.com/
+          git add cicd.tar.gz
+          git commit -m "Generate CICD Zip File for ${{ github.sha }}"
+          git push

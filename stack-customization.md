@@ -55,8 +55,7 @@ If you customize this component, you can still use the CI/CD and ML asset compon
 notebooks with the expected interface. For example, model training under ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/`` and inference under
 ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/``. See code comments in the notebook files for the expected interface & behavior of these notebooks.
 
-You may also want to update developer-facing docs under `template/{{.input_root_dir}}/docs/ml-developer-guide.md`
-or `template/{{.input_root_dir}}/docs/ml-developer-guide-fs.md`, which will be read by users of your stack.
+You may also want to update developer-facing docs under ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/README.md.tmpl``, which will be read by users of your stack.
 
 ### CI/CD workflows
 MLOps Stacks currently has the following sub-components for CI/CD:

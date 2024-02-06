@@ -1,6 +1,6 @@
 # The name of the bundle. run `databricks bundle schema` to see the full bundle settings schema.
 bundle:
-  name: {{template `project_name` .}}
+  name: {{ .input_project_name }}
 
 variables:
   experiment_name:
@@ -25,6 +25,8 @@ targets:
       # TODO: add dev workspace URL
       host:
 
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+
   staging:
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
@@ -36,4 +38,4 @@ targets:
   test:
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
-
+{{ end }}

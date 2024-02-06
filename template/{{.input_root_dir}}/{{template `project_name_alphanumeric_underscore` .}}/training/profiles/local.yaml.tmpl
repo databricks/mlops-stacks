@@ -1,12 +1,12 @@
 experiment:
-  name: "/Shared/{{template `project_name` .}}"
+  name: "/Shared/{{ .input_project_name }}"
   tracking_uri: "sqlite:///mlruns.db"
   artifact_location: "./mlruns"
 
 model_registry:
   # Specifies the name of the Registered Model to use when registering a trained model to
   # the MLflow Model Registry
-  model_name: {{`{{`}}MODEL_NAME|default('{{template `project_name` .}}_model'){{`}}`}}
+  model_name: {{`{{`}}MODEL_NAME|default('{{ .input_project_name }}_model'){{`}}`}}
 
 # Override the default train / validation / test dataset split ratios
 SPLIT_RATIOS: [0.80, 0.10, 0.10]

@@ -14,7 +14,7 @@ common_permissions: &permissions
 resources:
   jobs:
     model_training_job:
-      name: ${bundle.target}-{{template `project_name` .}}-model-training-job
+      name: ${bundle.target}-{{ .input_project_name }}-model-training-job
       job_clusters:
         - job_cluster_key: model_training_job_cluster
           <<: *new_cluster
@@ -29,7 +29,7 @@ resources:
               training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
               experiment_name: ${var.experiment_name}
               {{ if (eq .input_include_models_in_unity_catalog `no`) }}model_name: ${var.model_name}
-              {{- else -}}model_name: ${bundle.target}.{{template `schema_name` .}}.${var.model_name}{{ end }}
+              {{- else -}}model_name: ${bundle.target}.{{ .input_schema_name }}.${var.model_name}{{ end }}
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {{ else if (eq .input_include_feature_store `yes`) }}notebook_task:
@@ -40,11 +40,11 @@ resources:
               training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
               experiment_name: ${var.experiment_name}
               {{ if (eq .input_include_models_in_unity_catalog `no`) }}model_name: ${var.model_name}
-              {{- else -}}model_name: ${bundle.target}.{{template `schema_name` .}}.${var.model_name}{{ end }}
+              {{- else -}}model_name: ${bundle.target}.{{ .input_schema_name }}.${var.model_name}{{ end }}
               {{ if (eq .input_include_models_in_unity_catalog `no`) }}pickup_features_table: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
-              {{- else -}}pickup_features_table: ${bundle.target}.{{template `schema_name` .}}.trip_pickup_features{{ end }}
+              {{- else -}}pickup_features_table: ${bundle.target}.{{ .input_schema_name }}.trip_pickup_features{{ end }}
               {{ if (eq .input_include_models_in_unity_catalog `no`) }}dropoff_features_table: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
-              {{- else -}}dropoff_features_table: ${bundle.target}.{{template `schema_name` .}}.trip_dropoff_features{{ end }}
+              {{- else -}}dropoff_features_table: ${bundle.target}.{{ .input_schema_name }}.trip_dropoff_features{{ end }}
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {{- else -}}notebook_task:
@@ -88,13 +88,13 @@ resources:
               # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: targets
               targets: fare_amount{{ end }}
-              # Specifies the name of the function in {{template `project_name` .}}/training_validation_deployment/validation/validation.py that returns custom metrics.
+              # Specifies the name of the function in {{ .input_project_name }}/training_validation_deployment/validation/validation.py that returns custom metrics.
               # TODO(optional): custom_metrics_loader_function
               custom_metrics_loader_function: custom_metrics
-              # Specifies the name of the function in {{template `project_name` .}}/training_validation_deployment/validation/validation.py that returns model validation thresholds.
+              # Specifies the name of the function in {{ .input_project_name }}/training_validation_deployment/validation/validation.py that returns model validation thresholds.
               # TODO(optional): validation_thresholds_loader_function
               validation_thresholds_loader_function: validation_thresholds
-              # Specifies the name of the function in {{template `project_name` .}}/training_validation_deployment/validation/validation.py that returns evaluator_config.
+              # Specifies the name of the function in {{ .input_project_name }}/training_validation_deployment/validation/validation.py that returns evaluator_config.
               # TODO(optional): evaluator_config_loader_function
               evaluator_config_loader_function: evaluator_config
               # git source information of current ML asset deployment. It will be persisted as part of the workflow run

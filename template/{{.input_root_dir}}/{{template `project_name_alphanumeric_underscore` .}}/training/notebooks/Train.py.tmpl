@@ -71,7 +71,7 @@ dbutils.widgets.text(
 {{else}}
 # Unity Catalog registered model name to use for the trained model.
 dbutils.widgets.text(
-    "model_name", "dev.{{template `schema_name` .}}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
+    "model_name", "dev.{{ .input_schema_name }}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
 )
 
 {{end -}}

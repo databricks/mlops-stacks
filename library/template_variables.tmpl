@@ -1,58 +1,4 @@
 # define template variables
-{{ define `root_dir` -}}
-    {{ .input_root_dir }}
-{{- end }}
-
-{{ define `project_name` -}}
-    {{ .input_project_name }}
-{{- end}}
-
-{{ define `cloud` -}}
-    {{- if eq .input_cloud `azure` -}}
-        azure
-    {{- else if eq .input_cloud `aws` -}}
-        aws
-    {{- else -}}
-        {{ fail `Invalid selection of cloud. Please choose from [azure, aws]` }}
-    {{- end -}}
-{{- end}}
-
-{{ define `cicd_platform` -}}
-    {{- if (eq .input_cicd_platform `github_actions`) -}}
-        gitHub
-    {{- else if (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) -}}
-        gitHubEnterprise
-    {{- else if (eq .input_cicd_platform `azure_devops`) -}}
-        azureDevOpsServices
-    {{- else -}}
-        {{ fail `Invalid selection of cicd_platform. Please choose from [github_actions, github_actions_for_github_enterprise_servers, azure_devops]` }}
-    {{- end -}}
-{{- end}}
-
-{{ define `orig_databricks_prod_workspace_host` -}}
-    {{- if not (eq (print .input_databricks_prod_workspace_host) "") -}}
-        {{ .input_databricks_prod_workspace_host }}
-    {{- else -}}
-        {{- if eq .input_cloud `azure` -}}
-            https://adb-xxxx.xx.azuredatabricks.net
-        {{- else if eq .input_cloud `aws` -}}
-            https://your-prod-workspace.cloud.databricks.com
-        {{- end -}}
-    {{- end -}}
-{{- end }}
-
-{{ define `orig_databricks_staging_workspace_host` -}}
-    {{- if not (eq (print .input_databricks_staging_workspace_host) "") -}}
-        {{ .input_databricks_staging_workspace_host }}
-    {{- else -}}
-        {{- if eq .input_cloud `azure` -}}
-            https://adb-xxxx.xx.azuredatabricks.net
-        {{- else if eq .input_cloud `aws` -}}
-            https://your-staging-workspace.cloud.databricks.com
-        {{- end -}}
-    {{- end -}}
-{{- end }}
-
 {{ define `databricks_prod_workspace_host` -}}
     {{- if not (eq (print .input_databricks_prod_workspace_host) "") -}}
         {{- with url (print .input_databricks_prod_workspace_host) -}}
@@ -81,63 +27,6 @@
     {{- end -}}
 {{- end }}
 
-{{ define `default_branch` -}}
-    {{ .input_default_branch }}
-{{- end }}
-
-{{ define `release_branch` -}}
-    {{ .input_release_branch }}
-{{- end }}
-
-{{ define `read_user_group` -}}
-    {{ .input_read_user_group }}
-{{- end }}
-
-{{ define `include_feature_store` -}}
-    {{- if (eq .input_include_feature_store `no`) -}}
-        no
-    {{- else if (eq .input_include_feature_store `yes`) -}}
-        yes
-    {{- else -}}
-        {{fail `Invalid selection of include_feature_store. Please choose from [no, yes]`}}
-    {{- end -}}
-{{- end }}
-
-{{ define `include_mlflow_recipes` -}}
-    {{- if (eq .input_include_mlflow_recipes `no`) -}}
-        no
-    {{- else if (eq .input_include_mlflow_recipes `yes`) -}}
-        yes
-    {{- else -}}
-        {{ fail `Invalid selection of include_mlflow_recipes. Please choose from [no, yes]` }}
-    {{- end -}}
-{{- end }}
-
-{{ define `include_models_in_unity_catalog` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `no`) -}}
-        no
-    {{- else if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        yes
-    {{- else -}}
-        {{ fail `Invalid selection of include_models_in_unity_catalog. Please choose from [no, yes]` }}
-    {{- end -}}
-{{- end }}
-
-{{ define `schema_name` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        {{ .input_schema_name }}
-    {{- else -}}
-        {{ "" }}
-    {{- end -}}
-{{- end }}
-
-{{ define `unity_catalog_read_user_group` -}}
-    {{- if (eq .input_include_models_in_unity_catalog `yes`) -}}
-        {{ .input_unity_catalog_read_user_group }}
-    {{- else -}}
-        {{ "account users" }}
-    {{- end -}}
-{{- end }}
 
 {{ define `cloud_specific_node_type_id` -}}
     {{- if (eq .input_cloud `aws`) -}}
@@ -149,16 +38,6 @@
     {{- end -}}
 {{- end -}}
 
-{{define `framework` -}}
-    {{- if (eq .input_include_feature_store `yes`) -}}
-        fs
-    {{- else if (eq .input_include_mlflow_recipes `yes`) -}}
-        recipes
-    {{- else -}}
-        delta
-    {{- end -}}
-{{- end }}
-
 {{ define `model_name` -}}
     {{ .input_project_name }}-model
 {{- end }}
@@ -167,10 +46,10 @@
     {{ .input_project_name }}-experiment
 {{- end }}
 
-{{ define `service_principal_group` -}}
-    {{ .input_project_name }}-service-principals
-{{- end }}
-
 {{ define `project_name_alphanumeric_underscore` -}}
     {{- (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString (print .input_project_name) ``) `_` -}}
+{{- end }}
+
+{{ define `cli_version` -}}
+    v0.212.2
 {{- end }}

@@ -8,6 +8,7 @@ from functools import wraps
 ASSET_TEMPLATE_ROOT_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
 
 AZURE_DEFAULT_PARAMS = {
+    "input_setup_cicd_and_project": "CICD_and_Project",
     "input_root_dir": "my-mlops-project",
     "input_project_name": "my-mlops-project",
     "input_cloud": "azure",
@@ -41,47 +42,29 @@ def parametrize_by_cloud(fn):
 
 
 def parametrize_by_project_generation_params(fn):
+    @pytest.mark.parametrize("cloud", ["aws", "azure"])
     @pytest.mark.parametrize(
-        "cloud,cicd_platform,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+        "cicd_platform",
         [
-            ("aws", "github_actions", "no", "no", "no"),
-            ("aws", "github_actions", "no", "no", "yes"),
-            ("aws", "github_actions", "no", "yes", "no"),
-            ("aws", "github_actions", "yes", "no", "no"),
-            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
-            ("aws", "github_actions_for_github_enterprise_servers", "no", "no", "yes"),
-            ("aws", "github_actions_for_github_enterprise_servers", "no", "yes", "no"),
-            ("aws", "github_actions_for_github_enterprise_servers", "yes", "no", "no"),
-            ("azure", "github_actions", "no", "no", "no"),
-            ("azure", "github_actions", "no", "no", "yes"),
-            ("azure", "github_actions", "no", "yes", "no"),
-            ("azure", "github_actions", "yes", "no", "no"),
-            ("azure", "github_actions_for_github_enterprise_servers", "no", "no", "no"),
-            (
-                "azure",
-                "github_actions_for_github_enterprise_servers",
-                "no",
-                "no",
-                "yes",
-            ),
-            (
-                "azure",
-                "github_actions_for_github_enterprise_servers",
-                "no",
-                "yes",
-                "no",
-            ),
-            (
-                "azure",
-                "github_actions_for_github_enterprise_servers",
-                "yes",
-                "no",
-                "no",
-            ),
-            ("azure", "azure_devops", "no", "no", "no"),
-            ("azure", "azure_devops", "no", "no", "yes"),
-            ("azure", "azure_devops", "no", "yes", "no"),
-            ("azure", "azure_devops", "yes", "no", "no"),
+            "github_actions",
+            "github_actions_for_github_enterprise_servers",
+            "azure_devops",
+        ],
+    )
+    @pytest.mark.parametrize(
+        "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+        [
+            ("CICD_and_Project", "no", "no", "no"),
+            ("CICD_and_Project", "no", "no", "yes"),
+            ("CICD_and_Project", "no", "yes", "no"),
+            ("CICD_and_Project", "yes", "no", "no"),
+            ("CICD_and_Project", "yes", "no", "yes"),
+            ("Project_Only", "no", "no", "no"),
+            ("Project_Only", "no", "no", "yes"),
+            ("Project_Only", "no", "yes", "no"),
+            ("Project_Only", "yes", "no", "no"),
+            ("Project_Only", "yes", "no", "yes"),
+            ("CICD_Only", "no", "no", "no"),
         ],
     )
     @wraps(fn)
@@ -97,30 +80,39 @@ def generated_project_dir(
     databricks_cli,
     cloud,
     cicd_platform,
+    setup_cicd_and_project,
     include_feature_store,
     include_mlflow_recipes,
     include_models_in_unity_catalog,
 ):
-    generate(
-        tmpdir,
-        databricks_cli,
-        {
-            "input_project_name": "my-mlops-project",
-            "input_root_dir": "my-mlops-project",
-            "input_cloud": cloud,
-            "input_cicd_platform": cicd_platform,
-            "input_include_feature_store": include_feature_store,
-            "input_include_mlflow_recipes": include_mlflow_recipes,
-            "input_databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
-            "input_databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
-            "input_default_branch": "main",
-            "input_release_branch": "release",
-            "input_read_user_group": "users",
-            "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
-            "input_schema_name": "schema_name",
-            "input_unity_catalog_read_user_group": "account users",
-        },
-    )
+    params = {
+        "input_setup_cicd_and_project": setup_cicd_and_project,
+        "input_root_dir": "my-mlops-project",
+        "input_cloud": cloud,
+    }
+    if setup_cicd_and_project != "Project_Only":
+        params.update(
+            {
+                "input_cicd_platform": cicd_platform,
+                "input_databricks_staging_workspace_host": "https://adb-3214.67.azuredatabricks.net",
+                "input_databricks_prod_workspace_host": "https://adb-345.89.azuredatabricks.net",
+                "input_default_branch": "main",
+                "input_release_branch": "release",
+            }
+        )
+    if setup_cicd_and_project != "CICD_Only":
+        params.update(
+            {
+                "input_project_name": "my-mlops-project",
+                "input_include_feature_store": include_feature_store,
+                "input_include_mlflow_recipes": include_mlflow_recipes,
+                "input_read_user_group": "users",
+                "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
+                "input_schema_name": "schema_name",
+                "input_unity_catalog_read_user_group": "account users",
+            }
+        )
+    generate(tmpdir, databricks_cli, params)
     return tmpdir
 
 
