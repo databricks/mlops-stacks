@@ -37,7 +37,7 @@ contained in the following files:
 │   │
 │   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
-{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) -}}
+{{- if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
 │   │
 │   ├── validation              <- Optional model validation step before deploying a model.
@@ -62,7 +62,7 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ else if (eq .input_include_feature_store `yes`) -}}
+{{- else if (eq .input_include_feature_store `yes`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
 │   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
@@ -93,7 +93,7 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ else -}}
+{{- else }}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
@@ -131,7 +131,7 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ end -}}
+{{- end }}
 ```
 
 {{ if (eq .input_include_feature_store `yes`) }}
