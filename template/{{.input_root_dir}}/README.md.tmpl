@@ -16,10 +16,10 @@ This project contains the following components:
 
 | Component                  | Description                                                                                                                                                                                                                                                                                                                                             |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                             |
 | ML Resources as Code | ML pipeline resources (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
-{{ end }}
+{{- end }}
 | CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://azure.microsoft.com/en-gb/products/devops/pipelines/) to test and deploy ML code and resources{{ end }}      |
 
 contained in the following files:
@@ -27,14 +27,14 @@ contained in the following files:
 ```
 {{ .input_root_dir }}        <- Root directory. Both monorepo and polyrepo are supported.
 │
-{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 ├── {{template `project_name_alphanumeric_underscore` .}}       <- Contains python code, notebooks and ML resources related to one ML project. 
 │   │
 │   ├── requirements.txt        <- Specifies Python dependencies for ML code (for example: model training, batch inference).
 │   │
 │   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
-{{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}
+{{- if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
 │   │
 │   ├── validation              <- Optional model validation step before deploying a model.
@@ -59,7 +59,7 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ else if (eq .input_include_feature_store `yes`) }}
+{{- else if (eq .input_include_feature_store `yes`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model with feature store support.
 │   │
 │   ├── feature_engineering     <- Feature computation code (Python modules) that implements the feature transforms.
@@ -90,7 +90,7 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ else }}
+{{- else }}
 │   ├── training                <- Folder for model development via MLflow recipes.
 │   │   │
 │   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
@@ -128,14 +128,14 @@ contained in the following files:
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
 │       ├── monitoring-workflow-resource.yml           <- ML resource config definition for data monitoring workflow
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}
 │
-{{ if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }}
+{{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }}
 ├── .github                     <- Configuration folder for CI/CD using GitHub Actions. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
-{{ else if (eq .input_cicd_platform `azure_devops`) }}
+{{- else if (eq .input_cicd_platform `azure_devops`) }}
 ├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
-{{ end }}
+{{- end }}
 │
 ├── docs                        <- Contains documentation for the repo.
 │
