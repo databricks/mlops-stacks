@@ -19,7 +19,7 @@ include:
 
 # Deployment Target specific values for workspace
 targets:
-  dev:
+  dev: {{ if (eq .input_include_models_in_unity_catalog `yes`)}} # UC Catalog Name {{ end }}
     default: true
     workspace:
       # TODO: add dev workspace URL

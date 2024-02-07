@@ -92,9 +92,10 @@ For your convenience, we also have a [Terraform module](https://registry.terrafo
 #### Configure Service Principal (SP) permissions 
 If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
-If you want to use different catalog names, please update the targets declared in the {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml)
-and [{{ .input_project_name }}/resources/ml-artifacts-resource.yml](../{{template `project_name_alphanumeric_underscore` .}}/resources/ml-artifacts-resource.yml) {{ else }} `databricks.yml` and `resources/ml-artifacts-resource.yml` {{ end }} files. 
-If changing the staging, prod, or test deployment targets, you'll need to update the workflows located in the .github/workflows directory.
+If you want to use different catalog names, please update the target names declared in the 
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
+{{- else }} `databricks.yml` {{ end }} file. 
+If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory.
 
 The SP must have proper permission in each respective environment and the catalog for the environments.
 
