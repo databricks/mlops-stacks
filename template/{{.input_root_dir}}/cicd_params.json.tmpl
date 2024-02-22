@@ -5,5 +5,8 @@
   "input_default_branch": "{{ .input_default_branch }}",
   "input_release_branch": "{{ .input_release_branch }}",
   "cloud_specific_node_type_id": "{{template `cli_version` .}}",
-  "input_cli_version": "{{template `cli_version` .}}"
+  "input_cli_version": "{{template `cli_version` .}}",
+  "test_catalog_name": "{{ .test_catalog_name }}",
+  "staging_catalog_name": "{{ .staging_catalog_name }}",
+  "prod_catalog_name": "{{ .prod_catalog_name }}"
 }

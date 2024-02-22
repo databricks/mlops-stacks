@@ -26,7 +26,7 @@ jobs:
       - name: Get current timestamp
         id: timestamp
         run: |
-          echo "{timestamp}={$(date +'%s')}" >> $GITHUB_ENV
+          echo "timestamp=$(date +'%s')" >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
@@ -53,7 +53,7 @@ jobs:
       - name: Update databricks.yml
         id: update
         run: |
-          echo -e "  staging:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$PROJECT_NAME_ALPHA/databricks.yml"
+          echo -e "  {{ .staging_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  {{ .prod_catalog_name }}:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  {{ .test_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$PROJECT_NAME_ALPHA/databricks.yml"
       - name: Initialize Bundle
         id: initialize
         run: |
@@ -65,11 +65,10 @@ jobs:
         run: |
           git config --global user.name "Deploy CICD Bot"
           git config --global user.email "noreply-cicd-bot@databricks.com"
-          git pull
-          git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.date }}`}}
+          git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.timestamp }}`}}
           git add .github "$PROJECT_NAME_ALPHA/databricks.yml"
           git commit -m "Add CICD for {{`${{ github.event.inputs.project_name }}`}}"
-          git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.date }}`}}
+          git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.timestamp }}`}}
 
       - name: Create Pull Request
         id: pr

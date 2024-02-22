@@ -132,14 +132,7 @@
       "type": "string",
       "description": "\nWhether to use the Model Registry with Unity Catalog",
       "default": "no",
-      "enum": ["yes", "no"],
-      "skip_prompt_if": {
-        "properties": {
-          "input_setup_cicd_and_project": {
-            "const": "CICD_Only"
-          }
-        }
-      }
+      "enum": ["yes", "no"]
     },
     "test_catalog_name": {
       "order": 12,
