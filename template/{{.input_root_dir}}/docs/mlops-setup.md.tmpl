@@ -139,8 +139,9 @@ After setting up authentication for CI/CD, you can now set up CI/CD workflows. W
 This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
 These workflows will be defined under `.github/workflows`.
 
-Trigger the workflow manually by running the command `gh workflow run deploy-cicd.yml` in your root folder. The workflow will then create a PR request which you can review, and merge to kick off the CI/CD pipeline in Github.
+If adding CI/CD to a project directory, commit the new changes to github and manually run the `deploy-cicd.yml` file from the Github Actions UI to initalize all the files required for CICD.
 
+The workflow will create a PR with all the changes pushing it to your main branch. Review and approve it to commit the CICD files. 
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
 ## Configure CI/CD - Azure DevOps
 
