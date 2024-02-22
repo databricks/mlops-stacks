@@ -85,6 +85,7 @@ For example, if the deployment target is dev, we expect a catalog named dev to e
 If you want to use different catalog names, please update the target names declared in the 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
 {{- else }} `databricks.yml` {{ end }} file.
+If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory.
 
 The SP must have proper permission in each respective environment and the catalog for the environments.
 
