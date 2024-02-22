@@ -27,15 +27,15 @@ targets:
 
 {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 
-  staging:
+  {{ .staging_catalog_name }}:
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
 
-  prod:
+  {{ .prod_catalog_name }}:
     workspace:
       host: {{template `databricks_prod_workspace_host` .}}
 
-  test:
+  {{ .test_catalog_name }}:
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
 {{ end }}

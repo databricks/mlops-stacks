@@ -84,10 +84,7 @@ If the created project uses **Unity Catalog**, we expect a catalog to exist with
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
 If you want to use different catalog names, please update the target names declared in the 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
-{{- else }} `databricks.yml` {{ end }} file. 
-If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory. In the 
-`/.github/workflows/{{.input_project_name}}-bundle-cd-prod.yml.tmpl`, `/.github/workflows/{{.input_project_name}}-bundle-cd-staging.yml.tmpl`, `/.github/workflows/{{.input_project_name}}-bundle-ci.yml.tmpl` update all the `databricks bundle`
-to now reflect the new targets that you have changed to.
+{{- else }} `databricks.yml` {{ end }} file.
 
 The SP must have proper permission in each respective environment and the catalog for the environments.
 
@@ -267,6 +264,8 @@ In the case of a monorepo, where there are multiple projects under a single repo
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.azure/devops-pipelines/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
 This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
 These workflows will be defined under `.azure/devops-pipelines`. After generating these workflows, be sure to go through the above workflow-specific steps again to add the appropriate build branch policies and filters.
+
+Trigger the workflow manually by running the command `gh workflow run deploy-cicd.yml` in your root folder. The workflow will then create a PR request which you can review, and merge to kick off the CI/CD pipeline in Github.
 {{ end }}
 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}

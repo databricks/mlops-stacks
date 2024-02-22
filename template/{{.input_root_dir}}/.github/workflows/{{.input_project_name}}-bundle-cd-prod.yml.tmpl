@@ -33,8 +33,8 @@ jobs:
       - name: Validate Bundle For Prod
         id: validate
         run: |
-          databricks bundle validate -t prod
+          databricks bundle validate -t {{ .prod_catalog_name }}
       - name: Deploy Bundle to Prod
         id: deploy
         run: |
-          databricks bundle deploy -t prod
+          databricks bundle deploy -t {{ .prod_catalog_name }}
