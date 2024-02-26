@@ -46,19 +46,19 @@
       "description": "Use Feature Store (yes) or not (no)",
       "type": "string"
     },
-    "test_catalog_name": {
+    "input_test_catalog_name": {
       "order": 10,
       "type": "string",
       "description": "\nName of the Test Unity Catalog",
       "default": "test"
     },
-    "staging_catalog_name": {
+    "input_staging_catalog_name": {
       "order": 13,
       "type": "string",
       "description": "\nName of the Staging Unity Catalog",
       "default": "staging"
     },
-    "prod_catalog_name": {
+    "input_prod_catalog_name": {
       "order": 14,
       "type": "string",
       "description": "\nName of the Prod Unity Catalog",

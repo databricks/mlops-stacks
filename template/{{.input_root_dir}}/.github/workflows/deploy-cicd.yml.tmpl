@@ -49,7 +49,7 @@ jobs:
       - name: Update databricks.yml
         id: update
         run: |
-          echo -e "  {{ .staging_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  {{ .prod_catalog_name }}:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  {{ .test_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$PROJECT_NAME_ALPHA/databricks.yml"
+          echo -e "  {{ .input_staging_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  {{ .input_prod_catalog_name }}:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  {{ .input_test_catalog_name }}:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$PROJECT_NAME_ALPHA/databricks.yml"
       - name: Initialize Bundle
         id: initialize
         run: |
