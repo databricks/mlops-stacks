@@ -78,8 +78,9 @@ After merging your pull request, subsequent runs of the model training and batch
 jobs in staging and production will automatically use your updated ML code.
 {{- end }}
 
-{{ if not (eq .input_setup_cicd_and_project `CICD_Only`) }}
-You can track the state of the ML pipelines for the current project from the MLflow registered model UI. Links:
+You can track the state of the ML pipelines for the current project from the MLflow registered model UI. 
+{{ if or (eq .input_setup_cicd_and_project `CICD_and_Project`) (eq .input_cicd_platform `Project_Only`) }}
+Links:
 {{ if (eq .input_include_models_in_unity_catalog `no`) }}
 * [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}/ml/models/staging-{{template `model_name` .}})
 * [Prod workspace registered model]({{template `databricks_prod_workspace_host` .}}/ml/models/prod-{{template `model_name` .}})

@@ -2,6 +2,9 @@ name: {{ if (eq .input_include_feature_store `yes`) }}Feature and {{end}}Trainin
 on:
   workflow_dispatch:
   pull_request:
+    paths:
+      - '{{template `project_name_alphanumeric_underscore` .}}/**'
+      - '.github/workflows/{{ .input_project_name }}-run-tests.yml'
 
 defaults:
   run:

@@ -23,10 +23,6 @@ jobs:
   cicd:
     runs-on: ubuntu-latest
     steps:
-      - name: Get current timestamp
-        id: timestamp
-        run: |
-          echo "timestamp=$(date +'%s')" >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
@@ -63,12 +59,13 @@ jobs:
         env:
           GITHUB_TOKEN: {{`${{ github.token }}`}}
         run: |
+          TIMESTAMP=$(date +'%s')
           git config --global user.name "Deploy CICD Bot"
           git config --global user.email "noreply-cicd-bot@databricks.com"
-          git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.timestamp }}`}}
+          git checkout -b add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`$TIMESTAMP`}}
           git add .github "$PROJECT_NAME_ALPHA/databricks.yml"
           git commit -m "Add CICD for {{`${{ github.event.inputs.project_name }}`}}"
-          git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`${{ env.timestamp }}`}}
+          git push origin add-cicd-for-{{`${{ github.event.inputs.project_name }}`}}-{{`$TIMESTAMP`}}
 
       - name: Create Pull Request
         id: pr

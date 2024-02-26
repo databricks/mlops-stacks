@@ -134,34 +134,10 @@
       "default": "no",
       "enum": ["yes", "no"]
     },
-    "test_catalog_name": {
+    "input_staging_catalog_name": {
       "order": 12,
       "type": "string",
-      "description": "\nName of the Test Unity Catalog",
-      "default": "test",
-      "skip_prompt_if": {
-        "anyOf": [
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "Project_Only"
-              }
-            }
-          }
-        ]
-      }
-    },
-    "staging_catalog_name": {
-      "order": 13,
-      "type": "string",
-      "description": "\nName of the Staging Unity Catalog",
+      "description": "\nName of the catalog in Unity Catalog that will host the staging UC resources. \nThis catalog must already exist and service principals must have access to it.",
       "default": "staging",
       "skip_prompt_if": {
         "anyOf": [
@@ -182,11 +158,35 @@
         ]
       }
     },
-    "prod_catalog_name": {
-      "order": 14,
+    "input_prod_catalog_name": {
+      "order": 13,
       "type": "string",
       "description": "\nName of the Prod Unity Catalog",
       "default": "prod",
+      "skip_prompt_if": {
+        "anyOf": [
+          {
+            "properties": {
+              "input_include_models_in_unity_catalog": {
+                "const": "no"
+              }
+            }
+          },
+          {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "Project_Only"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "input_test_catalog_name": {
+      "order": 14,
+      "type": "string",
+      "description": "\nName of the catalog in Unity Catalog that will be used for integration tests",
+      "default": "test",
       "skip_prompt_if": {
         "anyOf": [
           {
