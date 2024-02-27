@@ -79,7 +79,7 @@ jobs in staging and production will automatically use your updated ML code.
 {{- end }}
 
 You can track the state of the ML pipelines for the current project from the MLflow registered model UI. 
-{{ if or (eq .input_setup_cicd_and_project `CICD_and_Project`) (eq .input_cicd_platform `Project_Only`) }}
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 Links:
 {{ if (eq .input_include_models_in_unity_catalog `no`) }}
 * [Staging workspace registered model]({{template `databricks_staging_workspace_host` .}}/ml/models/staging-{{template `model_name` .}})

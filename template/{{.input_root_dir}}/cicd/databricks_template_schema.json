@@ -36,33 +36,33 @@
       "description": "CLI Version",
       "type": "string"
     },
-    "input_project_name": {
-      "order": 8,
-      "description": "Project Name",
-      "type": "string"
-    },
-    "input_include_feature_store": {
-      "order": 9,
-      "description": "Use Feature Store (yes) or not (no)",
-      "type": "string"
-    },
     "input_test_catalog_name": {
-      "order": 10,
+      "order": 8,
       "type": "string",
       "description": "\nName of the Test Unity Catalog",
       "default": "test"
     },
     "input_staging_catalog_name": {
-      "order": 13,
+      "order": 9,
       "type": "string",
       "description": "\nName of the Staging Unity Catalog",
       "default": "staging"
     },
     "input_prod_catalog_name": {
-      "order": 14,
+      "order": 10,
       "type": "string",
       "description": "\nName of the Prod Unity Catalog",
       "default": "prod"
+    },
+    "input_project_name": {
+      "order": 11,
+      "description": "Project Name",
+      "type": "string"
+    },
+    "input_include_feature_store": {
+      "order": 12,
+      "description": "Use Feature Store (yes) or not (no)",
+      "type": "string"
     }
   },
   "success_message" : "\n✨ CICD files for your MLOps Project '{{.input_project_name}}' have been initialized!"

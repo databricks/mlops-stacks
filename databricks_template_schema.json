@@ -137,7 +137,7 @@
     "input_staging_catalog_name": {
       "order": 12,
       "type": "string",
-      "description": "\nName of the catalog in Unity Catalog that will host the staging UC resources. \nThis catalog must already exist and service principals must have access to it.",
+      "description": "\nName of the catalog in Unity Catalog that will host the staging UC resources. \nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "staging",
       "skip_prompt_if": {
         "anyOf": [
@@ -161,7 +161,7 @@
     "input_prod_catalog_name": {
       "order": 13,
       "type": "string",
-      "description": "\nName of the Prod Unity Catalog",
+      "description": "\nName of the Prod Unity Catalog.\nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "prod",
       "skip_prompt_if": {
         "anyOf": [
@@ -185,7 +185,7 @@
     "input_test_catalog_name": {
       "order": 14,
       "type": "string",
-      "description": "\nName of the catalog in Unity Catalog that will be used for integration tests",
+      "description": "\nName of the catalog in Unity Catalog that will be used for integration tests\nDefault",
       "default": "test",
       "skip_prompt_if": {
         "anyOf": [
