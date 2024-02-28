@@ -36,13 +36,31 @@
       "description": "CLI Version",
       "type": "string"
     },
-    "input_project_name": {
+    "input_test_catalog_name": {
       "order": 8,
+      "type": "string",
+      "description": "\nName of the Test Unity Catalog",
+      "default": "test"
+    },
+    "input_staging_catalog_name": {
+      "order": 9,
+      "type": "string",
+      "description": "\nName of the Staging Unity Catalog",
+      "default": "staging"
+    },
+    "input_prod_catalog_name": {
+      "order": 10,
+      "type": "string",
+      "description": "\nName of the Prod Unity Catalog",
+      "default": "prod"
+    },
+    "input_project_name": {
+      "order": 11,
       "description": "Project Name",
       "type": "string"
     },
     "input_include_feature_store": {
-      "order": 9,
+      "order": 12,
       "description": "Use Feature Store (yes) or not (no)",
       "type": "string"
     }
