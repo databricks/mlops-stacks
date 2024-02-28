@@ -84,7 +84,7 @@ If the created project uses **Unity Catalog**, we expect a catalog to exist with
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
 If you want to use different catalog names, please update the target names declared in the 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
-{{- else }} `databricks.yml` {{ end }} file. 
+{{- else }} `databricks.yml` {{ end }} file.
 If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory.
 
 The SP must have proper permission in each respective environment and the catalog for the environments.
@@ -113,8 +113,10 @@ to add the secrets to GitHub:
 - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
 - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
 - `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
-Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`,
-and to allow workflows to be able to open pull requests (PRs).
+
+Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General:
+- Allow `Read and write permissions`,
+- Allow workflows to be able to open pull requests (PRs).
   {{ end }}
 
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `azure`) }}
@@ -137,6 +139,9 @@ Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.github/workflows/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
 This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
 These workflows will be defined under `.github/workflows`.
+
+If you want to deploy CI/CD for an initialized project (`Project-Only` MLOps Stacks initialization), you can manually run the `deploy-cicd.yml` workflow from the [Github Actions UI](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow?tool=webui) once the project code has been added to your main repo. 
+The workflow will create a pull request with all the changes against your {{ .input_default_branch }} branch. Review and approve it to commit the files to deploy CI/CD for the project. 
 
 {{ else if (eq .input_cicd_platform `azure_devops`) -}}
 ## Configure CI/CD - Azure DevOps

@@ -178,8 +178,8 @@ This stack comes with a workflow to set up CI/CD for projects that can be found 
 {{ end }}
 
 To set up CI/CD for projects that were created through MLOps Stacks with the `Project_Only` parameter, 
-run the abovementioned workflow, specifying the `project_name` as a parameter. This workflow assumes that 
-all steps in the [MLOps Setup Guide](./docs/mlops-setup.md) have been completed. For example, for the monorepo case:
+run the above mentioned workflow, specifying the `project_name` as a parameter. For example, for the monorepo case:
+
 1. Setup your repository by initializing MLOps Stacks via Databricks CLI with the `CICD_and_Project` or `CICD_Only` parameter.
 2. Follow the [MLOps Setup Guide](./docs/mlops-setup.md) to setup authentication and get the repo ready for CI/CD.
 3. Create a new project by initializing MLOps Stacks again but this time with the `Project_Only` parameter.
