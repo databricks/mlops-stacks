@@ -76,7 +76,7 @@ This will prompt for parameters for initialization. Some of these parameters are
    We expect Data Scientists to specify ``Project_Only`` to get 
    started in a development capacity, and when ready to move the project to Staging/Production, CI/CD can be set up. We expect that step to be done by Machine Learning Engineers (MLEs) who can specify ``CICD_Only`` during initialization and use the provided workflow to setup CI/CD for one or more projects.
  * ``input_root_dir``: name of the root directory. When initializing with ``CICD_and_Project``, this field will automatically be set to ``input_project_name``.
- * ``input_cloud``: Cloud provider you use with Databricks (AWS or Azure), note GCP is not supported at this time.
+ * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP).
 
 Others must be correctly specified for CI/CD to work:
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
@@ -198,7 +198,7 @@ a generated new ML project. To do this, you can create an example
 project from your local checkout of the repo, and inspect its contents/run tests within
 the project.
 
-We provide example project configs for Azure (using both GitHub and Azure DevOps) and AWS (using GitHub) under `tests/example-project-configs`.
+We provide example project configs for Azure (using both GitHub and Azure DevOps), AWS (using GitHub), and GCP (using GitHub) under `tests/example-project-configs`.
 To create an example Azure project, using Azure DevOps as the CI/CD platform, run the following from the desired parent directory
 of the example project:
 
@@ -213,4 +213,11 @@ To create an example AWS project, using GitHub Actions for CI/CD, run:
 # Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
 MLOPS_STACKS_PATH=~/mlops-stacks
 databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/aws/aws-github.json"
+```
+
+To create an example GCP project, using GitHub Actions for CI/CD, run:
+```
+# Note: update MLOPS_STACKS_PATH to the path to your local checkout of the MLOps Stacks repo
+MLOPS_STACKS_PATH=~/mlops-stacks
+databricks bundle init "$MLOPS_STACKS_PATH" --config-file "$MLOPS_STACKS_PATH/tests/example-project-configs/gcp/gcp-github.json"
 ```

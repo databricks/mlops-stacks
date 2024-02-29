@@ -79,6 +79,15 @@ for details.
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 {{ end }}
 
+{{ else if eq .input_cloud `gcp` }}
+To authenticate and manage ML resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
+for the project should be created and added to both staging and prod workspaces. Follow
+[Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
+for details.
+{{ end }}
+
 #### Configure Service Principal (SP) permissions 
 If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
 For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
@@ -106,6 +115,20 @@ i.e. for each environment
 
 #### Set secrets for CI/CD
 {{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `aws`) }}
+After creating the service principals and adding them to the respective staging and prod workspaces, follow
+[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
+to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the secrets to GitHub:
+- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+- `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
+
+Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General:
+- Allow `Read and write permissions`,
+- Allow workflows to be able to open pull requests (PRs).
+  {{ end }}
+
+{{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `gcp`) }}
 After creating the service principals and adding them to the respective staging and prod workspaces, follow
 [Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
 to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)

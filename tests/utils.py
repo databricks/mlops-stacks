@@ -34,7 +34,7 @@ AWS_DEFAULT_PARAMS = {
 
 def parametrize_by_cloud(fn):
     @wraps(fn)
-    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure", "gcp"])
     def wrapper(*args, **kwargs):
         return fn(*args, **kwargs)
 
@@ -42,7 +42,7 @@ def parametrize_by_cloud(fn):
 
 
 def parametrize_by_project_generation_params(fn):
-    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure", "gcp"])
     @pytest.mark.parametrize(
         "cicd_platform",
         [
@@ -147,7 +147,7 @@ def generate(directory, databricks_cli, context):
     params = {
         **(
             AWS_DEFAULT_PARAMS
-            if context.get("input_cloud") == "aws"
+            if (context.get("input_cloud") == "aws") | (context.get("input_cloud") == "gcp")
             else AZURE_DEFAULT_PARAMS
         ),
         **context,
