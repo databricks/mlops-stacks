@@ -23,9 +23,12 @@ from utils import (
     ],
 )
 @parametrize_by_cloud
-def test_generated_yaml_format(cicd_platform, generated_project_dir):
+def test_generated_yaml_format(cloud, include_models_in_unity_catalog, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing
     # the generated mlops project with git.
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     subprocess.run(
         """
         git init
@@ -54,8 +57,11 @@ def test_generated_yaml_format(cicd_platform, generated_project_dir):
     ],
 )
 @parametrize_by_cloud
-def test_run_unit_tests_workflow(cicd_platform, generated_project_dir):
+def test_run_unit_tests_workflow(cloud, include_models_in_unity_catalog, generated_project_dir):
     """Test that the GitHub workflow for running unit tests in the materialized project passes"""
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     # We only test the unit test workflow, as it's the only one that doesn't require
     # Databricks REST API
     subprocess.run(
