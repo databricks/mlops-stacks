@@ -68,7 +68,7 @@ for details.
 
 For your convenience, we also have Terraform modules that can be used to [create](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-creation/databricks/latest) or [link](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-linking/databricks/latest) service principals.
 
-{{ else if eq .input_cloud `aws` }}
+{{ else }}
 To authenticate and manage ML resources created by CI/CD, 
 [service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
 for the project should be created and added to both staging and prod workspaces. Follow
@@ -76,7 +76,9 @@ for the project should be created and added to both staging and prod workspaces.
 and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
 for details.
 
+{{ if eq .input_cloud `aws` }}
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
+{{ end }}
 {{ end }}
 
 #### Configure Service Principal (SP) permissions 
@@ -105,21 +107,7 @@ i.e. for each environment
 
 
 #### Set secrets for CI/CD
-{{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `aws`) }}
-After creating the service principals and adding them to the respective staging and prod workspaces, follow
-[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
-to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-to add the secrets to GitHub:
-- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
-- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
-- `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
-
-Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General:
-- Allow `Read and write permissions`,
-- Allow workflows to be able to open pull requests (PRs).
-  {{ end }}
-
-{{ if and (eq .input_cicd_platform `github_actions`) (eq .input_cloud `azure`) }}
+{{ if eq .input_cloud `azure` }}
 After creating the service principals and adding them to the respective staging and prod workspaces, refer to
 [Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--manage-access-tokens-for-a-service-principal")) }})
 and [Get Azure AD tokens for service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/api/latest/aad/service-prin-aad-token")) }})
@@ -133,7 +121,19 @@ to add the following secrets to GitHub:
 - `STAGING_AZURE_SP_CLIENT_SECRET`
 - `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
 Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
-  {{ end }}
+{{ else }}
+After creating the service principals and adding them to the respective staging and prod workspaces, follow
+[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
+to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the secrets to GitHub:
+- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+- `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
+
+Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General:
+- Allow `Read and write permissions`,
+- Allow workflows to be able to open pull requests (PRs).
+{{ end }}
 
 ### Setting up CI/CD workflows
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.github/workflows/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
@@ -260,9 +260,9 @@ The ultimate aim of the service connection approach is to use two separate servi
   > Note that you will have to update this code snippet with the respective service connection names, depending on which Databricks workspace you are deploying resources to.
 
 1. Create separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. Create one pipeline for each script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
-6. Define [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{ .input_default_branch }}` branch using the Azure build pipelines created in step 1. This is required so that any PR changes to the `{{ .input_default_branch }}` must build successfully before PRs can complete. 
+1. Define [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{ .input_default_branch }}` branch using the Azure build pipelines created in step 1. This is required so that any PR changes to the `{{ .input_default_branch }}` must build successfully before PRs can complete. 
 In the case of a monorepo, where there are multiple projects under a single repository, set a [path filter](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#path-filters) on the build validation policies, such that devops pipelines are only triggered when there are changes to the respective projects (e.g. the path filter would be `/project1/*` to trigger a devops pipeline when changes are made to _only_ files under the `project1` folder).
-  {{ end }}
+{{ end }}
 
 ### Setting up CI/CD workflows
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.azure/devops-pipelines/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 

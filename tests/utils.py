@@ -27,14 +27,22 @@ AZURE_DEFAULT_PARAMS = {
 
 AWS_DEFAULT_PARAMS = {
     **AZURE_DEFAULT_PARAMS,
+    "input_cloud": "aws",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
+}
+
+GCP_DEFAULT_PARAMS = {
+    **AZURE_DEFAULT_PARAMS,
+    "input_cloud": "gcp",
+    "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
+    "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com",
 }
 
 
 def parametrize_by_cloud(fn):
     @wraps(fn)
-    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure", "gcp"])
     def wrapper(*args, **kwargs):
         return fn(*args, **kwargs)
 
@@ -42,7 +50,7 @@ def parametrize_by_cloud(fn):
 
 
 def parametrize_by_project_generation_params(fn):
-    @pytest.mark.parametrize("cloud", ["aws", "azure"])
+    @pytest.mark.parametrize("cloud", ["aws", "azure", "gcp"])
     @pytest.mark.parametrize(
         "cicd_platform",
         [
@@ -144,12 +152,16 @@ def markdown_checker_configs(tmpdir):
 
 
 def generate(directory, databricks_cli, context):
+    if context.get("input_cloud") == "aws":
+        default_params = AWS_DEFAULT_PARAMS
+    elif context.get("input_cloud") == "gcp":
+        if context.get("input_include_models_in_unity_catalog") == "yes":
+            return
+        default_params = GCP_DEFAULT_PARAMS
+    else:
+        default_params = AZURE_DEFAULT_PARAMS
     params = {
-        **(
-            AWS_DEFAULT_PARAMS
-            if context.get("input_cloud") == "aws"
-            else AZURE_DEFAULT_PARAMS
-        ),
+        **default_params,
         **context,
     }
     json_string = json.dumps(params)

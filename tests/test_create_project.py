@@ -39,6 +39,11 @@ DEFAULT_PARAMS_AWS = {
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
+DEFAULT_PARAMS_GCP = {
+    "input_cloud": "gcp",
+    "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
+    "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com",
+}
 
 
 def assert_no_disallowed_strings_in_files(
@@ -77,7 +82,12 @@ def assert_no_disallowed_strings_in_files(
 
 
 @parametrize_by_project_generation_params
-def test_no_template_strings_after_param_substitution(generated_project_dir):
+def test_no_template_strings_after_param_substitution(
+    cloud, include_models_in_unity_catalog, generated_project_dir
+):
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     assert_no_disallowed_strings_in_files(
         file_paths=[
             os.path.join(generated_project_dir, path)
@@ -117,7 +127,10 @@ def test_no_databricks_doc_strings_before_project_generation():
 
 @pytest.mark.large
 @parametrize_by_project_generation_params
-def test_markdown_links(generated_project_dir):
+def test_markdown_links(cloud, include_models_in_unity_catalog, generated_project_dir):
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
         """
@@ -173,6 +186,9 @@ def test_generate_project_with_default_values(
     - The default param values in the substitution logic in the pre_gen_project.py hook are up to date.
     - The default param values in the help strings in databricks_template_schema.json are up to date.
     """
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     context = {
         "input_project_name": TEST_PROJECT_NAME,
         "input_root_dir": TEST_PROJECT_NAME,
@@ -190,6 +206,8 @@ def test_generate_project_with_default_values(
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AZURE}
     elif cloud == "aws":
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_AWS}
+    elif cloud == "gcp":
+        params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_GCP}
     for param, value in params.items():
         assert f"{param}={value}" in test_file_contents
 
@@ -234,6 +252,9 @@ def test_generate_project_check_delta_output(
     """
     Asserts the behavior of Delta Table-related artifacts when generating MLOps Stacks.
     """
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     context = prepareContext(
         cloud,
         cicd_platform,
@@ -275,6 +296,9 @@ def test_generate_project_check_feature_store_output(
     """
     Asserts the behavior of feature store-related artifacts when generating MLOps Stacks.
     """
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     context = prepareContext(
         cloud,
         cicd_platform,
@@ -312,6 +336,9 @@ def test_generate_project_check_recipe_output(
     """
     Asserts the behavior of MLflow Recipes-related artifacts when generating MLOps Stacks.
     """
+    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
+        # Skip test for GCP with Unity Catalog
+        return
     context = prepareContext(
         cloud,
         cicd_platform,
@@ -351,6 +378,7 @@ def test_workspace_dir_strip_query_params(
     workspace_host = {
         "aws": "https://dbc-my-aws-workspace.cloud.databricks.com",
         "azure": "https://adb-mycoolworkspace.11.azuredatabricks.net",
+        "gcp": "https://dbc-my-gcp-workspace.gcp.databricks.com",
     }[cloud]
     workspace_url = f"{workspace_host}{workspace_url_suffix}"
     context = {
