@@ -38,13 +38,6 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       {{- end }}
-      {{- if (eq .input_include_feature_store `yes`) }}
-      # Feature store tests bring up a local Spark session, so Java is required.
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-      {{- end }}
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
@@ -60,7 +53,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - uses: databricks/setup-cli@{{template `cli_version` .}}
       - uses: databricks/setup-cli@{{template `cli_version` .}}
       - name: Validate Bundle For Test Deployment Target in Staging Workspace
         id: validate
