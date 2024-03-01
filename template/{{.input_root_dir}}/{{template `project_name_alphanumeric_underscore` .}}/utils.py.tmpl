@@ -9,7 +9,7 @@ def get_deployed_model_stage_for_env(env):
     """
     # For a registered model version to be served, it needs to be in either the Staging or Production
     # model registry stage
-    # ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "applications/machine-learning/manage-model-lifecycle/index.html#transition-a-model-stage")) }}).
+    # ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/manage-model-lifecycle/workspace-model-registry.html")) }}).
     # For models in dev and staging environments, we deploy the model to the "Staging" stage, and in prod we deploy to the
     # "Production" stage
     _MODEL_STAGE_FOR_ENV = {
