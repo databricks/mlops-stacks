@@ -1,2 +1,6 @@
 {{ define `validation` }}
+    - Validate to not try UC + GCP
+    {{- if and (eq .input_include_models_in_unity_catalog `yes`) (eq .input_cloud `gcp`) -}}
+            {{ fail `The Model Registry in Unity Catalog cannot be used with GCP at this time. Please only use one of the two or neither.` }}
+    {{- end -}}
 {{- end -}}

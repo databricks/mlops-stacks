@@ -1,5 +1,4 @@
 name: {{ if (eq .input_include_feature_store `yes`) }}Feature and {{end}}Training Unit and Integration Tests for {{ .input_project_name }}
-name: {{ if (eq .input_include_feature_store `yes`) }}Feature and {{end}}Training Unit and Integration Tests for {{ .input_project_name }}
 on:
   workflow_dispatch:
   pull_request:
@@ -22,7 +21,6 @@ env:
   ARM_CLIENT_SECRET: {{`${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}`}}
   {{- end }}
 
-concurrency: {{template `project_name_alphanumeric_underscore` .}}-{{ if (eq .input_include_feature_store `yes`) }}feature-{{end}}training-integration-test-staging
 concurrency: {{template `project_name_alphanumeric_underscore` .}}-{{ if (eq .input_include_feature_store `yes`) }}feature-{{end}}training-integration-test-staging
 
 jobs:
@@ -58,7 +56,6 @@ jobs:
 
   integration_test:
     needs: unit_tests
-    runs-on: ubuntu-latest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
