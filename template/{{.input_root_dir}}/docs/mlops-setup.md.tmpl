@@ -68,7 +68,7 @@ for details.
 
 For your convenience, we also have Terraform modules that can be used to [create](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-creation/databricks/latest) or [link](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-linking/databricks/latest) service principals.
 
-{{ else if eq .input_cloud `aws` }}
+{{ else if ((eq .input_cloud `aws`) or (eq .input_cloud `gcp`)) }}
 To authenticate and manage ML resources created by CI/CD, 
 [service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
 for the project should be created and added to both staging and prod workspaces. Follow
@@ -76,15 +76,9 @@ for the project should be created and added to both staging and prod workspaces.
 and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
 for details.
 
+{{ if eq .input_cloud `aws` }}
 For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
 
-{{ else if eq .input_cloud `gcp` }}
-To authenticate and manage ML resources created by CI/CD, 
-[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
-for the project should be created and added to both staging and prod workspaces. Follow
-[Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
-and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
-for details.
 {{ end }}
 
 #### Configure Service Principal (SP) permissions 
