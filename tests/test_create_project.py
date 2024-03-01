@@ -82,7 +82,9 @@ def assert_no_disallowed_strings_in_files(
 
 
 @parametrize_by_project_generation_params
-def test_no_template_strings_after_param_substitution(cloud, include_models_in_unity_catalog, generated_project_dir):
+def test_no_template_strings_after_param_substitution(
+    cloud, include_models_in_unity_catalog, generated_project_dir
+):
     if cloud == "gcp" and include_models_in_unity_catalog == "yes":
         # Skip test for GCP with Unity Catalog
         return

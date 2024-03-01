@@ -152,12 +152,14 @@ def markdown_checker_configs(tmpdir):
 
 
 def generate(directory, databricks_cli, context):
+    if context.get("input_cloud") == "azure":
+        default_params = AZURE_DEFAULT_PARAMS
+    elif context.get("input_cloud") == "aws":
+        default_params = AWS_DEFAULT_PARAMS
+    else:
+        default_params = GCP_DEFAULT_PARAMS
     params = {
-        **(
-            AZURE_DEFAULT_PARAMS
-            if context.get("input_cloud") == "azure"
-            else AWS_DEFAULT_PARAMS
-        ),
+        **default_params,
         **context,
     }
     json_string = json.dumps(params)

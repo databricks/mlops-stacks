@@ -20,7 +20,7 @@ env:
   ARM_CLIENT_ID: {{`${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}`}}
   ARM_CLIENT_SECRET: {{`${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}`}}
   {{ else -}}
-  DATABRICKS_TOKEN: $(STAGING_WORKSPACE_TOKEN)
+  DATABRICKS_TOKEN: {{`${{ secrets.STAGING_WORKSPACE_TOKEN }}`}}
   {{- end }}
 
 jobs:
