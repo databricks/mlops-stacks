@@ -147,7 +147,9 @@ def generate(directory, databricks_cli, context):
     params = {
         **(
             AWS_DEFAULT_PARAMS
-            if (context.get("input_cloud") == "aws") | (context.get("input_cloud") == "gcp")
+AZURE_DEFAULT_PARAMS
+            if context.get("input_cloud") == "azure"
+            else AWS_DEFAULT_PARAMS
             else AZURE_DEFAULT_PARAMS
         ),
         **context,
