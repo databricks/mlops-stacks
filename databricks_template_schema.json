@@ -76,7 +76,7 @@
     "input_databricks_prod_workspace_host": {
       "order": 7,
       "type": "string",
-      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-prod-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-prod-workspace.cloud.databricks.com{{end}}",
+      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-prod-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-prod-workspace.gcp.databricks.com{{end}}",
       "description": "\nURL of production Databricks workspace.\nDefault",
       "pattern": "^(https.*)?$",
       "pattern_match_failure_message": "Databricks production workspace host URLs must start with https. Got invalid workspace host.",
