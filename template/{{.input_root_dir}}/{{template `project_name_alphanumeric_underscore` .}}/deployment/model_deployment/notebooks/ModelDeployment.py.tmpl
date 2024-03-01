@@ -16,7 +16,7 @@
 #  * model_uri (required)  - URI of the model to deploy. Must be in the format "models:/<name>/<version-id>", as described in
 #                            https://www.mlflow.org/docs/latest/model-registry.html#fetching-an-mlflow-model-from-the-model-registry
 #                            This parameter is read as a task value
-#                            ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/databricks-utils.html#get-command-dbutilsjobstaskvaluesget")) }}),
+#                            ({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/databricks-utils.html")) }}),
 #                            rather than as a notebook widget. That is, we assume a preceding task (the Train.py
 #                            notebook) has set a task value with key "model_uri".
 ##################################################################################
