@@ -19,7 +19,7 @@ env:
   ARM_TENANT_ID: {{`${{ secrets.PROD_AZURE_SP_TENANT_ID }}`}}
   ARM_CLIENT_ID: {{`${{ secrets.PROD_AZURE_SP_APPLICATION_ID }}`}}
   ARM_CLIENT_SECRET: {{`${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}`}}
-  {{ else }}
+  {{ else -}}
   DATABRICKS_TOKEN: {{`${{ secrets.PROD_WORKSPACE_TOKEN }}`}}
   {{- end }}
 
