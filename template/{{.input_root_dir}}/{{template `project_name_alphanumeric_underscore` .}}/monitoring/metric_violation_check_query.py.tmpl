@@ -1,0 +1,28 @@
+import sys
+import pathlib
+
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
+
+sql_query = """SELECT
+ CASE
+   WHEN COUNT(*) > 2 THEN 1
+   ELSE 0
+ END AS query_result
+FROM
+ (
+   SELECT
+     root_mean_squared_error
+   FROM
+     {}_profile_metrics
+   where
+     column_name = ":table"
+     and slice_key IS NULL
+     and model_id != "*"
+     and log_type = "INPUT"
+   ORDER BY
+     window DESC
+   LIMIT
+     5
+ )
+WHERE
+ root_mean_squared_error > 100"""

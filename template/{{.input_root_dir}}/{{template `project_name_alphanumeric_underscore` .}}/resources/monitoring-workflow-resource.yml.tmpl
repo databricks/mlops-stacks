@@ -11,5 +11,47 @@ common_permissions: &permissions
     - level: CAN_VIEW
       group_name: users
 
+resources:
+  jobs:
+    retraining_job:
+      name: ${bundle.target}-{{ .input_project_name }}-retraining-job
+      tasks:
+        - task_key: monitored_metric_violation_check
+          <<: *new_cluster
+          notebook_task:
+            notebook_path: ../monitoring/notebooks/MonitoredMetricViolationCheck.py
+            base_parameters:
+              env: ${bundle.target}
+              table_name_under_monitor: ${bundle.target}.{{ .input_schema_name }}.predictions
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
+        - task_key: is_metric_violated
+          depends_on:
+            - task_key: monitored_metric_violation_check
+          condition_task:
+            op: EQUAL_TO
+            left: {{"{{tasks.monitored_metric_violation_check.values.is_metric_violated}}"}}
+            right: "true"
+          git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+
+        - task_key: trigger_retraining
+          depends_on:
+            - task_key: is_metric_violated
+              outcome: "true"
+          run_job_task:
+            job_id: ${resources.jobs.model_training_job.id}
+            git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+
+      schedule:
+        quartz_cron_expression: "0 0 18 * * ?" # daily at 6pm
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com
 

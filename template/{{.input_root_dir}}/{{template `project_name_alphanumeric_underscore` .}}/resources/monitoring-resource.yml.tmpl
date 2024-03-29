@@ -3,8 +3,8 @@ resources:
     lakehouse_monitor:
         databricks_lakehouse_monitor:
         # TODO: Update the table name to the inference table that already exists
-        table_name: {bundle.target}.{stacks_repo_name}.predictions
-        output_schema: {bundle.target}.{stacks_repo_name}
+        table_name: ${bundle.target}.{{ .input_schema_name }}.predictions
+        output_schema: ${bundle.target}.{{ .input_schema_name }}
         # TODO: Update the parameters as per your requirements
         inference_log:
             granularities: 1 day

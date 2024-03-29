@@ -1,0 +1,35 @@
+# Databricks notebook source
+##################################################################################
+# This notebook runs a sql query and set the result as job task value
+#
+# This notebook has the following parameters:
+#
+#  * table_name_under_monitor (required)  - The name of a table that is currently being monitored
+##################################################################################
+
+# List of input args needed to run the notebook as a job.
+# Provide them via DB widgets or notebook arguments.
+#
+# Name of the table that is currently being monitored
+dbutils.widgets.text(
+    "table_name_under_monitor", "dev.{{ .input_schema_name }}.predictions", label="Full (three-Level) table name"
+)
+# COMMAND ----------
+
+import os
+import sys
+notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
+%cd $notebook_path
+%cd ..
+sys.path.append("../..")
+
+# COMMAND ----------
+
+from metric_violation_check_query import sql_query
+
+table_name_under_monitor = dbutils.widgets.get("table_name_under_monitor")
+is_metric_violated = spark.sql(sql_query.format(table_name_under_monitor))
+
+dbutils.jobs.taskValues.set("is_metric_violated", is_metric_violated)
+
+
