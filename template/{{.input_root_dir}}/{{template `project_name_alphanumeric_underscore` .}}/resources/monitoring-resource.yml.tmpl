@@ -1,0 +1,19 @@
+# Define lakehouse monitor
+resources:
+    lakehouse_monitor:
+        databricks_lakehouse_monitor:
+        # TODO: Update the table name to the inference table that already exists
+        table_name: {bundle.target}.{stacks_repo_name}.predictions
+        output_schema: {bundle.target}.{stacks_repo_name}
+        # TODO: Update the parameters as per your requirements
+        inference_log:
+            granularities: 1 day
+        model_id_col: model_version
+        prediction_col: prediction
+        label_col: labels
+        baseline_table_name: None
+        slicing_exprs: None
+        problem_type:	PROBLEM_TYPE_REGRESSION
+        timestamp_col: timestamp
+        # Run Every day at 8am
+        schedule: 0 8 * * *
