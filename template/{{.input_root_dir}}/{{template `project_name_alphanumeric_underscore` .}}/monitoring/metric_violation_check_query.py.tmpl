@@ -3,6 +3,48 @@ import pathlib
 
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
 
+"""The SQL query is divided into three main parts. The first part selects the top 5
+values of the metric to be monitored, `root_mean_squared_error`,
+ordered by the time window.
+```sql
+( SELECT
+   root_mean_squared_error
+ FROM
+   {}_profile_metrics
+ where
+   column_name = ":table"
+   and slice_key IS NULL
+   and model_id!= "*"
+   and log_type = "INPUT"
+ ORDER BY
+   window DESC
+ LIMIT
+   5
+   )
+```
+The `column_name = ":table"` and `slice_key IS NULL` conditions ensure that the metric
+is selected for the entire table within the given granularity. The `log_type = "INPUT"`
+condition ensures that the primary table metrics are considered, but not the baseline
+table metrics. The `model_id!= "*"` condition ensures that the metric aggregated across
+all model IDs is not selected.
+
+The second part of the query selects the metric values that exceed
+the defined threshold:
+```sql
+WHERE
+ root_mean_squared_error > 100
+```
+The final part of the query sets the `query_result` to 1 if the threshold violation
+occurred more than twice within the checking interval, and 0 otherwise:
+```sql
+SELECT
+ CASE
+   WHEN COUNT(*) > 2 THEN 1
+   ELSE 0
+ END AS query_result
+```
+"""
+
 sql_query = """SELECT
  CASE
    WHEN COUNT(*) > 2 THEN 1
