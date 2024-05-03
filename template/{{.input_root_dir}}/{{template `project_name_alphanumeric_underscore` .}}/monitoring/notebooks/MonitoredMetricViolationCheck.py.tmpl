@@ -28,7 +28,7 @@ sys.path.append("../..")
 from metric_violation_check_query import sql_query
 
 table_name_under_monitor = dbutils.widgets.get("table_name_under_monitor")
-is_metric_violated = spark.sql(sql_query.format(table_name_under_monitor))
+is_metric_violated = bool(spark.sql(sql_query.format(table_name_under_monitor)).toPandas()["query_result"][0])
 
 dbutils.jobs.taskValues.set("is_metric_violated", is_metric_violated)
 
