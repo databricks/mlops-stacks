@@ -143,6 +143,41 @@ Model validation contains three components:
 To set up and enable model validation, update [validation.py](../validation/validation.py) to return desired custom metrics and validation thresholds, then 
 resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml](./model-workflow-resource.yml).
 
+
+### Setting up model monitoring
+The model monitoring workflow focuses on building a plug-and-play stack component for monitoring the feature drifts and model drifts and retrain based on the
+violation threshold defined given the ground truth labels.
+
+Its central purpose is to track production model performances, feature distributions and comparing different versions.
+
+Monitoring contains four components:
+* [monitoring-resource.yml](./monitoring-resource.yml) contains the resource config and input parameters for monitoring.
+* [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) defines a query that check for violation of monitored metric.
+* [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py) acts as an entry pointexecuting the violation check query against the monitored inference table.
+It emits a boolean value based on the query result.
+* [monitoring-workflow-resource.yml](./monitoring-workflow-resource.yml) orchestrates model retraining based on monitoring. It first runs the [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py)
+entry point then decides whether to execute the model retraining workflow.
+
+To set up and enable monitoring:
+ * Update [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) to capture the specific metrics of interest,
+ * Generate inference table, join it with ground truth labels,and update the table name in [monitoring-resource.yml](./monitoring-resource.yml).
+ * Resolve the `TODOs`  in [monitoring-resource.yml](./monitoring-resource.yml)
+
+Retraining Constraints:
+The retraining job has constraints for optimal functioning:
+* Labels must be provided by the user, joined correctly for retraining history, and available on time with the retraining frequency.
+* Retraining Frequency is tightly coupled with the granularity of the monitor. Users should take into account and ensure that their retraining frequency is equal to or close to the granularity of the monitor.
+    * If the granularity of the monitor is 1 day and retraining frequency is 1 hour, the job will preemptively stop as there is no new data to evaluate retraining criteria
+    * If the granularity of the monitor is 1 day and retraining frequency is 1 week, retraining would be stale and not be efficient
+
+Permissions:
+Permissions for monitoring are inherited from the original table’s permissions.
+* Users who own the monitored table or its parent catalog/schema can create, update, and view monitors.
+* Users with read permissions on the monitored table can view its monitor.
+
+Therefore the users needs to ensure that they are the owner for the monitored table or the owner
+of the parent catalog/schema of that table.
+
 ## Develop and test config changes
 
 ### databricks CLI bundles schema overview
