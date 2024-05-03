@@ -12,7 +12,7 @@
 #
 # Name of the table that is currently being monitored
 dbutils.widgets.text(
-    "table_name_under_monitor", "dev.{{ .input_schema_name }}.predictions", label="Full (three-Level) table name"
+    "table_name_under_monitor", " ${bundle.target}.{{ .input_project_name }}.predictions", label="Full (three-Level) table name"
 )
 # COMMAND ----------
 

@@ -1,3 +1,5 @@
+# Note: Lakehouse monitring only works for unity catalog enabled workspaces. Remove this workflow if your application
+# is running on Non-UC workspaces
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
@@ -22,7 +24,7 @@ resources:
             notebook_path: ../monitoring/notebooks/MonitoredMetricViolationCheck.py
             base_parameters:
               env: ${bundle.target}
-              table_name_under_monitor: ${bundle.target}.{{ .input_schema_name }}.predictions
+              table_name_under_monitor: ${bundle.target}.{{ .input_project_name }}.predictions
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 

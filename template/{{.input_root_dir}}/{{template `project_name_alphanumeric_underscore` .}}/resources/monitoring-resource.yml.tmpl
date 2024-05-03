@@ -1,11 +1,13 @@
 # Define lakehouse monitor
+# Note: Lakehouse monitring only works for Unity catalog enabled workspaces. Remove this resource if your application
+# is running on Non-UC workspaces
 resources:
     lakehouse_monitor:
         databricks_lakehouse_monitor:
         # TODO: Update the table name to the inference table that already exists
-        table_name: ${bundle.target}.{{ .input_schema_name }}.predictions
-        output_schema: ${bundle.target}.{{ .input_schema_name }}
-        # TODO: Update the parameters as per your requirements
+        full_name: ${bundle.target}.{{ .input_project_name }}.predictions
+        output_schema: ${bundle.target}.{{ .input_project_name }}
+        # TODO: Update the below parameters as per your requirements
         inference_log:
             granularities: 1 day
         model_id_col: model_version
@@ -15,5 +17,4 @@ resources:
         slicing_exprs: None
         problem_type:	PROBLEM_TYPE_REGRESSION
         timestamp_col: timestamp
-        # Run Every day at 8am
-        schedule: 0 8 * * *
+        schedule: 0 8 * * * # Run Every day at 8am
