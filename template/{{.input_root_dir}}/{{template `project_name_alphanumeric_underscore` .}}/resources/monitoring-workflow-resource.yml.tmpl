@@ -16,7 +16,7 @@ common_permissions: &permissions
 resources:
   jobs:
     retraining_job:
-      name: ${bundle.target}-{{ .input_project_name }}-retraining-job
+      name: ${bundle.target}-{{ .input_project_name }}-monitoring-retraining-job
       tasks:
         - task_key: monitored_metric_violation_check
           <<: *new_cluster
@@ -33,7 +33,7 @@ resources:
             - task_key: monitored_metric_violation_check
           condition_task:
             op: EQUAL_TO
-            left: {{"{{tasks.monitored_metric_violation_check.values.is_metric_violated}}"}}
+            left: "{{"{{tasks.monitored_metric_violation_check.values.is_metric_violated}}"}}"
             right: "true"
           git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
