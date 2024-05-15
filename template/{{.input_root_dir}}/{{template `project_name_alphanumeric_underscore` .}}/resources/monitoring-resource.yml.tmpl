@@ -8,7 +8,6 @@ resources:
             full_name: ${bundle.target}.{{ .input_project_name }}.predictions
             output_schema_name: ${bundle.target}.{{ .input_project_name }}
             # TODO: Update the below parameters as per your requirements
-            assets_dir: /Shared/provider-test/databricks_lakehouse_monitoring/${bundle.target}.{{ .input_project_name }}.predictions
             inference_log:
                 granularities: [1 day]
                 model_id_col: model_id
