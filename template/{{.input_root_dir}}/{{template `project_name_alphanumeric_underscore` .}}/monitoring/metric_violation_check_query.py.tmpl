@@ -4,13 +4,13 @@ import pathlib
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
 
 """The SQL query is divided into three main parts. The first part selects the top 5
-values of the metric to be monitored, `root_mean_squared_error`,
+values of the metric to be monitored,
 ordered by the time window.
 ```sql
 ( SELECT
-   root_mean_squared_error
+   {metric_to_monitor}
  FROM
-   {}_profile_metrics
+   {table_name_under_monitor}_profile_metrics
  where
    column_name = ":table"
    and slice_key IS NULL
@@ -32,7 +32,7 @@ The second part of the query selects the metric values that exceed
 the defined threshold:
 ```sql
 WHERE
- root_mean_squared_error > 100
+ {metric_to_monitor} > {metric_violation_threshold}
 ```
 The final part of the query sets the `query_result` to 1 if the threshold violation
 occurred more than twice within the checking interval, and 0 otherwise:
@@ -53,9 +53,9 @@ sql_query = """SELECT
 FROM
  (
    SELECT
-     root_mean_squared_error
+     {metric_to_monitor}
    FROM
-     {}_profile_metrics
+     {table_name_under_monitor}_profile_metrics
    where
      column_name = ":table"
      and slice_key IS NULL
@@ -67,4 +67,4 @@ FROM
      5
  )
 WHERE
- root_mean_squared_error > 100"""
+ {metric_to_monitor} > {metric_violation_threshold}"""

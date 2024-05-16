@@ -1,5 +1,25 @@
-# Note: Lakehouse monitring only works for unity catalog enabled workspaces. Remove this workflow if your application
+# Define lakehouse monitor
+# Note: Lakehouse monitring only works for Unity catalog enabled workspaces. Remove this resource if your application
 # is running on Non-UC workspaces
+
+resources:
+    lakehouse_monitors:
+        {{ .input_project_name }}_lakehouse_monitor:
+            # TODO: Update the table name to the inference table that already exists
+            full_name: ${bundle.target}.{{ .input_project_name }}.{{ .input_inference_table_name }}
+            output_schema_name: ${bundle.target}.{{ .input_project_name }}
+            # TODO: Update the below parameters as per your requirements
+            inference_log:
+                granularities: [1 day]
+                model_id_col: model_id
+                prediction_col: predictions
+                label_col: labels
+                problem_type: PROBLEM_TYPE_REGRESSION
+                timestamp_col: timestamp
+            schedule:
+                quartz_cron_expression: 0 0 8 * * ? # Run Every day at 8am
+                timezone_id: UTC
+
 new_cluster: &new_cluster
   new_cluster:
     num_workers: 3
@@ -24,7 +44,10 @@ resources:
             notebook_path: ../monitoring/notebooks/MonitoredMetricViolationCheck.py
             base_parameters:
               env: ${bundle.target}
-              table_name_under_monitor: ${bundle.target}.{{ .input_project_name }}.predictions
+              table_name_under_monitor: ${bundle.target}.{{ .input_project_name }}.{{ .input_inference_table_name }}
+              # TODO: Update the metric to be monitored and violation threshold
+              metric_to_monitor: root_mean_squared_error
+              metric_violation_threshold: 100
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 

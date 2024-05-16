@@ -301,6 +301,19 @@
           }
         ]
       }
+    },
+    "input_inference_table_name": {
+      "order": 19,
+      "type": "string",
+      "description": "\nName of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
+      "default": "predictions",
+      "skip_prompt_if": {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
+      }
     }
   },
   "success_message" : "\n*** Your MLOps Stack has been created in the '{{.input_root_dir}}{{if not (eq .input_setup_cicd_and_project `CICD_Only`) }}/{{.input_project_name}}{{end}}' directory! ***\n\nPlease refer to the README.md for further instructions on getting started."

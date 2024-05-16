@@ -151,17 +151,16 @@ violation threshold defined given the ground truth labels.
 Its central purpose is to track production model performances, feature distributions and comparing different versions.
 
 Monitoring contains four components:
-* [monitoring-resource.yml](./monitoring-resource.yml) contains the resource config and input parameters for monitoring.
 * [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) defines a query that check for violation of monitored metric.
 * [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py) acts as an entry pointexecuting the violation check query against the monitored inference table.
 It emits a boolean value based on the query result.
-* [monitoring-workflow-resource.yml](./monitoring-workflow-resource.yml) orchestrates model retraining based on monitoring. It first runs the [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py)
+* [monitoring-workflow-resource.yml](./monitoring-workflow-resource.yml) contains the resource config, input parameters for monitoring and orchestrates model retraining based on monitoring. It first runs the [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py)
 entry point then decides whether to execute the model retraining workflow.
 
 To set up and enable monitoring:
  * Update [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) to capture the specific metrics of interest,
- * Generate inference table, join it with ground truth labels,and update the table name in [monitoring-resource.yml](./monitoring-resource.yml).
- * Resolve the `TODOs`  in [monitoring-resource.yml](./monitoring-resource.yml)
+ * If it is not done already, generate inference table, join it with ground truth labels,and update the table name in * [monitoring-workflow-resource.yml](./monitoring-workflow-resource.yml).
+ * Resolve the `TODOs`  in [monitoring-workflow-resource.yml](./monitoring-workflow-resource.yml)
 
 Retraining Constraints:
 The retraining job has constraints for optimal functioning:
