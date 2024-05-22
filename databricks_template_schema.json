@@ -305,8 +305,8 @@
     "input_inference_table_name": {
       "order": 19,
       "type": "string",
-      "description": "\nName of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
-      "default": "predictions",
+      "description": "\nFully qualified name of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
+      "default": "dev.my_mlops_project.predictions",
       "skip_prompt_if": {
             "properties": {
               "input_setup_cicd_and_project": {
