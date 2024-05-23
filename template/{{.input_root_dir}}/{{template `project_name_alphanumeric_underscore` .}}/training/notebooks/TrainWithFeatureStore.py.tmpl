@@ -181,7 +181,8 @@ taxi_data.display()
 # COMMAND ----------
 # DBTITLE 1, Create FeatureLookups
 
-from databricks.feature_engineering import FeatureLookup
+{%- if (eq .input_include_models_in_unity_catalog `no`) %}
+from databricks.feature_store import FeatureLookup
 import mlflow
 
 pickup_features_table = dbutils.widgets.get("pickup_features_table")
@@ -208,9 +209,62 @@ dropoff_feature_lookups = [
     ),
 ]
 
+{%- else %}
+from databricks.feature_engineering import FeatureLookup
+import mlflow
+
+pickup_features_table = dbutils.widgets.get("pickup_features_table")
+dropoff_features_table = dbutils.widgets.get("dropoff_features_table")
+
+pickup_feature_lookups = [
+    FeatureLookup(
+        table_name=pickup_features_table,
+        feature_names=[
+            "mean_fare_window_1h_pickup_zip",
+            "count_trips_window_1h_pickup_zip",
+        ],
+        lookup_key=["pickup_zip"],
+        timestamp_lookup_key=["rounded_pickup_datetime"],
+    ),
+]
+
+dropoff_feature_lookups = [
+    FeatureLookup(
+        table_name=dropoff_features_table,
+        feature_names=["count_trips_window_30m_dropoff_zip", "dropoff_is_weekend"],
+        lookup_key=["dropoff_zip"],
+        timestamp_lookup_key=["rounded_dropoff_datetime"],
+    ),
+]
+{%- endif %}
+
 # COMMAND ----------
 # DBTITLE 1, Create Training Dataset
 
+{%- if (eq .input_include_models_in_unity_catalog `no`) %}
+from databricks import feature_store
+
+# End any existing runs (in the case this notebook is being run for a second time)
+mlflow.end_run()
+
+# Start an mlflow run, which is needed for the feature store to log the model
+mlflow.start_run()
+
+# Since the rounded timestamp columns would likely cause the model to overfit the data
+# unless additional feature engineering was performed, exclude them to avoid training on them.
+exclude_columns = ["rounded_pickup_datetime", "rounded_dropoff_datetime"]
+
+fs = feature_store.FeatureStoreClient()
+
+# Create the training set that includes the raw input data merged with corresponding features from both feature tables
+training_set = fs.create_training_set(
+    taxi_data,
+    feature_lookups=pickup_feature_lookups + dropoff_feature_lookups,
+    label="fare_amount",
+    exclude_columns=exclude_columns,
+)
+
+{%- else %}
 from databricks.feature_engineering import FeatureEngineeringClient
 
 # End any existing runs (in the case this notebook is being run for a second time)
@@ -232,6 +286,7 @@ training_set = fe.create_training_set(
     label="fare_amount",
     exclude_columns=exclude_columns,
 )
+{%- endif %}
 
 # Load the TrainingSet into a dataframe which can be passed into sklearn for training a model
 training_df = training_set.load_df()
@@ -279,6 +334,16 @@ model = lgb.train(param, train_lgb_dataset, num_rounds)
 # COMMAND ----------
 # DBTITLE 1, Log model and return output.
 
+{%- if (eq .input_include_models_in_unity_catalog `no`) %}
+# Log the trained model with MLflow and package it with feature lookup information.
+fs.log_model(
+    model=model, #specify model
+    artifact_path="model_packaged",
+    flavor=mlflow.lightgbm,
+    training_set=training_set,
+    registered_model_name=model_name,
+)
+{%- else %}
 # Log the trained model with MLflow and package it with feature lookup information.
 fe.log_model(
     model=model, #specify model
@@ -287,6 +352,7 @@ fe.log_model(
     training_set=training_set,
     registered_model_name=model_name,
 )
+{%- endif %}
 
 # The returned model URI is needed by the model deployment notebook.
 model_version = get_latest_model_version(model_name)
