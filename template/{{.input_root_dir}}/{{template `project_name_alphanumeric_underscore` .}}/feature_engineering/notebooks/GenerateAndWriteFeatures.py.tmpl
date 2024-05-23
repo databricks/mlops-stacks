@@ -116,7 +116,7 @@ features_df = compute_features_fn(
 # COMMAND ----------
 # DBTITLE 1, Write computed features.
 
-{%- if (eq .input_include_models_in_unity_catalog `no`) %}
+{{- if (eq .input_include_models_in_unity_catalog "no") }}
 from databricks import feature_store
 
 fs = feature_store.FeatureStoreClient()
@@ -137,7 +137,7 @@ fs.write_table(
     mode="merge",
 )
 
-{%- else %}
+{{else}}
 from databricks.feature_engineering import FeatureEngineeringClient
 fe = FeatureEngineeringClient()
 
@@ -156,6 +156,6 @@ fe.write_table(
     df=features_df,
     mode="merge",
 )
-{%- endif %}
+{{end -}}
 
 dbutils.notebook.exit(0)
