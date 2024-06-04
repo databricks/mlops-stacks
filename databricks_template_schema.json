@@ -256,8 +256,21 @@
         ]
       }
     },
-    "input_include_feature_store": {
+    "input_inference_table_name": {
       "order": 17,
+      "type": "string",
+      "description": "\nFully qualified name of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
+      "default": "dev.my_mlops_project.predictions",
+      "skip_prompt_if": {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
+      }
+    },
+    "input_include_feature_store": {
+      "order": 18,
       "type": "string",
       "description": "\nWhether to include Feature Store",
       "default": "no",
@@ -271,7 +284,7 @@
       }
     },
     "input_include_mlflow_recipes": {
-      "order": 18,
+      "order": 19,
       "type": "string",
       "description": "\nWhether to include MLflow Recipes",
       "default": "no",
@@ -300,19 +313,6 @@
             }
           }
         ]
-      }
-    },
-    "input_inference_table_name": {
-      "order": 19,
-      "type": "string",
-      "description": "\nFully qualified name of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
-      "default": "dev.my_mlops_project.predictions",
-      "skip_prompt_if": {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_Only"
-              }
-            }
       }
     }
   },

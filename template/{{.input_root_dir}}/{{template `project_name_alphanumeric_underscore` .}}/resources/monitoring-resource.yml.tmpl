@@ -1,12 +1,11 @@
-# Define lakehouse monitor
-# Note: Lakehouse monitring only works for Unity catalog enabled workspaces. Remove this resource if your application
-# is running on Non-UC workspaces
+# Please complete all the TODOs in this file.
+# NOTE: Monitoring only works on Unity Catalog tables.
 
 resources:
-    lakehouse_monitors:
-        {{ .input_project_name }}_lakehouse_monitor:
-            # TODO: Update the table name to the inference table that already exists
+    quality_monitors:
+        {{ .input_project_name }}_quality_monitor:
             full_name: {{ .input_inference_table_name }}
+            # TODO: Update the output schema name as per your requirements
             output_schema_name: ${bundle.target}.{{ .input_project_name }}
             # TODO: Update the below parameters as per your requirements
             inference_log:
