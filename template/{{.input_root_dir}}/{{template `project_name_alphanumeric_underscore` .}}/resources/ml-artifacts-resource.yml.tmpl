@@ -25,7 +25,7 @@ resources:
         catalog_name: ${bundle.target}
         schema_name: {{ .input_schema_name }}
         comment: Registered model in Unity Catalog for the "{{ .input_project_name }}" ML Project for ${bundle.target} deployment target.
-        <<: *grants
+        <<: *grants{{end}}
 
   experiments:
     experiment:
