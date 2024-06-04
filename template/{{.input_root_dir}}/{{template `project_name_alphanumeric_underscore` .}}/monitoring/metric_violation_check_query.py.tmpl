@@ -1,9 +1,11 @@
+# This file is used for the main SQL query that checks the last 5 metric violations and whether at least 2 of those runs violate the condition.
+
 import sys
 import pathlib
 
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
 
-"""The SQL query is divided into three main parts. The first part selects the top 5
+"""The SQL query is divided into three main parts. The first part selects the top {num_evaluation_windows}
 values of the metric to be monitored,
 ordered by the time window.
 ```sql
@@ -19,7 +21,7 @@ ordered by the time window.
  ORDER BY
    window DESC
  LIMIT
-   5
+   {num_evaluation_windows}
    )
 ```
 The `column_name = ":table"` and `slice_key IS NULL` conditions ensure that the metric
@@ -39,7 +41,7 @@ occurred more than twice within the checking interval, and 0 otherwise:
 ```sql
 SELECT
  CASE
-   WHEN COUNT(*) > 2 THEN 1
+   WHEN COUNT(*) > {num_violation_windows} THEN 1
    ELSE 0
  END AS query_result
 ```
@@ -47,7 +49,7 @@ SELECT
 
 sql_query = """SELECT
  CASE
-   WHEN COUNT(*) > 2 THEN 1
+   WHEN COUNT(*) > {num_violation_windows} THEN 1
    ELSE 0
  END AS query_result
 FROM
@@ -64,7 +66,7 @@ FROM
    ORDER BY
      window DESC
    LIMIT
-     5
+     {num_evaluation_windows}
  )
 WHERE
  {metric_to_monitor} > {metric_violation_threshold}"""

@@ -7,6 +7,8 @@
 #  * table_name_under_monitor (required)  - The name of a table that is currently being monitored
 #  * metric_to_monitor (required)  - Metric to be monitored for threshold violation
 #  * metric_violation_threshold (required)  - Threshold value for metric violation
+#  * num_evaluation_windows (required)  - Number of windows to check for violation
+#  * num_violation_windows (required)  - Number of windows that need to violate the threshold
 ##################################################################################
 
 # List of input args needed to run the notebook as a job.
@@ -24,6 +26,16 @@ dbutils.widgets.text(
 # Threshold value to be checked
 dbutils.widgets.text(
     "metric_violation_threshold", "100", label="Threshold value for metric violation"
+)
+
+# Threshold value to be checked
+dbutils.widgets.text(
+    "num_evaluation_windows", "5", label="Number of windows to check for violation"
+)
+
+# Threshold value to be checked
+dbutils.widgets.text(
+    "num_violation_windows", "2", label="Number of windows that need to violate the threshold"
 )
 
 # COMMAND ----------
@@ -46,7 +58,9 @@ metric_violation_threshold = dbutils.widgets.get("metric_violation_threshold")
 formatted_sql_query = sql_query.format(
     table_name_under_monitor=table_name_under_monitor,
     metric_to_monitor=metric_to_monitor,
-    metric_violation_threshold=metric_violation_threshold)
+    metric_violation_threshold=metric_violation_threshold,
+    num_evaluation_windows=num_evaluation_windows,
+    num_violation_windows=num_violation_windows)
 is_metric_violated = bool(spark.sql(formatted_sql_query).toPandas()["query_result"][0])
 
 dbutils.jobs.taskValues.set("is_metric_violated", is_metric_violated)
