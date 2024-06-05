@@ -8,6 +8,7 @@ resources:
       # TODO: Update the output schema name as per your requirements
       output_schema_name: ${bundle.target}.{{ .input_project_name }}
       # TODO: Update the below parameters as per your requirements
+      assets_dir: /Users/${workspace.current_user.userName}/databricks_lakehouse_monitoring
       inference_log:
         granularities: [1 day]
         model_id_col: model_id
