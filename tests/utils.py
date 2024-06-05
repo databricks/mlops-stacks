@@ -23,6 +23,7 @@ AZURE_DEFAULT_PARAMS = {
     "input_include_models_in_unity_catalog": "no",
     "input_schema_name": "schema_name",
     "input_unity_catalog_read_user_group": "account users",
+    "input_inference_table_name": "dummy.schema.table",
 }
 
 AWS_DEFAULT_PARAMS = {
@@ -118,6 +119,7 @@ def generated_project_dir(
                 "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
                 "input_schema_name": "schema_name",
                 "input_unity_catalog_read_user_group": "account users",
+                "input_inference_table_name": "dummy.schema.table",
             }
         )
     generate(tmpdir, databricks_cli, params)

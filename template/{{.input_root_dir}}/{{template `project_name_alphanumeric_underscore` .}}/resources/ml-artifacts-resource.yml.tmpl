@@ -18,9 +18,6 @@ resources:
       name: ${var.model_name}
       description: MLflow registered model for the "{{ .input_project_name }}" ML Project for ${bundle.target} deployment target.
       <<: *permissions
-      depends_on:
-        - resources.jobs.model_training_job.id
-        - resources.jobs.batch_inference_job.id
   {{- else -}}
     registered_models:
       model:
@@ -28,10 +25,7 @@ resources:
         catalog_name: ${bundle.target}
         schema_name: {{ .input_schema_name }}
         comment: Registered model in Unity Catalog for the "{{ .input_project_name }}" ML Project for ${bundle.target} deployment target.
-        <<: *grants
-        depends_on:
-          - resources.jobs.model_training_job.id
-          - resources.jobs.batch_inference_job.id{{end}}
+        <<: *grants{{end}}
 
   experiments:
     experiment:

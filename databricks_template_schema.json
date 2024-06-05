@@ -1,6 +1,6 @@
 {
   "welcome_message": "Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.",
-  "min_databricks_cli_version": "v0.212.2",
+  "min_databricks_cli_version": "v0.221.0",
   "properties": {
     "input_setup_cicd_and_project": {
       "order": 1,
@@ -256,8 +256,23 @@
         ]
       }
     },
-    "input_include_feature_store": {
+    "input_inference_table_name": {
       "order": 17,
+      "type": "string",
+      "description": "\nFully qualified name of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
+      "default": "dev.{{ .input_project_name }}.predictions",
+      "pattern": "^[^ .\\-\\/]+(\\.[^ .\\-\\/]+){2}$",
+      "pattern_match_failure_message": "Fully qualified Unity Catalog table names must have catalog, schema, and table separated by \".\" and each cannot contain any of the following characters: \" \", \".\", \"-\", \"\\\", \"/\"",
+      "skip_prompt_if": {
+            "properties": {
+              "input_setup_cicd_and_project": {
+                "const": "CICD_Only"
+              }
+            }
+      }
+    },
+    "input_include_feature_store": {
+      "order": 18,
       "type": "string",
       "description": "\nWhether to include Feature Store",
       "default": "no",
@@ -271,7 +286,7 @@
       }
     },
     "input_include_mlflow_recipes": {
-      "order": 18,
+      "order": 19,
       "type": "string",
       "description": "\nWhether to include MLflow Recipes",
       "default": "no",
