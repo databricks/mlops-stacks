@@ -2,22 +2,22 @@
 # NOTE: Monitoring only works on Unity Catalog tables.
 
 resources:
-    quality_monitors:
-        {{ .input_project_name }}_quality_monitor:
-            full_name: {{ .input_inference_table_name }}
-            # TODO: Update the output schema name as per your requirements
-            output_schema_name: ${bundle.target}.{{ .input_project_name }}
-            # TODO: Update the below parameters as per your requirements
-            inference_log:
-                granularities: [1 day]
-                model_id_col: model_id
-                prediction_col: predictions
-                label_col: labels
-                problem_type: PROBLEM_TYPE_REGRESSION
-                timestamp_col: timestamp
-            schedule:
-                quartz_cron_expression: 0 0 8 * * ? # Run Every day at 8am
-                timezone_id: UTC
+  quality_monitors:
+    {{ .input_project_name }}_quality_monitor:
+      full_name: {{ .input_inference_table_name }}
+      # TODO: Update the output schema name as per your requirements
+      output_schema_name: ${bundle.target}.{{ .input_project_name }}
+      # TODO: Update the below parameters as per your requirements
+      inference_log:
+        granularities: [1 day]
+        model_id_col: model_id
+        prediction_col: predictions
+        label_col: labels
+        problem_type: PROBLEM_TYPE_REGRESSION
+        timestamp_col: timestamp
+      schedule:
+        quartz_cron_expression: 0 0 8 * * ? # Run Every day at 8am
+        timezone_id: UTC
 
 new_cluster: &new_cluster
   new_cluster:
