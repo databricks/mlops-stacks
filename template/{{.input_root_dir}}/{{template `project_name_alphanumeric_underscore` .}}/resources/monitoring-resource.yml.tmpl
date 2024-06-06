@@ -1,24 +1,6 @@
 # Please complete all the TODOs in this file.
+# The regression monitor defined here works OOB with this example regression notebook: {{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "_extras/notebooks/source/monitoring/regression-monitor.html")) }}
 # NOTE: Monitoring only works on Unity Catalog tables.
-
-resources:
-  quality_monitors:
-    {{ .input_project_name }}_quality_monitor:
-      full_name: {{ .input_inference_table_name }}
-      # TODO: Update the output schema name as per your requirements
-      output_schema_name: ${bundle.target}.{{ .input_project_name }}
-      # TODO: Update the below parameters as per your requirements
-      assets_dir: /Users/${workspace.current_user.userName}/databricks_lakehouse_monitoring
-      inference_log:
-        granularities: [1 day]
-        model_id_col: model_id
-        prediction_col: predictions
-        label_col: labels
-        problem_type: PROBLEM_TYPE_REGRESSION
-        timestamp_col: timestamp
-      schedule:
-        quartz_cron_expression: 0 0 8 * * ? # Run Every day at 8am
-        timezone_id: UTC
 
 new_cluster: &new_cluster
   new_cluster:
@@ -34,6 +16,23 @@ common_permissions: &permissions
       group_name: users
 
 resources:
+  quality_monitors:
+    {{ .input_project_name }}_quality_monitor:
+      table_name: {{ .input_inference_table_name }}
+      # TODO: Update the output schema name as per your requirements
+      output_schema_name: ${bundle.target}.{{ .input_project_name }}
+      # TODO: Update the below parameters as per your requirements
+      assets_dir: /Users/${workspace.current_user.userName}/databricks_lakehouse_monitoring
+      inference_log:
+        granularities: [1 day]
+        model_id_col: model_id
+        prediction_col: prediction
+        label_col: price
+        problem_type: PROBLEM_TYPE_REGRESSION
+        timestamp_col: timestamp
+      schedule:
+        quartz_cron_expression: 0 0 8 * * ? # Run Every day at 8am
+        timezone_id: UTC
   jobs:
     retraining_job:
       name: ${bundle.target}-{{ .input_project_name }}-monitoring-retraining-job
