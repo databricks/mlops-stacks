@@ -160,6 +160,7 @@ entry point then decides whether to execute the model retraining workflow.
 To set up and enable monitoring:
 * If it is not done already, generate inference table, join it with ground truth labels, and update the table name in [monitoring-resource.yml](./monitoring-resource.yml).
 * Resolve the `TODOs`  in [monitoring-resource.yml](./monitoring-resource.yml)
+* Uncomment the monitoring workflow in [databricks.yml](../databricks.yml)
 * OPTIONAL: Update the query in [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) to customize when the metric is considered to be in violation.
 
 NOTE: If ground truth labels are not available, you can still set up monitoring but should disable the retraining workflow.
