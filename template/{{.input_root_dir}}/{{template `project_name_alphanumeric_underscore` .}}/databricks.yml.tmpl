@@ -14,8 +14,15 @@ variables:
 include:
   # Resources folder contains ML artifact resources for the ML project that defines model and experiment
   # And workflows resources for the ML project including model training -> validation -> deployment,
-  # {{- if (eq .input_include_feature_store `yes`) }} feature engineering, {{ end }} batch inference, data monitoring, metric refresh, alerts and triggering retraining
-  - ./resources/*.yml
+  # {{- if (eq .input_include_feature_store `yes`) }} feature engineering, {{ end }} batch inference, quality monitoring, metric refresh, alerts and triggering retraining
+  - ./resources/batch-inference-workflow-resource.yml
+  - ./resources/ml-artifacts-resource.yml
+  - ./resources/model-workflow-resource.yml
+  {{- if (eq .input_include_feature_store `yes`) }}
+  - ./resources/feature-engineering-workflow-resource.yml
+  {{- end }}
+  # TODO: uncomment once monitoring inference table has been created
+  # - ./resources/monitoring-resource.yml
 
 # Deployment Target specific values for workspace
 targets:

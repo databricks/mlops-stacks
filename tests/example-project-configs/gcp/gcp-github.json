@@ -12,5 +12,6 @@
   "input_include_mlflow_recipes": "no",
   "input_include_models_in_unity_catalog": "yes",
   "input_schema_name": "test_project_schema_name",
-  "input_unity_catalog_read_user_group": "account users"
+  "input_unity_catalog_read_user_group": "account users",
+  "input_inference_table_name": "dummy.schema.table"
 }

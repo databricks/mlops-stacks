@@ -25,13 +25,13 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.8
       {{- if (eq .input_include_feature_store `yes`) }}
       # Feature store tests bring up a local Spark session, so Java is required.
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '11'

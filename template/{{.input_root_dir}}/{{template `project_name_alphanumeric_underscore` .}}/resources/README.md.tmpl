@@ -23,7 +23,7 @@ During databricks CLI bundles deployment, the root config file will be loaded, v
 ML Resource Configurations in this directory:
  - model workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/model-workflow-resource.yml`)
  - batch inference workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/batch-inference-workflow-resource.yml`)
- - monitoring workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/monitoring-workflow-resource.yml`)
+ - monitoring resource and workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/monitoring-resource.yml`)
  - feature engineering workflow (`{{template `project_name_alphanumeric_underscore` .}}/resources/feature-engineering-workflow-resource.yml`)
  - model definition and experiment definition (`{{template `project_name_alphanumeric_underscore` .}}/resources/ml-artifacts-resource.yml`)
 
@@ -142,6 +142,42 @@ Model validation contains three components:
 
 To set up and enable model validation, update [validation.py](../validation/validation.py) to return desired custom metrics and validation thresholds, then 
 resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml](./model-workflow-resource.yml).
+
+
+### Setting up monitoring
+The monitoring workflow focuses on building a plug-and-play stack component for monitoring the feature drifts and model drifts and retrain based on the
+violation threshold defined given the ground truth labels.
+
+Its central purpose is to track production model performances, feature distributions and comparing different versions.
+
+Monitoring contains four components:
+* [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) defines a query that checks for violation of the monitored metric.
+* [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py) acts as an entry point, executing the violation check query against the monitored inference table.
+It emits a boolean value based on the query result.
+* [monitoring-resource.yml](./monitoring-resource.yml) contains the resource config, inputs parameters for monitoring, and orchestrates model retraining based on monitoring. It first runs the [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py)
+entry point then decides whether to execute the model retraining workflow.
+
+To set up and enable monitoring:
+* If it is not done already, generate inference table, join it with ground truth labels, and update the table name in [monitoring-resource.yml](./monitoring-resource.yml).
+* Resolve the `TODOs`  in [monitoring-resource.yml](./monitoring-resource.yml)
+* Uncomment the monitoring workflow in [databricks.yml](../databricks.yml)
+* OPTIONAL: Update the query in [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) to customize when the metric is considered to be in violation.
+
+NOTE: If ground truth labels are not available, you can still set up monitoring but should disable the retraining workflow.
+
+Retraining Constraints:
+The retraining job has constraints for optimal functioning:
+* Labels must be provided by the user, joined correctly for retraining history, and available on time with the retraining frequency.
+* Retraining Frequency is tightly coupled with the granularity of the monitor. Users should take into account and ensure that their retraining frequency is equal to or close to the granularity of the monitor.
+    * If the granularity of the monitor is 1 day and retraining frequency is 1 hour, the job will preemptively stop as there is no new data to evaluate retraining criteria
+    * If the granularity of the monitor is 1 day and retraining frequency is 1 week, retraining would be stale and not be efficient
+
+Permissions:
+Permissions for monitoring are inherited from the original table's permissions.
+* Users who own the monitored table or its parent catalog/schema can create, update, and view monitors.
+* Users with read permissions on the monitored table can view its monitor.
+
+Therefore, ensure that service principals are the owners or have the necessary permissions to manage the monitored table.
 
 ## Develop and test config changes
 
