@@ -1,53 +1,9 @@
-name: Create New MLOps Project
+name: Create MLOps Project
 
 on:
-  workflow_dispatch:
-    inputs:
-      project_name:
-        description: 'Name of the new project'
-        required: true
-      project_description:
-        description: 'Description of the new project'
-        required: false
-      cloud_provider:
-        description: 'Cloud provider (AWS, Azure, GCP)'
-        required: true
-      cicd_platform:
-        description: 'CI/CD platform (GitHub Actions, Azure DevOps)'
-        required: true
-      staging_workspace:
-        description: 'URL of the staging Databricks workspace'
-        required: true
-      prod_workspace:
-        description: 'URL of the production Databricks workspace'
-        required: true
-      default_branch:
-        description: 'Default branch name'
-        required: true
-      release_branch:
-        description: 'Release branch name'
-        required: true
-      root_dir:
-        description: 'Root directory name'
-        required: true
-      read_user_group:
-        description: 'User group name for read permissions'
-        required: true
-      include_models_in_unity_catalog:
-        description: 'Include models in Unity Catalog (true/false)'
-        required: true
-      schema_name:
-        description: 'Schema name for Unity Catalog'
-        required: true
-      unity_catalog_read_user_group:
-        description: 'User group for Unity Catalog read permissions'
-        required: true
-      include_feature_store:
-        description: 'Include Databricks Feature Store (true/false)'
-        required: true
-      include_mlflow_recipes:
-        description: 'Include MLflow Recipes (true/false)'
-        required: true
+  pull_request:
+    paths:
+      - 'projects/**'
 
 jobs:
   create_project:
@@ -61,61 +17,11 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
+      - name: Install dependencies
+        run: pip install requests databricks-cli
 
-      - name: Collect project information
-        run: |
-          echo "PROJECT_NAME=${{ github.event.inputs.project_name }}" >> $GITHUB_ENV
-          echo "PROJECT_DESCRIPTION=${{ github.event.inputs.project_description }}" >> $GITHUB_ENV
-          echo "CLOUD_PROVIDER=${{ github.event.inputs.cloud_provider }}" >> $GITHUB_ENV
-          echo "CICD_PLATFORM=${{ github.event.inputs.cicd_platform }}" >> $GITHUB_ENV
-          echo "STAGING_WORKSPACE=${{ github.event.inputs.staging_workspace }}" >> $GITHUB_ENV
-          echo "PROD_WORKSPACE=${{ github.event.inputs.prod_workspace }}" >> $GITHUB_ENV
-          echo "DEFAULT_BRANCH=${{ github.event.inputs.default_branch }}" >> $GITHUB_ENV
-          echo "RELEASE_BRANCH=${{ github.event.inputs.release_branch }}" >> $GITHUB_ENV
-          echo "ROOT_DIR=${{ github.event.inputs.root_dir }}" >> $GITHUB_ENV
-          echo "READ_USER_GROUP=${{ github.event.inputs.read_user_group }}" >> $GITHUB_ENV
-          echo "INCLUDE_MODELS_IN_UNITY_CATALOG=${{ github.event.inputs.include_models_in_unity_catalog }}" >> $GITHUB_ENV
-          echo "SCHEMA_NAME=${{ github.event.inputs.schema_name }}" >> $GITHUB_ENV
-          echo "UNITY_CATALOG_READ_USER_GROUP=${{ github.event.inputs.unity_catalog_read_user_group }}" >> $GITHUB_ENV
-          echo "INCLUDE_FEATURE_STORE=${{ github.event.inputs.include_feature_store }}" >> $GITHUB_ENV
-          echo "INCLUDE_MLFLOW_RECIPES=${{ github.event.inputs.include_mlflow_recipes }}" >> $GITHUB_ENV
-
-      - name: Initialize new MLOps project
-        run: |
-          databricks bundle init mlops-stacks \
-            --input_project_name="$PROJECT_NAME" \
-            --input_cloud="$CLOUD_PROVIDER" \
-            --input_cicd_platform="$CICD_PLATFORM" \
-            --input_databricks_staging_workspace_host="$STAGING_WORKSPACE" \
-            --input_databricks_prod_workspace_host="$PROD_WORKSPACE" \
-            --input_default_branch="$DEFAULT_BRANCH" \
-            --input_release_branch="$RELEASE_BRANCH" \
-            --input_root_dir="$ROOT_DIR" \
-            --input_read_user_group="$READ_USER_GROUP" \
-            --input_include_models_in_unity_catalog="$INCLUDE_MODELS_IN_UNITY_CATALOG" \
-            --input_schema_name="$SCHEMA_NAME" \
-            --input_unity_catalog_read_user_group="$UNITY_CATALOG_READ_USER_GROUP" \
-            --input_include_feature_store="$INCLUDE_FEATURE_STORE" \
-            --input_include_mlflow_recipes="$INCLUDE_MLFLOW_RECIPES"
-
-      - name: Create new GitHub repository
-        run: |
-          curl -u ${{ secrets.GITHUB_TOKEN }}:x-oauth-basic \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/orgs/<your-org>/repos \
-            -d "{\"name\":\"${{ github.event.inputs.project_name }}\",\"description\":\"${{ github.event.inputs.project_description }}\",\"private\":true}"
+      - name: Run project creation script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up the new project
-        run: |
-          NEW_PROJECT_GIT_URL="https://github.com/<your-org>/${{ github.event.inputs.project_name }}.git"
-          git clone "$NEW_PROJECT_GIT_URL" new-project
-          cp -r ./* new-project/
-          cd new-project
-          git add .
-          git commit -m "Initial commit from template"
-          git push origin master
+          GITHUB_ORG: ${{ secrets.GITHUB_ORG }}
+        run: python create_mlops_project.py

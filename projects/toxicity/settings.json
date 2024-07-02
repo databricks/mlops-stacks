@@ -1,0 +1,17 @@
+{
+    "project_name": "example_toxicity",
+    "project_description": "This is an example project.",
+    "cloud_provider": "AWS",
+    "cicd_platform": "GitHub Actions",
+    "staging_workspace": "https://staging-workspace-url",
+    "prod_workspace": "https://prod-workspace-url",
+    "default_branch": "main",
+    "release_branch": "release",
+    "root_dir": "example_root",
+    "read_user_group": "users",
+    "include_models_in_unity_catalog": "true",
+    "schema_name": "example_schema",
+    "unity_catalog_read_user_group": "users",
+    "include_feature_store": "true",
+    "include_mlflow_recipes": "true"
+  }
