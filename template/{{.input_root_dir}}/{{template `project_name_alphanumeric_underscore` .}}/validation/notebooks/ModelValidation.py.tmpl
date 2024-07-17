@@ -89,12 +89,6 @@ dbutils.widgets.text("model_name", "dev.{{ .input_schema_name }}.{{template `mod
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
-{{ if (eq .input_include_feature_store `yes`) }}
-print(
-    "Currently model validation is not supported for models registered with feature store. Please refer to "
-    "issue https://github.com/databricks/mlops-stacks/issues/70 for more details."
-)
-dbutils.notebook.exit(0){{ end }}
 run_mode = dbutils.widgets.get("run_mode").lower()
 assert run_mode == "disabled" or run_mode == "dry_run" or run_mode == "enabled"
 
@@ -183,6 +177,14 @@ assert model_version != "", "model_version notebook parameter must be specified"
 
 # take input
 enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
+
+{{ if (eq .input_include_feature_store `yes`) }}
+enable_baseline_comparison = "false" 
+print(
+    "Currently baseline model comparison is not supported for models registered with feature store. Please refer to "
+    "issue https://github.com/databricks/mlops-stacks/issues/70 for more details."
+)
+{{ end }}
 assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
 enable_baseline_comparison = enable_baseline_comparison == "true"
 
@@ -257,6 +259,26 @@ def log_to_model_description(run, success):
 
 # COMMAND ----------
 
+{{ if (eq .input_include_feature_store `yes`) }}
+###########################################################################################
+# Temporary fix as FS model can't predict as pyfunc model                                 #
+# MLflow evaluate can take a lambda function instead of model uri for model               #
+# but not for baseline model it requires model_uri (baseline comparison set to false)     #
+###########################################################################################
+
+from databricks.feature_store import FeatureStoreClient
+
+def get_fs_model(df):
+    fs_client = FeatureStoreClient()
+    return fs_client.score_batch(
+    model_uri,
+    spark.createDataFrame(df)
+    ).select('prediction').toPandas()
+
+###########################################################################################
+
+{{ end }}
+
 training_run = get_training_run(model_name, model_version)
 
 # run evaluate
@@ -277,7 +299,11 @@ with mlflow.start_run(
 
     try:
         eval_result = mlflow.evaluate(
+            {{ if (eq .input_include_feature_store `yes`) }}
+            get_fs_model,
+            {{ else }}
             model=model_uri,
+            {{ end }}
             data=data,
             targets=targets,
             model_type=model_type,
