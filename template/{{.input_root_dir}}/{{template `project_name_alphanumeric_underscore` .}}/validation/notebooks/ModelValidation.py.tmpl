@@ -3,7 +3,7 @@
 # Model Validation Notebook
 ##
 # This notebook uses mlflow model validation API to run mode validation after training and registering a model
-# in model registry, before deploying it to the {{- if (eq .input_include_models_in_unity_catalog "no") }}"Production" stage{{else}} "Champion" alias{{end -}}.
+# in model registry, before deploying it to the {{- if (eq .input_include_models_in_unity_catalog "no") }}"Production" stage{{else}} "champion" alias{{end -}}.
 #
 # It runs as part of CD and by an automated model training job -> validation -> deployment job defined under ``{{template `project_name_alphanumeric_underscore` .}}/resources/model-workflow-resource.yml``
 #
@@ -14,13 +14,13 @@
 # * `run_mode`                              - The `run_mode` defines whether model validation is enabled or not. It can be one of the three values:
 #                                             * `disabled` : Do not run the model validation notebook.
 #                                             * `dry_run`  : Run the model validation notebook. Ignore failed model validation rules and proceed to move
-#                                                            model to the {{- if (eq .input_include_models_in_unity_catalog "no") }}"Production" stage{{else}} "Champion" alias{{end -}}.
-#                                             * `enabled`  : Run the model validation notebook. Move model to the {{- if (eq .input_include_models_in_unity_catalog "no") }} "Production" stage {{else}} "Champion" alias {{end -}} only if all model validation
+#                                                            model to the {{- if (eq .input_include_models_in_unity_catalog "no") }}"Production" stage{{else}} "champion" alias{{end -}}.
+#                                             * `enabled`  : Run the model validation notebook. Move model to the {{- if (eq .input_include_models_in_unity_catalog "no") }} "Production" stage {{else}} "champion" alias {{end -}} only if all model validation
 #                                                            rules are passing.
 {{- if (eq .input_include_models_in_unity_catalog "no") }}
 # * enable_baseline_comparison              - Whether to load the current registered "Production" stage model as baseline.
 {{else}}
-# * enable_baseline_comparison              - Whether to load the current registered "Champion" model as baseline.
+# * enable_baseline_comparison              - Whether to load the current registered "champion" model as baseline.
 {{end -}}
 #                                             Baseline model is a requirement for relative change and absolute change validation thresholds.
 # * validation_input                        - Validation input. Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
@@ -166,7 +166,7 @@ if model_uri == "":
 {{ if (eq .input_include_models_in_unity_catalog "no") }}
 baseline_model_uri = "models:/" + model_name + "/Production"
 {{else}}
-baseline_model_uri = "models:/" + model_name + "@Champion"
+baseline_model_uri = "models:/" + model_name + "@champion"
 {{ end }}
 evaluators = "default"
 assert model_uri != "", "model_uri notebook parameter must be specified"
@@ -338,9 +338,9 @@ with mlflow.start_run(
         mlflow.log_artifact(metrics_file)
         log_to_model_description(run, True)
         {{ if (eq .input_include_models_in_unity_catalog "yes") }}
-        # Assign "Challenger" alias to indicate model version has passed validation checks
-        print("Validation checks passed. Assigning 'Challenger' alias to model version.")
-        client.set_registered_model_alias(model_name, "Challenger", model_version)
+        # Assign "challenger" alias to indicate model version has passed validation checks
+        print("Validation checks passed. Assigning 'challenger' alias to model version.")
+        client.set_registered_model_alias(model_name, "challenger", model_version)
         {{ end }}
     except Exception as err:
         log_to_model_description(run, False)

@@ -41,7 +41,7 @@ def deploy(model_uri, env):
     _, model_name, version = model_uri.split("/")
     client = MlflowClient(registry_uri="databricks-uc")
     mv = client.get_model_version(model_name, version)
-    target_alias = "Champion"
+    target_alias = "champion"
     if target_alias not in mv.aliases:
         client.set_registered_model_alias(
             name=model_name,
@@ -49,12 +49,12 @@ def deploy(model_uri, env):
             version=version)
         print(f"Assigned alias '{target_alias}' to model version {model_uri}.")
         
-        # remove "Challenger" alias if assigning "Champion" alias
-        if target_alias == "Champion" and "Challenger" in mv.aliases:
-            print(f"Removing 'Challenger' alias from model version {model_uri}.")
+        # remove "challenger" alias if assigning "champion" alias
+        if target_alias == "champion" and "challenger" in mv.aliases:
+            print(f"Removing 'challenger' alias from model version {model_uri}.")
             client.delete_registered_model_alias(
                 name=model_name,
-                alias="Challenger")
+                alias="challenger")
 {{end}}
 
 
