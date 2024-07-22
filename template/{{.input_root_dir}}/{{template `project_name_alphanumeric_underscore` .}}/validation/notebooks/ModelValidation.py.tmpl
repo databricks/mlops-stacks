@@ -302,7 +302,8 @@ def rounded_taxi_data(taxi_data_df):
     )
     taxi_data_df.createOrReplaceTempView("taxi_data")
     return taxi_data_df
-  
+
+
 data = rounded_taxi_data(data)
 
 
@@ -319,12 +320,15 @@ data = rounded_taxi_data(data)
 
 from databricks.feature_store import FeatureStoreClient
 
+
 def get_fs_model(df):
     fs_client = FeatureStoreClient()
-    return fs_client.score_batch(
-    model_uri,
-    spark.createDataFrame(df)
-    ).select('prediction').toPandas()
+    return (
+        fs_client.score_batch(model_uri, spark.createDataFrame(df))
+        .select("prediction")
+        .toPandas()
+    )
+
 
 ###########################################################################################
 
