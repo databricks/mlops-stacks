@@ -9,18 +9,24 @@ def predict_batch(
     Apply the model at the specified URI for batch inference on the table with name input_table_name,
     writing results to the table with name output_table_name
     """
-    {{ if (eq .input_include_models_in_unity_catalog "yes") }}mlflow.set_registry_uri("databricks-uc"){{ end }}
+    {{ if (eq .input_include_models_in_unity_catalog `yes`) }}
+    mlflow.set_registry_uri("databricks-uc")
+    {{ end }}
     table = spark_session.table(input_table_name)
-    {{ if (eq .input_include_feature_store `yes`) }} 
-    {{ if (eq .input_include_models_in_unity_catalog "no") }} 
+    {{ if (eq .input_include_feature_store `yes`) }}     
+    {{ if (eq .input_include_models_in_unity_catalog `no`) }} 
     from databricks.feature_store import FeatureStoreClient    
+    
     fs_client = FeatureStoreClient()
-    prediction_df = fs_client.score_batch(model_uri, table)    
+    
+    prediction_df = fs_client.score_batch(model_uri, table)
     {{ else }}   
     from databricks.feature_engineering import FeatureEngineeringClient    
+    
     fe_client = FeatureEngineeringClient()
+    
     prediction_df = fe_client.score_batch(model_uri = model_uri, df = table)
-    {{ end }} 
+    {{ end }}
     output_df = (
         prediction_df.withColumn("prediction", prediction_df["prediction"])
         .withColumn("model_version", lit(model_version))
@@ -29,14 +35,17 @@ def predict_batch(
     {{ else }} 
     predict = mlflow.pyfunc.spark_udf(
         spark_session, model_uri, result_type="string", env_manager="virtualenv"
-    )
+    )    
+    
     output_df = (
         table.withColumn("prediction", predict(struct(*table.columns)))
         .withColumn("model_version", lit(model_version))
         .withColumn("inference_timestamp", to_timestamp(lit(ts)))
     )
-    {{ end }}
+    {{ end -}}
+    
     output_df.display()
+
     # Model predictions are written to the Delta table provided as input.
     # Delta is the default format in Databricks Runtime 8.0 and above.
     output_df.write.format("delta").mode("overwrite").saveAsTable(output_table_name)
