@@ -39,8 +39,8 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 dbutils.library.restartPython()
 
 # COMMAND ----------
-# DBTITLE 1, Notebook arguments
 
+# DBTITLE 1, Notebook arguments
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 
@@ -62,19 +62,15 @@ dbutils.widgets.text(
     label="MLflow experiment name",
 )
 
-{{- if (eq .input_include_models_in_unity_catalog "no") }}
+{{ if (eq .input_include_models_in_unity_catalog `no`) }}
 # MLflow registered model name to use for the trained mode.
 dbutils.widgets.text(
     "model_name", "dev-{{template `model_name` .}}", label="Model Name"
-)
-
-{{else}}
+){{ else }}
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
     "model_name", "dev.{{ .input_schema_name }}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
-)
-
-{{end -}}
+){{ end }}
 
 # Pickup features table name
 dbutils.widgets.text(
@@ -93,29 +89,29 @@ dbutils.widgets.text(
 )
 
 # COMMAND ----------
-# DBTITLE 1,Define input and output variables
 
+# DBTITLE 1,Define input and output variables
 input_table_path = dbutils.widgets.get("training_data_path")
 experiment_name = dbutils.widgets.get("experiment_name")
 model_name = dbutils.widgets.get("model_name")
 
 # COMMAND ----------
-# DBTITLE 1, Set experiment
 
+# DBTITLE 1, Set experiment
 import mlflow
 
 mlflow.set_experiment(experiment_name)
 {{ if (eq .input_include_models_in_unity_catalog `yes`) }}mlflow.set_registry_uri('databricks-uc'){{ end }}
 
 # COMMAND ----------
-# DBTITLE 1, Load raw data
 
+# DBTITLE 1, Load raw data
 raw_data = spark.read.format("delta").load(input_table_path)
 raw_data.display()
 
 # COMMAND ----------
-# DBTITLE 1, Helper functions
 
+# DBTITLE 1, Helper functions
 from datetime import timedelta, timezone
 import math
 import mlflow.pyfunc
@@ -173,14 +169,15 @@ def get_latest_model_version(model_name):
 
 
 # COMMAND ----------
-# DBTITLE 1, Read taxi data for training
 
+# DBTITLE 1, Read taxi data for training
 taxi_data = rounded_taxi_data(raw_data)
 taxi_data.display()
 
 # COMMAND ----------
-# DBTITLE 1, Create FeatureLookups
 
+# DBTITLE 1, Create FeatureLookups
+{{- if (eq .input_include_models_in_unity_catalog `no`) }}
 from databricks.feature_store import FeatureLookup
 import mlflow
 
@@ -206,11 +203,38 @@ dropoff_feature_lookups = [
         lookup_key=["dropoff_zip"],
         timestamp_lookup_key=["rounded_dropoff_datetime"],
     ),
+]{{ else }}
+from databricks.feature_engineering import FeatureLookup
+import mlflow
+
+pickup_features_table = dbutils.widgets.get("pickup_features_table")
+dropoff_features_table = dbutils.widgets.get("dropoff_features_table")
+
+pickup_feature_lookups = [
+    FeatureLookup(
+        table_name=pickup_features_table,
+        feature_names=[
+            "mean_fare_window_1h_pickup_zip",
+            "count_trips_window_1h_pickup_zip",
+        ],
+        lookup_key=["pickup_zip"],
+        timestamp_lookup_key=["rounded_pickup_datetime"],
+    ),
 ]
 
-# COMMAND ----------
-# DBTITLE 1, Create Training Dataset
+dropoff_feature_lookups = [
+    FeatureLookup(
+        table_name=dropoff_features_table,
+        feature_names=["count_trips_window_30m_dropoff_zip", "dropoff_is_weekend"],
+        lookup_key=["dropoff_zip"],
+        timestamp_lookup_key=["rounded_dropoff_datetime"],
+    ),
+]{{ end }}
 
+# COMMAND ----------
+
+# DBTITLE 1, Create Training Dataset
+{{ if (eq .input_include_models_in_unity_catalog `no`) }}
 from databricks import feature_store
 
 # End any existing runs (in the case this notebook is being run for a second time)
@@ -232,6 +256,30 @@ training_set = fs.create_training_set(
     label="fare_amount",
     exclude_columns=exclude_columns,
 )
+{{ else }}
+from databricks.feature_engineering import FeatureEngineeringClient
+
+# End any existing runs (in the case this notebook is being run for a second time)
+mlflow.end_run()
+
+# Start an mlflow run, which is needed for the feature store to log the model
+mlflow.start_run()
+
+# Since the rounded timestamp columns would likely cause the model to overfit the data
+# unless additional feature engineering was performed, exclude them to avoid training on them.
+exclude_columns = ["rounded_pickup_datetime", "rounded_dropoff_datetime"]
+
+fe = FeatureEngineeringClient()
+
+# Create the training set that includes the raw input data merged with corresponding features from both feature tables
+training_set = fe.create_training_set(
+    df=taxi_data, # specify the df 
+    feature_lookups=pickup_feature_lookups + dropoff_feature_lookups, 
+    # both features need to be available; defined in GenerateAndWriteFeatures &/or feature-engineering-workflow-resource.yml
+    label="fare_amount",
+    exclude_columns=exclude_columns,
+)
+{{ end }}
 
 # Load the TrainingSet into a dataframe which can be passed into sklearn for training a model
 training_df = training_set.load_df()
@@ -247,8 +295,8 @@ training_df.display()
 # MAGIC Train a LightGBM model on the data returned by `TrainingSet.to_df`, then log the model with `FeatureStoreClient.log_model`. The model will be packaged with feature metadata.
 
 # COMMAND ----------
-# DBTITLE 1, Train model
 
+# DBTITLE 1, Train model
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
@@ -277,16 +325,26 @@ num_rounds = 100
 model = lgb.train(param, train_lgb_dataset, num_rounds)
 
 # COMMAND ----------
-# DBTITLE 1, Log model and return output.
 
+# DBTITLE 1, Log model and return output.
+{{- if (eq .input_include_models_in_unity_catalog `no`) }}
 # Log the trained model with MLflow and package it with feature lookup information.
 fs.log_model(
-    model,
+    model=model, #specify model
+    artifact_path="model_packaged",
+    flavor=mlflow.lightgbm,
+    training_set=training_set,
+    registered_model_name=model_name,
+){{ else }}
+# Log the trained model with MLflow and package it with feature lookup information.
+fe.log_model(
+    model=model, #specify model
     artifact_path="model_packaged",
     flavor=mlflow.lightgbm,
     training_set=training_set,
     registered_model_name=model_name,
 )
+{{ end }}
 
 # The returned model URI is needed by the model deployment notebook.
 model_version = get_latest_model_version(model_name)
