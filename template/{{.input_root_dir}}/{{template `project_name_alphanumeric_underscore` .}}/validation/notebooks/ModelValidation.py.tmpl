@@ -312,14 +312,11 @@ data = rounded_taxi_data(data)
 # COMMAND ----------
 
 {{ if (eq .input_include_feature_store `yes`) }}
-###########################################################################################
-# Temporary fix as FS model can't predict as pyfunc model                                 #
-# MLflow evaluate can take a lambda function instead of model uri for model               #
-# but not for baseline model it requires model_uri (baseline comparison set to false)     #
-###########################################################################################
+# Temporary fix as FS model can't predict as a pyfunc model
+# MLflow evaluate can take a lambda function instead of a model uri for a model
+# but id does not work for the baseline model as it requires a model_uri (baseline comparison is set to false)
 
 from databricks.feature_store import FeatureStoreClient
-
 
 def get_fs_model(df):
     fs_client = FeatureStoreClient()
@@ -328,10 +325,6 @@ def get_fs_model(df):
         .select("prediction")
         .toPandas()
     )
-
-
-###########################################################################################
-
 {{ end }}
 
 training_run = get_training_run(model_name, model_version)
