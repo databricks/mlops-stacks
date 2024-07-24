@@ -348,7 +348,7 @@ with mlflow.start_run(
     try:
         eval_result = mlflow.evaluate(
             {{ if (eq .input_include_feature_store `yes`) }}
-            get_fs_model,
+            model=get_fs_model,
             {{ else }}
             model=model_uri,
             {{ end }}
