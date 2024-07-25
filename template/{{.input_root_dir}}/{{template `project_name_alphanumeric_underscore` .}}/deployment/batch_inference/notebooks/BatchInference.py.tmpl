@@ -77,7 +77,7 @@ assert model_name != "", "model_name notebook parameter must be specified"
 {{- if (eq .input_include_models_in_unity_catalog "no") }}
 stage = get_deployed_model_stage_for_env(env)
 model_uri = f"models:/{model_name}/{stage}"{{else}}
-alias = "Champion"
+alias = "champion"
 model_uri = f"models:/{model_name}@{alias}"{{end}}
 
 # COMMAND ----------

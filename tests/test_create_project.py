@@ -233,9 +233,9 @@ def prepareContext(
     if include_mlflow_recipes != "":
         context["input_include_mlflow_recipes"] = include_mlflow_recipes
     if include_models_in_unity_catalog != "":
-        context[
-            "input_include_models_in_unity_catalog"
-        ] = include_models_in_unity_catalog
+        context["input_include_models_in_unity_catalog"] = (
+            include_models_in_unity_catalog
+        )
     return context
 
 
