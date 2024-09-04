@@ -4,7 +4,7 @@
 # Usage in the wild uses the "curl | sh" approach and we need that to continue working.
 set -e
 
-VERSION="0.221.0"
+VERSION="0.227.1"
 FILE="databricks_cli_$VERSION"
 
 # Include operating system in file name.

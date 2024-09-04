@@ -53,7 +53,7 @@ https://github.com/databricks/mlops-stacks/assets/87999496/0d220d55-465e-4a69-bd
 
 ### Prerequisites
  - Python 3.8+
- - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.221.0
+ - [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) >= v0.227.1
 
 [Databricks CLI](https://docs.databricks.com/en/dev-tools/cli/databricks-cli.html) contains [Databricks asset bundle templates](https://docs.databricks.com/en/dev-tools/bundles/templates.html) for the purpose of project creation.
 
