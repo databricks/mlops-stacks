@@ -14,7 +14,9 @@ defaults:
 
 jobs:
   generate-zip:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: databricks-protected-runner-group
+      labels: linux-ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
