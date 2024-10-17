@@ -79,7 +79,7 @@ This will prompt for parameters for initialization. Some of these parameters are
  * ``input_cloud``: Cloud provider you use with Databricks (AWS, Azure, or GCP).
 
 Others must be correctly specified for CI/CD to work:
- * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps)
+ * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps or Gitlab)
  * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
    We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view and debug CI test results
