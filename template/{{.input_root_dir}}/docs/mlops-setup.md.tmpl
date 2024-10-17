@@ -268,9 +268,8 @@ In the case of a monorepo, where there are multiple projects under a single repo
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.azure/devops-pipelines/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
 This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
 These workflows will be defined under `.azure/devops-pipelines`. After generating these workflows, be sure to go through the above workflow-specific steps again to add the appropriate build branch policies and filters.
-{{ end }}
 
-{{ else if (eq .input_cicd_platform `gitlab`) -}}
+{{ else if (eq .input_cicd_platform `gitlab`) }}
 TODO
 ### Setting up CI/CD workflows
 TODO
