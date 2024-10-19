@@ -30,7 +30,7 @@ AZURE_DEFAULT_PARAMS = {
 AWS_DEFAULT_PARAMS = {
     **AZURE_DEFAULT_PARAMS,
     "input_cloud": "aws",
-    "input_databricks_test_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.cloud.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
@@ -38,7 +38,7 @@ AWS_DEFAULT_PARAMS = {
 GCP_DEFAULT_PARAMS = {
     **AZURE_DEFAULT_PARAMS,
     "input_cloud": "gcp",
-    "input_databricks_test_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.gcp.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com",
 }

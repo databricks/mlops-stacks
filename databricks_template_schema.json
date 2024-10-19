@@ -59,9 +59,9 @@
       }
     },
     "input_databricks_test_workspace_host": {
-      "order": 6.1,
+      "order": 21,
       "type": "string",
-      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-integration-test-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-integration-workspace.gcp.databricks.com{{end}}",
+      "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-test-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-test-workspace.gcp.databricks.com{{end}}",
       "description": "\nURL of integration test Databricks workspace,\nIt will run PR CI and preview changes before they're deployed to staging.\nDefault",
       "pattern": "^(https.*)?$",
       "pattern_match_failure_message": "Databricks integration test workspace host URLs must start with https. Got invalid workspace host.",
@@ -74,7 +74,7 @@
       }
     },
     "input_databricks_staging_workspace_host": {
-      "order": 6.2,
+      "order": 6,
       "type": "string",
       "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-staging-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-staging-workspace.gcp.databricks.com{{end}}",
       "description": "\nURL of staging Databricks workspace,\nIt will run PR CI and preview changes before they're deployed to production.\nDefault",

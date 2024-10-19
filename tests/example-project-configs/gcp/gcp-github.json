@@ -3,7 +3,7 @@
   "input_project_name": "example-gcp-github-project",
   "input_cloud": "gcp",
   "input_cicd_platform": "github_actions",
-  "input_databricks_test_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
+  "input_databricks_test_workspace_host": "https://your-test-workspace.gcp.databricks.com",
   "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
   "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com", 
   "input_default_branch": "main",
