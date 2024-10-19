@@ -32,16 +32,19 @@ DEFAULT_PARAM_VALUES = {
 }
 DEFAULT_PARAMS_AZURE = {
     "input_cloud": "azure",
+    "input_databricks_test_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "input_databricks_staging_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "input_databricks_prod_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
 }
 DEFAULT_PARAMS_AWS = {
     "input_cloud": "aws",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.cloud.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
 DEFAULT_PARAMS_GCP = {
     "input_cloud": "gcp",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.gcp.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com",
 }

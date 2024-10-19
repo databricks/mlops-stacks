@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#docker login -u $CI_REGISTRY_USER registry.gitlab.com
+docker build -t {{ .input_docker_image }} .
+docker push {{ .input_docker_image }}:latest

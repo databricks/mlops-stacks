@@ -52,6 +52,7 @@ git push upstream {{ .input_default_branch }}
 ### Prerequisites
 * You must be an account admin to add service principals to the account.
 * You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [test workspace admin console]({{template `databricks_test_workspace_host` .}}#setting/accounts) and
   [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
   [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
   the admin console UI loads instead of the Databricks workspace homepage, you are an admin.

@@ -80,8 +80,9 @@ This will prompt for parameters for initialization. Some of these parameters are
 
 Others must be correctly specified for CI/CD to work:
  * ``input_cicd_platform`` : CI/CD platform of choice (GitHub Actions or GitHub Actions for GitHub Enterprise Servers or Azure DevOps or Gitlab)
- * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs and preview config changes before they're deployed to production.
-   We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
+ * ``input_databricks_test_workspace_host``: URL of staging Databricks workspace, used to run CI tests on PRs before they're deployed to staging.
+ * ``input_databricks_staging_workspace_host``: URL of staging Databricks workspace, used to preview config changes before they're deployed to production.  
+ We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view and debug CI test results
  * ``input_databricks_prod_workspace_host``: URL of production Databricks workspace. We encourage granting data scientists working on the current ML project non-admin (read) access to this workspace,
    to enable them to view production job status and see job logs to debug failures.
@@ -115,7 +116,9 @@ using separate workspaces can help prevent high load in staging from DOSing your
 production model serving endpoints.
 
 However, you can create a single workspace stack, by supplying the same workspace URL for
-`input_databricks_staging_workspace_host` and `input_databricks_prod_workspace_host`. If you go this route, we
+`input_databricks_test_workspace_host` , `input_databricks_staging_workspace_host` 
+and `input_databricks_prod_workspace_host`.
+If you go this route, we
 recommend using different service principals to manage staging vs prod resources,
 to ensure that CI workloads run in staging cannot interfere with production resources.
 
