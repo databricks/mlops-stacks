@@ -12,4 +12,4 @@ deploy-stage:
     - databricks bundle validate -t {{ .input_staging_catalog_name }}  
     - databricks bundle deploy -t {{ .input_staging_catalog_name }}  
   rules:
-    - when: on_success # mandatory to ensure this job can be called by parant on merge request
+    - when: on_success # mandatory to ensure this job can be called by parent on merge request
