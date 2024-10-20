@@ -20,9 +20,9 @@ integration-test:
     DATABRICKS_CLIENT_SECRET: "${SP_CLIENT_SECRET}"
   script:
     - cd {{template `project_name_alphanumeric_underscore` .}}
-    - databricks bundle validate -t {{template `databricks_test_workspace_host` .}}
-    - databricks bundle deploy -t {{template `databricks_test_workspace_host` .}}  
-    - databricks bundle run write_feature_table_job -t {{template `databricks_test_workspace_host` .}}     
-    - databricks bundle run model_training_job -t {{template `databricks_test_workspace_host` .}}   
+    - databricks bundle validate -t {{ .input_test_catalog_name }}
+    - databricks bundle deploy -t {{ .input_test_catalog_name }}  
+    - databricks bundle run write_feature_table_job -t {{ .input_test_catalog_name }}     
+    - databricks bundle run model_training_job -t {{ .input_test_catalog_name }}   
   rules:
     - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
