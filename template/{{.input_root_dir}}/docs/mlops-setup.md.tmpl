@@ -271,26 +271,76 @@ This workflow is manually triggered with `project_name` as parameter. This workf
 These workflows will be defined under `.azure/devops-pipelines`. After generating these workflows, be sure to go through the above workflow-specific steps again to add the appropriate build branch policies and filters.
 
 {{ else if (eq .input_cicd_platform `gitlab`) }}
-TODO
-### Setting up CI/CD workflows
-TODO
-## Configure CI/CD - Azure DevOps
- TODO
-### Service principal approach [Default]
-By default, we provide Azure Pipelines where authentication is done using service principals.
-TODO
-#### Requirements:
- TODO
-#### Steps:
- TODO
-### Service connection approach [Recommended in production settings]
-TODO
-#### Requirements:
- TODO
-#### Steps:
- TODO
-### Setting up CI/CD workflows
-TODO
+## Configure CI/CD - Gitlab Pipelines
+
+### Prerequisites
+* You must be an account admin to add service principals to the account.
+* You must be a Databricks workspace admin in the test, staging and prod workspaces. Verify that you're an admin by viewing the
+  [test workspace admin console]({{template `databricks_test_workspace_host` .}}#setting/accounts) and
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+
+### Set up authentication for CI/CD
+#### Set up Service Principal
+To authenticate and manage ML resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }})
+should be created and added to test, staging and prod workspaces.
+
+Service principals can be created and managed in the your cloud provider identity solution or in Databricks directly. We normally recommend setting up a Databricks managed service principal.  
+Follow [Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
+for details.
+
+{{ if eq .input_cloud `aws` }}
+For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
+{{ end }}
+
+#### Configure Service Principal (SP) permissions 
+If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
+For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
+If you want to use different catalog names, please update the target names declared in the  
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
+{{- else }} `databricks.yml` {{ end }} file.
+If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory.
+
+The SP must have proper permission in each respective environment and the catalog for the environments.
+
+For the integration test and the ML training job, the SP must have permissions to read the input Delta table and create experiment and models. 
+i.e. for each environment:
+- USE_CATALOG
+- USE_SCHEMA
+- MODIFY
+- CREATE_MODEL
+- CREATE_TABLE
+
+For the batch inference job, the SP must have permissions to read input Delta table and modify the output Delta table. 
+i.e. for each environment
+- USAGE permissions for the catalog and schema of the input and output table.
+- SELECT permission for the input table.
+- MODIFY permission for the output table if it pre-dates your job.
+
+#### Gitlab Environment and secrets for CI/CD
+After creating the service principals and adding them to the respective staging and prod workspaces,
+you need to ad the client id and secret to Gitlab so that it can authenticate into Databricks for the execution of the integration tests and deployments.  
+First you need to setup the [Gitlab environments](https://docs.gitlab.com/ee/ci/environments/). Typically you setup the following environemnts:
+- integration
+- stage
+- production  
+  
+Add the following [Gitlab CI/CD variables](https://docs.gitlab.com/ee/ci/variables/) In each [environemt](https://docs.gitlab.com/ee/ci/environments/index.html#limit-the-environment-scope-of-a-cicd-variable),  with the corresponding service principal information:
+- SP_CLIENT_ID
+- SP_CLIENT_SECRET  
+   
+Ensure that the variable visibility is set to masked and hidden.
+
+### Setting up the CI/CD Pipeline
+Gitlab, by default, expects the pipeline file to be placed in the project root folder and to be named `.gitlab-ci.yml`. 
+Change the pipeline default [pipeline configuration file](https://docs.gitlab.com/ee/ci/pipelines/settings.html#specify-a-custom-cicd-configuration-file):  
+in the section `Settings > CI/CD > General Pipelines > CI/CD configuration file`, 
+add the value `.gitlab/cicd.yml` which is our project main pipeline file.
+
+
 {{ end }}
 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
