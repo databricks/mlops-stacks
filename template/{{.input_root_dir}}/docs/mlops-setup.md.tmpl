@@ -334,12 +334,22 @@ Add the following [Gitlab CI/CD variables](https://docs.gitlab.com/ee/ci/variabl
    
 Ensure that the variable visibility is set to masked and hidden.
 
+### Building and Pushing the Docker image
+Gitlab exectues the pipeline on a VM that you can configure to be initialized from a Docker image.
+The Docker image should include all requirements to run the CI/CD pipelines (e.g. Databricks CLI, Python and its libraries used in the unit tests, Java for executing spark locally to the VM).
+The folder `.gitlab/docker/` includes the files to build the Docker image.  
+You can execute the following script to locally build and push the docker image into a registry:  
+`{{.input_root_dir}}/.gitlab/docker/push_image_to_gitlab.sh`  
+You can execute the script to build and push the image on your local machine. Once executed, make sure that each pipeline yml file
+(in the folder `.gitlab/pipelines/`) points to that image.  
+NOTE: you can use the same image for multiple projects. 
+If a project requires additional Python libraries, they can also be installed as part of the pipelines scripts.
+
 ### Setting up the CI/CD Pipeline
 Gitlab, by default, expects the pipeline file to be placed in the project root folder and to be named `.gitlab-ci.yml`. 
 Change the pipeline default [pipeline configuration file](https://docs.gitlab.com/ee/ci/pipelines/settings.html#specify-a-custom-cicd-configuration-file):  
 in the section `Settings > CI/CD > General Pipelines > CI/CD configuration file`, 
-add the value `.gitlab/cicd.yml` which is our project main pipeline file.
-
+add the value `.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml` which is our project main pipeline file.
 
 {{ end }}
 

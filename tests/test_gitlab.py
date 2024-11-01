@@ -23,12 +23,12 @@ def test_generated_yaml_format(
 ):
     print("generated_project_dir:", generated_project_dir)
 
-    # TEST: Check if gitlab file has been created.
+    # TEST: Check if gitlab folder has been created.
     # TODO Check syntax with: gitlab-ci-local --file ./.gitlab/cicd.yml 
     # (NOTE  requires gitlab-ci-local installed on ubuntu)
     subprocess.run(
         """
-        ls ./.gitlab/cicd.yml
+        ls ./.gitlab/pipelines
         """,
         shell=True,
         check=True,
