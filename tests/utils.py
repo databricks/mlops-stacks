@@ -141,6 +141,8 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "http://127.0.0.1:5000"},
             {"pattern": "https://adb-3214.67.azuredatabricks.net*"},
             {"pattern": "https://adb-345.89.azuredatabricks.net*"},
+            {"pattern": "https://adb-xxxx.xx.azuredatabricks.net*"},
+            {"pattern": "https://your-test-workspace.cloud.databricks.com*"},
         ],
         "httpHeaders": [
             {
