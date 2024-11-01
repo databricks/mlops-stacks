@@ -181,7 +181,7 @@ This stack comes with a workflow to set up CI/CD for projects that can be found 
 {{ else if (eq .input_cicd_platform `azure_devops`)}}
 `.azure/devops-pipelines/deploy-cicd.yml`.
 {{ else if (eq .input_cicd_platform `gitlab`)}}
-`.gitlab/cicd.yml`.
+`.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml`.
 {{ end }}
 
 To set up CI/CD for projects that were created through MLOps Stacks with the `Project_Only` parameter, 
