@@ -13,7 +13,7 @@ trigger_ci:
   stage: triggers
   trigger:
     include:
-      - local: .gitlab/ci.yml
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-ci.yml
     strategy: depend
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main'
@@ -24,7 +24,7 @@ trigger_cd_stage:
   stage: triggers
   trigger:
     include:
-      - local: .gitlab/cd_stage.yml
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-cd-staging.yml
     strategy: depend
   rules:
     - if: $CI_COMMIT_BRANCH == 'main'
@@ -33,7 +33,7 @@ trigger_cd_production:
   stage: triggers
   trigger:
     include:
-      - local: .gitlab/cd_production.yml
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-cd-prod.yml 
     strategy: depend
   rules:
     - if: $CI_COMMIT_BRANCH == 'release'
