@@ -15,6 +15,22 @@
     {{- end -}}
 {{- end }}
 
+{{ define `databricks_test_workspace_host` -}}
+    {{- if not (eq (print .input_databricks_test_workspace_host) "") -}}
+        {{- with url (print .input_databricks_test_workspace_host) -}}
+            {{- print .Scheme `://` .Host -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if eq .input_cloud `azure` -}}
+            https://adb-xxxx.xx.azuredatabricks.net
+        {{- else if eq .input_cloud `aws` -}}
+            https://your-staging-workspace.cloud.databricks.com
+        {{- else if eq .input_cloud `gcp` -}}
+            https://your-staging-workspace.gcp.databricks.com
+        {{- end -}}
+    {{- end -}}
+{{- end }}
+
 {{ define `databricks_staging_workspace_host` -}}
     {{- if not (eq (print .input_databricks_staging_workspace_host) "") -}}
         {{- with url (print .input_databricks_staging_workspace_host) -}}
@@ -30,7 +46,6 @@
         {{- end -}}
     {{- end -}}
 {{- end }}
-
 
 {{ define `cloud_specific_node_type_id` -}}
     {{- if (eq .input_cloud `aws`) -}}

@@ -46,7 +46,8 @@ If you want to use different catalog names, please update the `targets` declared
 If changing the `staging`, `prod`, or `test` deployment targets, you'll need to update the 
 {{- if (eq .input_setup_cicd_and_project `Project_Only`) }} workflows located in the root directory if in a monorepo setup with CI/CD. Otherwise you can setup CI/CD with a new initialization of MLOps Stacks.
 {{- else if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }} workflows located in the `.github/workflows` directory.
-{{- else if (eq .input_cicd_platform `azure_devops`) }}  pipelines located in the `azure-pipelines` directory.{{- end }}
+{{- else if (eq .input_cicd_platform `azure_devops`) }}  pipelines located in the `azure-pipelines` directory.
+{{- else if (eq .input_cicd_platform `gitlab`) }}  pipelines located in the `gitlab` directory.{{- end }}
 {{- end }}
 
 

@@ -13,6 +13,7 @@ AZURE_DEFAULT_PARAMS = {
     "input_project_name": "my-mlops-project",
     "input_cloud": "azure",
     "input_cicd_platform": "github_actions",
+    "input_databricks_test_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "input_databricks_staging_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "input_databricks_prod_workspace_host": "https://adb-xxxx.xx.azuredatabricks.net",
     "input_default_branch": "main",
@@ -29,6 +30,7 @@ AZURE_DEFAULT_PARAMS = {
 AWS_DEFAULT_PARAMS = {
     **AZURE_DEFAULT_PARAMS,
     "input_cloud": "aws",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.cloud.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.cloud.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.cloud.databricks.com",
 }
@@ -36,6 +38,7 @@ AWS_DEFAULT_PARAMS = {
 GCP_DEFAULT_PARAMS = {
     **AZURE_DEFAULT_PARAMS,
     "input_cloud": "gcp",
+    "input_databricks_test_workspace_host": "https://your-test-workspace.gcp.databricks.com",
     "input_databricks_staging_workspace_host": "https://your-staging-workspace.gcp.databricks.com",
     "input_databricks_prod_workspace_host": "https://your-prod-workspace.gcp.databricks.com",
 }
@@ -138,6 +141,8 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "http://127.0.0.1:5000"},
             {"pattern": "https://adb-3214.67.azuredatabricks.net*"},
             {"pattern": "https://adb-345.89.azuredatabricks.net*"},
+            {"pattern": "https://adb-xxxx.xx.azuredatabricks.net*"},
+            {"pattern": "https://your-test-workspace.cloud.databricks.com*"},
         ],
         "httpHeaders": [
             {
