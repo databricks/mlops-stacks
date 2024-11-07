@@ -31,7 +31,7 @@ jobs:
     concurrency: {{ .input_project_name }}-staging-bundle-job
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@{{template `cli_version` .}}
@@ -48,7 +48,7 @@ jobs:
         run: |
           databricks bundle validate -t {{ .input_staging_catalog_name }} > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: comment
         with:
           github-token: {{`${{ secrets.GITHUB_TOKEN }}`}}
@@ -75,7 +75,7 @@ jobs:
     concurrency: {{ .input_project_name }}-prod-bundle-job
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: {{`${{ github.event.pull_request.head.sha || github.sha }}`}}
       - uses: databricks/setup-cli@{{template `cli_version` .}}
@@ -92,7 +92,7 @@ jobs:
         run: |
           databricks bundle validate -t {{ .input_prod_catalog_name }} > ../validate_output.txt
       - name: Create Comment with Bundle Configuration
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: comment
         with:
           github-token: {{`${{ secrets.GITHUB_TOKEN }}`}}

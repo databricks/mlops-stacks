@@ -7,6 +7,7 @@ new_cluster: &new_cluster
     num_workers: 3
     spark_version: 15.3.x-cpu-ml-scala2.12
     node_type_id: {{template `cloud_specific_node_type_id` .}}
+    data_security_mode: "SINGLE_USER"
     custom_tags:
       clusterSource: mlops-stacks_{{template `stacks_version` .}}
 
