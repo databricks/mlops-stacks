@@ -15,7 +15,7 @@ integration-test:
   environment: dev
   #need: unit-test
   variables:
-    DATABRICKS_HOST: {{template `databricks_test_workspace_host` .}}
+    DATABRICKS_HOST: {{template `databricks_staging_workspace_host` .}}
     DATABRICKS_CLIENT_ID: "${SP_CLIENT_ID}"
     DATABRICKS_CLIENT_SECRET: "${SP_CLIENT_SECRET}"
   script:
