@@ -7,6 +7,7 @@ from utils import (
     parametrize_by_cloud,
 )
 
+
 @pytest.mark.parametrize("cicd_platform", ["gitlab"])
 @pytest.mark.parametrize(
     "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
