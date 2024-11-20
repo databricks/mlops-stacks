@@ -31,7 +31,6 @@
     {{- end -}}
 {{- end }}
 
-
 {{ define `cloud_specific_node_type_id` -}}
     {{- if (eq .input_cloud `aws`) -}}
         i3.xlarge

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# execute from project
+docker login -u $CI_REGISTRY_USER registry.gitlab.com
+docker build -t {{ .input_docker_image }} -f .gitlab/docker/Dockerfile .
+docker push {{ .input_docker_image }}

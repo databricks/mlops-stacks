@@ -1,0 +1,39 @@
+# This pipeline is triggered upon making a PR against the {{ .input_default_branch }} branch.
+# Unit tests are defined under {{template `project_name_alphanumeric_underscore` .}}/tests
+# The integration test deploys and runs the model_training_job defined in {{template `project_name_alphanumeric_underscore` .}}/resources/model-workflow-resource.yml
+# This integration test is run in the staging workspace, as defined under {{template `project_name_alphanumeric_underscore` .}}/databricks.yml
+
+# run on merge requests, tags, and the default branch
+stages:
+  - triggers
+
+image: {{ .input_docker_image }}
+
+trigger_ci:
+  stage: triggers
+  trigger:
+    include:
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-ci.yml
+    strategy: depend
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'main'
+      changes:
+        - {{template `project_name_alphanumeric_underscore` .}}/*
+
+trigger_cd_stage:
+  stage: triggers
+  trigger:
+    include:
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-cd-staging.yml
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'main'
+
+trigger_cd_production:
+  stage: triggers
+  trigger:
+    include:
+      - local: .gitlab/pipelines/{{.input_project_name}}-bundle-cd-prod.yml 
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'release'

@@ -20,7 +20,10 @@ This project contains the following components:
 | ML Code                    | Example ML project code, with unit tested Python modules and notebooks                                                                                                                                                                                                                                                                             |
 | ML Resources as Code | ML pipeline resources (training and batch inference jobs with schedules, etc) configured and deployed through [databricks CLI bundles]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/cli/bundle-cli.html")) }})                                                                                              |
 {{- end }}
-| CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows to test and deploy ML code and resources {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines) to test and deploy ML code and resources{{ end }}      |
+| CI/CD                      | {{ if (eq .input_cicd_platform `github_actions`) }}[GitHub Actions](https://github.com/actions) workflows  to test and deploy ML code and resources
+                               {{ else if (eq .input_cicd_platform `azure_devops`) }}[Azure DevOps Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines) to test and deploy ML code and resources
+                               {{ else if (eq .input_cicd_platform `gitlab`) }}[Gitlab Pipelines](https://docs.gitlab.com/ee/ci/pipelines/) to test and deploy ML code and resources 
+                               {{ end }} |
 
 contained in the following files:
 
@@ -135,6 +138,8 @@ contained in the following files:
 ├── .github                     <- Configuration folder for CI/CD using GitHub Actions. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
 {{- else if (eq .input_cicd_platform `azure_devops`) }}
 ├── .azure                      <- Configuration folder for CI/CD using Azure DevOps Pipelines. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
+{{- else if (eq .input_cicd_platform `gitlab`) }}
+├── .gitlab                      <- Configuration folder for CI/CD using Gitlab Pipelines. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
 {{- end }}
 │
 ├── docs                        <- Contains documentation for the repo.
@@ -171,10 +176,12 @@ or pipeline resources (e.g. use a larger instance type for model training) via p
 
 ## Setting up CI/CD
 This stack comes with a workflow to set up CI/CD for projects that can be found in
-{{ if (eq .input_cicd_platform `azure_devops`)}}
-`.azure/devops-pipelines/deploy-cicd.yml`.
-{{ else }}
+{{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
 `.github/workflows/deploy-cicd.yml`.
+{{ else if (eq .input_cicd_platform `azure_devops`)}}
+`.azure/devops-pipelines/deploy-cicd.yml`.
+{{ else if (eq .input_cicd_platform `gitlab`)}}
+`.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml`.
 {{ end }}
 
 To set up CI/CD for projects that were created through MLOps Stacks with the `Project_Only` parameter, 

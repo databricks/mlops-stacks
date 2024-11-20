@@ -1,0 +1,15 @@
+image: {{ .input_docker_image }}
+
+deploy-stage:
+  stage: deploy
+  environment: stage
+  variables:
+    DATABRICKS_HOST: {{template `databricks_staging_workspace_host` .}}
+    DATABRICKS_CLIENT_ID: "${SP_CLIENT_ID}"
+    DATABRICKS_CLIENT_SECRET: "${SP_CLIENT_SECRET}"
+  script:
+    - cd {{template `project_name_alphanumeric_underscore` .}}
+    - databricks bundle validate -t {{ .input_staging_catalog_name }}  
+    - databricks bundle deploy -t {{ .input_staging_catalog_name }}  
+  rules:
+    - when: on_success # mandatory to ensure this job can be called by parent on merge request
