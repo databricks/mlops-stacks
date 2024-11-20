@@ -321,7 +321,7 @@
       "order": 20,
       "type": "string",
       "description": "\nDocker image for the execution of Gitlab pipelines",
-      "default": "registry.gitlab.com/ TODO /",
+      "default": "databricksfieldeng/mlopsstacks:latest",
       "skip_prompt_if": {
         "anyOf":[
           {
