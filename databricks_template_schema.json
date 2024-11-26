@@ -134,6 +134,24 @@
       "default": "no",
       "enum": ["yes", "no"]
     },
+    input_dev_catalog_name
+    "input_dev_catalog_name": {
+      "order": 12,
+      "type": "string",
+      "description": "\nName of the catalog in Unity Catalog that will host the development UC resources. \nThis catalog must already exist and service principals must have access to it.\nDefault",
+      "default": "dev",
+      "skip_prompt_if": {
+        "anyOf": [
+          {
+            "properties": {
+              "input_include_models_in_unity_catalog": {
+                "const": "no"
+              }
+            }
+          }
+        ]
+      }
+    },
     "input_staging_catalog_name": {
       "order": 12,
       "type": "string",
