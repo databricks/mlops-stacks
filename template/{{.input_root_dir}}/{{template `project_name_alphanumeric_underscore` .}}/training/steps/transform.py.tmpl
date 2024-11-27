@@ -42,12 +42,12 @@ def transformer_fn():
                     transformers=[
                         (
                             "hour_encoder",
-                            OneHotEncoder(categories="auto", sparse=False),
+                            OneHotEncoder(categories="auto", sparse_output=False),
                             ["pickup_hour"],
                         ),
                         (
                             "day_encoder",
-                            OneHotEncoder(categories="auto", sparse=False),
+                            OneHotEncoder(categories="auto", sparse_output=False),
                             ["pickup_dow"],
                         ),
                         (
