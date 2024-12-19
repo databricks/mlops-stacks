@@ -10,7 +10,9 @@ variables:
     description: Model name for the model training.
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}default: ${bundle.target}-{{template `model_name` .}}
     {{- else -}}default: {{template `model_name` .}}{{end}}
-
+  catalog_name:
+    description: The catalogue name to save the trained model
+    
 include:
   # Resources folder contains ML artifact resources for the ML project that defines model and experiment
   # And workflows resources for the ML project including model training -> validation -> deployment,
