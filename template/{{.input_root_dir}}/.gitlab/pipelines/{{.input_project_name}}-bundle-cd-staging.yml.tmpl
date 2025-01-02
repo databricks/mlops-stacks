@@ -9,7 +9,7 @@ deploy-stage:
     DATABRICKS_CLIENT_SECRET: "${SP_CLIENT_SECRET}"
   script:
     - cd {{template `project_name_alphanumeric_underscore` .}}
-    - databricks bundle validate -t {{ .input_staging_catalog_name }}  
-    - databricks bundle deploy -t {{ .input_staging_catalog_name }}  
+    - databricks bundle validate -t staging
+    - databricks bundle deploy -t staging
   rules:
     - when: on_success # mandatory to ensure this job can be called by parent on merge request
