@@ -13,8 +13,8 @@ variables:
     description: Model name for the model training.
     {{ if (eq .input_include_models_in_unity_catalog `no`) }}default: ${bundle.target}-{{template `model_name` .}}
     {{- else -}}default: {{template `model_name` .}}{{end}}
-  catalog_name:
-    description: The catalog name to save the trained model
+  {{ if (eq .input_include_models_in_unity_catalog `yes`) }}catalog_name:
+    description: The catalog name to save the trained model{{end}}
     
 include:
   # Resources folder contains ML artifact resources for the ML project that defines model and experiment
@@ -34,27 +34,37 @@ targets:
   dev: {{ if (eq .input_include_models_in_unity_catalog `yes`)}} # UC Catalog Name {{ end }}
     mode: development
     default: true
+    {{- if (eq .input_include_models_in_unity_catalog `yes`)}}
+    variables:
+      catalog_name: dev
+    {{- end}}
     workspace:
       # TODO: add dev workspace URL
       host:
 
-{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 
   staging:
+    {{- if (eq .input_include_models_in_unity_catalog `yes`) }}
     variables:
       catalog_name: {{ .input_staging_catalog_name }}
+    {{- end}}
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
 
   prod:
+    {{- if (eq .input_include_models_in_unity_catalog `yes`)}}
     variables:
       catalog_name: {{ .input_prod_catalog_name }}
+    {{- end}}
     workspace:
       host: {{template `databricks_prod_workspace_host` .}}
 
   test:
+    {{- if (eq .input_include_models_in_unity_catalog `yes`)}}
     variables:
       catalog_name: {{ .input_test_catalog_name }}
+    {{- end}}
     workspace:
       host: {{template `databricks_staging_workspace_host` .}}
 {{ end }}
