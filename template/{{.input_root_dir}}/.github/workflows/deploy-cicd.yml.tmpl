@@ -53,7 +53,8 @@ jobs:
       - name: Update databricks.yml
         id: update
         run: |
-          echo -e "  staging:\n    variables:\n      catalog_name: {{ .input_staging_catalog_name }}\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    variables:\n      catalog_name: {{ .input_prod_catalog_name }}\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    variables:\n      catalog_name: {{ .input_test_catalog_name }}\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$(PROJECT_NAME_ALPHA)\databricks.yml"
+          {{if (eq .input_include_models_in_unity_catalog `yes`)}}echo -e "  staging:\n    variables:\n      catalog_name: {{ .input_staging_catalog_name }}\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    variables:\n      catalog_name: {{ .input_prod_catalog_name }}\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    variables:\n      catalog_name: {{ .input_test_catalog_name }}\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$(PROJECT_NAME_ALPHA)\databricks.yml"
+          {{- else}}echo -e "  staging:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}\n\n  prod:\n    workspace:\n      host: {{template `databricks_prod_workspace_host` .}}\n\n  test:\n    workspace:\n      host: {{template `databricks_staging_workspace_host` .}}" >> "$(PROJECT_NAME_ALPHA)\databricks.yml"{{end}}
       - name: Initialize Bundle
         id: initialize
         run: |
