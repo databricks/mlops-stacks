@@ -119,8 +119,8 @@ Follow the next section to configure the input and output data tables for the ba
 {{- end }}
 
 ### Setting up the batch inference job
-The batch inference job expects an input Delta table with a schema that your registered model accepts (trip_distance, pickup_zip and dropoff_zip). To use the batch
-inference job, set up such a Delta table in both your staging and prod workspaces.
+The batch inference job expects an input Delta table with a schema that your registered model accepts (out-of-the-box we provide a working example using the `nyctaxi` dataset with the schema [trip_distance, pickup_zip and dropoff_zip]). To use the batch
+inference job, set up such a Delta table in both your staging and prod workspaces. For example, with the `nyctaxi` dataset, the following code can be run in a Databricks notebook to create the batch inference input table:
 ```
 # To test the batch job the training data can be used as input
 
