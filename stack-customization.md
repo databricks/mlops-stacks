@@ -9,6 +9,7 @@ However, in many cases you may need to customize the stack, for example if:
 * You have different Databricks workspace environments (e.g. a "test" workspace for CI, in addition to dev/staging/prod)
 * You'd like to run extra checks/tests in CI/CD besides the ones supported out of the box
 * You're using an ML code structure built in-house
+* It is cost prohibitive or impractical to retrain models in all environments; see section on "Example ML code" under "Customize individual components"
 
 For more information about generating a project using Databricks asset bundle templates, please refer to [link](https://docs.databricks.com/en/dev-tools/bundles/templates.html).
 
@@ -54,6 +55,9 @@ to fill out.
 If you customize this component, you can still use the CI/CD and ML resource components to build production ML pipelines, as long as you provide ML
 notebooks with the expected interface. For example, model training under ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/`` and inference under
 ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/``. See code comments in the notebook files for the expected interface & behavior of these notebooks.
+
+To integrate [promoting model across environments](https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/#promote-a-model-across-environments) into MLOps Stacks using the [`copy_model_version` MLflow Client API](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.client.html#mlflow.client.MlflowClient.copy_model_version), you may consider using reference code snippets to adapt the `model training` notebooks under ``template/
+{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/``for `promoting model` e.g. from `dev` environment to `staging` and `production` environments. Unity Catalog registered models can be shared and promoted across different workspaces and/or (e.g. devs/staging/production) environments, provided they are connected to the same Unity Catalog metastore and appropriate privileges are in place.
 
 You may also want to update developer-facing docs under ``template/{{.input_root_dir}}/{{template `project_name_alphanumeric_underscore` .}}/README.md.tmpl``, which will be read by users of your stack.
 
