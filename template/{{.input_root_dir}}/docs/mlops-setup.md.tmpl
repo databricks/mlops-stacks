@@ -4,7 +4,7 @@
 ## Table of contents
 * [Intro](#intro)
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
-* [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ end }})
+* [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ else if (eq .input_cicd_platform `gitlab`) }}#configure-cicd---gitlab{{ end }})
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
 {{- if (eq .input_include_mlflow_recipes `yes`) }}
 * [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){{ end }}
@@ -51,10 +51,11 @@ git push upstream {{ .input_default_branch }}
 
 ### Prerequisites
 * You must be an account admin to add service principals to the account.
-* You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+* You must be a Databricks workspace admin in the staging and prod workspaces. 
+  Verify that you're an admin by viewing the
   [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
-  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
-  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). 
+  If the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
 
 ### Set up authentication for CI/CD
 #### Set up Service Principal
@@ -268,6 +269,89 @@ In the case of a monorepo, where there are multiple projects under a single repo
 After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.azure/devops-pipelines/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
 This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
 These workflows will be defined under `.azure/devops-pipelines`. After generating these workflows, be sure to go through the above workflow-specific steps again to add the appropriate build branch policies and filters.
+
+{{ else if (eq .input_cicd_platform `gitlab`) }}
+## Configure CI/CD - Gitlab Pipelines
+
+### Prerequisites
+* You must be an account admin to add service principals to the account.
+* You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+
+### Set up authentication for CI/CD
+#### Set up Service Principal
+To authenticate and manage ML resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }})
+should be created and added to test, staging and prod workspaces.
+
+Service principals can be created and managed in the your cloud provider identity solution or in Databricks directly. We normally recommend setting up a Databricks managed service principal.  
+Follow [Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
+for details.
+
+{{ if eq .input_cloud `aws` }}
+For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
+{{ end }}
+
+#### Configure Service Principal (SP) permissions 
+If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
+For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
+If you want to use different catalog names, please update the target names declared in the  
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
+{{- else }} `databricks.yml` {{ end }} file.
+If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .gitlab/pipelines directory.
+
+The SP must have proper permission in each respective environment and the catalog for the environments.
+
+For the integration test and the ML training job, the SP must have permissions to read the input Delta table and create experiment and models. 
+i.e. for each environment:
+- USE_CATALOG
+- USE_SCHEMA
+- MODIFY
+- CREATE_MODEL
+- CREATE_TABLE
+
+For the batch inference job, the SP must have permissions to read input Delta table and modify the output Delta table. 
+i.e. for each environment
+- USAGE permissions for the catalog and schema of the input and output table.
+- SELECT permission for the input table.
+- MODIFY permission for the output table if it pre-dates your job.
+
+#### Gitlab Environment and secrets for CI/CD
+After creating the service principals and adding them to the respective staging and prod workspaces,
+you need to ad the client id and secret to Gitlab so that it can authenticate into Databricks for the execution of the integration tests and deployments.  
+First you need to setup the [Gitlab environments](https://docs.gitlab.com/ee/ci/environments/). Typically you setup the following environemnts:
+- integration
+- stage
+- production  
+  
+Add the following [Gitlab CI/CD variables](https://docs.gitlab.com/ee/ci/variables/) In each [environemt](https://docs.gitlab.com/ee/ci/environments/index.html#limit-the-environment-scope-of-a-cicd-variable),  with the corresponding service principal information:
+- SP_CLIENT_ID
+- SP_CLIENT_SECRET  
+   
+Ensure that the variable visibility is set to masked and hidden.
+
+### Building and Pushing the Docker image
+Gitlab exectues the pipeline on a VM initialized from a Docker image.
+The default Docker image is: [databricksfieldeng/mlopsstack:latest](https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general). 
+The Docker image should include all requirements to run the CI/CD pipelines (e.g. Databricks CLI, Python and its libraries used in the unit tests, Java for executing spark locally to the VM).
+The folder `.gitlab/docker/` includes the files to build the Docker image.  
+  
+You can execute the following script to locally build and push the Docker image into a registry on your local machine:  
+`{{.input_root_dir}}/.gitlab/docker/push_image_to_gitlab.sh`  
+Make sure that each pipeline yml file
+(in the folder `.gitlab/pipelines/`) points to that image.  
+NOTE: you can use the same image for multiple projects. 
+If a project requires additional Python libraries, they can also be installed as part of the pipelines scripts.
+
+### Setting up the CI/CD Pipeline
+Gitlab, by default, expects the pipeline file to be placed in the project root folder and to be named `.gitlab-ci.yml`. 
+Change the pipeline default [pipeline configuration file](https://docs.gitlab.com/ee/ci/pipelines/settings.html#specify-a-custom-cicd-configuration-file):  
+in the section `Settings > CI/CD > General Pipelines > CI/CD configuration file`, 
+add the value `.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml` which is our project main pipeline file.
+
 {{ end }}
 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}

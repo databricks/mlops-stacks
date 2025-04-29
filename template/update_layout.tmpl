@@ -19,8 +19,13 @@
 
 {{ if (or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`)) }}
     {{ skip (printf `%s/%s` $root_dir `.azure`) }}
+    {{ skip (printf `%s/%s` $root_dir `.gitlab`) }}
 {{ else if (eq .input_cicd_platform `azure_devops`) }}
     {{ skip (printf `%s/%s` $root_dir `.github`) }}
+    {{ skip (printf `%s/%s` $root_dir `.gitlab`) }}
+{{ else if (eq .input_cicd_platform `gitlab`) }}
+    {{ skip (printf `%s/%s` $root_dir `.github`) }}
+    {{ skip (printf `%s/%s` $root_dir `.azure`) }}
 {{ end }}
 
 {{ if (not (eq .input_project_name `27896cf3-bb3e-476e-8129-96df0406d5c7`)) }}

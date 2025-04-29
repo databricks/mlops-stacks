@@ -14,8 +14,8 @@ input_schema_name={{.input_schema_name}}
 input_unity_catalog_read_user_group={{.input_unity_catalog_read_user_group}}
 input_inference_table_name={{.input_inference_table_name}}
 
-databricks_prod_workspace_host={{ template `databricks_prod_workspace_host` . }}
 databricks_staging_workspace_host={{ template `databricks_staging_workspace_host` . }}
+databricks_prod_workspace_host={{ template `databricks_prod_workspace_host` . }}
 cloud_specific_node_type_id={{ template `cloud_specific_node_type_id` . }}
 model_name={{ template `model_name` . }}
 experiment_base_name={{ template `experiment_base_name` . }}

@@ -15,6 +15,7 @@ ML resources, per the [MLOps setup guide](mlops-setup.md).
 
 To push your updated ML code to production, [open a pull request]({{ if (eq .input_cicd_platform `github_actions`) }}https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
 {{ else if (eq .input_cicd_platform `azure_devops`) }}https://learn.microsoft.com/en-us/azure/devops/repos/git/pull-requests?view=azure-devops&tabs=browser#create-a-pull-request
+{{ else if (eq .input_cicd_platform `gitlab`) }}https://docs.gitlab.com/ee/user/project/merge_requests/
 {{ end }}) against the remote Git repo containing the current project.
 
 **NOTE**: the default tests provided in this repo require that you use a pull
@@ -29,6 +30,8 @@ Opening a pull request will trigger a
 [workflow](../.github/workflows/{{ .input_project_name }}-run-tests.yml)
 {{- else if (eq .input_cicd_platform `azure_devops`) -}}
 [Azure DevOps Pipeline](../.azure/devops-pipelines/{{ .input_project_name }}-tests-ci.yml)
+{{- else if (eq .input_cicd_platform `gitlab`) -}}
+[Gitlab Pipeline](../.gitlab/pipelines/{{.input_project_name}}-bundle-ci.yml)
 {{- end }} 
 {{- else }}
 workflow

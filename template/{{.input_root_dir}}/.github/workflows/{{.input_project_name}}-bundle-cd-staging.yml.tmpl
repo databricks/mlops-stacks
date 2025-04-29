@@ -28,13 +28,13 @@ jobs:
     concurrency: {{ .input_project_name }}-staging-bundle-job
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: databricks/setup-cli@{{template `cli_version` .}}
       - name: Validate Bundle For Staging
         id: validate
         run: |
-          databricks bundle validate -t {{ .input_staging_catalog_name }}
+          databricks bundle validate -t staging
       - name: Deploy Bundle to Staging
         id: deploy
         run: |
-          databricks bundle deploy -t {{ .input_staging_catalog_name }}
+          databricks bundle deploy -t staging

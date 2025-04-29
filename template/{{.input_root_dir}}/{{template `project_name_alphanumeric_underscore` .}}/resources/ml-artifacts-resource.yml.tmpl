@@ -22,7 +22,7 @@ resources:
     registered_models:
       model:
         name: ${var.model_name}
-        catalog_name: ${bundle.target}
+        catalog_name: ${var.catalog_name}
         schema_name: {{ .input_schema_name }}
         comment: Registered model in Unity Catalog for the "{{ .input_project_name }}" ML Project for ${bundle.target} deployment target.
         <<: *grants{{end}}

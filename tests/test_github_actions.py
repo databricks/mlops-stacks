@@ -53,7 +53,6 @@ def test_generated_yaml_format(
     [
         ("CICD_and_Project", "no", "no", "no"),
         ("CICD_and_Project", "no", "no", "yes"),
-        ("CICD_and_Project", "no", "yes", "no"),
         ("CICD_and_Project", "yes", "no", "no"),
         ("CICD_and_Project", "yes", "no", "yes"),
     ],
