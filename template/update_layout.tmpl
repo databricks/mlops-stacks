@@ -2,6 +2,73 @@
 {{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` -}}
 {{ $root_dir := .input_root_dir}}
 
+# Skip all Agentops files in the template
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/ingestion`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/ingestion/fetch_data.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/ingestion/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_ingestion/notebooks/DataIngestion.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/preprocessing`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/notebooks/DataPreprocessing.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/preprocessing/create_chunk.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/data_preprocessing/preprocessing/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/vector_search_utils`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/notebooks/VectorSearch.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/vector_search_utils/utils.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/vector_search_utils/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation/vector_search/vector_search_utils/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_requirements.txt`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/tools`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/notebooks/Agent.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/tools/ai_tools.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent/tools/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation/evaluation`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation/notebooks/AgentEvaluation.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation/evaluation/evaluation.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development/agent_evaluation/evaluation/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/chat_interface_deployment`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/chat_interface_deployment/LaunchApp.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/chat_interface_deployment/README.md`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/chat_interface_deployment/requirements.txt`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/chat_interface_deployment/utils.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving/notebooks`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving/serving`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving/notebooks/ModelServing.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving/serving/serving.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment/model_serving/serving/__init__.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration/model_serving_test.py`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agent-resource.yml`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agent-artifacts-resource.yml`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/app-deployment-resource.yml`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/data-preparation-resource.yml`) }}
+{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/README_agentops.md`) }}
+
 {{ if (eq .input_setup_cicd_and_project `Project_Only`) }}
     {{ skip (printf `%s/%s` $root_dir `.azure`) }}
     {{ skip (printf `%s/%s` $root_dir `.github`) }}
