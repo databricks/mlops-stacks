@@ -1,0 +1,93 @@
+# The name of the bundle. run `databricks bundle schema` to see the full bundle settings schema.
+bundle:
+  name: {{ .input_project_name }}
+
+variables:
+  uc_catalog:
+    description: Unity Catalog used to store data and artifacts.
+    default: {{ .input_catalog_name }}
+  schema: 
+    description: "Schema in Unity Catalog."
+    default: {{ .input_schema_name }}
+  raw_data_table:
+    description: "Table in Unity Catalog to store raw data."
+    default: raw_documentation
+  data_source_url: 
+      description: "The url to scrape."
+      default: https://docs.databricks.com/en/doc-sitemap.xml
+  preprocessed_data_table: 
+      description: "Table in Unity Catalog to store preprocessed data."
+      default: databricks_documentation
+  min_chunk_size: 
+      description: "Minimum size of chunks for vectorization."
+      default: 20
+  max_chunk_size: 
+      description: "Maximum size of chunks for vectorization."
+      default: 500
+  chunk_overlap: 
+      description: "Overlap of chunks for vectorization."
+      default: 50
+  hf_tokenizer_model: 
+      description: "Hugging Face Tokenizer Model to use for vectorization."
+      default: "openai-community/openai-gpt"
+  vector_search_endpoint:
+    description: "Vector Search endpoint to create."
+    default: ai_agent_endpoint
+  vector_search_index:
+    description: "Vector Search index to populate."
+    default: databricks_documentation_vs_index
+  experiment:
+    description: "Experiment to log run under."
+    default: /Users/${workspace.current_user.userName}/agent_function_chatbot
+  registered_model:
+    description: "Name of agent model to register."
+    default: agent_function_chatbot
+  max_words:
+    description: "Maximum number of words for agent to respond with."
+    default: 20
+  agent_model_endpoint:
+    description: "Foundation model endpoint to use for agent."
+    default: "databricks-meta-llama-3-3-70b-instruct"
+  eval_table:
+    description: "Table in Unity Catalog to store evaluation data."
+    default: "databricks_documentation_eval"
+  model_alias:
+    description: "Model alias to use for trained model"
+    default: agent_latest
+  scale_to_zero:
+    description: "Scale model endpoint to zero when not in use."
+    default: True
+  workload_size:
+    description: "Size of compute for anticipated number of concurrent requests."
+    default: "Small"
+  chatbot_name: 
+    description: "Name of the Databricks App"
+    default: "dash-chatbot-app"
+
+include:
+  # Resources folder contains Agent artifact resources for the Agent project that defines the agent
+  # and workflows resources for data preparation -> agent creation & evaluation -> deployment
+  - ./resources/data-preparation-resource.yml
+  - ./resources/agents-artifacts-resource.yml
+  - ./resources/agent-resource.yml
+  - ./resources/app-deployment-resource.yml
+
+# Deployment Target specific values for workspace
+targets:
+  dev:
+    default: true
+    workspace:
+      # TODO: add dev workspace URL
+      host:
+
+  staging:
+    workspace:
+      host: {{template `databricks_staging_workspace_host` .}}
+
+  prod:
+    workspace:
+      host: {{template `databricks_prod_workspace_host` .}}
+
+  test: 
+    workspace:
+      host: {{template `databricks_staging_workspace_host` .}}
