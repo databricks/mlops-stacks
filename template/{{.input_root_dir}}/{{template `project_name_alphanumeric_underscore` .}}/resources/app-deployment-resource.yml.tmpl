@@ -1,0 +1,36 @@
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+
+resources:
+  jobs:
+    app_deployment_job:
+      parameters:
+        - name: bundle_root
+          default: ${workspace.file_path}
+      name: ${bundle.target}-{{ .input_project_name }}-app-deployment-job
+      tasks:
+        - task_key: AppDeployment
+          notebook_task:
+            notebook_path: ../agent_deployment/chat_interface_deployment/LaunchApp.py
+            base_parameters:
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              registered_model: ${var.registered_model}
+              agent_model_endpoint: ${var.agent_model_endpoint}
+              app_name: ${var.chatbot_name}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+      schedule:
+        quartz_cron_expression: "0 0 8 * * ?" # daily at 8am
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

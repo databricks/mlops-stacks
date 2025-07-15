@@ -1,0 +1,79 @@
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+
+resources:
+  jobs:
+    data_preprocessing_job:
+      parameters:
+        - name: bundle_root
+          default: ${workspace.file_path}
+      name: ${bundle.target}-{{ .input_project_name }}-data-preprocessing-job
+      tasks:
+        - task_key: RawDataIngest
+          notebook_task:
+            notebook_path: ../data_preparation/data_ingestion/notebooks/DataIngestion.py
+            base_parameters:
+              # TODO modify these arguments to reflect your setup.
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              raw_data_table: ${var.raw_data_table}
+              data_source_url: https://docs.databricks.com/en/doc-sitemap.xml
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: data_prep_requirements
+
+        - task_key: PreprocessRawData
+          depends_on:
+            - task_key: RawDataIngest
+          notebook_task:
+            notebook_path: ../data_preparation/data_preprocessing/notebooks/DataPreprocessing.py
+            base_parameters:
+              # TODO modify these arguments to reflect your setup.
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              raw_data_table: ${var.raw_data_table}
+              preprocessed_data_table_name: ${var.preprocessed_data_table}
+              max_chunk_size: ${var.max_chunk_size}
+              min_chunk_size: ${var.min_chunk_size}
+              chunk_overlap: ${var.min_chunk_size}
+              hf_tokenizer_model: ${var.hf_tokenizer_model}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: data_prep_requirements
+
+        - task_key: VectorSearchIndex
+          depends_on:
+            - task_key: PreprocessRawData
+          notebook_task:
+            notebook_path: ../data_preparation/vector_search/notebooks/VectorSearch.py
+            base_parameters:
+              # TODO modify these arguments to reflect your setup.
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              preprocessed_data_table: ${var.preprocessed_data_table}
+              vector_search_endpoint: ${var.vector_search_endpoint}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: data_prep_requirements
+
+      environments:
+        - environment_key: data_prep_requirements
+          spec:
+            client: "3"
+            dependencies: 
+              - "-r /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/files/data_preparation/data_prep_requirements.txt"
+
+      schedule:
+        quartz_cron_expression: "0 0 5 * * ?" # daily at 5am
+        timezone_id: UTC
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com

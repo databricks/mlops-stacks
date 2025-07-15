@@ -1,0 +1,82 @@
+common_permissions: &permissions
+  permissions:
+    - level: CAN_VIEW
+      group_name: users
+
+
+resources:
+  jobs:
+    agent_development_job:
+      parameters:
+        - name: bundle_root
+          default: ${workspace.file_path}
+      name: ${bundle.target}-{{ .input_project_name }}-agent-development-job
+      tasks:
+        - task_key: AgentDevelopment
+          notebook_task:
+            notebook_path: ../agent_development/agent/notebooks/Agent.py
+            base_parameters:
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              vector_search_endpoint: ${var.vector_search_endpoint}
+              vector_search_index: ${var.vector_search_index}
+              experiment: ${var.experiment}
+              registered_model: ${var.registered_model}
+              agent_model_endpoint: ${var.agent_model_endpoint}
+              max_words: ${var.max_words}
+              model_alias: ${var.model_alias}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: agent_requirements
+
+        - task_key: AgentEvaluation
+          depends_on:
+            - task_key: AgentDevelopment
+          notebook_task:
+            notebook_path: ../agent_development/agent_evaluation/notebooks/AgentEvaluation.py
+            base_parameters:
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              experiment: ${var.experiment}
+              registered_model: ${var.registered_model}
+              eval_table: ${var.eval_table}
+              model_alias: ${var.model_alias}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: agent_requirements
+
+        - task_key: AgentDeployment
+          depends_on:
+            - task_key: AgentEvaluation
+          notebook_task:
+            notebook_path: ../agent_deployment/model_serving/notebooks/ModelServing.py
+            base_parameters:
+              uc_catalog: ${var.uc_catalog}
+              schema: ${var.schema}
+              registered_model: ${var.registered_model}
+              model_alias: ${var.model_alias}
+              scale_to_zero: ${var.scale_to_zero}
+              workload_size: ${var.workload_size}
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+          environment_key: agent_requirements
+
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?" # daily at 6am
+        timezone_id: UTC
+        
+      environments:
+        - environment_key: agent_requirements
+          spec:
+            client: "3"
+            dependencies: 
+              - "-r /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/files/agent_development/agent_requirements.txt"
+
+      <<: *permissions
+      # If you want to turn on notifications for this job, please uncomment the below code,
+      # and provide a list of emails to the on_failure argument.
+      #
+      #  email_notifications:
+      #    on_failure:
+      #      - first@company.com
+      #      - second@company.com
