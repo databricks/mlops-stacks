@@ -1,0 +1,397 @@
+# AgentOps Setup Guide
+[(back to main README)](../README.md)
+
+## Table of contents
+* [Intro](#intro)
+* [Create a hosted Git repo](#create-a-hosted-git-repo)
+* [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ else if (eq .input_cicd_platform `gitlab`) }}#configure-cicd---gitlab{{ end }})
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+* [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
+{{- end }}
+{{ if not (eq .input_release_branch .input_default_branch) -}}
+* [Create release branch](#create-release-branch)
+{{ end -}}
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
+* [Deploy ML resources and enable production jobs](#deploy-ml-resources-and-enable-production-jobs){{ end }}
+* [Next steps](#next-steps)
+
+## Intro
+This page explains how to productionize the current project, setting up CI/CD and agent resource deployment, and deploying agent development and deployment.
+
+After following this guide, data scientists can follow the [Pull Request](pull-request.md) guide to make changes to agent code or deployed jobs.
+
+## Create a hosted Git repo
+Create a hosted Git repo to store project code, if you haven't already done so. From within the project
+directory, initialize Git and add your hosted Git repo as a remote:
+```
+git init --initial-branch={{ .input_default_branch }}
+```
+
+```
+git remote add upstream <hosted-git-repo-url>
+```
+
+Commit the current `README.md` file and other docs to the `{{ .input_default_branch }}` branch of the repo, to enable forking the repo:
+```
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+git add README.md docs .gitignore {{template `project_name_alphanumeric_underscore` .}}/resources/README.md
+git commit -m "Adding project README"
+{{ else }}
+git add .
+git commit -m "Adding CICD scaffolding"
+{{ end }}
+git push upstream {{ .input_default_branch }}
+```
+
+{{ if (eq .input_cicd_platform `github_actions`) -}}
+## Configure CI/CD - GitHub Actions
+
+### Prerequisites
+* You must be an account admin to add service principals to the account.
+* You must be a Databricks workspace admin in the staging and prod workspaces. 
+  Verify that you're an admin by viewing the
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). 
+  If the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+
+### Set up authentication for CI/CD
+#### Set up Service Principal
+{{ if eq .input_cloud `azure` }}
+To authenticate and manage agent resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }})
+for the project should be created and added to both staging and prod workspaces. Follow
+[Add a service principal to your Azure Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--add-a-service-principal-to-your-azure-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--add-a-service-principal-to-a-workspace")) }})
+for details.
+
+For your convenience, we also have Terraform modules that can be used to [create](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-creation/databricks/latest) or [link](https://registry.terraform.io/modules/databricks/mlops-azure-project-with-sp-linking/databricks/latest) service principals.
+
+{{ else }}
+To authenticate and manage agent resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }})
+for the project should be created and added to both staging and prod workspaces. Follow
+[Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
+for details.
+
+{{ if eq .input_cloud `aws` }}
+For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
+{{ end }}
+{{ end }}
+
+#### Configure Service Principal (SP) permissions 
+When you initialize the stack, we set the catalog name in the `databricks.yml`, so we expect a catalog of the same name in each environment. I
+
+If you want to use different catalog names, please set `uc_catalog` differently under each target environment: 
+
+```
+targets:
+  dev:
+    variables:
+      uc_catalog: 
+        description: Unity Catalog used to store data and artifacts.
+        default: <insert-different-catalog-name>
+
+```
+
+The SP must have proper permission in each respective environment and the catalog for the environments.
+
+For the integration tests and workflows, the SP must have permissions to read + write to the specified schema and create experiment and models. 
+i.e. for each environment:
+- USE_CATALOG
+- USE_SCHEMA
+- MODIFY
+- CREATE_MODEL
+- CREATE_TABLE
+- CREATE_VOLUME
+
+#### Set secrets for CI/CD
+{{ if eq .input_cloud `azure` }}
+After creating the service principals and adding them to the respective staging and prod workspaces, refer to
+[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#--manage-access-tokens-for-a-service-principal")) }})
+and [Get Azure AD tokens for service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/api/latest/aad/service-prin-aad-token")) }})
+to get your service principal credentials (tenant id, application id, and client secret) for both the staging and prod service principals, and [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the following secrets to GitHub:
+- `PROD_AZURE_SP_TENANT_ID`
+- `PROD_AZURE_SP_APPLICATION_ID`
+- `PROD_AZURE_SP_CLIENT_SECRET`
+- `STAGING_AZURE_SP_TENANT_ID`
+- `STAGING_AZURE_SP_APPLICATION_ID`
+- `STAGING_AZURE_SP_CLIENT_SECRET`
+- `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
+Be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General to allow `Read and write permissions`.
+{{ else }}
+After creating the service principals and adding them to the respective staging and prod workspaces, follow
+[Manage access tokens for a service principal]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-access-tokens-for-a-service-principal")) }})
+to get service principal tokens for staging and prod workspace and follow [Encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+to add the secrets to GitHub:
+- `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+- `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+- `WORKFLOW_TOKEN` : [Github token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) with workflow permissions. This secret is needed for the Deploy CI/CD Workflow.
+
+Next, be sure to update the [Workflow Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token) section under Repo Settings > Actions > General:
+- Allow `Read and write permissions`,
+- Allow workflows to be able to open pull requests (PRs).
+{{ end }}
+
+### Setting up CI/CD workflows
+After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.github/workflows/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
+This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy resources and run jobs in the staging and prod workspaces. 
+These workflows will be defined under `.github/workflows`.
+
+If you want to deploy CI/CD for an initialized project (`Project-Only` AgentOps Stacks initialization), you can manually run the `deploy-cicd.yml` workflow from the [Github Actions UI](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow?tool=webui) once the project code has been added to your main repo. The workflow will create a pull request with all the changes against your {{ .input_default_branch }} branch. Review and approve it to commit the files to deploy CI/CD for the project. 
+
+{{ else if (eq .input_cicd_platform `azure_devops`) -}}
+## Configure CI/CD - Azure DevOps
+
+Azure DevOps Pipelines are defined under `.azure/devops-pipelines`:
+- **`deploy-cicd.yml`**:<br>
+  - Generates the other CICD pipelines mentioned below for projects<br>
+    - Manually triggered with `project_name` as parameter
+> Note that this workflow will need to be triggered for each project to set up its CI/CD.  In order to run the `Push CICD Bundle to a New Branch` step in the workflow, the project needs to enable the Build Service to be able to contribute and create a branch for the project,
+i.e when the deploy CI/CD pipeline is triggered, the build service that runs this pipeline needs the necessary permissions to be able to push. To do this, go to Project Settings -> Repositories -> Security -> Select <project_name> Build Service under users and 
+set "Contribute", "Create Branch", and "Contribute to pull requests" to "Allow".
+
+Project-Specific pipelines:
+- **`{{ .input_project_name }}-tests-ci.yml`**:<br>
+  - **[CI]** Performs unit and integration tests<br>
+    - Triggered on PR to main
+- **`{{ .input_project_name }}-bundle-cicd.yml`**:<br>
+  - **[CI]** Performs validation of Databricks resources defined under `{{template `project_name_alphanumeric_underscore` .}}/resources`<br>
+    - Triggered on PR to main<br>
+  - **[CD]** Deploys Databricks resources to the staging workspace<br>
+    - Triggered on merging into main<br>
+  - **[CD]** Deploys Databricks resources to the prod workspace<br>
+    - Triggered on merging into release
+> Note that these workflows are provided as example CI/CD workflows, and can be easily modified to match your preferred CI/CD order of operations.
+
+Within the CI/CD pipelines defined under `.azure/devops-pipelines`, we will be deploying Databricks resources to the defined staging and prod workspaces using the `databricks` CLI. This requires setting up authentication between the `databricks` CLI and Databricks. By default we show how to authenticate with service principals by passing [secret variables from a variable group](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/cli/pipeline-variable-group-secret-nonsecret-variables?view=azure-devops). In a production setting it is recommended to either use an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/azure-key-vault?view=azure-devops&tabs=yaml) to store these secrets, or alternatively use [Azure service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml). We describe below how you can adapt the project Pipelines to leverage service connections. Let's add these.
+
+```
+git add .azure
+git commit -m "Adding devops-pipeline files"
+git push upstream {{ .input_default_branch }}
+```
+
+### Service principal approach [Default]
+
+By default, we provide Azure Pipelines where authentication is done using service principals.
+
+#### Requirements:
+- You must be an account admin to add service principals to the account.
+- You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+- Permissions to create Azure DevOps Pipelines in your Azure DevOps project. See the following [Azure DevOps prerequisites](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions).
+- Permissions to create Azure DevOps build policies. See the following [prerequisites](https://learn.microsoft.com/azure/devops/repos/git/branch-policies).
+
+#### Steps:
+{{ if (eq .input_cloud `azure`) }}
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Azure Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }}) for details.
+1. Follow ['Get Azure AD tokens for the service principals']({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "dev-tools/api/latest/aad/service-prin-aad-token")) }})
+to get your service principal credentials (tenant id, application id, and client secret) for both the staging and prod service principals. You will use these credentials as variables in the project Azure Pipelines.
+{{ else }}
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
+1. Follow ['Get tokens for the service principals']({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#manage-personal-access-tokens-for-a-service-principal")) }})
+to get your service principal token for both the staging and prod service principals. You will use the token as variables in the project Azure Pipelines.
+{{ end }}
+1. Create separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. Create one pipeline for each script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+1. Create a new variable group called `{{ .input_root_dir }} variable group` defining the following secret variables, for more details [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=classic#create-a-variable-group):
+{{ if (eq .input_cloud `azure`) }}
+    - `PROD_AZURE_SP_TENANT_ID`: tenant ID for the prod service principal
+    - `PROD_AZURE_SP_APPLICATION_ID`: application (client) ID for the prod service principal
+    - `PROD_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
+    - `STAGING_AZURE_SP_TENANT_ID`: tenant ID for the staging service principal
+    - `STAGING_AZURE_SP_APPLICATION_ID`: application (client) ID for the staging service principal
+    - `STAGING_AZURE_SP_CLIENT_SECRET`: client secret for the prod service principal
+{{ else }}
+    - `PROD_WORKSPACE_TOKEN` : service principal token for prod workspace
+    - `STAGING_WORKSPACE_TOKEN` : service principal token for staging workspace
+{{ end }}
+  - Ensure that the Azure Pipelines created in the prior step have access to these variables by selecting the name of the pipelines under the 'Pipeline permissions' tab of this variable group.
+  - Alternatively you could store these secrets in an [Azure Key Vault](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/key-vault-in-own-project?view=azure-devops&tabs=portal) and link those secrets as variables to be used in the Pipelines.
+1. Define [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{ .input_default_branch }}` branch using the Azure build pipelines created in step 1. This is required so that any PR changes to the `{{ .input_default_branch }}` must build successfully before PRs can complete. 
+In the case of a monorepo, where there are multiple projects under a single repository, set a [path filter](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#path-filters) on the build validation policies, such that devops pipelines are only triggered when there are changes to the respective projects (e.g. the path filter would be `/project1/*` to trigger a devops pipeline when changes are made to _only_ files under the `project1` folder).
+
+{{ if (eq .input_cloud `azure`) }}
+### Service connection approach [Recommended in production settings]
+
+#### Requirements:
+- You must be an Azure account admin to add service principals to the account.
+- You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+- Permissions to create service connections within an Azure subscription. See the following [prerequisites](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints).
+- Permissions to create Azure DevOps Pipelines in your Azure DevOps project. See the following [Azure DevOps prerequisites](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions).
+- Permissions to create Azure DevOps build policies. See the following [prerequisites](https://learn.microsoft.com/azure/devops/repos/git/branch-policies).
+
+The ultimate aim of the service connection approach is to use two separate service connections, authenticated with a staging service principal and a production service principal, to deploy and run resources in the respective Azure Databricks workspaces. Taking this approach then negates the need to read client secrets or client IDs from the CI/CD pipelines.
+
+#### Steps:
+1. Create two service principals - one to be used for deploying and running staging resources, and one to be used for deploying and running production resources. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }}) for details on how to create a service principal.
+1. [Add the staging and production service principals to your Azure Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals#add-service-principals-to-your-account-using-the-account-console")) }}), and following this add the staging service principal to the staging workspace, and production service principal to the production workspace. See [here]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html")) }}) for details.
+1. [Create two Azure Resource Manager service connections](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#create-a-service-connection) - one to be used to deploy to staging Databricks resources, the other for production resources. Each of these service connections should be authenticated with the respective staging and production service principals created in the prior step.
+1. Update pipeline YAML files to use service connections rather than pipeline variables:
+   - First, remove any lines where the environment variables are set in tasks in `{{ .input_project_name }}-tests-ci.yml` or `{{ .input_project_name }}-bundle-cicd.yml` files. Specifically, any lines where the following env vars are used: `PROD_AZURE_SP_TENANT_ID`, `PROD_AZURE_SP_APPLICATION_ID`, `PROD_AZURE_SP_CLIENT_SECRET`, `STAGING_AZURE_SP_TENANT_ID`, `STAGING_AZURE_SP_APPLICATION_ID`, `STAGING_AZURE_SP_CLIENT_SECRET`
+   - Then, add the following AzureCLI task prior to installing the `databricks` cli in any of the pipeline jobs:
+
+```yaml
+# Get Azure Resource Manager variables using service connection
+- task: AzureCLI@2
+  displayName: 'Extract information from Azure CLI'
+  inputs:
+    azureSubscription: # TODO: insert SERVICE_CONNECTION_NAME
+    addSpnToEnvironment: true
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      subscription_id=$(az account list --query "[?isDefault].id"|jq -r '.[0]')
+      echo "##vso[task.setvariable variable=ARM_CLIENT_ID]${servicePrincipalId}"
+      echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
+      echo "##vso[task.setvariable variable=ARM_TENANT_ID]${tenantId}"
+      echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]${subscription_id}"
+```
+  > Note that you will have to update this code snippet with the respective service connection names, depending on which Databricks workspace you are deploying resources to.
+
+1. Create separate Azure Pipelines under your Azure DevOps project using the ‘Existing Azure Pipelines YAML file’ option. Create one pipeline for each script. See [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline) for more details on creating Azure Pipelines.
+1. Define [build validation branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#build-validation) for the `{{ .input_default_branch }}` branch using the Azure build pipelines created in step 1. This is required so that any PR changes to the `{{ .input_default_branch }}` must build successfully before PRs can complete. 
+In the case of a monorepo, where there are multiple projects under a single repository, set a [path filter](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies?view=azure-devops&tabs=browser#path-filters) on the build validation policies, such that devops pipelines are only triggered when there are changes to the respective projects (e.g. the path filter would be `/project1/*` to trigger a devops pipeline when changes are made to _only_ files under the `project1` folder).
+{{ end }}
+
+### Setting up CI/CD workflows
+After setting up authentication for CI/CD, you can now set up CI/CD workflows. We provide a [Deploy CICD workflow](../.azure/devops-pipelines/deploy-cicd.yml) that can be used to generate the other CICD workflows mentioned below for projects. 
+This workflow is manually triggered with `project_name` as parameter. This workflow will need to be triggered for each project to set up its set of CI/CD workflows that can be used to deploy ML resources and run ML jobs in the staging and prod workspaces. 
+These workflows will be defined under `.azure/devops-pipelines`. After generating these workflows, be sure to go through the above workflow-specific steps again to add the appropriate build branch policies and filters.
+
+{{ else if (eq .input_cicd_platform `gitlab`) }}
+## Configure CI/CD - Gitlab Pipelines
+
+### Prerequisites
+* You must be an account admin to add service principals to the account.
+* You must be a Databricks workspace admin in the staging and prod workspaces. Verify that you're an admin by viewing the
+  [staging workspace admin console]({{template `databricks_staging_workspace_host` .}}#setting/accounts) and
+  [prod workspace admin console]({{template `databricks_prod_workspace_host` .}}#setting/accounts). If
+  the admin console UI loads instead of the Databricks workspace homepage, you are an admin.
+
+### Set up authentication for CI/CD
+#### Set up Service Principal
+To authenticate and manage resources created by CI/CD, 
+[service principals]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals")) }})
+should be created and added to test, staging and prod workspaces.
+
+Service principals can be created and managed in the your cloud provider identity solution or in Databricks directly. We normally recommend setting up a Databricks managed service principal.  
+Follow [Add a service principal to your Databricks account]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-your-databricks-account")) }})
+and [Add a service principal to a workspace]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "administration-guide/users-groups/service-principals.html#add-a-service-principal-to-a-workspace")) }})
+for details.
+
+{{ if eq .input_cloud `aws` }}
+For your convenience, we also have a [Terraform module](https://registry.terraform.io/modules/databricks/mlops-aws-project/databricks/latest) that can set up your service principals.
+{{ end }}
+
+#### Configure Service Principal (SP) permissions 
+If the created project uses **Unity Catalog**, we expect a catalog to exist with the name of the deployment target by default. 
+For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
+If you want to use different catalog names, please update the target names declared in the  
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[{{ .input_project_name }}/databricks.yml](../{{template `project_name_alphanumeric_underscore` .}}/databricks.yml) 
+{{- else }} `databricks.yml` {{ end }} file.
+If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .gitlab/pipelines directory.
+
+The SP must have proper permission in each respective environment and the catalog for the environments.
+
+For the integration tests and workflows, the SP must have permissions to read + write to the specified schema and create experiment and models. 
+i.e. for each environment:
+- USE_CATALOG
+- USE_SCHEMA
+- MODIFY
+- CREATE_MODEL
+- CREATE_TABLE
+- CREATE_VOLUME
+
+
+#### Gitlab Environment and secrets for CI/CD
+After creating the service principals and adding them to the respective staging and prod workspaces,
+you need to ad the client id and secret to Gitlab so that it can authenticate into Databricks for the execution of the integration tests and deployments.  
+First you need to setup the [Gitlab environments](https://docs.gitlab.com/ee/ci/environments/). Typically you setup the following environemnts:
+- integration
+- stage
+- production  
+  
+Add the following [Gitlab CI/CD variables](https://docs.gitlab.com/ee/ci/variables/) In each [environemt](https://docs.gitlab.com/ee/ci/environments/index.html#limit-the-environment-scope-of-a-cicd-variable),  with the corresponding service principal information:
+- SP_CLIENT_ID
+- SP_CLIENT_SECRET  
+   
+Ensure that the variable visibility is set to masked and hidden.
+
+### Building and Pushing the Docker image
+Gitlab exectues the pipeline on a VM initialized from a Docker image.
+The default Docker image is: [databricksfieldeng/mlopsstack:latest](https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general). 
+The Docker image should include all requirements to run the CI/CD pipelines (e.g. Databricks CLI, Python and its libraries used in the unit tests, Java for executing spark locally to the VM).
+The folder `.gitlab/docker/` includes the files to build the Docker image.  
+  
+You can execute the following script to locally build and push the Docker image into a registry on your local machine:  
+`{{.input_root_dir}}/.gitlab/docker/push_image_to_gitlab.sh`  
+Make sure that each pipeline yml file
+(in the folder `.gitlab/pipelines/`) points to that image.  
+NOTE: you can use the same image for multiple projects. 
+If a project requires additional Python libraries, they can also be installed as part of the pipelines scripts.
+
+### Setting up the CI/CD Pipeline
+Gitlab, by default, expects the pipeline file to be placed in the project root folder and to be named `.gitlab-ci.yml`. 
+Change the pipeline default [pipeline configuration file](https://docs.gitlab.com/ee/ci/pipelines/settings.html#specify-a-custom-cicd-configuration-file):  
+in the section `Settings > CI/CD > General Pipelines > CI/CD configuration file`, 
+add the value `.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml` which is our project main pipeline file.
+
+{{ end }}
+
+{{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+
+## Merge a PR with your initial agent code
+Create and push a PR branch adding the agent code to the repository.
+
+```
+git checkout -b add-agent-code
+git add .
+git commit -m "Add agent code"
+git push upstream add-agent-code
+```
+
+Open a PR from the newly pushed branch. CI will run to ensure that tests pass
+on your initial agent code. Fix tests if needed, then get your PR reviewed and merged.
+After the pull request merges, pull the changes back into your local `{{ .input_default_branch }}`
+branch:
+
+```
+git checkout {{ .input_default_branch }}
+git pull upstream {{ .input_default_branch }}
+```
+{{- end }}
+
+{{ if not (eq .input_release_branch .input_default_branch) -}}
+## Create release branch
+Create and push a release branch called `{{ .input_release_branch }}` off of the `{{ .input_default_branch }}` branch of the repository:
+```
+git checkout -b {{ .input_release_branch }} {{ .input_default_branch }}
+git push upstream {{ .input_release_branch }}
+git checkout {{ .input_default_branch }}
+```
+
+Your production jobs will pull the agent code against this branch, while your staging jobs will pull the agent code against the `{{ .input_default_branch }}` branch. Note that the `{{ .input_default_branch }}` branch will be the source of truth for agent resource configs and CI/CD workflows.
+
+For future code changes, iterate against the `{{ .input_default_branch }}` branch and regularly deploy your code from staging to production by merging code changes from the `{{ .input_default_branch }}` branch into the `{{ .input_release_branch }}` branch.
+{{ end -}}
+
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
+## Deploy agent resources and enable production jobs
+Follow the instructions in [{{ .input_project_name }}/resources/README.md](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md) to deploy agent resources and production jobs.
+{{- end }}
+
+## Next steps
+After you configure CI/CD and deploy training & inference pipelines, notify data scientists working
+on the current project. They should now be able to follow the
+[pull request guide](pull-request.md) and 
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}[Agent resource config guide](../{{template `project_name_alphanumeric_underscore` .}}/resources/README.md){{- end }}  to propose, test, and deploy
+Agent code and pipeline changes to production.
