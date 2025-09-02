@@ -127,7 +127,6 @@ jobs:
         with:
           name: test-logs-${{ matrix.cloud }}
           path: |
-            ~/.databrickscfg
             integration_test_*.log
           retention-days: 7
 
