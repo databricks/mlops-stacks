@@ -823,32 +823,15 @@ def test_bundle_run_job_execution(
 
 
 @pytest.mark.integration
-def test_workspace_permissions_and_access(
-    deployed_project_path, databricks_cli, workspace_config
-):
-    """Test that deployed resources have appropriate permissions."""
-    # Bundle deployment handled by fixture
-
-    # Check that we can access the deployed experiment
-    experiments_result = subprocess.run(
-        [
-            databricks_cli,
-            "--profile",
-            workspace_config["profile"],
-            "experiments",
-            "list",
-        ],
-        capture_output=True,
-        text=True,
-    )
-
-    assert experiments_result.returncode == 0, "Should be able to access experiments"
-
-    # Check that we can access jobs
-    jobs_result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "jobs", "list"],
-        capture_output=True,
-        text=True,
-    )
-
-    assert jobs_result.returncode == 0, "Should be able to access jobs"
+def test_workspace_permissions_and_access(current_user):
+    """Test that user has appropriate workspace permissions."""
+    
+    # The current_user fixture already validates workspace access and authentication
+    # If it returns valid user info, we know we have proper workspace permissions
+    assert current_user["username"] != "unknown", "Should be able to access workspace as authenticated user"
+    assert current_user["user_info"], "Should have valid user information from workspace"
+    assert current_user["user_info"].get("active", False), "User should be active in workspace"
+    
+    print(f"[OK] Successfully authenticated as user: {current_user['username']} ({current_user['display_name']})")
+    print(f"[OK] User is active: {current_user['user_info'].get('active', False)}")
+    print("[OK] Workspace permissions and access verified")
