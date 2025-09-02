@@ -111,6 +111,17 @@ jobs:
             --html=test-report-${{ matrix.cloud }}.html \
             --self-contained-html
 
+      - name: Cleanup Credentials
+        if: always()  # Always run cleanup, even if tests fail
+        run: |
+          # Securely remove Databricks config files
+          shred -vfz -n 3 ~/.databrickscfg 2>/dev/null || rm -f ~/.databrickscfg
+          rm -rf ~/.databrickscfg.d
+          # Clear credential environment variables
+          unset DATABRICKS_HOST DATABRICKS_TOKEN
+          # Remove any temporary credential files
+          find /tmp -name "*databricks*" -type f -delete 2>/dev/null || true
+
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()  # Upload even if tests failed
