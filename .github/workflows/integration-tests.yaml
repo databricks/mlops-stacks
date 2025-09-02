@@ -1,0 +1,202 @@
+name: Integration Tests
+on:
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for debugging
+    inputs:
+      cloud:
+        description: 'Cloud provider to test (aws, azure, or both)'
+        required: false
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - aws
+          - azure
+
+jobs:
+  integration-tests:
+    runs-on: 
+      group: databricks-field-eng-protected-runner-group
+      labels: [linux-ubuntu-latest]
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false  # Don't cancel Azure if AWS fails
+      matrix:
+        include:
+          - cloud: aws
+            profile: gha-aws-profile
+            host_var: DATABRICKS_HOST_AWS
+            token_var: DATABRICKS_TOKEN_AWS
+          - cloud: azure
+            profile: gha-azure-profile
+            host_var: DATABRICKS_HOST_AZURE
+            token_var: DATABRICKS_TOKEN_AZURE
+    
+    # Always run for scheduled events or when no specific cloud is chosen
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'push' || !github.event.inputs.cloud || github.event.inputs.cloud == 'both' }}
+    
+    name: Integration Tests (${{ matrix.cloud }})
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r dev-requirements.txt
+          # Install pytest plugins for retry functionality and HTML reports
+          pip install pytest-rerunfailures pytest-html
+
+      - name: Install Node.js dependencies
+        run: |
+          npm install -g markdown-link-check@3.10.3
+
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+
+      - name: Configure Databricks CLI Profile
+        env:
+          DATABRICKS_HOST: ${{ secrets[matrix.host_var] }}
+          DATABRICKS_TOKEN: ${{ secrets[matrix.token_var] }}
+        run: |
+          # Create databricks config directory
+          mkdir -p ~/.databrickscfg.d
+          
+          # Configure profile using environment variables
+          cat > ~/.databrickscfg << EOF
+          [${{ matrix.profile }}]
+          host = $DATABRICKS_HOST
+          token = $DATABRICKS_TOKEN
+          EOF
+          
+          # Verify profile is configured correctly
+          databricks --profile ${{ matrix.profile }} current-user me
+
+      - name: Run Integration Tests
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'push' || !github.event.inputs.cloud || github.event.inputs.cloud == 'both' || github.event.inputs.cloud == matrix.cloud }}
+        env:
+          # Test configuration
+          DATABRICKS_CONFIG_PROFILE: ${{ matrix.profile }}
+          DATABRICKS_CLOUD: ${{ matrix.cloud }}
+          DATABRICKS_HOST: ${{ secrets[matrix.host_var] }}
+          DATABRICKS_TOKEN: ${{ secrets[matrix.token_var] }}
+          # Use environment variables for catalog/schema names
+          TEST_CATALOG_NAME: ${{ vars.TEST_CATALOG_NAME || 'main_integration_tests' }}
+          TEST_SCHEMA_NAME: ${{ vars.TEST_SCHEMA_NAME || 'gha_integration_tests' }}
+          # GitHub-specific environment
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Run all tests including integration tests with retry on failures
+          pytest tests/ --integration --large -v \
+            --tb=short \
+            --reruns=2 \
+            --reruns-delay=30 \
+            --junit-xml=test-results-${{ matrix.cloud }}.xml \
+            --html=test-report-${{ matrix.cloud }}.html \
+            --self-contained-html
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()  # Upload even if tests failed
+        with:
+          name: test-results-${{ matrix.cloud }}
+          path: |
+            test-results-${{ matrix.cloud }}.xml
+            test-report-${{ matrix.cloud }}.html
+          retention-days: 30
+
+      - name: Upload Test Logs on Failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-logs-${{ matrix.cloud }}
+          path: |
+            ~/.databrickscfg
+            integration_test_*.log
+          retention-days: 7
+
+  notify-failure:
+    runs-on: 
+      group: databricks-field-eng-protected-runner-group
+      labels: [linux-ubuntu-latest]
+    needs: integration-tests
+    if: failure() && github.event_name == 'schedule'
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.NOTIFICATION_EMAIL_USERNAME }}
+          password: ${{ secrets.NOTIFICATION_EMAIL_PASSWORD }}
+          subject: "FAILED: MLOps Stacks Integration Tests Failed - ${{ github.sha }}"
+          to: ${{ secrets.NOTIFICATION_EMAIL_TO }}
+          from: "GitHub Actions <${{ secrets.NOTIFICATION_EMAIL_USERNAME }}>"
+          body: |
+            The nightly integration tests have failed for MLOps Stacks.
+            
+            **Repository:** ${{ github.repository }}
+            **Branch:** ${{ github.ref }}
+            **Commit:** ${{ github.sha }}
+            **Workflow:** ${{ github.workflow }}
+            **Run ID:** ${{ github.run_id }}
+            
+            **View Results:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            Please check the test results and logs for more details.
+            
+            ---
+            This is an automated message from GitHub Actions.
+
+  # Create a check run that shows the overall status
+  integration-status:
+    runs-on: 
+      group: databricks-field-eng-protected-runner-group
+      labels: [linux-ubuntu-latest]
+    needs: integration-tests
+    if: always()
+    steps:
+      - name: Set Status Check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              check_name: 'Integration Tests Status'
+            });
+            
+            const conclusion = '${{ needs.integration-tests.result }}' === 'success' ? 'success' : 'failure';
+            const title = conclusion === 'success' ? 
+              'PASSED: All integration tests passed' : 
+              'FAILED: Integration tests failed';
+            
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Integration Tests Status',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: conclusion,
+              output: {
+                title: title,
+                summary: `Integration tests ${conclusion === 'success' ? 'passed' : 'failed'} for commit ${context.sha.substring(0, 7)}`
+              }
+            });
