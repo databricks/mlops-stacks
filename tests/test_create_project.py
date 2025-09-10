@@ -11,14 +11,13 @@ from utils import (
     generated_project_dir,
     parametrize_by_cloud,
     parametrize_by_project_generation_params,
+    DEFAULT_PROJECT_NAME,
+    DEFAULT_PROJECT_DIRECTORY,
+    TEST_PROJECT_NAME,
+    TEST_PROJECT_DIRECTORY,
 )
 from unittest import mock
 
-DEFAULT_PROJECT_NAME = "my-mlops-project"
-DEFAULT_PROJECT_DIRECTORY = "my_mlops_project"
-# UUID that when set as project name, prevents the removal of files needed in testing
-TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
-TEST_PROJECT_DIRECTORY = "27896cf3_bb3e_476e_8129_96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
     "input_default_branch": "main",
     "input_release_branch": "release",
@@ -135,8 +134,9 @@ def test_markdown_links(cloud, include_models_in_unity_catalog, generated_projec
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
         """
-        npm install -g markdown-link-check@3.10.3
-        find . -name \*.md -print0 | xargs -0 -n1 markdown-link-check -c ./checker-config.json
+        # Check if markdown-link-check is already installed, if not install it
+        which markdown-link-check || npm install -g markdown-link-check@3.10.3
+        find . -name \\*.md -print0 | xargs -0 -n1 markdown-link-check -c ./checker-config.json
         """,
         shell=True,
         check=True,
@@ -299,6 +299,9 @@ def test_generate_project_check_feature_store_output(
     """
     if cloud == "gcp" and include_models_in_unity_catalog == "yes":
         # Skip test for GCP with Unity Catalog
+        return
+    # Skip test when Feature Store + MLflow Recipes combination (incompatible)
+    if include_feature_store == "yes" and include_mlflow_recipes == "yes":
         return
     context = prepareContext(
         cloud,

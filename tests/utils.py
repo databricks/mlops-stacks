@@ -7,6 +7,13 @@ from functools import wraps
 
 RESOURCE_TEMPLATE_ROOT_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
 
+# Shared test project constants
+DEFAULT_PROJECT_NAME = "my-mlops-project"
+DEFAULT_PROJECT_DIRECTORY = "my_mlops_project"
+# UUID that when set as project name, prevents the removal of files needed in testing
+TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
+TEST_PROJECT_DIRECTORY = "27896cf3_bb3e_476e_8129_96df0406d5c7"
+
 AZURE_DEFAULT_PARAMS = {
     "input_setup_cicd_and_project": "CICD_and_Project",
     "input_root_dir": "my-mlops-project",
@@ -58,22 +65,36 @@ def parametrize_by_project_generation_params(fn):
             "github_actions",
             "github_actions_for_github_enterprise_servers",
             "azure_devops",
+            "gitlab",
         ],
     )
     @pytest.mark.parametrize(
         "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
         [
+            # CICD_and_Project combinations - all possible feature combinations
             ("CICD_and_Project", "no", "no", "no"),
             ("CICD_and_Project", "no", "no", "yes"),
             ("CICD_and_Project", "no", "yes", "no"),
             ("CICD_and_Project", "yes", "no", "no"),
             ("CICD_and_Project", "yes", "no", "yes"),
+            (
+                "CICD_and_Project",
+                "yes",
+                "yes",
+                "no",
+            ),  # New: feature store + mlflow recipes
+            ("CICD_and_Project", "yes", "yes", "yes"),  # New: all features enabled
+            # Project_Only combinations - all possible feature combinations
             ("Project_Only", "no", "no", "no"),
             ("Project_Only", "no", "no", "yes"),
             ("Project_Only", "no", "yes", "no"),
             ("Project_Only", "yes", "no", "no"),
             ("Project_Only", "yes", "no", "yes"),
+            ("Project_Only", "yes", "yes", "no"),  # New: feature store + mlflow recipes
+            ("Project_Only", "yes", "yes", "yes"),  # New: all features enabled
+            # CICD_Only combinations - expanded to include Unity Catalog variations
             ("CICD_Only", "no", "no", "no"),
+            ("CICD_Only", "no", "no", "yes"),  # New: CICD_Only with Unity Catalog
         ],
     )
     @wraps(fn)
@@ -138,6 +159,16 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "http://127.0.0.1:5000"},
             {"pattern": "https://adb-3214.67.azuredatabricks.net*"},
             {"pattern": "https://adb-345.89.azuredatabricks.net*"},
+            {"pattern": "../../README.md#Setting%20up%20CI/CD"},
+            {"pattern": "../../docs/mlops-setup.md"},
+            {"pattern": "#configure-cicd---gitlab"},
+            {
+                "pattern": "https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general"
+            },
+            {"pattern": "https://mlflow.org/docs/latest/recipes.html*"},
+            {
+                "pattern": "https://mlflow.org/docs/latest/python_api/mlflow.recipes.html*"
+            },
         ],
         "httpHeaders": [
             {
@@ -154,6 +185,12 @@ def markdown_checker_configs(tmpdir):
 
 
 def generate(directory, databricks_cli, context):
+    # Convert string path to Path object if needed
+    if isinstance(directory, str):
+        from pathlib import Path
+
+        directory = Path(directory)
+
     if context.get("input_cloud") == "aws":
         default_params = AWS_DEFAULT_PARAMS
     elif context.get("input_cloud") == "gcp":
@@ -168,7 +205,7 @@ def generate(directory, databricks_cli, context):
     }
     json_string = json.dumps(params)
     config_file = directory / "config.json"
-    config_file.write(json_string)
+    config_file.write_text(json_string, encoding="utf-8")
     subprocess.run(
         f"echo dapi123 | {databricks_cli} configure --host https://123",
         shell=True,
