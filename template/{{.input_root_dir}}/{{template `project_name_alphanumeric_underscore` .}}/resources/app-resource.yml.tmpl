@@ -1,0 +1,12 @@
+resources:
+  apps:
+    {{template `project_name_alphanumeric_underscore` .}}_chatbot:
+      name: ${var.app_name}-${bundle.target}
+      description: "{{ .input_project_name }} Chatbot Databricks App - ${bundle.target} environment"
+      # Local path within the bundle (copied to workspace on bundle deploy)
+      # Environment variables are configured in app.yaml within source_code_path
+      source_code_path: ../agent_deployment/chat_interface_deployment
+      # Optional: Add permissions if needed
+      # permissions:
+      #   - level: CAN_USE
+      #     group_name: users

@@ -9,3 +9,51 @@ A modern, responsive chat interface that connects to Databricks AI serving endpo
 - Ability to collect user feedback on the responses
     - Thumbs up / Thumbs down
     - Additional feedback
+
+## Deployment
+
+This app is deployed as part of the Databricks Asset Bundle.
+
+### Step 1: Deploy the Bundle
+
+```bash
+databricks bundle deploy -t dev
+```
+
+This will:
+- ✅ Create/update the app definition in the workspace
+- ✅ Sync the app source code
+- ✅ Configure environment variables (SERVING_ENDPOINT)
+
+### Step 2: Start the App
+
+**Important**: Bundle deploy does NOT automatically start the app. You must start it manually:
+
+```bash
+# Option 1: Using Databricks CLI
+databricks apps start {{ .input_project_name }}-chatbot-app-dev
+
+# Option 2: Using the Workspace UI
+# Navigate to Workspace > Apps > [your app name] > Click "Start"
+```
+
+### App Name Pattern
+
+The app name follows this pattern: `{project_name}-chatbot-app-{target}`
+
+Examples:
+- Dev: `{{ .input_project_name }}-chatbot-app-dev`
+- Staging: `{{ .input_project_name }}-chatbot-app-staging`
+- Prod: `{{ .input_project_name }}-chatbot-app-prod`
+
+### Verifying Deployment
+
+After starting the app, check its status:
+
+```bash
+# Check app status
+databricks apps get {{ .input_project_name }}-chatbot-app-dev
+
+# View app logs (if needed)
+databricks apps logs {{ .input_project_name }}-chatbot-app-dev
+```

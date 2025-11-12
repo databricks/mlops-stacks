@@ -7,9 +7,6 @@ common_permissions: &permissions
 resources:
   jobs:
     agent_development_job:
-      parameters:
-        - name: bundle_root
-          default: ${workspace.file_path}
       name: ${bundle.target}-{{ .input_project_name }}-agent-development-job
       tasks:
         - task_key: AgentDevelopment
@@ -22,12 +19,10 @@ resources:
               vector_search_index: ${var.vector_search_index}
               experiment: ${var.experiment}
               registered_model: ${var.registered_model}
-              agent_model_endpoint: ${var.agent_model_endpoint}
-              max_words: ${var.max_words}
               model_alias: ${var.model_alias}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          environment_key: agent_requirements
+          #environment_key: agent_requirements
 
         - task_key: AgentEvaluation
           depends_on:
@@ -43,7 +38,7 @@ resources:
               model_alias: ${var.model_alias}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          environment_key: agent_requirements
+          #environment_key: agent_requirements
 
         - task_key: AgentDeployment
           depends_on:
@@ -55,11 +50,11 @@ resources:
               schema: ${var.schema}
               registered_model: ${var.registered_model}
               model_alias: ${var.model_alias}
-              scale_to_zero: ${var.scale_to_zero}
-              workload_size: ${var.workload_size}
+              agent_serving_endpoint: ${var.agent_serving_endpoint}
+              mlflow_experiment_path: ${var.mlflow_experiment_path}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          environment_key: agent_requirements
+          #environment_key: agent_requirements
 
       schedule:
         quartz_cron_expression: "0 0 6 * * ?" # daily at 6am
@@ -68,7 +63,7 @@ resources:
       environments:
         - environment_key: agent_requirements
           spec:
-            client: "3"
+            environment_version: "4"
             dependencies: 
               - "-r /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/files/agent_development/agent_requirements.txt"
 

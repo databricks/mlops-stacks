@@ -18,14 +18,7 @@ resources:
         name: ${var.registered_model}
         catalog_name: ${var.uc_catalog}
         schema_name: ${var.schema}
-        comment: Registered model in Unity Catalog for the "mlops-example-project" ML Project for ${bundle.target} deployment target.
-        <<: *grants
-      
-      feedback_model: 
-        name: feedback
-        catalog_name: ${var.uc_catalog}
-        schema_name: ${var.schema}
-        comment: Registered model for the agent's feedback for ${bundle.target} deployment target.
+        comment: Registered model in Unity Catalog for the "${bundle.name}" ML Project for ${bundle.target} deployment target.
         <<: *grants
 
   experiments:
@@ -33,8 +26,9 @@ resources:
       name: ${var.experiment}
       <<: *permissions
 
-  apps:
-    dash-chatbot-app:
-      name: ${var.chatbot_name}
-      source_code_path: /Users/${workspace.current_user.userName}/.bundle/my_agent_project/${bundle.target}/files/agent_deployment/chat_interface_deployment/
-      description: 'your Databricks assistant app.'
+# NOTE: Model serving endpoint and feedback model are NOT pre-created here
+# Following Databricks guidance: let agents.deploy() create and manage these resources
+# Both the endpoint and feedback model will be auto-created by agents.deploy() in the ModelServing notebook
+# See: https://docs.databricks.com/en/generative-ai/deploy-agent.html
+#
+# NOTE: Databricks App is defined in app-resource.yml, not here

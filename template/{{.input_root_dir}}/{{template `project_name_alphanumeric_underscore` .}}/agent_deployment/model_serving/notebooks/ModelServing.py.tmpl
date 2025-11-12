@@ -6,22 +6,26 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Model Serving Pipeline - Overview
 ##################################################################################
 # Model Serving
-# 
+#
 # Helper notebook to serve the model on an endpoint. This notebook is run
 # after the ModelDeployment.py notebook as part of a multi-task job, in order to serve the model
 # on an endpoint stage after transitioning the latest version.
 #
 # Parameters:
-# * uc_catalog (required)           - Name of the Unity Catalog 
-# * schema (required)               - Name of the schema inside Unity Catalog 
-# * registered_model (required)     - Name of the model registered in mlflow
-# * model_alias (required)          - Model alias to deploy
-# * scale_to_zero (required)        - Specify if the endpoint should scale to zero when not in use.
-# * workload_size (required)        - Specify  the size of the compute scale out that corresponds with the number of requests this served 
-#                                     model can process at the same time. This number should be roughly equal to QPS x model run time.
-# * bundle_root (required)          - Root of the bundle
+# * uc_catalog (required)                   - Name of the Unity Catalog
+# * schema (required)                       - Name of the schema inside Unity Catalog
+# * registered_model (required)             - Name of the model registered in mlflow
+# * model_alias (required)                  - Model alias to deploy
+# * scale_to_zero (required)                - Specify if the endpoint should scale to zero when not in use.
+# * workload_size (required)                - Specify  the size of the compute scale out that corresponds with the number of requests this served
+#                                             model can process at the same time. This number should be roughly equal to QPS x model run time.
+# * agent_serving_endpoint (required)       - Name of the agent serving endpoint to deploy
+# * mlflow_experiment_path (optional)       - Non-Git MLflow experiment path for tracing
+# * deploy_max_attempts (optional)          - Maximum deployment retry attempts (default: 3)
+# * deploy_base_sleep_sec (optional)        - Base sleep time for retry backoff (default: 10)
 #
 # Widgets:
 # * Unity Catalog: Text widget to input the name of the Unity Catalog
@@ -30,7 +34,7 @@
 # * Model Alias: Text widget to input the model alias to deploy
 # * Scale to zero: Whether the clusters should scale to zero (requiring more time at startup after inactivity)
 # * Workload Size: Compute that matches estimated number of requests for the endpoint
-# * Bundle root: Text widget to input the root of the bundle
+# * Agent model serving endpoint: Text widget to input the name of the model serving endpoint to deploy
 #
 # Usage:
 # 1. Set the appropriate values for the widgets.
@@ -41,19 +45,26 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Install Prerequisites
+# Install prerequisite packages
+%pip install -r ../../../agent_development/agent_requirements.txt
+
+# COMMAND ----------
+
+# DBTITLE 1,Widget Creation
 # List of input args needed to run the notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 
 # A Unity Catalog containing the model
 dbutils.widgets.text(
     "uc_catalog",
-    "ai_agent_stacks",
+    "",
     label="Unity Catalog",
 )
 # Name of schema
 dbutils.widgets.text(
     "schema",
-    "ai_agent_ops",
+    "",
     label="Schema",
 )
 # Name of model registered in mlflow
@@ -72,41 +83,111 @@ dbutils.widgets.text(
 dbutils.widgets.dropdown("scale_to_zero", "True", ["True", "False"], "Scale to zero")
 # Workdload size
 dbutils.widgets.dropdown("workload_size", "Small", ["Small", "Medium", "Large"], "Workload Size")
-
-# Bundle root
+# Agent serving endpoint (optional - leave empty to auto-generate)
+# Per Databricks guidance: agents.deploy() can create the endpoint with a custom name,
+# but the endpoint must NOT be pre-created in DAB/Terraform
+# Pass a name for cleaner endpoint management, or leave empty to auto-generate
 dbutils.widgets.text(
-    "bundle_root",
-    "/",
-    label="Root of bundle",
+    "agent_serving_endpoint",
+    "",
+    label="Agent serving endpoint (optional)",
+)
+# MLflow experiment path (optional)
+dbutils.widgets.text(
+    "mlflow_experiment_path",
+    "",
+    label="MLflow Experiment Path (optional)",
+)
+# Deployment retry settings
+dbutils.widgets.text(
+    "deploy_max_attempts",
+    "3",
+    label="Max deployment attempts",
+)
+dbutils.widgets.text(
+    "deploy_base_sleep_sec",
+    "10",
+    label="Base sleep seconds for retry",
 )
 
 # COMMAND ----------
 
+# DBTITLE 1,Restart Python
 dbutils.library.restartPython()
 
 # COMMAND ----------
+
+# DBTITLE 1,Define Input Variables
+import time
+from typing import Optional
+
+def get_bool_param(value: str) -> bool:
+    """Convert string widget value to boolean"""
+    return str(value).lower() in ("1", "true", "yes", "y")
+
+def get_int_param(value: str, default: int) -> int:
+    """Convert string widget value to int with default"""
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+def get_float_param(value: str, default: float) -> float:
+    """Convert string widget value to float with default"""
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
 
 uc_catalog = dbutils.widgets.get("uc_catalog")
 schema = dbutils.widgets.get("schema")
 registered_model = dbutils.widgets.get("registered_model")
 model_alias = dbutils.widgets.get("model_alias")
-scale_to_zero = bool(dbutils.widgets.get("scale_to_zero"))
+scale_to_zero = get_bool_param(dbutils.widgets.get("scale_to_zero"))
 workload_size = dbutils.widgets.get("workload_size")
-bundle_root = dbutils.widgets.get("bundle_root")
+agent_serving_endpoint = dbutils.widgets.get("agent_serving_endpoint")  # Optional - can be empty
+mlflow_experiment_path = dbutils.widgets.get("mlflow_experiment_path")
+deploy_max_attempts = get_int_param(dbutils.widgets.get("deploy_max_attempts"), 3)
+deploy_base_sleep_sec = get_float_param(dbutils.widgets.get("deploy_base_sleep_sec"), 10.0)
 
 assert uc_catalog != "", "uc_catalog notebook parameter must be specified"
 assert schema != "", "schema notebook parameter must be specified"
 assert registered_model != "", "registered_model notebook parameter must be specified"
 assert model_alias != "", "model_alias notebook parameter must be specified"
-assert scale_to_zero != "", "scale_to_zero notebook parameter must be specified"
-assert workload_size != "", "workload_size notebook parameter must be specified"
-assert bundle_root != "", "bundle_root notebook parameter must be specified"
+# Note: agent_serving_endpoint is optional - if empty, agents.deploy() will auto-generate it
 
-# Updating to bundle root
-import sys 
+# COMMAND ----------
 
-root = dbutils.widgets.get("bundle_root")
-sys.path.append(root)
+# DBTITLE 1,Configure MLflow for UC and Real-time Tracing
+import mlflow
+from databricks.sdk import WorkspaceClient
+
+# Critical: Set UC registry and non-Git experiment before calling agents.deploy()
+# This ensures MLflow 3 real-time tracing works in Git folders and bundle jobs
+mlflow.set_registry_uri("databricks-uc")
+
+# Use provided experiment path or create a default non-Git experiment
+w = WorkspaceClient()
+if not mlflow_experiment_path:
+    mlflow_experiment_path = f"/Users/{w.current_user.me().user_name}/.agents-deploy-exp"
+
+mlflow.set_experiment(mlflow_experiment_path)
+print(f"Using MLflow experiment: {mlflow_experiment_path}")
+
+# COMMAND ----------
+
+# DBTITLE 1,Set up path to import utility functions
+import sys
+import os
+
+# Get notebook's directory using dbutils
+notebook_path = '/Workspace/' + os.path.dirname(
+    dbutils.notebook.entry_point.getDbutils().notebook()
+    .getContext().notebookPath().get()
+)
+# Navigate up from notebooks/ to component level
+utils_dir = os.path.dirname(notebook_path)
+sys.path.insert(0, utils_dir)
 
 # COMMAND ----------
 # DBTITLE 1,Review Instructions
@@ -128,7 +209,7 @@ Your inputs are invaluable for the development team. By providing detailed feedb
 Thank you for your time and effort in testing our assistant. Your contributions are essential to delivering a high-quality product to our end users."""
 
 # COMMAND ----------
-# DBTITLE 1,Create agent deployment
+# DBTITLE 1,Deploy model using agents.deploy()
 
 from databricks import agents
 from mlflow import MlflowClient
@@ -136,26 +217,110 @@ from mlflow import MlflowClient
 client = MlflowClient()
 
 model_name = f"{uc_catalog}.{schema}.{registered_model}"
-model_version = client.get_model_version_by_alias(model_name, model_alias).version
+model_version_obj = client.get_model_version_by_alias(model_name, model_alias)
+model_version = int(model_version_obj.version)
 
-if not agents.get_deployments(model_name):
-    deployment_info = agents.deploy(model_name=model_name, model_version=int(model_version), scale_to_zero=scale_to_zero, workload_size=workload_size)
+
+deployment = agents.get_deployments(
+    model_name=model_name,
+    model_version=model_version,
+)
+
+if deployment: 
+  agents.delete_deployment(model_name=model_name, model_version=model_version)
+
+print(f"Deploying model {model_name} version {model_version}")
+print(f"Scale to zero: {scale_to_zero}, Workload size: {workload_size}")
+if agent_serving_endpoint:
+  print(f"Target endpoint name: {agent_serving_endpoint}")
 else:
-    deployment_info = agents.get_deployments(model_name)[0]
-    print(f"Deployment {model_name} already exists. Deleting and redeploying...")
-    agents.delete_deployment(model_name=model_name, model_version=deployment_info.model_version)
-    deployment_info = agents.deploy(model_name=model_name, model_version=int(model_version), scale_to_zero=scale_to_zero, workload_size=workload_size)
+  print("No endpoint name specified - agents.deploy() will auto-generate one")
 
+deployment = agents.deploy(
+    model_name=model_name,
+    model_version=model_version,
+    endpoint_name=agent_serving_endpoint if agent_serving_endpoint else None,
+    scale_to_zero_enabled=scale_to_zero,
+)
 
-# Add the user-facing instructions to the Review App
-agents.set_review_instructions(model_name, instructions_to_reviewer)
+print(f"Deployment initiated successfully!")
+print(f"Query endpoint: {deployment.query_endpoint}")
 
 # COMMAND ----------
-# DBTITLE 1, Wait for model serving endpoint to be ready
+# DBTITLE 1,Wait for Endpoint to be Ready
 
-# DBTITLE 1,Test Endpoint
-from agent_deployment.model_serving.serving import wait_for_model_serving_endpoint_to_be_ready
-wait_for_model_serving_endpoint_to_be_ready(deployment_info.endpoint_name)
+from utils import wait_for_model_serving_endpoint_to_be_ready
+
+# Extract the endpoint name from the deployment object
+# Since we didn't pass endpoint_name, agents.deploy() auto-generated it
+endpoint_name = deployment.endpoint_name
+print(f"Deployment created endpoint: {endpoint_name}")
+print(f"Waiting for endpoint {endpoint_name} to be ready...")
+wait_for_model_serving_endpoint_to_be_ready(endpoint_name)
+print(f"Endpoint {endpoint_name} is ready!")
+
+# COMMAND ----------
+# DBTITLE 1,Grant App Permission to Query Endpoint
+
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+
+# Find the app service principal by searching for the app name
+# The app name follows the pattern: {app_name}-{target}
+# We need to grant the app's service principal permission to query the endpoint
+try:
+    apps = list(w.apps.list())
+
+    # Search for apps that might match this bundle's app
+    # App name is defined in databricks.yml 
+    matching_apps = [app for app in apps if app.name and '{{template `project_name_alphanumeric_underscore` .}}' in app.name and 'chatbot' in app.name]
+
+    if matching_apps:
+        for app in matching_apps:
+            if app.service_principal_client_id:
+                print(f"Granting permission to app '{app.name}' (service principal: {app.service_principal_client_id})")
+
+                # Get current permissions
+                current_perms = w.serving_endpoints.get_permissions(serving_endpoint_id=endpoint_name)
+
+                # Build new access control list preserving existing permissions
+                acl = []
+                if current_perms.access_control_list:
+                    acl = [
+                        {
+                            "user_name": perm.user_name,
+                            "group_name": perm.group_name,
+                            "service_principal_name": perm.service_principal_name,
+                            "permission_level": perm.all_permissions[0].permission_level
+                        }
+                        for perm in current_perms.access_control_list
+                        if perm.service_principal_name != app.service_principal_client_id  # Don't duplicate
+                    ]
+
+                # Add app service principal with CAN_QUERY permission
+                acl.append({
+                    "service_principal_name": app.service_principal_client_id,
+                    "permission_level": "CAN_QUERY"
+                })
+
+                w.serving_endpoints.set_permissions(
+                    serving_endpoint_id=endpoint_name,
+                    access_control_list=acl
+                )
+                print(f"✓ Granted CAN_QUERY permission to app service principal")
+    else:
+        print("Warning: Could not find matching app to grant permissions. You may need to grant permissions manually.")
+
+except Exception as e:
+    print(f"Warning: Could not grant app permissions automatically: {e}")
+    print("You may need to grant the app service principal CAN_QUERY permission manually via the UI.")
+
+# COMMAND ----------
+# DBTITLE 1,Set Review Instructions
+
+agents.set_review_instructions(model_name, instructions_to_reviewer)
+print("Review instructions set successfully")
 
 # COMMAND ----------
 
@@ -167,20 +332,21 @@ wait_for_model_serving_endpoint_to_be_ready(deployment_info.endpoint_name)
 
 # agents.set_permissions(model_name=model_name, users=user_list, permission_level=agents.PermissionLevel.CAN_QUERY)
 
-# print(f"Share this URL with your stakeholders: {deployment_info.review_app_url}")
+# print(f"Share this URL with your stakeholders: {deployment.review_app_url}")
 
 # COMMAND ----------
-# DBTITLE 1,Test endpoint
+# DBTITLE 1,Test Endpoint
 
 from mlflow.deployments import get_deploy_client
 
-client = get_deploy_client()
+deploy_client = get_deploy_client()
 input_example = {
-    "messages": [{"role": "user", "content": "What is MLflow?"}],
+    "input": [{"role": "user", "content": "What is MLflow?"}],
     "databricks_options": {"return_trace": True},
 }
 
-response = client.predict(endpoint=deployment_info.endpoint_name, inputs=input_example)
+print(f"Testing endpoint {endpoint_name}...")
+response = deploy_client.predict(endpoint=f'/serving-endpoints/{endpoint_name}', inputs=input_example)
 
-print(response['messages'][-1]['content'])
-
+print("Test response:")
+print(response['output'])

@@ -21,8 +21,7 @@
 # * hf_tokenizer_model (optional)             - Name of the HuggingFace tokenizer model name
 # * max_chunk_size (optional)                 - Maximum chunk size
 # * min_chunk_size (optional)                 - Minimum chunk size
-# * chunk_overlap (optional)                  - Overlap between chunks 
-# * bundle_root (required)                    - Root of the bundle
+# * chunk_overlap (optional)                  - Overlap between chunks
 #
 # Widgets:
 # * Unity Catalog: Text widget to input the name of the Unity Catalog
@@ -33,7 +32,6 @@
 # * Maximum chunk size: Maximum characters chunks will be split into
 # * Minimum chunk size: minimum characters chunks will be split into
 # * Chunk overlap: Overlap between chunks
-# * Root of bundle: Text widget to input the root of the bundle
 #
 # Usage:
 # 1. Set the appropriate values for the widgets.
@@ -43,19 +41,25 @@
 
 # COMMAND ----------
 
+# DBTITLE 1,Install Prerequisites
+# Install prerequisite packages
+%pip install -r ../../requirements.txt
+
+# COMMAND ----------
+
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 
 # A Unity Catalog containing the input data
 dbutils.widgets.text(
     "uc_catalog",
-    "ai_agent_stacks",
+    "",
     label="Unity Catalog",
 )
 # Name of schema
 dbutils.widgets.text(
     "schema",
-    "ai_agent_ops",
+    "",
     label="Schema",
 )
 # Name of input table
@@ -83,13 +87,6 @@ dbutils.widgets.text("min_chunk_size", "20", label="Minimum chunk size")
 # Chunk overlap
 dbutils.widgets.text("chunk_overlap", "50", label="Chunk overlap")
 
-# Bundle root
-dbutils.widgets.text(
-    "bundle_root",
-    "/",
-    label="Root of bundle",
-)
-
 # COMMAND ----------
 
 # DBTITLE 1,Define input and output variables
@@ -101,7 +98,6 @@ hf_tokenizer_model = dbutils.widgets.get("hf_tokenizer_model")
 max_chunk_size = int(dbutils.widgets.get("max_chunk_size"))
 min_chunk_size = int(dbutils.widgets.get("min_chunk_size"))
 chunk_overlap = int(dbutils.widgets.get("chunk_overlap"))
-bundle_root = dbutils.widgets.get("bundle_root")
 
 assert uc_catalog != "", "uc_catalog notebook parameter must be specified"
 assert schema != "", "schema notebook parameter must be specified"
@@ -111,13 +107,22 @@ assert hf_tokenizer_model != "", "hf_tokenizer_model notebook parameter must be 
 assert max_chunk_size != "", "max_chunk_size notebook parameter must be specified"
 assert min_chunk_size != "", "min_chunk_size notebook parameter must be specified"
 assert chunk_overlap != "", "chunk_overlap notebook parameter must be specified"
-assert bundle_root != "", "bundle_root notebook parameter must be specified"
 
-# Updating to bundle root
-import sys 
+# COMMAND ----------
 
-root = dbutils.widgets.get("bundle_root")
-sys.path.append(root)
+# DBTITLE 1,Set up path to import utilities
+# Set up path to import utility and other helper functions
+import sys
+import os
+
+# Get notebook's directory using dbutils
+notebook_path = '/Workspace/' + os.path.dirname(
+    dbutils.notebook.entry_point.getDbutils().notebook()
+    .getContext().notebookPath().get()
+)
+# Navigate up from notebooks/ to component level (data_preprocessing/)
+utils_dir = os.path.dirname(notebook_path)
+sys.path.insert(0, utils_dir)
 
 # COMMAND ----------
 
@@ -158,7 +163,7 @@ if not spark.catalog.tableExists(f"{preprocessed_data_table}") or spark.table(f"
 from functools import partial
 import pandas as pd
 from pyspark.sql.functions import pandas_udf
-from data_preparation.data_preprocessing.preprocessing.create_chunk import split_html_on_p
+from utils.create_chunk import split_html_on_p
 
 @pandas_udf("array<string>")
 def parse_and_split(

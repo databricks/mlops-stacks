@@ -1,6 +1,6 @@
 """Vector Search utilities for data preparation."""
 
-from .utils import (
+from .vector_search_utils import (
     vs_endpoint_exists,
     wait_for_vs_endpoint_to_be_ready,
     index_exists,
