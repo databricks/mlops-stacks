@@ -22,7 +22,15 @@ integration-test:
     - cd {{template `project_name_alphanumeric_underscore` .}}
     - databricks bundle validate -t test
     - databricks bundle deploy -t test
+    {{ if (eq .input_include_feature_store `yes`) }}
     - databricks bundle run write_feature_table_job -t test
+    {{ end }}
+    {{ if (eq .input_project_type `mlops`) }}
     - databricks bundle run model_training_job -t test
+    {{ else -}}
+    - databricks bundle run data_preprocessing_job -t test
+    - databricks bundle run agent_development_job -t test
+    {{ end }}
+    
   rules:
     - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request

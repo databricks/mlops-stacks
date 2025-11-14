@@ -1,0 +1,20 @@
+# Agent Development
+
+Agent Development and Deployment have separate dependencies than the data preparation for the vector search. We handle these dependencies in a separate `agents_requirements.txt` file. 
+
+## Logging the Agent
+
+To appropriately log the agent as a model in MLflow, we write the agent pipeline in a separate `app.py` file. This file gets logged alongside the Agent artifacts. 
+
+## Tool Calling
+
+The following tools are governed through [Unity Catalog functions](https://docs.databricks.com/aws/en/generative-ai/agent-framework/create-custom-tool):
+* execute_python_code
+* ask_ai_function
+* summarization_function
+* translate_function
+
+The retriever is defined in ./tool/ai_tools.py as retrieve_function. 
+Due to using packages that aren't in the standard Databricks ML Runtime we are not able to register it as a UC Function.
+
+In the [UCFunctionToolkit](https://python.langchain.com/api_reference/community/tools/langchain_community.tools.databricks.tool.UCFunctionToolkit.html) tool list you can comment out any functions you do not want the Agent to consider in it's tool calling loop.

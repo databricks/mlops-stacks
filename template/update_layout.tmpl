@@ -2,6 +2,33 @@
 {{ $project_name_alphanumeric_underscore := (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString .input_project_name ``) `_` -}}
 {{ $root_dir := .input_root_dir}}
 
+{{ if (eq .input_project_type `mlops`) }}
+    # Skip agentops-specific directories and resources
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration/model_serving_test.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agent-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agents-artifacts-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/data-preparation-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_requirements.txt`) }}
+{{ else if (eq .input_project_type `agentops`) }}
+    # Skip mlops-specific components
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `validation`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `monitoring`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `deployment`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/model-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/batch-inference-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/monitoring-resource.yml`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/ml-artifacts-resource.yml`) }}
+{{ end }}
+
 {{ if (eq .input_setup_cicd_and_project `Project_Only`) }}
     {{ skip (printf `%s/%s` $root_dir `.azure`) }}
     {{ skip (printf `%s/%s` $root_dir `.github`) }}
