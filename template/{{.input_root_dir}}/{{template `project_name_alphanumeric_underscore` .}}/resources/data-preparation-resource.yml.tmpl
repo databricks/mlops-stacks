@@ -19,7 +19,7 @@ resources:
               raw_data_table: ${var.raw_data_table}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          #environment_key: data_prep_requirements
+          environment_key: vs_requirements
 
         - task_key: PreprocessRawData
           depends_on:
@@ -34,7 +34,7 @@ resources:
               preprocessed_data_table_name: ${var.preprocessed_data_table}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          #environment_key: data_prep_requirements
+          environment_key: vs_requirements
 
         - task_key: VectorSearchIndex
           depends_on:
@@ -49,14 +49,14 @@ resources:
               vector_search_endpoint: ${var.vector_search_endpoint}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          #environment_key: data_prep_requirements
+          environment_key: vs_requirements
 
       environments:
-        - environment_key: data_prep_requirements
+        - environment_key: vs_requirements
           spec:
             environment_version: "3"
             dependencies: 
-              - "-r /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/files/data_preparation/data_prep_requirements.txt"
+              - "-r /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}/files/requirements.txt"
 
       schedule:
         quartz_cron_expression: "0 0 5 * * ?" # daily at 5am

@@ -5,14 +5,9 @@
 {{ if (eq .input_project_type `mlops`) }}
     # Skip agentops-specific directories and resources
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `data_preparation`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_development`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_deployment`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/integration/model_serving_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agent-resource.yml`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/agents-artifacts-resource.yml`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/data-preparation-resource.yml`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `agent_requirements.txt`) }}
 {{ else if (eq .input_project_type `agentops`) }}
     # Skip mlops-specific components
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training`) }}

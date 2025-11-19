@@ -91,31 +91,10 @@ targets:
     description: "Vector Search index to populate."
     default: databricks_documentation_vs_index
   
-  # MLflow model registration
-  experiment:
-    description: "Experiment to log run under."
-    default: /Users/${workspace.current_user.userName}/${bundle.target}-agent_function_chatbot
-  registered_model:
-    description: "Name of agent model to register."
-    default: agent_function_chatbot
-  model_alias:
-    description: "Model alias to use for trained model"
-    default: agent_latest
-
-  # Deployment configuration
-  agent_serving_endpoint: 
-    description: "Name of the agent model servign endpoint (optional). If empty, agents.deploy() will auto-generate. Must NOT be pre-created in bundle"
-    default: "" 
-  app_name: 
-    description: "Name of the Databricks App"
-    default: "agent-chatbot"
-
 include:
   # Resources folder contains Agent artifact resources for the Agent project that defines the agent
-  # and workflows resources for data preparation -> agent creation -> deployment
+  # and workflows resources for data preparation
   - ./resources/data-preparation-resource.yml
-  - ./resources/agent-artifacts-resource.yml
-  - ./resources/agent-resource.yml
 
 # Deployment Target specific values for workspace
 targets:
