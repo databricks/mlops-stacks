@@ -8,6 +8,7 @@ from functools import wraps
 RESOURCE_TEMPLATE_ROOT_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
 
 AZURE_DEFAULT_PARAMS = {
+    "input_project_type": "mlops",
     "input_setup_cicd_and_project": "CICD_and_Project",
     "input_root_dir": "my-mlops-project",
     "input_project_name": "my-mlops-project",
@@ -95,6 +96,7 @@ def generated_project_dir(
     include_models_in_unity_catalog,
 ):
     params = {
+        "input_project_type": "mlops",
         "input_setup_cicd_and_project": setup_cicd_and_project,
         "input_root_dir": "my-mlops-project",
         "input_cloud": cloud,

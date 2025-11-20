@@ -14,12 +14,14 @@ from utils import (
 )
 from unittest import mock
 
+DEFAULT_PROJECT_TYPE = "mlops"
 DEFAULT_PROJECT_NAME = "my-mlops-project"
 DEFAULT_PROJECT_DIRECTORY = "my_mlops_project"
 # UUID that when set as project name, prevents the removal of files needed in testing
 TEST_PROJECT_NAME = "27896cf3-bb3e-476e-8129-96df0406d5c7"
 TEST_PROJECT_DIRECTORY = "27896cf3_bb3e_476e_8129_96df0406d5c7"
 DEFAULT_PARAM_VALUES = {
+    "input_project_type": DEFAULT_PROJECT_TYPE,
     "input_default_branch": "main",
     "input_release_branch": "release",
     "input_read_user_group": "users",
@@ -191,6 +193,7 @@ def test_generate_project_with_default_values(
         # Skip test for GCP with Unity Catalog
         return
     context = {
+        "input_project_type": DEFAULT_PROJECT_TYPE,
         "input_project_name": TEST_PROJECT_NAME,
         "input_root_dir": TEST_PROJECT_NAME,
         "input_cloud": cloud,
@@ -211,6 +214,7 @@ def test_generate_project_with_default_values(
         params = {**DEFAULT_PARAM_VALUES, **DEFAULT_PARAMS_GCP}
     for param, value in params.items():
         assert f"{param}={value}" in test_file_contents
+    assert f"input_project_type={DEFAULT_PROJECT_TYPE}" in test_file_contents
 
 
 def prepareContext(
@@ -222,6 +226,7 @@ def prepareContext(
     include_models_in_unity_catalog,
 ):
     context = {
+        "input_project_type": DEFAULT_PROJECT_TYPE,
         "input_setup_cicd_and_project": setup_cicd_and_project,
         "input_project_name": TEST_PROJECT_NAME,
         "input_root_dir": TEST_PROJECT_NAME,
@@ -383,6 +388,7 @@ def test_workspace_dir_strip_query_params(
     }[cloud]
     workspace_url = f"{workspace_host}{workspace_url_suffix}"
     context = {
+        "input_project_type": DEFAULT_PROJECT_TYPE,
         "input_project_name": TEST_PROJECT_NAME,
         "input_root_dir": TEST_PROJECT_NAME,
         "input_databricks_staging_workspace_host": workspace_url,

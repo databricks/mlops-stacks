@@ -1,4 +1,5 @@
 {
+  "input_project_type": "mlops",
   "input_root_dir": "example-gcp-github-project",
   "input_project_name": "example-gcp-github-project",
   "input_cloud": "gcp",
