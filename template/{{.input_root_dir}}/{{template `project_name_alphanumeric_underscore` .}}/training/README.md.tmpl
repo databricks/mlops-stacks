@@ -9,7 +9,7 @@
 
 ## Initial setup
 This folder contains example ML code to train a regression model to predict NYC taxi fares using
-[MLflow recipes](https://mlflow.org/docs/latest/recipes.html).
+[MLflow recipes](https://www.mlflow.org/docs/2.5.0/recipes.html).
 
 **Note**: MLflow Recipes currently supports regression and classification problems. Usage of MLflow Recipes is encouraged but not required: you can still use the provided
 CI/CD and ML resource configs to build production ML pipelines, as long as you provide ML notebooks  under `notebooks` 
@@ -32,8 +32,8 @@ locally or on Databricks.
 For details on the meaning of recipe configurations, see the comments in [this example recipe.yaml](https://github.com/mlflow/recipes-regression-template/blob/main/recipe.yaml).
 The purpose and behavior of the individual recipe steps (`ingest`, `train`, etc) being configured are also
 described in detail in
-the [Recipe overview](https://mlflow.org/docs/latest/recipes.html)
-and [API documentation](https://mlflow.org/docs/latest/python_api/mlflow.recipes.html).
+the [Recipe overview](https://www.mlflow.org/docs/2.5.0/recipes.html)
+and [API documentation](https://www.mlflow.org/docs/2.5.0/python_api/mlflow.recipes.html).
 
 After configuring your recipe, you can iterate on and test ML code under ``{{template `project_name_alphanumeric_underscore` .}}/training/steps``.
 We expect most development to take place in the abovementioned YAML config files and
@@ -89,7 +89,7 @@ You can also iterate on ML code locally.
 
 #### Trigger model training
 Run `mlp run --profile local` to trigger training locally. See the
-[MLflow recipes CLI docs](https://mlflow.org/docs/latest/recipes.html#key-concepts) for details.
+[MLflow recipes CLI docs](https://www.mlflow.org/docs/2.5.0/recipes.html#key-concepts) for details.
 
 #### Inspect results in the UI
 To facilitate saving and sharing results from local iteration with collaborators, we recommend configuring your
