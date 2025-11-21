@@ -125,8 +125,6 @@ def test_no_databricks_doc_strings_before_project_generation():
             "https://docs.databricks.com/",
             "https://docs.gcp.databricks.com/",
         ],
-        # Excludes file with data source URLs
-        exclude_path_matches=["DataIngestion.py.tmpl"],  
     )
 
 

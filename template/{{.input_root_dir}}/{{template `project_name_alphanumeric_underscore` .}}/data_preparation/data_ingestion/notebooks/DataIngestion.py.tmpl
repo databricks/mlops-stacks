@@ -15,7 +15,7 @@
 # * catalog_name (required)                   - Name of the Unity Catalog containing the input data
 # * schema (required)                         - Name of the schema inside the Unity Catalog
 # * raw_data_table (required)                 - Name of the raw data table inside the database of the Unity Catalog
-# * data_source_url (required)                - URL of the data source. Default is "https://docs.databricks.com/en/doc-sitemap.xml"
+# * data_source_url (required)                - URL of the data source
 #
 # Widgets:
 # * Unity Catalog: Text widget to input the name of the Unity Catalog
@@ -63,7 +63,7 @@ dbutils.widgets.text(
 # Data source url
 dbutils.widgets.text(
     "data_source_url",
-    "https://docs.databricks.com/en/doc-sitemap.xml",
+    "",
     label="Data Source URL",
 )
 

@@ -17,6 +17,7 @@ resources:
               catalog_name: ${var.catalog_name}
               schema: ${var.schema}
               raw_data_table: ${var.raw_data_table}
+              data_source_url: "{{ .input_doc_link }}"
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           environment_key: vs_requirements

@@ -31,8 +31,21 @@
         }
       }
     },
-    "input_root_dir": {
+    "input_doc_link": {
       "order": 4,
+      "type": "string",
+      "description": "URL of the documentation link",
+      "default": "https://docs.databricks.com/en/doc-sitemap.xml",
+      "skip_prompt_if": {
+        "properties": {
+          "input_project_type": {
+            "enum": ["mlops", "agentops"]
+          }
+        }
+      }
+    },
+    "input_root_dir": {
+      "order": 5,
       "type": "string",
       "default": "{{ .input_project_name }}",
       "description": "\nRoot directory name.\nFor monorepos, name of the root directory that contains all the projects.\nDefault",
@@ -45,14 +58,14 @@
       }
     },
     "input_cloud": {
-      "order": 5,
+      "order": 6,
       "type": "string",
       "description": "\nSelect cloud",
       "default": "azure",
       "enum": ["azure", "aws", "gcp"]
     },
     "input_cicd_platform": {
-      "order": 6,
+      "order": 7,
       "type": "string",
       "description": "\nSelect CICD platform",
       "default": "github_actions",
@@ -66,7 +79,7 @@
       }
     },
     "input_databricks_staging_workspace_host": {
-      "order": 7,
+      "order": 8,
       "type": "string",
       "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-staging-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-staging-workspace.gcp.databricks.com{{end}}",
       "description": "\nURL of staging Databricks workspace,\nIt will run PR CI and preview changes before they're deployed to production.\nDefault",
@@ -81,7 +94,7 @@
       }
     },
     "input_databricks_prod_workspace_host": {
-      "order": 8,
+      "order": 9,
       "type": "string",
       "default": "{{if eq .input_cloud `azure`}}https://adb-xxxx.xx.azuredatabricks.net{{else if eq .input_cloud `aws`}}https://your-prod-workspace.cloud.databricks.com{{else if eq .input_cloud `gcp`}}https://your-prod-workspace.gcp.databricks.com{{end}}",
       "description": "\nURL of production Databricks workspace.\nDefault",
@@ -96,7 +109,7 @@
       }
     },
     "input_default_branch": {
-      "order": 9,
+      "order": 10,
       "type": "string",
       "default": "main",
       "description": "\nName of the default branch,\nStaging resources are deployed from this branch and stages the latest ML code.\nDefault",
@@ -109,7 +122,7 @@
       }
     },
     "input_release_branch": {
-      "order": 10,
+      "order": 11,
       "type": "string",
       "default": "release",
       "description": "\nName of the release branch.\nThe training and other production jobs pull ML code from this branch.\nDefault",
@@ -122,7 +135,7 @@
       }
     },
     "input_read_user_group": {
-      "order": 11,
+      "order": 12,
       "type": "string",
       "default": "users",
       "description": "\nUser group name to give READ permissions to for project resources\n(ML jobs, integration test job runs, and machine learning resources).\nA group with this name must exist in both the staging and prod workspaces.\nDefault",
@@ -135,7 +148,7 @@
       }
     },
     "input_include_models_in_unity_catalog": {
-      "order": 12,
+      "order": 13,
       "type": "string",
       "description": "\nWhether to use the Model Registry with Unity Catalog",
       "default": "no",
@@ -149,7 +162,7 @@
       }
     },
     "input_staging_catalog_name": {
-      "order": 13,
+      "order": 14,
       "type": "string",
       "description": "\nName of the catalog in Unity Catalog that will host the staging UC resources. \nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "staging",
@@ -173,7 +186,7 @@
       }
     },
     "input_prod_catalog_name": {
-      "order": 14,
+      "order": 15,
       "type": "string",
       "description": "\nName of the catalog in Unity Catalog that will host the production UC resources.\nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "prod",
@@ -197,7 +210,7 @@
       }
     },
     "input_test_catalog_name": {
-      "order": 15,
+      "order": 16,
       "type": "string",
       "description": "\nName of the catalog in Unity Catalog that will be used for integration tests.\nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "test",
@@ -221,7 +234,7 @@
       }
     },
     "input_schema_name": {
-      "order": 16,
+      "order": 17,
       "type": "string",
       "description": "\nName of schema to use when registering a model in Unity Catalog.\nThis schema must already exist and service principals must have access.\nWe recommend using the project name.\nDefault",
       "default": "{{if (eq .input_include_models_in_unity_catalog `no`)}}schema{{else}}{{ .input_project_name }}{{end}}",
@@ -247,7 +260,7 @@
       }
     },
     "input_unity_catalog_read_user_group": {
-      "order": 17,
+          "order": 18,
       "type": "string",
       "default": "account users",
       "description": "\nUser group name to give EXECUTE privileges to models in Unity Catalog (UC).\nIt must exist in UC with access granted to the staging and prod workspaces.\nDefault",
@@ -271,7 +284,7 @@
       }
     },
     "input_inference_table_name": {
-      "order": 18,
+      "order": 19,
       "type": "string",
       "description": "\nFully qualified name of inference table to attach monitoring to.\nThis table must already exist and service principals must have access.",
       "default": "dev.{{ .input_project_name }}.predictions",
@@ -297,7 +310,7 @@
       }
     },
     "input_include_feature_store": {
-      "order": 19,
+      "order": 20,
       "type": "string",
       "description": "\nWhether to include Feature Store",
       "default": "no",
@@ -322,7 +335,7 @@
       }
     },
     "input_include_mlflow_recipes": {
-      "order": 20,
+      "order": 21,
       "type": "string",
       "description": "\nWhether to include MLflow Recipes",
       "default": "no",
@@ -361,7 +374,7 @@
       }
     },      
     "input_docker_image": {
-      "order": 21,
+      "order": 22,
       "type": "string",
       "description": "\nDocker image for the execution of Gitlab pipelines",
       "default": "databricksfieldeng/mlopsstacks:latest",
