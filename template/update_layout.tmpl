@@ -80,9 +80,6 @@
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
 {{ end }}
 
-# Remove utils (workspace model registry is no longer supported)
-{{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `utils.py`) }}
-
 # Remove template files
 {{ skip (printf `%s/%s` $root_dir `cicd`) }}
 {{ skip `update_layout` }}
