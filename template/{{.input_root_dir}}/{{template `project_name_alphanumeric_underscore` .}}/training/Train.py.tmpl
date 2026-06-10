@@ -84,10 +84,6 @@ import mlflow
 
 mlflow.set_experiment(experiment_name)
 
-{{- if (eq .input_include_models_in_unity_catalog "yes") }}
-mlflow.set_registry_uri('databricks-uc')
-
-{{end -}}
 
 # COMMAND ----------
 
@@ -98,7 +94,7 @@ training_df.display()
 # COMMAND ----------
 
 # DBTITLE 1, Helper function
-from mlflow.tracking import MlflowClient
+from mlflow import MlflowClient
 import mlflow.pyfunc
 
 

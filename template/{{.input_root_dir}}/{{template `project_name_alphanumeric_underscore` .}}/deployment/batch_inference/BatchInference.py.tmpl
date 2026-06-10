@@ -74,7 +74,7 @@ model_version = max(
     if version.current_stage == stage
 ){{else}}
 # Get model version from alias
-client = MlflowClient(registry_uri="databricks-uc")
+client = MlflowClient()
 model_version = client.get_model_version_by_alias(model_name, alias).version{{end}}
 
 # COMMAND ----------
