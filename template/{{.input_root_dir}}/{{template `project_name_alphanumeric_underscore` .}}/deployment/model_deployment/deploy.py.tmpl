@@ -1,8 +1,4 @@
 import sys
-import pathlib
-
-sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
-{{if (eq .input_include_models_in_unity_catalog "no")}}from utils import get_deployed_model_stage_for_env{{end}}
 from mlflow.tracking import MlflowClient
 
 {{ if (eq .input_include_models_in_unity_catalog "no") }}
@@ -19,7 +15,7 @@ def deploy(model_uri, env):
     _, model_name, version = model_uri.split("/")
     client = MlflowClient()
     mv = client.get_model_version(model_name, version)
-    target_stage = get_deployed_model_stage_for_env(env)
+    target_stage = {"dev": "Staging", "staging": "Staging", "prod": "Production", "test": "Production"}[env]
     if mv.current_stage != target_stage:
         client.transition_model_version_stage(
             name=model_name,
