@@ -38,19 +38,6 @@
 
 # COMMAND ----------
 
-# MAGIC %load_ext autoreload
-# MAGIC %autoreload 2
-
-# COMMAND ----------
-
-# MAGIC %pip install -r ../requirements.txt
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
 {{ if (eq .input_include_mlflow_recipes `yes`) }}dbutils.widgets.dropdown(
     "env", "prod", ["staging", "prod"], "Environment(for input data)"
 ){{ end -}}

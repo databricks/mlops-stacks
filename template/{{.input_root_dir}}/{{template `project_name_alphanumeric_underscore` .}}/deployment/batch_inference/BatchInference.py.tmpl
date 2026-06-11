@@ -39,14 +39,6 @@ dbutils.widgets.text(
 
 # COMMAND ----------
 
-# MAGIC %pip install -r ../../requirements.txt
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
 # DBTITLE 1,Define input and output variables
 
 env = dbutils.widgets.get("env")

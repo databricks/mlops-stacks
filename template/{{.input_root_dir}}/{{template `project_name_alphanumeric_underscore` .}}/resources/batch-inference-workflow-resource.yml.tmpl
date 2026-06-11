@@ -1,12 +1,3 @@
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    data_security_mode: "SINGLE_USER"
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 common_permissions: &permissions
   permissions:
     - level: CAN_VIEW
@@ -18,7 +9,7 @@ resources:
       name: ${bundle.target}-{{ .input_project_name }}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
-          <<: *new_cluster
+          environment_key: default
           notebook_task:
             notebook_path: ../deployment/batch_inference/BatchInference.py
             base_parameters:
@@ -33,6 +24,12 @@ resources:
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
+      environments:
+        - environment_key: default
+          spec:
+            client: "4"
+            dependencies:
+              - -r ../requirements.txt
       schedule:
         quartz_cron_expression: "0 0 11 * * ?" # daily at 11am
         timezone_id: UTC

@@ -34,7 +34,7 @@ def predict_batch(
     )
     {{ else }} 
     predict = mlflow.pyfunc.spark_udf(
-        spark_session, model_uri, result_type="double", env_manager="virtualenv"
+        spark_session, model_uri, result_type="double"
     )    
     
     output_df = (
