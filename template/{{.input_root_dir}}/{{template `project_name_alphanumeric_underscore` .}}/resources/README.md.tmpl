@@ -90,7 +90,7 @@ Alternatively, you can use the other approaches described in the [databricks CLI
 ### Validate and provision ML resource configurations
 1. After installing the databricks CLI and creating the `DATABRICKS_TOKEN` env variable, change to the `{{template `project_name_alphanumeric_underscore` .}}` directory.
 2. Run `databricks bundle validate` to validate the Databricks resource configurations. 
-3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Databricks Workflows, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{template `project_name_alphanumeric_underscore` .}}/resources`.
+3. Run `databricks bundle deploy` to provision the Databricks resource configurations to the dev workspace. The resource configurations and your ML code will be copied together to the dev workspace. The defined resources such as Lakeflow Jobs, MLflow Model and MLflow Experiment will be provisioned according to the config files under `{{template `project_name_alphanumeric_underscore` .}}/resources`.
 4. Go to the Databricks dev workspace, check the defined model, experiment and workflows status, and interact with the created workflows.
 
 ### Destroy ML resource configurations

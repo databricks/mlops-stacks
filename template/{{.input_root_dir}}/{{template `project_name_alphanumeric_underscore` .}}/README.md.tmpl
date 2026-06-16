@@ -169,15 +169,15 @@ to use databricks CLI bundles to deploy ML code together with ML resource config
 
 This will allow you to develop locally and use databricks CLI bundles to deploy to your dev workspace to test out code and config changes.
 
-### Develop on Databricks using Databricks Repos
+### Develop on Databricks using Databricks Git folders
 
 #### Prerequisites
 You'll need:
 * Access to run commands on a cluster running Databricks Runtime ML version 11.0 or above in your dev Databricks workspace
-* To set up [Databricks Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}): see instructions below
+* To set up [Databricks Git folders]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}): see instructions below
 
-#### Configuring Databricks Repos
-To use Repos, [set up git integration]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/repos-setup.html")) }}) in your dev workspace.
+#### Configuring Databricks Git folders
+To use Git folders, [set up git integration]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/repos-setup.html")) }}) in your dev workspace.
 
 If the current project has already been pushed to a hosted Git repo, follow the
 [UI workflow]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/git-operations-with-repos#add-a-repo-and-connect-remotely-later")) }})
@@ -201,7 +201,7 @@ You can iterate on the feature transform modules locally in your favorite IDE be
 
 #### Running code on Databricks
 You can iterate on ML code by running the provided `feature_engineering/notebooks/GenerateAndWriteFeatures.py` notebook on Databricks using
-[Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
+[Git folders]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
 the feature transforms code defined under ``features``. You can use multiple browser tabs to edit
 logic in `features` and run the feature engineering pipeline in the `GenerateAndWriteFeatures.py` notebook.
 
