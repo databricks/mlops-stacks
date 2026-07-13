@@ -285,38 +285,6 @@
         }
       }
     },
-    "input_include_mlflow_recipes": {
-      "order": 19,
-      "type": "string",
-      "description": "\nWhether to include MLflow Recipes",
-      "default": "no",
-      "enum": ["no", "yes"],
-      "skip_prompt_if": {
-        "anyOf":[
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "yes"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_include_feature_store": {
-                "const": "yes"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_Only"
-              }
-            }
-          }
-        ]
-      }
-    },      
     "input_docker_image": {
       "order": 20,
       "type": "string",

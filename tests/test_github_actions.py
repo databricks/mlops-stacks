@@ -12,14 +12,14 @@ from utils import (
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize(
-    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    "setup_cicd_and_project,include_feature_store,include_models_in_unity_catalog",
     [
-        ("CICD_and_Project", "no", "no", "no"),
-        ("CICD_and_Project", "no", "no", "yes"),
-        ("CICD_and_Project", "no", "yes", "no"),
-        ("CICD_and_Project", "yes", "no", "no"),
-        ("CICD_and_Project", "yes", "no", "yes"),
-        ("CICD_Only", "no", "no", "no"),
+        ("CICD_and_Project", "no", "no"),
+        ("CICD_and_Project", "no", "yes"),
+        ("CICD_and_Project", "no", "no"),
+        ("CICD_and_Project", "yes", "no"),
+        ("CICD_and_Project", "yes", "yes"),
+        ("CICD_Only", "no", "no"),
     ],
 )
 @parametrize_by_cloud
@@ -49,12 +49,12 @@ def test_generated_yaml_format(
     "cicd_platform", ["github_actions", "github_actions_for_github_enterprise_servers"]
 )
 @pytest.mark.parametrize(
-    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    "setup_cicd_and_project,include_feature_store,include_models_in_unity_catalog",
     [
-        ("CICD_and_Project", "no", "no", "no"),
-        ("CICD_and_Project", "no", "no", "yes"),
-        ("CICD_and_Project", "yes", "no", "no"),
-        ("CICD_and_Project", "yes", "no", "yes"),
+        ("CICD_and_Project", "no", "no"),
+        ("CICD_and_Project", "no", "yes"),
+        ("CICD_and_Project", "yes", "no"),
+        ("CICD_and_Project", "yes", "yes"),
     ],
 )
 @parametrize_by_cloud
