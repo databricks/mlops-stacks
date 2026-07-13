@@ -127,35 +127,17 @@
         }
       }
     },
-    "input_include_models_in_unity_catalog": {
-      "order": 11,
-      "type": "string",
-      "description": "\nWhether to use the Model Registry with Unity Catalog",
-      "default": "no",
-      "enum": ["yes", "no"]
-    },
     "input_staging_catalog_name": {
       "order": 12,
       "type": "string",
       "description": "\nName of the catalog in Unity Catalog that will host the staging UC resources. \nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "staging",
       "skip_prompt_if": {
-        "anyOf": [
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "Project_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
           }
-        ]
+        }
       }
     },
     "input_prod_catalog_name": {
@@ -164,22 +146,11 @@
       "description": "\nName of the catalog in Unity Catalog that will host the production UC resources.\nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "prod",
       "skip_prompt_if": {
-        "anyOf": [
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "Project_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
           }
-        ]
+        }
       }
     },
     "input_test_catalog_name": {
@@ -188,48 +159,26 @@
       "description": "\nName of the catalog in Unity Catalog that will be used for integration tests.\nThis catalog must already exist and service principals must have access to it.\nDefault",
       "default": "test",
       "skip_prompt_if": {
-        "anyOf": [
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "Project_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "Project_Only"
           }
-        ]
+        }
       }
     },
     "input_schema_name": {
       "order": 15,
       "type": "string",
       "description": "\nName of schema to use when registering a model in Unity Catalog.\nThis schema must already exist and service principals must have access.\nWe recommend using the project name.\nDefault",
-      "default": "{{if (eq .input_include_models_in_unity_catalog `no`)}}schema{{else}}{{ .input_project_name }}{{end}}",
+      "default": "{{ .input_project_name }}",
       "pattern": "^[^ .\\-\\/]*$",
       "pattern_match_failure_message": "Valid schema names cannot contain any of the following characters: \" \", \".\", \"-\", \"\\\", \"/\"",
       "skip_prompt_if": {
-        "anyOf":[
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
           }
-        ]
+        }
       }
     },
     "input_unity_catalog_read_user_group": {
@@ -238,22 +187,11 @@
       "default": "account users",
       "description": "\nUser group name to give EXECUTE privileges to models in Unity Catalog (UC).\nIt must exist in UC with access granted to the staging and prod workspaces.\nDefault",
       "skip_prompt_if": {
-        "anyOf":[
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "no"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_Only"
-              }
-            }
+        "properties": {
+          "input_setup_cicd_and_project": {
+            "const": "CICD_Only"
           }
-        ]
+        }
       }
     },
     "input_inference_table_name": {
@@ -285,38 +223,6 @@
         }
       }
     },
-    "input_include_mlflow_recipes": {
-      "order": 19,
-      "type": "string",
-      "description": "\nWhether to include MLflow Recipes",
-      "default": "no",
-      "enum": ["no", "yes"],
-      "skip_prompt_if": {
-        "anyOf":[
-          {
-            "properties": {
-              "input_include_models_in_unity_catalog": {
-                "const": "yes"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_include_feature_store": {
-                "const": "yes"
-              }
-            }
-          },
-          {
-            "properties": {
-              "input_setup_cicd_and_project": {
-                "const": "CICD_Only"
-              }
-            }
-          }
-        ]
-      }
-    },      
     "input_docker_image": {
       "order": 20,
       "type": "string",
