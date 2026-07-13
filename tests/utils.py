@@ -19,8 +19,6 @@ AZURE_DEFAULT_PARAMS = {
     "input_release_branch": "release",
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
-    "input_include_mlflow_recipes": "no",
-    "input_include_models_in_unity_catalog": "no",
     "input_schema_name": "schema_name",
     "input_unity_catalog_read_user_group": "account users",
     "input_inference_table_name": "dummy.schema.table",
@@ -61,19 +59,13 @@ def parametrize_by_project_generation_params(fn):
         ],
     )
     @pytest.mark.parametrize(
-        "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+        "setup_cicd_and_project,include_feature_store",
         [
-            ("CICD_and_Project", "no", "no", "no"),
-            ("CICD_and_Project", "no", "no", "yes"),
-            ("CICD_and_Project", "no", "yes", "no"),
-            ("CICD_and_Project", "yes", "no", "no"),
-            ("CICD_and_Project", "yes", "no", "yes"),
-            ("Project_Only", "no", "no", "no"),
-            ("Project_Only", "no", "no", "yes"),
-            ("Project_Only", "no", "yes", "no"),
-            ("Project_Only", "yes", "no", "no"),
-            ("Project_Only", "yes", "no", "yes"),
-            ("CICD_Only", "no", "no", "no"),
+            ("CICD_and_Project", "no"),
+            ("CICD_and_Project", "yes"),
+            ("Project_Only", "no"),
+            ("Project_Only", "yes"),
+            ("CICD_Only", "no"),
         ],
     )
     @wraps(fn)
@@ -91,8 +83,6 @@ def generated_project_dir(
     cicd_platform,
     setup_cicd_and_project,
     include_feature_store,
-    include_mlflow_recipes,
-    include_models_in_unity_catalog,
 ):
     params = {
         "input_setup_cicd_and_project": setup_cicd_and_project,
@@ -114,9 +104,7 @@ def generated_project_dir(
             {
                 "input_project_name": "my-mlops-project",
                 "input_include_feature_store": include_feature_store,
-                "input_include_mlflow_recipes": include_mlflow_recipes,
                 "input_read_user_group": "users",
-                "input_include_models_in_unity_catalog": include_models_in_unity_catalog,
                 "input_schema_name": "schema_name",
                 "input_unity_catalog_read_user_group": "account users",
                 "input_inference_table_name": "dummy.schema.table",
@@ -157,8 +145,6 @@ def generate(directory, databricks_cli, context):
     if context.get("input_cloud") == "aws":
         default_params = AWS_DEFAULT_PARAMS
     elif context.get("input_cloud") == "gcp":
-        if context.get("input_include_models_in_unity_catalog") == "yes":
-            return
         default_params = GCP_DEFAULT_PARAMS
     else:
         default_params = AZURE_DEFAULT_PARAMS

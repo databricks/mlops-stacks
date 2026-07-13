@@ -45,8 +45,7 @@ dbutils.widgets.text(
 # Feature table to store the computed features.
 dbutils.widgets.text(
     "output_table_name",
-    {{ if (eq .input_include_models_in_unity_catalog `no`) }}"feature_store_taxi_example.trip_pickup_features",
-    {{- else -}}"dev.{{ .input_schema_name }}.trip_pickup_features",{{ end }}
+    "dev.{{ .input_schema_name }}.trip_pickup_features",
     label="Output Feature Table Name",
 )
 

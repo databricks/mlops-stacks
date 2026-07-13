@@ -37,7 +37,7 @@ contained in the following files:
 │   │
 │   ├── databricks.yml          <- databricks.yml is the root bundle file for the ML project that can be loaded by databricks CLI bundles. It defines the bundle name, workspace URL and resource config component to be included.
 │   │
-{{- if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}
+{{- if (eq .input_include_feature_store `no`) }}
 │   ├── training                <- Training folder contains Notebook that trains and registers the model.
 │   │
 │   ├── validation              <- Optional model validation step before deploying a model.
@@ -89,44 +89,6 @@ contained in the following files:
 │       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
 │       ├── feature-engineering-workflow-resource.yml  <- ML resource config definition for feature engineering workflow
-│       │
-│       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
-│       │
-│       ├── monitoring-resource.yml           <- ML resource config definition for quality monitoring workflow
-{{- else }}
-│   ├── training                <- Folder for model development via MLflow recipes.
-│   │   │
-│   │   ├── steps               <- MLflow recipe steps (Python modules) implementing ML pipeline logic, e.g. model training and evaluation. Most
-│   │   │                          development work happens here. See https://mlflow.org/docs/latest/recipes.html for details
-│   │   │
-│   │   ├── notebooks           <- Databricks notebook that runs the MLflow recipe, i.e. run the logic in `steps`. Used to
-│   │   │                          drive code execution on Databricks for CI/CD. In most cases, you do not need to modify
-│   │   │                          the notebook.
-│   │   │
-│   │   ├── recipe.yaml         <- The main recipe configuration file that declaratively defines the attributes and behavior
-│   │   │                          of each recipe step, such as the input dataset to use for training a model or the
-│   │   │                          performance criteria for promoting a model to production.
-│   │   │
-│   │   ├── profiles            <- Environment-specific (e.g. dev vs test vs prod) configurations for MLflow recipes execution.
-│   │
-│   │
-│   ├── validation              <- Optional model validation step before deploying a model.
-│   │
-│   ├── monitoring              <- Model monitoring, feature monitoring, etc.
-│   │
-│   ├── deployment              <- Model deployment and endpoint deployment.
-│   │   │
-│   │   ├── batch_inference     <- Batch inference code that will run as part of scheduled workflow.
-│   │   │
-│   │   ├── model_deployment    <- As part of CD workflow, promote model to Production stage in model registry.
-│   │
-│   ├── tests                   <- Unit tests for the ML project, including modules under `steps`.
-│   │
-│   ├── resources               <- ML resource (ML jobs, MLflow models) config definitions expressed as code, across dev/staging/prod/test.
-│       │
-│       ├── model-workflow-resource.yml                <- ML resource config definition for model training, validation, deployment workflow
-│       │
-│       ├── batch-inference-workflow-resource.yml      <- ML resource config definition for batch inference workflow
 │       │
 │       ├── ml-artifacts-resource.yml                  <- ML resource config definition for model and experiment
 │       │
@@ -209,16 +171,16 @@ logic in `features` and run the feature engineering pipeline in the `GenerateAnd
 * Python 3.8+
 * Install feature engineering code and test dependencies via `pip install -I -r requirements.txt` from project root directory.
 * The features transform code uses PySpark and brings up a local Spark instance for testing, so [Java (version 8 and later) is required](https://spark.apache.org/docs/latest/#downloading). 
-{{- if (eq .input_include_models_in_unity_catalog `yes`) }}
+
 * Access to UC catalog and schema
-We expect a catalog to exist with the name of the deployment target by default. 
-For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace. 
+We expect a catalog to exist with the name of the deployment target by default.
+For example, if the deployment target is dev, we expect a catalog named dev to exist in the workspace.
 If you want to use different catalog names, please update the target names declared in the [databricks.yml](./databricks.yml) file.
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
 If changing the staging, prod, or test deployment targets, you'll also need to update the workflows located in the .github/workflows directory.
 {{- end }}
 
-For the ML training job, you must have permissions to read the input Delta table and create experiment and models. 
+For the ML training job, you must have permissions to read the input Delta table and create experiment and models.
 i.e. for each environment:
 - USE_CATALOG
 - USE_SCHEMA
@@ -226,12 +188,11 @@ i.e. for each environment:
 - CREATE_MODEL
 - CREATE_TABLE
 
-For the batch inference job, you must have permissions to read input Delta table and modify the output Delta table. 
+For the batch inference job, you must have permissions to read input Delta table and modify the output Delta table.
 i.e. for each environment
 - USAGE permissions for the catalog and schema of the input and output table.
 - SELECT permission for the input table.
 - MODIFY permission for the output table if it pre-dates your job.
-{{- end }}
 
 #### Run unit tests
 You can run unit tests for your ML code via `pytest tests`.
