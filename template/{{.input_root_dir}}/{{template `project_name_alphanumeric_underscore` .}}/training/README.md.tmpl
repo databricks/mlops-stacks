@@ -72,7 +72,7 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
   `dbx sync repo --profile {{ .input_project_name }}-dev --source . --dest-repo your-repo-name`, where `your-repo-name` should be the last segment of the full repo name (`/Repos/username/your-repo-name`)
 
 #### Running code on Databricks
-You can iterate on ML code by running the provided `{{template `project_name_alphanumeric_underscore` .}}/training/notebooks/TrainWithMLflowRecipes.py` notebook on Databricks using
+You can iterate on ML code by running the provided `{{template `project_name_alphanumeric_underscore` .}}/training/TrainWithMLflowRecipes.py` notebook on Databricks using
 [Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
 the ML code defined under ``{{template `project_name_alphanumeric_underscore` .}}/training/steps``. You can use multiple browser tabs to edit
 logic in `steps` and run the training recipe in the `TrainWithMLflowRecipes.py` notebook.

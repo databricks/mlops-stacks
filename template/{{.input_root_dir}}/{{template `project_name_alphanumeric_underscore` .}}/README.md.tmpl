@@ -146,7 +146,7 @@ In each module, there is `compute_features_fn` method that you need to implement
 The output dataframe will be persisted in a [time-series Feature Store table]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/time-series.html")) }}).
 See the example modules' documentation for more information.
 * Python unit tests for feature computation modules in `tests/feature_engineering` folder.
-* Feature engineering notebook, `feature_engineering/notebooks/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
+* Feature engineering notebook, `feature_engineering/GenerateAndWriteFeatures.py`, that reads input dataframes, dynamically loads feature computation modules, executes their `compute_features_fn` method and writes the outputs to a Feature Store table (creating it if missing).
 * Training notebook that [trains]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "machine-learning/feature-store/train-models-with-feature-store.html")) }} ) a regression model by creating a training dataset using the Feature Store client.
 * Model deployment and batch inference notebooks that deploy and use the trained model. 
 * An automated integration test is provided (in `.github/workflows/{{ .input_project_name }}-run-tests.yml`) that executes a multi task run on Databricks involving the feature engineering and model training notebooks.
@@ -200,7 +200,7 @@ Otherwise, e.g. if iterating on ML code for a new project, follow the steps belo
 You can iterate on the feature transform modules locally in your favorite IDE before running them on Databricks.  
 
 #### Running code on Databricks
-You can iterate on ML code by running the provided `feature_engineering/notebooks/GenerateAndWriteFeatures.py` notebook on Databricks using
+You can iterate on ML code by running the provided `feature_engineering/GenerateAndWriteFeatures.py` notebook on Databricks using
 [Repos]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "repos/index.html")) }}). This notebook drives execution of
 the feature transforms code defined under ``features``. You can use multiple browser tabs to edit
 logic in `features` and run the feature engineering pipeline in the `GenerateAndWriteFeatures.py` notebook.

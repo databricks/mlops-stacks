@@ -41,7 +41,7 @@ resources:
         - task_key: monitored_metric_violation_check
           <<: *new_cluster
           notebook_task:
-            notebook_path: ../monitoring/notebooks/MonitoredMetricViolationCheck.py
+            notebook_path: ../monitoring/MonitoredMetricViolationCheck.py
             base_parameters:
               env: ${bundle.target}
               table_name_under_monitor: {{ .input_inference_table_name }}
