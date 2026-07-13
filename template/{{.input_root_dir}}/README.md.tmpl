@@ -94,6 +94,7 @@ contained in the following files:
 │       │
 │       ├── monitoring-resource.yml           <- ML resource config definition for quality monitoring workflow
 {{- end }}
+{{- end }}
 │
 {{- if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }}
 ├── .github                     <- Configuration folder for CI/CD using GitHub Actions. {{ if (eq .input_setup_cicd_and_project `CICD_and_Project`)}} The CI/CD workflows deploy ML resources defined in the `./resources/*` folder with databricks CLI bundles.{{ end }}
