@@ -10,14 +10,14 @@ from utils import (
 
 @pytest.mark.parametrize("cicd_platform", ["gitlab"])
 @pytest.mark.parametrize(
-    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes",
+    "setup_cicd_and_project,include_feature_store",
     [
-        ("CICD_and_Project", "no", "no"),
-        ("CICD_and_Project", "no", "no"),
-        ("CICD_and_Project", "no", "yes"),
-        ("CICD_and_Project", "yes", "no"),
-        ("CICD_and_Project", "yes", "no"),
-        ("CICD_Only", "no", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "yes"),
+        ("CICD_and_Project", "yes"),
+        ("CICD_Only", "no"),
     ],
 )
 @parametrize_by_cloud

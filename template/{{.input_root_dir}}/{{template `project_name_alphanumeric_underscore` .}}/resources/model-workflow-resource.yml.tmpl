@@ -22,7 +22,7 @@ resources:
       tasks:
         - task_key: Train
           job_cluster_key: model_training_job_cluster
-          {{ if and (eq .input_include_feature_store `no`) (eq .input_include_mlflow_recipes `no`) }}notebook_task:
+          {{ if (eq .input_include_feature_store `no`) }}notebook_task:
             notebook_path: ../training/Train.py
             base_parameters:
               env: ${bundle.target}
@@ -44,12 +44,7 @@ resources:
               dropoff_features_table: ${var.catalog_name}.{{ .input_schema_name }}.trip_dropoff_features
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
-          {{- else -}}notebook_task:
-            notebook_path: ../training/TrainWithMLflowRecipes.py
-            base_parameters:
-              env: ${bundle.target}
-              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
-              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}{{ end }}
+          {{ end }}
         - task_key: ModelValidation
           job_cluster_key: model_training_job_cluster
           depends_on:
@@ -57,8 +52,6 @@ resources:
           notebook_task:
             notebook_path: ../validation/ModelValidation.py
             base_parameters:
-              {{- if (eq .input_include_mlflow_recipes `yes`) }}
-              env: ${bundle.target}{{ end }}
               experiment_name: ${var.experiment_name}
               # The `run_mode` defines whether model validation is enabled or not.
               # It can be one of the three values:
@@ -76,7 +69,6 @@ resources:
               # Please refer to data parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update validation_input
               validation_input: SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`
-              {{- if (eq .input_include_mlflow_recipes `no`) }}
               # A string describing the model type. The model type can be either "regressor" and "classifier".
               # Please refer to model_type parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: update model_type
@@ -84,7 +76,7 @@ resources:
               # The string name of a column from data that contains evaluation labels.
               # Please refer to targets parameter in mlflow.evaluate documentation https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.evaluate
               # TODO: targets
-              targets: fare_amount{{ end }}
+              targets: fare_amount
               # Specifies the name of the function in {{ .input_project_name }}/training_validation_deployment/validation/validation.py that returns custom metrics.
               # TODO(optional): custom_metrics_loader_function
               custom_metrics_loader_function: custom_metrics

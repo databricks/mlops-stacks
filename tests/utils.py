@@ -19,7 +19,6 @@ AZURE_DEFAULT_PARAMS = {
     "input_release_branch": "release",
     "input_read_user_group": "users",
     "input_include_feature_store": "no",
-    "input_include_mlflow_recipes": "no",
     "input_schema_name": "schema_name",
     "input_unity_catalog_read_user_group": "account users",
     "input_inference_table_name": "dummy.schema.table",

@@ -6,8 +6,6 @@
 * [Create a hosted Git repo](#create-a-hosted-git-repo)
 * [Configure CI/CD]({{ if (eq .input_cicd_platform `github_actions`) }}#configure-cicd---github-actions{{ else if (eq .input_cicd_platform `azure_devops`) }}#configure-cicd---azure-devops{{ else if (eq .input_cicd_platform `gitlab`) }}#configure-cicd---gitlab{{ end }})
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
-{{- if (eq .input_include_mlflow_recipes `yes`) }}
-* [Configure profiles for tests, staging, and prod](#configure-profiles-for-tests-staging-and-prod){{ end }}
 * [Merge PR with initial ML code](#merge-a-pr-with-your-initial-ml-code)
 {{- end }}
 {{ if not (eq .input_release_branch .input_default_branch) -}}
@@ -355,17 +353,6 @@ add the value `.gitlab/pipelines/{{.input_project_name}}-triggers-cicd.yml` whic
 {{ end }}
 
 {{- if (eq .input_setup_cicd_and_project `CICD_and_Project`)}}
-{{- if (eq .input_include_mlflow_recipes `yes`) }}
-## Configure profiles for tests, staging, and prod
-Address the TODOs in the following files:
-* [databricks-dev.yaml](../{{template `project_name_alphanumeric_underscore` .}}/training/profiles/databricks-dev.yaml): specify recipe configs to use in dev workspace
-* [databricks-staging.yaml](../{{template `project_name_alphanumeric_underscore` .}}/training/profiles/databricks-staging.yaml): specify recipe configs to use in recurring model training and batch inference
-  jobs that run in the staging workspace
-* [databricks-prod.yaml](../{{template `project_name_alphanumeric_underscore` .}}/training/profiles/databricks-prod.yaml) specify recipe configs to use in recurring model training and batch inference
-  jobs that run in the prod workspace
-* [databricks-test.yaml](../{{template `project_name_alphanumeric_underscore` .}}/training/profiles/databricks-test.yaml): specify recipe configs to use in integration tests(CI)
-{{- end }}
-
 ## Merge a PR with your initial ML code
 Create and push a PR branch adding the ML code to the repository.
 
