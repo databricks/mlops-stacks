@@ -47,8 +47,7 @@ df = spark.table(
 ).drop("fare_amount")
 
 df.write.mode("overwrite").saveAsTable(
-    {{ if (eq .input_include_models_in_unity_catalog `no`) }}name="hive_metastore.default.taxi_scoring_sample"
-    {{- else -}}name="<catalog>.{{ .input_schema_name }}.feature_store_inference_input"{{ end }}
+    name="<catalog>.{{ .input_schema_name }}.feature_store_inference_input"
 )
 ```
 {{ end }}
