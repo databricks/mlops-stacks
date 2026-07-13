@@ -71,8 +71,6 @@ import mlflow
 
 mlflow.set_experiment(experiment_name)
 
-mlflow.set_registry_uri('databricks-uc')
-
 # COMMAND ----------
 
 # DBTITLE 1, Load raw data
@@ -82,7 +80,7 @@ training_df.display()
 # COMMAND ----------
 
 # DBTITLE 1, Helper function
-from mlflow.tracking import MlflowClient
+from mlflow import MlflowClient
 import mlflow.pyfunc
 
 

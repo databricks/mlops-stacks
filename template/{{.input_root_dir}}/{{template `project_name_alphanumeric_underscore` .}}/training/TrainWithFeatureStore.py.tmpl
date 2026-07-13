@@ -229,7 +229,7 @@ training_df.display()
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
-from mlflow.tracking import MlflowClient
+from mlflow import MlflowClient
 
 
 features_and_label = training_df.columns
