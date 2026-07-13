@@ -21,18 +21,18 @@ def predict_batch(
         .withColumn("model_id", lit(model_version))
         .withColumn("timestamp", to_timestamp(lit(ts)))
     )
-    {{ else }} 
+    {{ else }}
     predict = mlflow.pyfunc.spark_udf(
         spark_session, model_uri, result_type="double", env_manager="virtualenv"
-    )    
-    
+    )
+
     output_df = (
         table.withColumn("prediction", predict(struct(*table.columns)))
         .withColumn("model_id", lit(model_version))
         .withColumn("timestamp", to_timestamp(lit(ts)))
     )
     {{ end -}}
-    
+
     output_df.display()
 
     # Model predictions are written to the Delta table provided as input.

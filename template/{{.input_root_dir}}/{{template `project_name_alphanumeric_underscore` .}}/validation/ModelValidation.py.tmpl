@@ -258,12 +258,12 @@ data = rounded_taxi_data(data)
 # MLflow evaluate can take a lambda function instead of a model uri for a model
 # but id does not work for the baseline model as it requires a model_uri (baseline comparison is set to false)
 
-from databricks.feature_store import FeatureStoreClient
+from databricks.feature_engineering import FeatureEngineeringClient
 
 def get_fs_model(df):
-    fs_client = FeatureStoreClient()
+    fe_client = FeatureEngineeringClient()
     return (
-        fs_client.score_batch(model_uri, spark.createDataFrame(df))
+        fe_client.score_batch(model_uri=model_uri, df=spark.createDataFrame(df))
         .select("prediction")
         .toPandas()
     )
