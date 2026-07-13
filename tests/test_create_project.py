@@ -242,14 +242,9 @@ def test_generate_project_check_delta_output(
         / TEST_PROJECT_NAME
         / TEST_PROJECT_DIRECTORY
         / "training"
-        / "notebooks"
         / "Train.py"
     )
-    if (
-        setup_cicd_and_project != "CICD_Only"
-        
-        and include_feature_store == "no"
-    ):
+    if setup_cicd_and_project != "CICD_Only" and include_feature_store == "no":
         assert os.path.isfile(delta_notebook_path)
     else:
         assert not os.path.isfile(delta_notebook_path)
@@ -279,7 +274,6 @@ def test_generate_project_check_feature_store_output(
         / TEST_PROJECT_NAME
         / TEST_PROJECT_DIRECTORY
         / "feature_engineering"
-        / "notebooks"
         / "GenerateAndWriteFeatures.py"
     )
     if setup_cicd_and_project != "CICD_Only" and include_feature_store == "yes":
