@@ -1,12 +1,3 @@
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    data_security_mode: "SINGLE_USER"
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 common_permissions: &permissions
   permissions:
     - level: CAN_VIEW
@@ -16,12 +7,9 @@ resources:
   jobs:
     model_training_job:
       name: ${bundle.target}-{{ .input_project_name }}-model-training-job
-      job_clusters:
-        - job_cluster_key: model_training_job_cluster
-          <<: *new_cluster
       tasks:
         - task_key: Train
-          job_cluster_key: model_training_job_cluster
+          environment_key: default
           {{ if (eq .input_include_feature_store `no`) }}notebook_task:
             notebook_path: ../training/Train.py
             base_parameters:
@@ -46,7 +34,7 @@ resources:
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           {{ end }}
         - task_key: ModelValidation
-          job_cluster_key: model_training_job_cluster
+          environment_key: default
           depends_on:
             - task_key: Train
           notebook_task:
@@ -80,7 +68,7 @@ resources:
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: ModelDeployment
-          job_cluster_key: model_training_job_cluster
+          environment_key: default
           depends_on:
             - task_key: ModelValidation
           notebook_task:
@@ -89,6 +77,12 @@ resources:
               env: ${bundle.target}
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+      environments:
+        - environment_key: default
+          spec:
+            client: "4"
+            dependencies:
+              - -r ../requirements.txt
       schedule:
         quartz_cron_expression: "0 0 9 * * ?" # daily at 9am
         timezone_id: UTC
