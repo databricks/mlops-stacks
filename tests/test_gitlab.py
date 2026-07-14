@@ -21,9 +21,7 @@ from utils import (
     ],
 )
 @parametrize_by_cloud
-def test_generated_gitlab_folder(
-    cloud, generated_project_dir
-):
+def test_generated_gitlab_folder(cloud, generated_project_dir):
 
     # TEST: Check if gitlab folder has been created.
     subprocess.run(
