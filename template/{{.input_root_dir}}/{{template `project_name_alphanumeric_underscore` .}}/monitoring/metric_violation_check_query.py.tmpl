@@ -1,10 +1,5 @@
 # This file is used for the main SQL query that checks the last {num_evaluation_windows} metric violations and whether at least {num_violation_windows} of those runs violate the condition.
 
-import sys
-import pathlib
-
-sys.path.append(str(pathlib.Path(__file__).parent.parent.parent.resolve()))
-
 """The SQL query is divided into three main parts. The first part selects the top {num_evaluation_windows}
 values of the metric to be monitored, ordered by the time window, and saves as recent_metrics.
 ```sql

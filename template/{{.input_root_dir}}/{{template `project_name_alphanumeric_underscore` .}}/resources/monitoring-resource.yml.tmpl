@@ -2,15 +2,6 @@
 # The regression monitor defined here works OOB with this example regression notebook: {{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "_extras/notebooks/source/monitoring/regression-monitor.html")) }}
 # NOTE: Monitoring only works on Unity Catalog tables.
 
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    data_security_mode: "SINGLE_USER"
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 common_permissions: &permissions
   permissions:
     - level: CAN_VIEW
@@ -39,9 +30,9 @@ resources:
       name: ${bundle.target}-{{ .input_project_name }}-monitoring-retraining-job
       tasks:
         - task_key: monitored_metric_violation_check
-          <<: *new_cluster
+          environment_key: default
           notebook_task:
-            notebook_path: ../monitoring/notebooks/MonitoredMetricViolationCheck.py
+            notebook_path: ../monitoring/MonitoredMetricViolationCheck.py
             base_parameters:
               env: ${bundle.target}
               table_name_under_monitor: {{ .input_inference_table_name }}
@@ -70,6 +61,12 @@ resources:
             job_id: ${resources.jobs.model_training_job.id}
             git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - -r ../requirements.txt
       schedule:
         quartz_cron_expression: "0 0 18 * * ?" # daily at 6pm
         timezone_id: UTC
@@ -81,4 +78,3 @@ resources:
       #    on_failure:
       #      - first@company.com
       #      - second@company.com
-

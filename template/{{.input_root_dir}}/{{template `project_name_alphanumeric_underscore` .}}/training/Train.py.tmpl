@@ -10,33 +10,9 @@
 # * env (required):                 - Environment the notebook is run in (staging, or prod). Defaults to "staging".
 # * training_data_path (required)   - Path to the training data.
 # * experiment_name (required)      - MLflow experiment name for the training runs. Will be created if it doesn't exist.
-{{- if (eq .input_include_models_in_unity_catalog "no") }}
-# * model_name (required)           - MLflow registered model name to use for the trained model. Will be created if it
-# *                                   doesn't exist.
-{{else}}
-# * model_name (required)           - Three-level name (<catalog>.<schema>.<model_name>) to register the trained model in Unity Catalog. 
-#  
-{{end -}}
+# * model_name (required)           - Three-level name (<catalog>.<schema>.<model_name>) to register the trained model in Unity Catalog.
+#
 ##################################################################################
-
-# COMMAND ----------
-
-# MAGIC %load_ext autoreload
-# MAGIC %autoreload 2
-
-# COMMAND ----------
-
-import os
-notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get())
-%cd $notebook_path
-
-# COMMAND ----------
-
-# MAGIC %pip install -r ../../requirements.txt
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -62,19 +38,11 @@ dbutils.widgets.text(
     label="MLflow experiment name",
 )
 
-{{- if (eq .input_include_models_in_unity_catalog "no") }}
-# MLflow registered model name to use for the trained mode.
-dbutils.widgets.text(
-    "model_name", "dev-{{template `model_name` .}}", label="Model Name"
-)
-
-{{else}}
 # Unity Catalog registered model name to use for the trained model.
 dbutils.widgets.text(
     "model_name", "dev.{{ .input_schema_name }}.{{template `model_name` .}}", label="Full (Three-Level) Model Name"
 )
 
-{{end -}}
 
 # COMMAND ----------
 
@@ -90,11 +58,6 @@ import mlflow
 
 mlflow.set_experiment(experiment_name)
 
-{{- if (eq .input_include_models_in_unity_catalog "yes") }}
-mlflow.set_registry_uri('databricks-uc')
-
-{{end -}}
-
 # COMMAND ----------
 
 # DBTITLE 1, Load raw data
@@ -104,7 +67,7 @@ training_df.display()
 # COMMAND ----------
 
 # DBTITLE 1, Helper function
-from mlflow.tracking import MlflowClient
+from mlflow import MlflowClient
 import mlflow.pyfunc
 
 

@@ -10,23 +10,18 @@ from utils import (
 
 @pytest.mark.parametrize("cicd_platform", ["gitlab"])
 @pytest.mark.parametrize(
-    "setup_cicd_and_project,include_feature_store,include_mlflow_recipes,include_models_in_unity_catalog",
+    "setup_cicd_and_project,include_feature_store",
     [
-        ("CICD_and_Project", "no", "no", "no"),
-        ("CICD_and_Project", "no", "no", "yes"),
-        ("CICD_and_Project", "no", "yes", "no"),
-        ("CICD_and_Project", "yes", "no", "no"),
-        ("CICD_and_Project", "yes", "no", "yes"),
-        ("CICD_Only", "no", "no", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "no"),
+        ("CICD_and_Project", "yes"),
+        ("CICD_and_Project", "yes"),
+        ("CICD_Only", "no"),
     ],
 )
 @parametrize_by_cloud
-def test_generated_gitlab_folder(
-    cloud, include_models_in_unity_catalog, generated_project_dir
-):
-    if cloud == "gcp" and include_models_in_unity_catalog == "yes":
-        # Skip test for GCP with Unity Catalog
-        return
+def test_generated_gitlab_folder(cloud, generated_project_dir):
 
     # TEST: Check if gitlab folder has been created.
     subprocess.run(

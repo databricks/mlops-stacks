@@ -1,12 +1,3 @@
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    data_security_mode: "SINGLE_USER"
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 common_permissions: &permissions
   permissions:
     - level: CAN_VIEW
@@ -16,14 +7,11 @@ resources:
   jobs:
     write_feature_table_job:
       name: ${bundle.target}-{{ .input_project_name }}-write-feature-table-job
-      job_clusters:
-        - job_cluster_key: write_feature_table_job_cluster
-          <<: *new_cluster
       tasks:
         - task_key: PickupFeatures
-          job_cluster_key: write_feature_table_job_cluster
+          environment_key: default
           notebook_task:
-            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            notebook_path: ../feature_engineering/GenerateAndWriteFeatures.py
             base_parameters:
               # TODO modify these arguments to reflect your setup.
               input_table_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
@@ -31,16 +19,15 @@ resources:
               input_start_date: ""
               input_end_date: ""
               timestamp_column: tpep_pickup_datetime
-              {{ if (eq .input_include_models_in_unity_catalog `no`) }}output_table_name: feature_store_taxi_example.${bundle.target}_{{template `project_name_alphanumeric_underscore` .}}_trip_pickup_features
-              {{- else -}}output_table_name: ${var.catalog_name}.{{ .input_schema_name }}.trip_pickup_features{{ end }}
+              output_table_name: ${var.catalog_name}.{{ .input_schema_name }}.trip_pickup_features
               features_transform_module: pickup_features
               primary_keys: zip
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
         - task_key: DropoffFeatures
-          job_cluster_key: write_feature_table_job_cluster
+          environment_key: default
           notebook_task:
-            notebook_path: ../feature_engineering/notebooks/GenerateAndWriteFeatures.py
+            notebook_path: ../feature_engineering/GenerateAndWriteFeatures.py
             base_parameters:
               # TODO: modify these arguments to reflect your setup.
               input_table_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
@@ -48,12 +35,17 @@ resources:
               input_start_date: ""
               input_end_date: ""
               timestamp_column: tpep_dropoff_datetime
-              {{ if (eq .input_include_models_in_unity_catalog `no`) }}output_table_name: feature_store_taxi_example.${var.catalog_name}_{{template `project_name_alphanumeric_underscore` .}}_trip_dropoff_features
-              {{- else -}}output_table_name: ${var.catalog_name}.{{ .input_schema_name }}.trip_dropoff_features{{ end }}
+              output_table_name: ${var.catalog_name}.{{ .input_schema_name }}.trip_dropoff_features
               features_transform_module: dropoff_features
               primary_keys: zip
               # git source information of current ML resource deployment. It will be persisted as part of the workflow run
               git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - -r "../requirements.txt"
       schedule:
         quartz_cron_expression: "0 0 7 * * ?" # daily at 7am
         timezone_id: UTC

@@ -32,57 +32,14 @@
     {{ skip (printf `%s/%s` $root_dir `_params_testing_only.txt`) }}
 {{ end }}
 
-# Remove Delta and Feature Store code in cases of MLflow Recipes.
-{{ if (eq .input_include_mlflow_recipes `yes`) }}
-    # delta_paths
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/Train.py`) }}
-    # feature_store_paths
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
-# Remove Delta and MLflow Recipes code in cases of Feature Store.
-{{ else if (eq .input_include_feature_store `yes`) }}
-    # delta_paths
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/Train.py`) }}
-    # recipe_paths
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/steps`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/data`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/__init__.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/ingest_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/split_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/train_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/test_sample.parquet`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/transform_test.py`) }}
-# Remove MLflow Recipes and Feature Store code in cases of Delta Table.
+# Remove Feature Store code if not selected; remove Delta Train notebook if Feature Store is selected
+{{ if (eq .input_include_feature_store `yes`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/Train.py`) }}
 {{ else }}
-    # recipe_paths
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/profiles`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/steps`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/data`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/__init__.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithMLflowRecipes.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/recipe.yaml`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/README.md`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/ingest_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/split_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/train_test.py`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/test_sample.parquet`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/training/transform_test.py`) }}
-    # feature_store_paths
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `feature_engineering`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `tests/feature_engineering`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/notebooks/TrainWithFeatureStore.py`) }}
+    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `training/TrainWithFeatureStore.py`) }}
     {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `resources/feature-engineering-workflow-resource.yml`) }}
-{{ end }}
-
-# Remove utils if using Models in Unity Catalog
-{{ if (eq .input_include_models_in_unity_catalog `yes`) }}
-    {{ skip (printf `%s/%s/%s` $root_dir $project_name_alphanumeric_underscore `utils.py`) }}
 {{ end }}
 
 # Remove template files

@@ -39,16 +39,14 @@ NOTE: This project was not setup with CI/CD workflows. You can setup CI/CD with 
 This project ships with CI/CD workflows for developing and deploying ML resource configurations based on deployment config.
 {{- end }}
 
-{{- if (eq .input_include_models_in_unity_catalog "yes") }}
 
-For Model Registry in Unity Catalog, we expect a catalog to exist with the name of the deployment target by default. For example, if the deployment target is `dev`, we expect a catalog named `dev` to exist in the workspace. 
+For Model Registry in Unity Catalog, we expect a catalog to exist with the name of the deployment target by default. For example, if the deployment target is `dev`, we expect a catalog named `dev` to exist in the workspace.
 If you want to use different catalog names, please update the `targets` declared in the `{{template `project_name_alphanumeric_underscore` .}}/databricks.yml` and `{{template `project_name_alphanumeric_underscore` .}}/resources/ml-artifacts-resource.yml` files.
-If changing the `staging`, `prod`, or `test` deployment targets, you'll need to update the 
+If changing the `staging`, `prod`, or `test` deployment targets, you'll need to update the
 {{- if (eq .input_setup_cicd_and_project `Project_Only`) }} workflows located in the root directory if in a monorepo setup with CI/CD. Otherwise you can setup CI/CD with a new initialization of MLOps Stacks.
 {{- else if or (eq .input_cicd_platform `github_actions`) (eq .input_cicd_platform `github_actions_for_github_enterprise_servers`) }} workflows located in the `.github/workflows` directory.
 {{- else if (eq .input_cicd_platform `azure_devops`) }}  pipelines located in the `azure-pipelines` directory.
 {{- else if (eq .input_cicd_platform `gitlab`) }}  pipelines located in the `gitlab` directory.{{- end }}
-{{- end }}
 
 
 | Deployment Target | Description                                                                                                                                                                                                                           | Databricks Workspace | Model Name                          | Experiment Name                                |
@@ -163,7 +161,7 @@ Its central purpose is to evaluate a registered model and validate its quality b
 Model validation contains three components: 
 * [model-workflow-resource.yml](./model-workflow-resource.yml) contains the resource config and input parameters for model validation.
 * [validation.py](../validation/validation.py) defines custom metrics and validation thresholds that are referenced by the above resource config files.
-* [notebooks/ModelValidation](../validation/notebooks/ModelValidation.py) contains the validation job implementation. In most cases you don't need to modify this file.
+* [ModelValidation](../validation/ModelValidation.py) contains the validation job implementation. In most cases you don't need to modify this file.
 
 To set up and enable model validation, update [validation.py](../validation/validation.py) to return desired custom metrics and validation thresholds, then 
 resolve the `TODOs` in the ModelValidation task of [model-workflow-resource.yml](./model-workflow-resource.yml).
@@ -177,9 +175,9 @@ Its central purpose is to track production model performances, feature distribut
 
 Monitoring contains four components:
 * [metric_violation_check_query.py](../monitoring/metric_violation_check_query.py) defines a query that checks for violation of the monitored metric.
-* [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py) acts as an entry point, executing the violation check query against the monitored inference table.
+* [MonitoredMetricViolationCheck](../monitoring/MonitoredMetricViolationCheck.py) acts as an entry point, executing the violation check query against the monitored inference table.
 It emits a boolean value based on the query result.
-* [monitoring-resource.yml](./monitoring-resource.yml) contains the resource config, inputs parameters for monitoring, and orchestrates model retraining based on monitoring. It first runs the [notebooks/MonitoredMetricViolationCheck](../monitoring/notebooks/MonitoredMetricViolationCheck.py)
+* [monitoring-resource.yml](./monitoring-resource.yml) contains the resource config, inputs parameters for monitoring, and orchestrates model retraining based on monitoring. It first runs the [MonitoredMetricViolationCheck](../monitoring/MonitoredMetricViolationCheck.py)
 entry point then decides whether to execute the model retraining workflow.
 
 To set up and enable monitoring:
@@ -210,36 +208,35 @@ Therefore, ensure that service principals are the owners or have the necessary p
 To get started, open `{{template `project_name_alphanumeric_underscore` .}}/resources/batch-inference-workflow-resource.yml`.  The file contains the ML resource definition of a batch inference job, like:
 
 ```$xslt
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 resources:
   jobs:
     batch_inference_job:
       name: ${bundle.target}-{{ .input_project_name }}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
-          <<: *new_cluster
+          environment_key: default
           notebook_task:
-            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
+            notebook_path: ../deployment/batch_inference/BatchInference.py
             base_parameters:
               env: ${bundle.target}
               input_table_name: batch_inference_input_table_name
               ...
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - -r ../requirements.txt
 ```
 
 The example above defines a Databricks job with name `${bundle.target}-{{ .input_project_name }}-batch-inference-job`
-that runs the notebook under `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/notebooks/BatchInference.py` to regularly apply your ML model for batch inference. 
+that runs the notebook under `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/BatchInference.py` to regularly apply your ML model for batch inference.
 
-At the start of the resource definition, we declared an anchor `new_cluster` that will be referenced and used later. For more information about anchors in yaml schema, please refer to the [yaml documentation](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases).
+Jobs run on [serverless compute](https://docs.databricks.com/en/jobs/run-serverless-jobs.html) by default: the task references a serverless environment by its `environment_key` (`default` here), and that key is defined once under `environments`, with its own dependencies installed from `requirements.txt`. Multiple tasks in the same job can share the same `environment_key` to reuse one environment definition.
 
 We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.target}-{{ .input_project_name }}-batch-inference-job`.
-The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/notebooks/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
+The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
 After setting up databricks CLI, you can run command `databricks bundle schema`  to learn more about databricks CLI bundles schema.
 
 The notebook_path is the relative path starting from the resource yaml file.
@@ -265,27 +262,26 @@ targets:
     variables:
       batch_inference_input_table: test_table
 
-new_cluster: &new_cluster
-  new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: {{template `cloud_specific_node_type_id` .}}
-    custom_tags:
-      clusterSource: mlops-stacks_{{template `stacks_version` .}}
-
 resources:
   jobs:
     batch_inference_job:
       name: ${bundle.target}-{{ .input_project_name }}-batch-inference-job
       tasks:
         - task_key: batch_inference_job
-          <<: *new_cluster
+          environment_key: default
           notebook_task:
-            notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
+            notebook_path: ../deployment/batch_inference/BatchInference.py
             base_parameters:
               env: ${bundle.target}
               input_table_name: ${var.batch_inference_input_table}
               ...
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - -r ../requirements.txt
 ```
 The `batch_inference_job` notebook parameter `input_table_name` is using a bundle variable `batch_inference_input_table` with default value "input_table".
 The variable value will be overwritten with "dev_table" for `dev` environment config and "test_table" for `test` environment config:
