@@ -81,9 +81,7 @@ def assert_no_disallowed_strings_in_files(
 
 
 @parametrize_by_project_generation_params
-def test_no_template_strings_after_param_substitution(
-    cloud, generated_project_dir
-):
+def test_no_template_strings_after_param_substitution(cloud, generated_project_dir):
     assert_no_disallowed_strings_in_files(
         file_paths=[
             os.path.join(generated_project_dir, path)
@@ -238,11 +236,7 @@ def test_generate_project_check_delta_output(
     )
     generate(tmpdir, databricks_cli, context=context)
     delta_notebook_path = (
-        tmpdir
-        / TEST_PROJECT_NAME
-        / TEST_PROJECT_DIRECTORY
-        / "training"
-        / "Train.py"
+        tmpdir / TEST_PROJECT_NAME / TEST_PROJECT_DIRECTORY / "training" / "Train.py"
     )
     if setup_cicd_and_project != "CICD_Only" and include_feature_store == "no":
         assert os.path.isfile(delta_notebook_path)
