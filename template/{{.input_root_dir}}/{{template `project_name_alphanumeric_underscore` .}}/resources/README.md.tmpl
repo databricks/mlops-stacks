@@ -233,7 +233,7 @@ resources:
 The example above defines a Databricks job with name `${bundle.target}-{{ .input_project_name }}-batch-inference-job`
 that runs the notebook under `{{template `project_name_alphanumeric_underscore` .}}/deployment/batch_inference/BatchInference.py` to regularly apply your ML model for batch inference.
 
-Jobs run on [serverless compute](https://docs.databricks.com/en/jobs/run-serverless-jobs.html) by default: the task references a serverless environment by its `environment_key` (`default` here), and that key is defined once under `environments`, with its own dependencies installed from `requirements.txt`. Multiple tasks in the same job can share the same `environment_key` to reuse one environment definition.
+Jobs run on [serverless compute]({{ template `generate_doc_link` (map (pair "cloud" .input_cloud) (pair "path" "jobs/run-serverless-jobs.html")) }}) by default: the task references a serverless environment by its `environment_key` (`default` here), and that key is defined once under `environments`, with its own dependencies installed from `requirements.txt`. Multiple tasks in the same job can share the same `environment_key` to reuse one environment definition.
 
 We specify a `batch_inference_job` under `resources/jobs` to define a databricks workflow with internal key `batch_inference_job` and job name `{bundle.target}-{{ .input_project_name }}-batch-inference-job`.
 The workflow contains a single task with task key `batch_inference_job`. The task runs notebook `../deployment/batch_inference/BatchInference.py` with provided parameters `env` and `input_table_name` passing to the notebook.
