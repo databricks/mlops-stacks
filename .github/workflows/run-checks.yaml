@@ -16,13 +16,18 @@ jobs:
           python-version: '3.9'
       - name: Install act
         env:
-          # Pin act to a released version rather than fetching a mutable branch.
+          # Pinned release + known-good SHA256 of the release binary (no install
+          # script, no mutable branch). Runner is always ubuntu x86_64.
           ACT_VERSION: v0.2.89
+          ACT_TARBALL: act_Linux_x86_64.tar.gz
+          ACT_SHA256: 0191d6f1f3b716b5c55820032605d05fc3c1cdbf581ebeff655019e5dd1524c0
         run: |
-          # Install act to a user-writable dir (no sudo) from a pinned release tag.
           mkdir -p "$HOME/.local/bin"
-          curl -fsSL "https://raw.githubusercontent.com/nektos/act/${ACT_VERSION}/install.sh" -o /tmp/install-act.sh
-          bash /tmp/install-act.sh -b "$HOME/.local/bin" "$ACT_VERSION"
+          curl -fsSL -o /tmp/act.tar.gz \
+            "https://github.com/nektos/act/releases/download/${ACT_VERSION}/${ACT_TARBALL}"
+          echo "${ACT_SHA256}  /tmp/act.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/act.tar.gz -C "$HOME/.local/bin" act
+          chmod +x "$HOME/.local/bin/act"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           # Pin runner container images to immutable digests.
           echo "-P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest@sha256:5d6a17640b25694988b9db5a4145537b9918e5430116b2cf90d84e837609b382
