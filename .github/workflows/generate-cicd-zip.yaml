@@ -11,26 +11,35 @@ defaults:
   run:
     working-directory: template/{{.input_root_dir}}
 
+# Scoped to what the PR-creation flow needs; no long-lived PAT. The regenerated
+# tarball is proposed as a reviewable PR rather than pushed straight to main.
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   generate-zip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Generate CICD Zip
         run: |
           cp --parents .github/workflows/\{\{.input_project_name\}\}-* cicd/template
           cp --parents .azure/devops-pipelines/\{\{.input_project_name\}\}-* cicd/template
           tar -czvf cicd.tar.gz cicd
-      - name: Commit Zip Back to Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.ARPIT_TOKEN }}
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "eng-mlops-outerloop-team@databricks.com"
-          git config --global url.https://${{ secrets.ARPIT_TOKEN }}@github.com/.insteadOf https://github.com/
-          git add cicd.tar.gz
-          git commit -m "Generate CICD Zip File for ${{ github.sha }}"
-          git push
+      - name: Open PR with regenerated CICD Zip
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          # Only the generated artifact; nothing else is committed.
+          add-paths: template/{{.input_root_dir}}/cicd.tar.gz
+          commit-message: "Generate CICD Zip File for ${{ github.sha }}"
+          branch: auto/regenerate-cicd-zip
+          delete-branch: true
+          title: "Regenerate CICD Zip for ${{ github.sha }}"
+          body: |
+            Automated regeneration of `cicd.tar.gz` triggered by changes to the
+            CI/CD template files in `${{ github.sha }}`.
+
+            Review the diff and merge to keep the checked-in artifact in sync.
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"

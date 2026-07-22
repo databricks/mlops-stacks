@@ -4,6 +4,7 @@
 
 # local bundle files
 **/.databricks/*
+.local/
 
 *.hcl
 .idea/

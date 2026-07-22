@@ -26,10 +26,12 @@ from utils import (
 def test_generated_yaml_format(cloud, generated_project_dir):
     # Note: actionlint only works when the directory is a git project. Thus we begin by initiatilizing
     # the generated mlops project with git.
+    # Pin actionlint to a released tag (not the mutable `main` branch) and pass the
+    # matching version to the downloader so the fetched binary is reproducible.
     subprocess.run(
         """
         git init
-        bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
         ./actionlint -color
         """,
         shell=True,

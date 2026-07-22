@@ -1,3 +1,5 @@
 pytest==7.4.4
-pytest-black
-mlflow>=3.1
+pytest-black==0.6.0
+# Intentionally tests against current MLflow 3.x; upper bound guards against a
+# breaking major-version bump landing silently in CI.
+mlflow>=3.1,<4

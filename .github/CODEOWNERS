@@ -1,0 +1,15 @@
+# Code owners for mlops-stacks.
+# Changes to CI/CD workflows and the security-sensitive test harness require
+# review from a code owner. Combine with branch protection ("Require review
+# from Code Owners") on the default branch to enforce.
+
+# CI/CD workflows — highest-value supply-chain surface.
+/.github/            @veenaramesh @alexbaur @sdonohoo-db
+/.github/workflows/  @veenaramesh @alexbaur @sdonohoo-db
+
+# Test harness that fetches and executes external tooling in CI.
+/tests/install.sh             @veenaramesh @alexbaur @sdonohoo-db
+/tests/test_github_actions.py @veenaramesh @alexbaur @sdonohoo-db
+
+# Dependency manifests.
+/dev-requirements.txt @veenaramesh @alexbaur @sdonohoo-db
