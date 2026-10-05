@@ -27,6 +27,13 @@ jobs:
           cp --parents .github/workflows/\{\{.input_project_name\}\}-* cicd/template
           cp --parents .azure/devops-pipelines/\{\{.input_project_name\}\}-* cicd/template
           tar -czvf cicd.tar.gz cicd
+      # Two operational prerequisites, or this step fails silently:
+      #   1. Repo/org setting "Allow GitHub Actions to create and approve pull
+      #      requests" must be ON, otherwise PR creation returns 403.
+      #   2. PRs opened by the default GITHUB_TOKEN do not trigger `pull_request`
+      #      workflows, so run-checks.yaml will NOT auto-validate this PR. A
+      #      reviewer must confirm the regenerated tarball before merging (or
+      #      re-push the branch to trigger checks).
       - name: Open PR with regenerated CICD Zip
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:

@@ -3,6 +3,12 @@
     {{- (regexp `-`).ReplaceAllString ((regexp `[^A-Za-z0-9_-]`).ReplaceAllString (print .input_project_name) ``) `_` -}}
 {{- end }}
 
+{{/*
+  cli_version is the ref used for `databricks/setup-cli@<ref>` in generated
+  workflows. It stays a release tag (not a commit SHA) on purpose: setup-cli is
+  a first-party Databricks action, and the value is a user-chosen CLI version.
+  Do not "pin" this to a SHA like the third-party actions.
+*/ -}}
 {{ define `cli_version` -}}
     {{ .input_cli_version }}
 {{- end }}
