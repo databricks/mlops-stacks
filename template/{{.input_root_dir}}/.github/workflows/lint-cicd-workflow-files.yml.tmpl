@@ -9,10 +9,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Download actionlint
         id: get_actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        # Fetch the installer from a pinned release tag (not the mutable `main`
+        # branch) and install that exact actionlint version.
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
         shell: bash
       - name: Check workflow files
         {{`run: ${{ steps.get_actionlint.outputs.executable }} -color`}}

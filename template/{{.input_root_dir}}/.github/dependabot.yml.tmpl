@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # Keep GitHub Actions pinned to SHAs up to date. Dependabot bumps the SHA and
+  # the trailing version comment (e.g. `# v4`) together, so pinning stays
+  # maintainable instead of freezing on a stale, eventually-vulnerable version.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # Test dependencies at the repo root.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+{{ if (eq .input_setup_cicd_and_project `CICD_and_Project`) }}
+  # Project runtime dependencies.
+  - package-ecosystem: "pip"
+    directory: "/{{template `project_name_alphanumeric_underscore` .}}"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+{{ end -}}
