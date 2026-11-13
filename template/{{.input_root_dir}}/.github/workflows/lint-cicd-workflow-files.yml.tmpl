@@ -12,9 +12,22 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Download actionlint
         id: get_actionlint
-        # Fetch the installer from a pinned release tag (not the mutable `main`
-        # branch) and install that exact actionlint version.
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
+        # Download the pinned actionlint release and verify it against the
+        # SHA256 from the release's checksums.txt before running it. A moved
+        # tag or tampered asset fails the checksum instead of executing.
+        # Source: https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_checksums.txt
+        run: |
+          set -euo pipefail
+          VERSION="1.7.12"
+          EXPECTED_SHA="8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+          FILE="actionlint_${VERSION}_linux_amd64.tar.gz"
+          DEST="${RUNNER_TEMP}/actionlint"
+          mkdir -p "${DEST}"
+          curl -fsSL -o "${DEST}/${FILE}" "https://github.com/rhysd/actionlint/releases/download/v${VERSION}/${FILE}"
+          echo "${EXPECTED_SHA}  ${DEST}/${FILE}" | sha256sum -c -
+          tar -xzf "${DEST}/${FILE}" -C "${DEST}" actionlint
+          chmod +x "${DEST}/actionlint"
+          echo "executable=${DEST}/actionlint" >> "${GITHUB_OUTPUT}"
         shell: bash
       - name: Check workflow files
         {{`run: ${{ steps.get_actionlint.outputs.executable }} -color`}}

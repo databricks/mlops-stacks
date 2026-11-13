@@ -1,8 +1,25 @@
 FROM library/ubuntu:20.04@sha256:8feb4d8ca5354def3d8fce243717141ce31e2c428701f6682bd2fafe15388214
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install python3-pip curl unzip openjdk-11-jdk
-RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/{{template `cli_version` .}}/install.sh | sh
-RUN pip install requests 
+# Install the pinned Databricks CLI release, verified against a hardcoded SHA256
+# before it is unpacked. Fails on any architecture without a known checksum.
+RUN set -e; \
+    CLI_VERSION="{{template `cli_version` .}}"; CLI_VERSION="${CLI_VERSION#v}"; \
+    ARCH="$(dpkg --print-architecture)"; \
+    case "$ARCH" in \
+      amd64) EXPECTED_SHA="{{template `cli_sha256_linux_amd64` .}}" ;; \
+      arm64) EXPECTED_SHA="{{template `cli_sha256_linux_arm64` .}}" ;; \
+      *) echo "No known Databricks CLI checksum for architecture: $ARCH"; exit 1 ;; \
+    esac; \
+    FILE="databricks_cli_${CLI_VERSION}_linux_${ARCH}.zip"; \
+    cd /tmp; \
+    curl -fsSL -O "https://github.com/databricks/cli/releases/download/v${CLI_VERSION}/${FILE}"; \
+    echo "${EXPECTED_SHA}  ${FILE}" | sha256sum -c -; \
+    unzip -q "${FILE}" databricks; \
+    install -m 0755 databricks /usr/local/bin/databricks; \
+    rm -f "${FILE}" databricks; \
+    databricks version
+RUN pip install requests
 COPY {{template `project_name_alphanumeric_underscore` .}}/requirements.txt .
 COPY test-requirements.txt .
 RUN pip install -r requirements.txt

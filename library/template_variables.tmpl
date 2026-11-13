@@ -65,6 +65,21 @@
     v0.236.0
 {{- end }}
 
+{{/*
+  SHA256 of the Databricks CLI linux release archives for cli_version above.
+  Used by files rendered only from this root template (the GitLab Dockerfile and
+  .azure/devops-pipelines/deploy-cicd.yml) to verify the download before install.
+  Update these together with cli_version, from
+  https://github.com/databricks/cli/releases/download/<cli_version>/databricks_cli_<version>_SHA256SUMS
+*/ -}}
+{{ define `cli_sha256_linux_amd64` -}}
+    4e688a4e622dceb66c109544f5b13bf4cf900e429c7b6a83d1037f3e18387fcb
+{{- end }}
+
+{{ define `cli_sha256_linux_arm64` -}}
+    7f15b96f609c9888566b5560c8c03c5f1ed20272763f28bc888ea533b8beea0c
+{{- end }}
+
 {{ define `stacks_version` -}}
     0.5
 {{- end }}
